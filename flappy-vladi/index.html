@@ -98,7 +98,21 @@ button{font:inherit}
 .pipe{width:68px}
 #hero{width:104px;height:104px}
 }
-#soundToggle{position:fixed;z-index:60;bottom:max(16px,env(safe-area-inset-bottom));left:max(16px,env(safe-area-inset-left));width:46px;height:46px;padding:0;display:grid;place-items:center;border:3px solid #4b220d;border-radius:14px;background:linear-gradient(#aa6435,#633214);box-shadow:0 4px #351809;color:#fff;font-size:19px;line-height:1;touch-action:manipulation;cursor:pointer}#soundToggle:active{transform:translateY(2px);box-shadow:0 2px #351809}@media(max-width:600px){#soundToggle{width:42px;height:42px;border-width:2px;border-radius:12px;font-size:17px}}</style>
+#soundToggle{position:fixed;z-index:60;bottom:max(16px,env(safe-area-inset-bottom));left:max(16px,env(safe-area-inset-left));width:46px;height:46px;padding:0;display:grid;place-items:center;border:3px solid #4b220d;border-radius:14px;background:linear-gradient(#aa6435,#633214);box-shadow:0 4px #351809;color:#fff;font-size:19px;line-height:1;touch-action:manipulation;cursor:pointer}#soundToggle:active{transform:translateY(2px);box-shadow:0 2px #351809}@media(max-width:600px){#soundToggle{width:42px;height:42px;border-width:2px;border-radius:12px;font-size:17px}}
+/* Keep the desktop result fully visible, including on shorter screens. */
+@media (min-width:701px) and (min-height:521px){
+.result{width:min(580px,88vw);max-height:calc(100dvh - 40px);padding:18px 24px;border-radius:26px;overflow-y:auto}
+.result h1{font-size:clamp(36px,7vh,58px);line-height:1;white-space:nowrap;padding:8px 16px;border-width:4px}
+.result .medal{height:34px;margin:10px auto 4px;font-size:16px}
+.result .gameOverHero{width:clamp(130px,24vh,210px)!important;max-height:clamp(80px,20vh,145px)}
+.result .stats{gap:28px;margin:8px 0 14px;font-size:16px}
+.result .stats span{min-width:128px;padding:6px 14px;border-radius:16px}
+.result .stats b{font-size:clamp(30px,6vh,46px);line-height:1.15}
+.result .again{width:min(430px,95%);min-height:52px;font-size:24px;border-width:4px;border-radius:18px}
+.result .home{width:min(350px,90%);min-height:44px;margin-top:14px;font-size:18px;border-width:4px;border-radius:16px}
+.result .tag{margin-top:14px;font-size:16px}
+}
+</style>
 </head>
 <body>
 <main id="game" tabindex="0" aria-label="Flappy Vladi">
