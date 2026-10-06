@@ -2,6 +2,7 @@
 'use strict';
 const canvas=document.querySelector('#game'),ctx=canvas.getContext('2d'),hero=document.querySelector('#hero'),hctx=hero.getContext('2d');
 const panel=document.querySelector('#panel'),title=document.querySelector('#panelTitle'),panelText=document.querySelector('#panelText'),hint=document.querySelector('#hint'),startBtn=document.querySelector('#start'),pauseBtn=document.querySelector('#pause'),hud=document.querySelector('#hud'),help=document.querySelector('#help'),scoreEl=document.querySelector('#score'),waveEl=document.querySelector('#wave'),livesEl=document.querySelector('#lives'),menuBest=document.querySelector('#menuBest');
+const pilotArt=new Image();pilotArt.src='../vladi-run/assets/vladi-runner.webp';
 const STORE='vladiGalaxiaBest';let W=innerWidth,H=innerHeight,D=1,state='menu',time=0,lastFrame=0,elapsed=0,score=0,best=+(localStorage.getItem(STORE)||0),lives=3,wave=1,waveClock=0,lastBossWave=0,spawnClock=.8,fireClock=0,boss=null,player=null,shots=[],enemyShots=[],enemies=[],meteors=[],pickups=[],particles=[],stars=[],keys=new Set(),pointerActive=false,targetX=0,targetY=0,shake=0,flash=0,toast='',toastUntil=0;
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v)),rand=(a,b)=>a+Math.random()*(b-a),dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
 function resize(){W=innerWidth;H=innerHeight;D=Math.min(devicePixelRatio||1,2);canvas.width=Math.round(W*D);canvas.height=Math.round(H*D);canvas.style.width=W+'px';canvas.style.height=H+'px';ctx.setTransform(D,0,0,D,0,0);const r=hero.getBoundingClientRect(),heroW=r.width||Math.min(300,W*.78),heroH=r.height||Math.min(190,H*.24);hero.width=Math.round(heroW*D);hero.height=Math.round(heroH*D);hctx.setTransform(D,0,0,D,0,0);makeStars();drawHero()}
@@ -9,19 +10,17 @@ function makeStars(){stars=Array.from({length:Math.max(75,Math.round(W*H/8500))}
 addEventListener('resize',resize);resize();
 function sound(name){window.VladiSound?.play(name)}
 function drawStar(x,y,r,rotation=0,color='#ffe27a',c=ctx){c.save();c.translate(x,y);c.rotate(rotation);c.fillStyle=color;c.beginPath();for(let i=0;i<10;i++){const a=-Math.PI/2+i*Math.PI/5,rr=i%2?r*.43:r;c.lineTo(Math.cos(a)*rr,Math.sin(a)*rr)}c.closePath();c.fill();c.restore()}
-function drawPilot(c,x,y,s,blink=0){c.save();c.translate(x,y);c.scale(s,s);
- // Suit body and the large clear helmet make Vladi read as the pilot in play and on the title screen.
+function drawPilot(c,x,y,s){c.save();c.translate(x,y);c.scale(s,s);
+ // Traje azul y estrella de Vladi.
  c.fillStyle='#1c63bd';c.beginPath();c.moveTo(-20,28);c.quadraticCurveTo(-29,42,-25,61);c.lineTo(25,61);c.quadraticCurveTo(29,42,20,28);c.closePath();c.fill();c.strokeStyle='#8edfff';c.lineWidth=2;c.stroke();
  c.fillStyle='#ffcf67';c.beginPath();c.moveTo(-9,37);c.lineTo(0,31);c.lineTo(9,37);c.lineTo(5,47);c.lineTo(-5,47);c.closePath();c.fill();drawStar(0,40,5,0,'#fff2a2',c);
- // neck, ears, face
- c.fillStyle='#efb387';c.fillRect(-7,23,14,11);c.fillStyle='#efa77d';c.beginPath();c.ellipse(-23,4,5,8,0,0,Math.PI*2);c.ellipse(23,4,5,8,0,0,Math.PI*2);c.fill();
- c.fillStyle='#211e2d';c.beginPath();c.ellipse(0,3,24,29,0,0,Math.PI*2);c.fill();c.fillStyle='#f3bd94';c.beginPath();c.ellipse(0,7,20,24,0,0,Math.PI*2);c.fill();
- c.fillStyle='#201c26';c.beginPath();c.ellipse(-1,-8,20,9,.02,Math.PI,Math.PI*2);c.quadraticCurveTo(13,-17,18,-8);c.quadraticCurveTo(7,-12,-1,-8);c.fill();
- c.fillStyle='#332538';c.beginPath();c.ellipse(-7,7,2.2,3.1,0,0,Math.PI*2);c.ellipse(7,7,2.2,3.1,0,0,Math.PI*2);c.fill();c.fillStyle='#fff';c.beginPath();c.arc(-7.6,6.2,.8,0,Math.PI*2);c.arc(6.4,6.2,.8,0,Math.PI*2);c.fill();
- c.strokeStyle='#874a43';c.lineWidth=1.8;c.beginPath();c.arc(0,13,6,.2,Math.PI-.2);c.stroke();
- // helmet rim, visor glint, headset
- c.strokeStyle='#b8f7ff';c.lineWidth=4;c.beginPath();c.ellipse(0,4,26,32,0,0,Math.PI*2);c.stroke();c.strokeStyle='#fff';c.lineWidth=1.4;c.beginPath();c.arc(0,4,28,-2.25,-1.55);c.stroke();c.fillStyle='#ffd353';c.beginPath();c.arc(-25,5,4,0,Math.PI*2);c.arc(25,5,4,0,Math.PI*2);c.fill();
- c.restore()}
+ // Rostro real de Vladi, recortado dentro del visor de la nave.
+ c.save();c.beginPath();c.ellipse(0,3,25,31,0,0,Math.PI*2);c.clip();
+ if(pilotArt.complete&&pilotArt.naturalWidth)c.drawImage(pilotArt,54,8,176,137,-25,-30,50,62);
+ else {c.fillStyle='#efb387';c.beginPath();c.ellipse(0,4,20,25,0,0,Math.PI*2);c.fill();c.fillStyle='#151627';c.beginPath();c.ellipse(0,-10,22,11,0,0,Math.PI*2);c.fill();}
+ c.restore();
+ // Borde luminoso del casco.
+ c.strokeStyle='#b8f7ff';c.lineWidth=4;c.beginPath();c.ellipse(0,4,26,32,0,0,Math.PI*2);c.stroke();c.strokeStyle='#fff';c.lineWidth=1.4;c.beginPath();c.arc(0,4,28,-2.25,-1.55);c.stroke();c.fillStyle='#ffd353';c.beginPath();c.arc(-25,5,4,0,Math.PI*2);c.arc(25,5,4,0,Math.PI*2);c.fill();c.restore()}
 function drawShip(c,x,y,scale,flame=0){c.save();c.translate(x,y);c.scale(scale,scale);
  // animated plasma exhaust
  const flameLen=16+flame*11;c.shadowColor='#ff8b34';c.shadowBlur=17;c.fillStyle='#ff8e36';c.beginPath();c.moveTo(-15,35);c.quadraticCurveTo(-25,35,-18,35+flameLen);c.quadraticCurveTo(0,44+flameLen,18,35+flameLen);c.quadraticCurveTo(24,35,-15,35);c.fill();c.fillStyle='#ffe67a';c.beginPath();c.moveTo(-7,35);c.quadraticCurveTo(-10,40,-5,35+flameLen*.66);c.quadraticCurveTo(0,43+flameLen*.66,6,35+flameLen*.66);c.quadraticCurveTo(10,39,-7,35);c.fill();c.shadowBlur=0;
