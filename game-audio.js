@@ -1,7 +1,7 @@
 (() => {
   'use strict';
   const KEY = 'vladiArcadeMuted';
-  let muted = false, audioContext = null, master = null, lastPlayed = {};
+  let muted = false, audioContext = null, master = null, lastPlayed = {}, engine = null, engineRunning = false, engineUpdateAt = -1;
   try { muted = localStorage.getItem(KEY) === '1'; } catch (_) {}
   const toggleButton = document.querySelector('[data-sound-toggle]');
   function context() {
@@ -35,6 +35,45 @@
     else if (name === 'resume') tone(390,.075,'sine',0,.08,590);
     else if (name === 'start') { tone(470,.10,'triangle',0,.09,650); tone(670,.13,'sine',.09,.10,880); }
   }
+  function syncEngine() {
+    if (!engine || !audioContext) return;
+    engine.output.gain.setTargetAtTime(muted || !engineRunning ? 0 : 0.105, audioContext.currentTime, 0.09);
+  }
+  function engineStart() {
+    const ac = context();
+    if (!ac) return;
+    if (!engine) {
+      const filter = ac.createBiquadFilter(), output = ac.createGain();
+      filter.type = 'lowpass'; filter.frequency.value = 520; filter.Q.value = 0.55;
+      output.gain.value = 0;
+      const parts = [
+        { wave: 'sawtooth', hz: 72, level: 0.72 },
+        { wave: 'triangle', hz: 144, level: 0.24 },
+        { wave: 'triangle', hz: 216, level: 0.10 }
+      ];
+      const oscillators = parts.map(part => {
+        const osc = ac.createOscillator(), level = ac.createGain();
+        osc.type = part.wave; osc.frequency.value = part.hz; level.gain.value = part.level;
+        osc.connect(level); level.connect(filter); osc.start();
+        return osc;
+      });
+      filter.connect(output); output.connect(master);
+      engine = { filter, output, oscillators };
+    }
+    engineRunning = true; syncEngine();
+  }
+  function engineStop() {
+    engineRunning = false; syncEngine();
+  }
+  function engineUpdate(load = 0) {
+    if (!engineRunning || muted || !engine || !audioContext) return;
+    const now = audioContext.currentTime;
+    if (now - engineUpdateAt < 0.12) return;
+    engineUpdateAt = now;
+    const base = 68 + Math.max(0, Math.min(1, load)) * 42;
+    engine.oscillators.forEach((osc, i) => osc.frequency.setTargetAtTime(base * (i + 1), now, 0.16));
+    engine.filter.frequency.setTargetAtTime(420 + base * 2, now, 0.18);
+  }
   function renderButton() {
     if (!toggleButton) return;
     toggleButton.textContent = muted ? '🔇' : '🔊';
@@ -45,8 +84,8 @@
   if (toggleButton) toggleButton.addEventListener('click', event => {
     event.preventDefault(); event.stopPropagation(); muted = !muted;
     try { localStorage.setItem(KEY, muted ? '1' : '0'); } catch (_) {}
-    renderButton();
+    renderButton(); syncEngine();
   });
   renderButton();
-  window.VladiSound = { play, get muted() { return muted; } };
+  window.VladiSound = { play, engineStart, engineStop, engineUpdate, get muted() { return muted; } };
 })();
