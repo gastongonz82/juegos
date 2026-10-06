@@ -1,7 +1,7 @@
 (()=>{
 'use strict';
 const canvas=document.querySelector('#game'),ctx=canvas.getContext('2d'),panel=document.querySelector('#panel'),title=document.querySelector('#panelTitle'),panelText=document.querySelector('#panelText'),hint=document.querySelector('#hint'),startBtn=document.querySelector('#start'),pauseBtn=document.querySelector('#pause'),hud=document.querySelector('#hud'),scoreEl=document.querySelector('#score'),bestEl=document.querySelector('#best'),livesEl=document.querySelector('#lives'),menuBest=document.querySelector('#menuBest');
-const MAX_LIVES=5;
+const MAX_LIVES=8;
 let W=innerWidth,H=innerHeight,dpr=1,state='menu',last=0,now=0,elapsed=0,score=0,best=+(localStorage.getItem('vladiFruitNinjaBest')||0),lives=MAX_LIVES,objects=[],particles=[],trail=[],missedWaves=new Set(),nextWave=.85,wave=0,lastCutAt=-1e6,combo=0,activePointer=null,lastPoint=null,flash=0,shake=0,toast='',toastUntil=0;
 const colors={apple:'#f3423a',orange:'#ff942d',watermelon:'#ef4660',strawberry:'#ed3851',kiwi:'#7bbd3f',lemon:'#ffd447',pear:'#85c94b',pineapple:'#ffb82e'};
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v)),rand=(a,b)=>a+Math.random()*(b-a);
