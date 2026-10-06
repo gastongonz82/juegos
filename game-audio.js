@@ -7,7 +7,7 @@
   function context() {
     const Audio = window.AudioContext || window.webkitAudioContext;
     if (!Audio) return null;
-    if (!audioContext) { audioContext = new Audio(); master = audioContext.createGain(); master.gain.value = 0.24; master.connect(audioContext.destination); }
+    if (!audioContext) { audioContext = new Audio(); master = audioContext.createGain(); master.gain.value = 0.82; master.connect(audioContext.destination); }
     if (audioContext.state === 'suspended') audioContext.resume().catch(() => {});
     return audioContext;
   }
@@ -16,7 +16,7 @@
     const start = ac.currentTime + delay, osc = ac.createOscillator(), gain = ac.createGain();
     osc.type = wave; osc.frequency.setValueAtTime(freq, start);
     if (slideTo) osc.frequency.exponentialRampToValueAtTime(slideTo, start + duration);
-    gain.gain.setValueAtTime(0.0001, start); gain.gain.exponentialRampToValueAtTime(volume, start + Math.min(0.014, duration * 0.22));
+    gain.gain.setValueAtTime(0.0001, start); gain.gain.exponentialRampToValueAtTime(Math.min(0.28, volume * 1.35), start + Math.min(0.014, duration * 0.22));
     gain.gain.exponentialRampToValueAtTime(0.0001, start + duration); osc.connect(gain); gain.connect(master);
     osc.start(start); osc.stop(start + duration + 0.01);
   }
