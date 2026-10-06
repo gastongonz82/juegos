@@ -9,12 +9,12 @@ const win={innerWidth:W,innerHeight:H,devicePixelRatio:2,addEventListener(n,f){(
 const sb={document:doc,window:win,innerWidth:W,innerHeight:H,devicePixelRatio:2,localStorage:{getItem:k=>saved[k]??null,setItem:(k,v)=>saved[k]=String(v)},Math:deterministicMath,performance:{now:()=>now},requestAnimationFrame:f=>(queue.push(f),queue.length),addEventListener:(n,f)=>{(winListeners[n]??=[]).push(f)},console};
 vm.runInNewContext(source,sb);const game=sb.window.__vladiFruitNinja;assert(game,'game hook');
 function frame(ms=16){const f=queue.shift();assert(f,'animation loop');now+=ms;f(now)}function advance(ms){for(let t=0;t<ms;t+=16)frame(Math.min(16,ms-t))}
-frame();assert.equal(game.state,'menu','initial menu');els['#start'].click();assert.equal(game.state,'playing','start');
+frame();assert.equal(game.state,'menu','initial menu');els['#start'].click();assert.equal(game.state,'playing','start');assert.equal(game.metrics.lives,5,'five starting lives');
 game.spawnTestObject(150,220,'fruit');game.pointerDown(90,220);game.pointerMove(210,220);game.pointerUp();assert.equal(game.metrics.score,10,'swipe slices fruit');assert(saved.vladiFruitNinjaBest,'record persists');
-game.spawnTestObject(150,220,'bomb');game.pointerDown(90,220);game.pointerMove(210,220);game.pointerUp();assert.equal(game.metrics.lives,2,'bomb removes life');
+game.spawnTestObject(150,220,'bomb');game.pointerDown(90,220);game.pointerMove(210,220);game.pointerUp();assert.equal(game.metrics.lives,4,'bomb removes life');
 game.pause();assert.equal(game.state,'paused','pause');game.pause();assert.equal(game.state,'playing','resume');
-game.spawnTestObject(100,H+100,'fruit');advance(80);assert.equal(game.metrics.lives,1,'missed fruit costs life');
+game.spawnTestObject(100,H+100,'fruit');advance(80);assert.equal(game.metrics.lives,3,'missed fruit costs life');
 W=844;H=390;win.innerWidth=W;win.innerHeight=H;sb.innerWidth=W;sb.innerHeight=H;for(const f of winListeners.resize||[])f();assert.deepEqual(game.getLayout().width,844);assert.equal(game.getLayout().height,390);
 W=390;H=844;win.innerWidth=W;win.innerHeight=H;sb.innerWidth=W;sb.innerHeight=H;for(const f of winListeners.resize||[])f();assert.equal(game.getLayout().width,390);assert.equal(els['#game'].width,780,'high DPI canvas');
-game.start();for(let i=0;i<3;i++){game.spawnTestObject(150,220,'bomb');game.pointerDown(90,220);game.pointerMove(210,220);game.pointerUp()}assert.equal(game.state,'over','three bombs end round');els['#start'].click();assert.equal(game.state,'playing','restart');
+game.start();for(let i=0;i<5;i++){game.spawnTestObject(150,220,'bomb');game.pointerDown(90,220);game.pointerMove(210,220);game.pointerUp()}assert.equal(game.state,'over','five bombs end round');assert.equal(game.metrics.objects,0,'game over clears moving objects');els['#start'].click();assert.equal(game.state,'playing','restart');
 console.log(JSON.stringify({result:'PASS',checks:['start/restart','touch swipe slices fruit','score and local record','bomb and lives','missed fruit','pause/resume','portrait/landscape resize','game over'],metrics:game.metrics,stored:saved}));
