@@ -13,7 +13,7 @@ frame();assert.equal(game.state,'menu','initial menu');els['#start'].click();ass
 game.spawnTestObject(150,220,'fruit');game.pointerDown(90,220);game.pointerMove(210,220);game.pointerUp();assert.equal(game.metrics.score,10,'swipe slices fruit');assert(saved.vladiFruitNinjaBest,'record persists');
 game.spawnTestObject(150,220,'bomb');game.pointerDown(90,220);game.pointerMove(210,220);game.pointerUp();assert.equal(game.metrics.lives,4,'bomb removes life');
 game.pause();assert.equal(game.state,'paused','pause');game.pause();assert.equal(game.state,'playing','resume');
-game.spawnTestObject(100,H+100,'fruit');advance(80);assert.equal(game.metrics.lives,3,'missed fruit costs life');
+game.spawnTestObject(100,H+100,'fruit','wave-test');advance(80);assert.equal(game.metrics.lives,3,'missed fruit costs life');game.spawnTestObject(120,H+100,'fruit','wave-test');game.spawnTestObject(180,H+100,'fruit','wave-test');advance(80);assert.equal(game.metrics.lives,3,'one missed wave costs only one life');
 W=844;H=390;win.innerWidth=W;win.innerHeight=H;sb.innerWidth=W;sb.innerHeight=H;for(const f of winListeners.resize||[])f();assert.deepEqual(game.getLayout().width,844);assert.equal(game.getLayout().height,390);
 W=390;H=844;win.innerWidth=W;win.innerHeight=H;sb.innerWidth=W;sb.innerHeight=H;for(const f of winListeners.resize||[])f();assert.equal(game.getLayout().width,390);assert.equal(els['#game'].width,780,'high DPI canvas');
 game.start();for(let i=0;i<5;i++){game.spawnTestObject(150,220,'bomb');game.pointerDown(90,220);game.pointerMove(210,220);game.pointerUp()}assert.equal(game.state,'over','five bombs end round');assert.equal(game.metrics.objects,0,'game over clears moving objects');els['#start'].click();assert.equal(game.state,'playing','restart');
