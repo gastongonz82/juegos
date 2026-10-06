@@ -14,7 +14,7 @@ function frame(ms=16){const f=queue.shift();assert(f,'animation loop');now+=ms;f
 frame();els['#start'].click();assert.equal(game.state,'playing','start');
 key('ArrowUp');assert.equal(game.metrics.row,1,'keyboard forward');advance(100);buttons.find(b=>b.dataset.move==='right').fire('pointerdown',{preventDefault(){}});assert.equal(game.metrics.x,3,'touch movement');
 game.setPlayer(2,27);game.forceTraffic(27,2);advance(40);assert.equal(game.state,'over','vehicle collision');assert(saved.vladiCrossyBest,'best score saved');
-els['#start'].click();assert.equal(game.state,'playing','restart');game.setPlayer(2,20);game.forceTraffic(20,5.5);advance(50);assert.equal(game.state,'playing','avoid vehicle');
+els['#start'].click();assert.equal(game.state,'playing','restart');advance(5000);assert.equal(game.state,'playing','no forced timer death');game.setPlayer(2,20);game.forceTraffic(20,5.5);advance(50);assert.equal(game.state,'playing','avoid vehicle');
 els['#pause'].click();assert.equal(game.state,'paused','pause');els['#start'].click();assert.equal(game.state,'playing','resume');
 W=844;H=390;win.innerWidth=W;win.innerHeight=H;sb.innerWidth=W;sb.innerHeight=H;for(const f of winListeners.resize||[])f();assert.equal(game.getLayout().width,844);assert.equal(game.getLayout().height,390);
 W=390;H=844;win.innerWidth=W;win.innerHeight=H;sb.innerWidth=W;sb.innerHeight=H;for(const f of winListeners.resize||[])f();assert.equal(game.getLayout().width,390);assert(els['#game'].width>=390,'high DPI canvas');
