@@ -20,6 +20,26 @@
     gain.gain.exponentialRampToValueAtTime(0.0001, start + duration); osc.connect(gain); gain.connect(master);
     osc.start(start); osc.stop(start + duration + 0.01);
   }
+  function noiseBurst(duration, filterType, startHz, endHz, volume, delay = 0) {
+    const ac = context();
+    if (!ac || !ac.createBuffer || !ac.createBufferSource) return;
+    const length = Math.max(1, Math.floor(ac.sampleRate * duration));
+    const buffer = ac.createBuffer(1, length, ac.sampleRate), samples = buffer.getChannelData(0);
+    for (let i = 0; i < length; i++) {
+      const fade = 1 - i / length;
+      samples[i] = (Math.random() * 2 - 1) * fade * fade;
+    }
+    const start = ac.currentTime + delay, source = ac.createBufferSource();
+    const filter = ac.createBiquadFilter(), gain = ac.createGain();
+    filter.type = filterType; filter.frequency.setValueAtTime(startHz, start);
+    filter.frequency.exponentialRampToValueAtTime(Math.max(60, endHz), start + duration);
+    filter.Q.value = filterType === 'bandpass' ? 0.7 : 0.6;
+    gain.gain.setValueAtTime(0.0001, start);
+    gain.gain.exponentialRampToValueAtTime(Math.min(0.28, volume * 1.35), start + 0.012);
+    gain.gain.exponentialRampToValueAtTime(0.0001, start + duration);
+    source.buffer = buffer; source.connect(filter); filter.connect(gain); gain.connect(master);
+    source.start(start); source.stop(start + duration + 0.01);
+  }
   function play(name) {
     if (muted) return;
     const now = performance.now(), minGap = name === 'collect' || name === 'slice' ? 42 : 65;
@@ -28,8 +48,8 @@
     if (name === 'jump') { tone(420,.10,'triangle',0,.12,720); tone(650,.07,'sine',.055,.055,850); }
     else if (name === 'move') tone(360,.055,'triangle',0,.07,510);
     else if (name === 'collect') { tone(720,.10,'sine',0,.12,940); tone(990,.13,'sine',.075,.12,1260); }
-    else if (name === 'slice') { tone(520,.055,'triangle',0,.075,1180); tone(1040,.06,'sine',.035,.07,1450); }
-    else if (name === 'hit') { tone(230,.22,'sawtooth',0,.14,105); tone(150,.20,'triangle',.04,.10,75); }
+    else if (name === 'slice') { noiseBurst(.18,'bandpass',2100,480,.19); tone(1480,.07,'triangle',.012,.08,620); }
+    else if (name === 'explosion' || name === 'hit') { noiseBurst(.42,'lowpass',1600,130,.22); noiseBurst(.13,'bandpass',2400,800,.12,.015); tone(105,.36,'sawtooth',0,.20,46); }
     else if (name === 'gameover') { tone(380,.20,'triangle',0,.12,270); tone(270,.24,'triangle',.17,.12,165); tone(165,.32,'sine',.37,.12,110); }
     else if (name === 'pause') tone(510,.075,'sine',0,.08,390);
     else if (name === 'resume') tone(390,.075,'sine',0,.08,590);
