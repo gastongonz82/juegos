@@ -20,7 +20,7 @@ const sceneImage=new Image();sceneImage.src='assets/tropical-premium.png';
 const storeKey='vladiRunBestV2', storeStars='vladiRunStarsV2';
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v)), rand=(a,b)=>a+Math.random()*(b-a);
 let W=0,H=0,DPR=1,groundY=0,scale=1,lastTime=0,raf=0,state='menu',paused=false;
-let player,platforms=[],hazards=[],stars=[],particles=[],distance=0,collected=0,totalStars=0,best=0,speed=0,spawnX=0,worldTick=0,runStart=0,segmentsSpawned=0;
+let player,platforms=[],hazards=[],stars=[],particles=[],distance=0,collected=0,totalStars=0,best=0,speed=0,spawnX=0,worldTick=0,runStart=0,segmentsSpawned=0,lastHazardWorld=-Infinity;
 try{best=+(localStorage.getItem(storeKey)||localStorage.getItem('vladiRunBest')||0);totalStars=+(localStorage.getItem(storeStars)||0)}catch(_){}
 const ui={pause:{x:0,y:0,w:0,h:0},play:{x:0,y:0,w:0,h:0},restart:{x:0,y:0,w:0,h:0}};
 function runnerHeight(){return H>W*1.12?clamp(H*.185,86,166):clamp(H*.27,105,230)}
@@ -95,11 +95,11 @@ function drawRunner(t){if(!player)return;const p=player,run=state==='running'&&!
  // backward dark cap with visible bill/strap (cap bill faces left)
  ctx.beginPath();ctx.moveTo(33,27);ctx.quadraticCurveTo(29,5,50,4);ctx.quadraticCurveTo(74,1,82,21);ctx.lineTo(77,27);ctx.quadraticCurveTo(59,16,36,29);ctx.closePath();ctx.fillStyle=gradient(32,4,0,25,[[0,'#343840'],[1,'#12151c']]);ctx.fill();ctx.lineWidth=2;ctx.strokeStyle='#101318';ctx.stroke();rounded(24,20,27,7,4,'#171a21','#0d0e11',2);ctx.strokeStyle='#60646a';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(43,11);ctx.quadraticCurveTo(55,18,69,12);ctx.stroke();rounded(63,13,12,5,2,'#191c22','#06070a',1);
  ctx.restore();}
-function seedWorld(){platforms=[];hazards=[];stars=[];particles=[];distance=0;collected=0;worldTick=0;speed=300*scale;spawnX=W*.52;const ph=runnerHeight();player={x:W*.19,y:groundY-ph,h:ph,w:ph*.82,vy:0,airborne:false,grounded:true};
+function seedWorld(){platforms=[];hazards=[];stars=[];particles=[];distance=0;collected=0;worldTick=0;lastHazardWorld=-Infinity;speed=300*scale;spawnX=W*.52;const ph=runnerHeight();player={x:W*.19,y:groundY-ph,h:ph,w:ph*.82,vy:0,airborne:false,grounded:true};
  const starter={x:-30,w:Math.max(W*1.15+30,player.x+player.w+speed*2.1),y:groundY,depth:H-groundY+90};platforms.push(starter);spawnX=starter.x+starter.w+rand(speed*.45,speed*.72);segmentsSpawned=0;for(let i=0;i<4;i++)stars.push({x:player.x+player.h*1.9+i*player.h*.55,y:groundY-player.h*.23,r:player.h*.092,phase:i*.8,got:false});
 }
 function newRun(){seedWorld();state='running';paused=false;lastTime=performance.now();runStart=lastTime;}
-function createSegment(){const unit=Math.max(W,H*.8,speed*2.4),gap=rand(unit*.075,unit*.115),width=rand(unit*.43,unit*.61),x=spawnX;platforms.push({x,w:width,y:groundY,depth:H-groundY+90});const firstSegment=segmentsSpawned++===0;if(!firstSegment){const hazardX=x+rand(width*.38,width*.66),type=Math.random()<.58?'crate':'spikes';hazards.push({x:hazardX,type,w:type==='crate'?player.h*.63:player.h*.92,h:type==='crate'?player.h*.63:player.h*.39,passed:false})}
+function createSegment(){const unit=Math.max(W,H*.8,speed*2.4),gap=rand(unit*.055,unit*.09),width=rand(unit*.48,unit*.68),x=spawnX;platforms.push({x,w:width,y:groundY,depth:H-groundY+90});const segmentIndex=segmentsSpawned++;const hazardX=x+rand(width*.68,width*.82),hazardWorld=distance+hazardX;if(segmentIndex>0&&segmentIndex%2===0&&hazardWorld-lastHazardWorld>speed*1.8){const type=Math.random()<.58?'crate':'spikes';hazards.push({x:hazardX,type,w:type==='crate'?player.h*.63:player.h*.92,h:type==='crate'?player.h*.63:player.h*.39,passed:false});lastHazardWorld=hazardWorld}
  const count=3+Math.floor(Math.random()*2),startX=x+rand(width*.12,width*.27),arc=rand(.17,.31);for(let i=0;i<count;i++)stars.push({x:startX+i*player.h*.5,y:groundY-player.h*(arc+(i%2)*.04),r:player.h*.092,phase:Math.random()*6.2,got:false});
  spawnX=x+width+gap;
 }
@@ -148,7 +148,7 @@ function loop(t){const dt=lastTime?Math.min(.034,(t-lastTime)/1000):0;lastTime=t
 function pointer(e){e.preventDefault();const r=canvas.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top;if(state==='menu'||state==='over'){jump();return}if(ui.pause&&x>=ui.pause.x&&x<=ui.pause.x+ui.pause.w&&y>=ui.pause.y&&y<=ui.pause.y+ui.pause.h){togglePause();return}if(paused){togglePause();return}jump()}
 canvas.addEventListener('pointerdown',pointer,{passive:false});addEventListener('keydown',e=>{if(e.code==='Space'||e.code==='ArrowUp'){e.preventDefault();if(state==='menu'||state==='over')newRun();else jump()}else if(e.code==='Escape'||e.code==='KeyP'){e.preventDefault();togglePause()}},{passive:false});document.addEventListener('visibilitychange',()=>{if(document.hidden&&state==='running'&&!paused)togglePause()});
 // Inspection hooks make functional smoke tests deterministic without changing player-facing controls.
-window.__vladiRun={get state(){return state},get player(){return player&&{...player}},get hazards(){return hazards.map(o=>({...o}))},get metrics(){return{distance,collected,best,speed,platforms:platforms.length,stars:stars.length,jumps:player?.jumpCount||0}},jump,forceCollision(){if(!hazards.length)hazards.push({x:player.x,w:player.w,h:player.h*.7,type:'crate'});hazards[0].x=player.x;hazards[0].w=player.w;hazards[0].h=player.h*.7;player.y=groundY-player.h;player.vy=0;update(.016,performance.now())},setViewport:resize};
+window.__vladiRun={get state(){return state},get player(){return player&&{...player}},get hazards(){return hazards.map(o=>({...o}))},get metrics(){return{distance,collected,best,speed,platforms:platforms.length,stars:stars.length,jumps:player?.jumpCount||0,lastHazardWorld}},jump,forceCollision(){if(!hazards.length)hazards.push({x:player.x,w:player.w,h:player.h*.7,type:'crate'});hazards[0].x=player.x;hazards[0].w=player.w;hazards[0].h=player.h*.7;player.y=groundY-player.h;player.vy=0;update(.016,performance.now())},setViewport:resize};
 seedWorld();raf=requestAnimationFrame(loop);
 })();
 </script>
