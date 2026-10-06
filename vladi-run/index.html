@@ -20,7 +20,7 @@
 .play,.again,.home{cursor:pointer;font:1000 clamp(21px,3vw,34px) Arial Black;border-radius:20px;color:white}.play,.again{min-width:min(440px,90%);padding:13px 25px;border:6px solid #07531f;background:linear-gradient(#7cf34f,#13b72b);box-shadow:0 8px #063916;text-shadow:0 3px #063916}.home{margin-top:15px;padding:10px 22px;border:5px solid #4b210d;background:linear-gradient(#c47535,#7c3c19);box-shadow:0 6px #351607}
 .help{margin-top:17px;font-weight:900}.stats{display:flex;justify-content:center;gap:35px;margin:16px 0}.stats div{min-width:130px;padding:10px;border:3px solid #d88b43;border-radius:16px;background:#4a210caa}.stats b{display:block;font:1000 44px Arial Black;color:#ffd026}.paused{position:absolute;z-index:30;inset:0;display:grid;place-items:center;pointer-events:none;background:#00182b99;color:#fff;font:1000 clamp(50px,10vw,110px) Arial Black;text-shadow:0 6px #001525}
 @media(max-width:600px){#hero{left:9%;width:105px;height:132px;bottom:20%}.track{height:22%}.obj{bottom:18%}.star{bottom:40%}.hud{font-size:13px;padding:7px 9px;border-width:3px}.pause{width:48px;height:45px}.panel{padding:18px 10px}.title{font-size:18vw}.preview{width:34vw;height:34vw}.help{font-size:13px}.stats{gap:10px}.stats div{min-width:115px}.stats b{font-size:38px}}
-</style></head><body><main id="game" tabindex="0"><div class="track"></div><div id="dust" class="dust"></div><div id="objects"></div><div id="hero" aria-label="Vladi"><div class="runnerHead"><img src="../flappy-vladi/assets/vladi_final.png" alt=""></div><div class="runnerBody">★</div><i class="arm a1"></i><i class="arm a2"></i><i class="leg l1"></i><i class="leg l2"></i></div><button id="pause" class="hud pause">Ⅱ</button><div id="score" class="hud score">🏃 0 · ⭐ 0</div><div id="best" class="hud best">🏆 0</div><div id="paused" class="paused hidden">PAUSA</div><div id="overlay" class="overlay"><section class="panel"><div class="title"><span>VLADI</span>RUN</div><div class="handle">@vladyerik · V7</div><br><div class="preview runnerPreview">🏃</div><br><button id="start" class="play">▶ CORRER</button><div class="help">TOCÁ / ESPACIO PARA SALTAR · JUNTÁ ⭐</div></section></div></main>
+</style></head><body><main id="game" tabindex="0"><div class="track"></div><div id="dust" class="dust"></div><div id="objects"></div><div id="hero" aria-label="Vladi"><div class="runnerHead"><img src="../flappy-vladi/assets/vladi_final.png" alt=""></div><div class="runnerBody">★</div><i class="arm a1"></i><i class="arm a2"></i><i class="leg l1"></i><i class="leg l2"></i></div><button id="pause" class="hud pause">Ⅱ</button><div id="score" class="hud score">🏃 0 · ⭐ 0</div><div id="best" class="hud best">🏆 0</div><div id="paused" class="paused hidden">PAUSA</div><div id="overlay" class="overlay"><section class="panel"><div class="title"><span>VLADI</span>RUN</div><div class="handle">@vladyerik · V8</div><br><div class="preview runnerPreview">🏃</div><br><button id="start" class="play">▶ CORRER</button><div class="help">TOCÁ / ESPACIO PARA SALTAR · JUNTÁ ⭐</div></section></div></main>
 <script>
 (()=>{const g=document.querySelector('#game'),hero=document.querySelector('#hero'),objs=document.querySelector('#objects'),scoreEl=document.querySelector('#score'),bestEl=document.querySelector('#best'),ov=document.querySelector('#overlay'),pb=document.querySelector('#pause'),pl=document.querySelector('#paused');let running=false,paused=false,y=0,vy=0,dist=0,stars=0,best=+(localStorage.getItem('vladiRunBest')||0),items=[],spawn=1.8,last=0,raf=0;bestEl.textContent='🏆 '+best;
 const mobile=()=>innerWidth<=700;const ground=()=>innerHeight*(mobile()?.20:.19);const heroW=()=>mobile()?120:Math.max(110,Math.min(180,innerWidth*.11));const speed=()=>Math.min(.56,.32+dist/1900);const gravity=()=>mobile()?1420:1360;const jumpV=()=>mobile()?1050:1000;
@@ -58,5 +58,27 @@ document.querySelector('#start').onclick=e=>{e.stopPropagation();start()};pb.onc
 @media(max-width:600px){
  .runnerV6{left:10%!important;bottom:20%!important;transform:scale(.82)!important}
  .panel{font-size:16px!important}
+}
+</style><style id="v8-responsive">
+/* V8 responsive: desktop, tablet/landscape y móvil */
+@media(min-width:1000px){
+ #game{background-size:cover!important;background-position:center 43%!important}
+ .runnerV6{left:15%!important;bottom:20%!important;transform:scale(1.12)!important;transform-origin:bottom center!important}
+ .track{height:20%!important}
+ .obstacle{bottom:20%!important}
+ .star{bottom:calc(20% + 115px)!important}
+ #hud{padding:18px 28px!important}
+ .panel{font-size:20px!important}
+}
+@media(min-width:601px) and (max-width:999px){
+ .runnerV6{left:13%!important;bottom:20%!important;transform:scale(.98)!important;transform-origin:bottom center!important}
+ #game{background-position:center 44%!important}
+}
+@media(max-width:600px) and (orientation:landscape){
+ #game{background-size:cover!important;background-position:center 46%!important}
+ .runnerV6{left:12%!important;bottom:19%!important;transform:scale(.68)!important}
+ .track{height:19%!important}
+ .obstacle{bottom:19%!important}
+ .star{bottom:calc(19% + 65px)!important}
 }
 </style>
