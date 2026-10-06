@@ -110,7 +110,7 @@ function gameOver(){state='over';paused=false;best=Math.max(best,Math.floor(dist
 function platformAt(x){for(const p of platforms){if(x>=p.x&&x<=p.x+p.w)return p}return null}
 function collision(){const px=player.x+player.w*.23,py=player.y+player.h*.22,pw=player.w*.48,ph=player.h*.69;for(const o of hazards){const ox=o.x+(o.type==='crate'?o.w*.12:0),oy=groundY-o.h,ow=o.type==='crate'?o.w*.76:o.w*.88,oh=o.type==='crate'?o.h*.82:o.h*.91;if(px<ox+ow&&px+pw>ox&&py<oy+oh&&py+ph>oy)return true}const support=platformAt(player.x+player.w*.4);if(!support&&player.y+player.h>groundY-4)return true;return false}
 function update(dt,t){worldTick=t;if(state!=='running'||paused)return;const meters=Math.floor(distance/26);speed=Math.min(560*scale,(300+meters*.48)*scale);distance+=speed*dt;
- if(spawnX<W+player.h*2.8)createSegment();for(const group of [platforms,hazards,stars])for(const o of group)o.x-=speed*dt;
+ spawnX-=speed*dt;if(spawnX<W+player.h*2.8)createSegment();for(const group of [platforms,hazards,stars])for(const o of group)o.x-=speed*dt;
  platforms=platforms.filter(p=>p.x+p.w>-80);hazards=hazards.filter(o=>o.x+o.w>-100);stars=stars.filter(s=>!s.got&&s.x>-50);
  const oldBottom=player.y+player.h;player.vy+=1750*scale*dt;player.y+=player.vy*dt;player.grounded=false;
  const footX=player.x+player.w*.45,support=platformAt(footX);if(support&&player.vy>=0&&oldBottom<=groundY+3&&player.y+player.h>=groundY-1){player.y=groundY-player.h;player.vy=0;player.grounded=true;player.airborne=false}
