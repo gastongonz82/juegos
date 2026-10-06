@@ -15,19 +15,19 @@ class Run extends Phaser.Scene{
   this.bg=[];for(let i=1;i<=4;i++){let t=this.add.tileSprite(0,0,960,540,'bg'+i).setOrigin(0).setDisplaySize(960,540);this.bg.push(t)}
   this.floorY=470;this.ground=this.physics.add.staticGroup();
   for(let x=0;x<1050;x+=128){let g=this.ground.create(x,this.floorY,'ground').setOrigin(0,0).setDisplaySize(130,90);g.refreshBody()}
-  this.player=this.add.container(150,360);this.physics.add.existing(this.player);this.player.body.setSize(58,105).setOffset(-29,-53);this.player.body.setGravityY(1050);this.player.body.setCollideWorldBounds(true);
+  this.player=this.add.container(150,360);this.physics.add.existing(this.player);this.player.body.setSize(58,105).setOffset(-29,-53);this.player.body.setGravityY(1050);this.player.body.setCollideWorldBounds(true);this.player.body.setBounce(0);
   let shadow=this.add.ellipse(0,55,58,13,0x000000,.22),body=this.add.graphics();body.fillStyle(0x1685e8).fillRoundedRect(-27,-15,54,70,16);body.fillStyle(0xffd83d);body.fillPoints([{x:0,y:-2},{x:6,y:12},{x:22,y:13},{x:10,y:23},{x:14,y:39},{x:0,y:30},{x:-14,y:39},{x:-10,y:23},{x:-22,y:13},{x:-6,y:12}],true);
   let face=this.add.image(0,-48,'face').setDisplaySize(68,68);let maskShape=this.make.graphics({x:0,y:0,add:false});maskShape.fillCircle(0,-48,32);face.setMask(maskShape.createGeometryMask());
   let cap=this.add.graphics();cap.fillStyle(0x111722).fillEllipse(0,-73,66,25).fillRoundedRect(-29,-82,58,18,8);cap.fillStyle(0x111722).fillRoundedRect(22,-74,28,7,4);
   this.legL=this.add.rectangle(-15,58,14,48,0x174e9a).setOrigin(.5,0);this.legR=this.add.rectangle(15,58,14,48,0x174e9a).setOrigin(.5,0);this.shoeL=this.add.ellipse(-17,106,30,15,0xffffff);this.shoeR=this.add.ellipse(17,106,30,15,0xffffff);
   this.player.add([shadow,this.legL,this.legR,this.shoeL,this.shoeR,body,face,cap]);this.player.setDepth(20);
-  this.physics.add.collider(this.player,this.ground);
+  this.physics.add.collider(this.player,this.ground);this.player.body.setVelocityY(20);
   this.obs=this.physics.add.group({allowGravity:false});this.coins=this.physics.add.group({allowGravity:false});
   this.physics.add.overlap(this.player,this.obs,()=>this.gameOver());this.physics.add.overlap(this.player,this.coins,(p,c)=>{c.destroy();stars++;document.querySelector('#stars').textContent=stars;});
-  this.input.on('pointerdown',()=>this.jump());this.input.keyboard.on('keydown-SPACE',()=>this.jump());this.input.keyboard.on('keydown-UP',()=>this.jump());this.input.keyboard.on('keydown-DOWN',()=>{if(!this.player.body.blocked.down)this.player.body.setVelocityY(700)});
+  this.input.on('pointerdown',(pointer)=>{if(pointer.y>70)this.jump();});this.input.on('gameobjectdown',()=>this.jump());this.input.keyboard.on('keydown-SPACE',()=>this.jump());this.input.keyboard.on('keydown-UP',()=>this.jump());this.input.keyboard.on('keydown-DOWN',()=>{if(!this.player.body.blocked.down)this.player.body.setVelocityY(700)});
   this.time.addEvent({delay:1450,loop:true,callback:()=>this.spawn()});
  }
- jump(){if(this.dead)return;if(this.player.body.blocked.down||this.player.body.touching.down)this.player.body.setVelocityY(-610)}
+ jump(){if(this.dead)return;const grounded=this.player.body.blocked.down||this.player.body.touching.down||this.player.y>=this.floorY-112;if(grounded){this.player.body.setVelocityY(-610);this.player.y-=2;}}
  spawn(){if(this.dead)return;let x=1020;if(Math.random()<.68){let o=this.obs.create(x,this.floorY-5,'spikes').setOrigin(.5,1).setDisplaySize(68,45);o.body.setSize(55,32);o.setVelocityX(-this.speed)}else{let o=this.obs.create(x,this.floorY-5,'ground').setOrigin(.5,1).setDisplaySize(74,74);o.body.setSize(60,65);o.setVelocityX(-this.speed)}
   if(Math.random()<.75){let n=Phaser.Math.Between(2,5);for(let i=0;i<n;i++){let c=this.coins.create(x+80+i*52,this.floorY-115-(i%2)*35,'coin').setDisplaySize(30,30);c.setVelocityX(-this.speed)}}
  }
@@ -35,7 +35,7 @@ class Run extends Phaser.Scene{
  update(t){
   if(this.dead)return;let dt=Math.min((t-this.t0)/1000,90);this.speed=310+dt*3;this.bg[0].tilePositionX+=.12;this.bg[1].tilePositionX+=.3;this.bg[2].tilePositionX+=.65;this.bg[3].tilePositionX+=1.1;
   for(const o of this.obs.children.entries)o.setVelocityX(-this.speed);for(const c of this.coins.children.entries)c.setVelocityX(-this.speed);
-  let grounded=this.player.body.blocked.down||this.player.body.touching.down;let phase=t*.018;if(grounded){this.legL.rotation=Math.sin(phase)*.55;this.legR.rotation=-Math.sin(phase)*.55;this.shoeL.x=-17+Math.sin(phase)*12;this.shoeR.x=17-Math.sin(phase)*12}else{this.legL.rotation=-.25;this.legR.rotation=.3}
+  let grounded=this.player.body.blocked.down||this.player.body.touching.down||this.player.y>=this.floorY-112;let phase=t*.018;if(grounded){this.legL.rotation=Math.sin(phase)*.55;this.legR.rotation=-Math.sin(phase)*.55;this.shoeL.x=-17+Math.sin(phase)*12;this.shoeR.x=17-Math.sin(phase)*12}else{this.legL.rotation=-.25;this.legR.rotation=.3}
   meters=Math.floor((t-this.t0)/95);document.querySelector('#meters').textContent=meters;
  }
 }
