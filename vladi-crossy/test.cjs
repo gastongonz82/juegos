@@ -18,4 +18,5 @@ els['#start'].click();assert.equal(game.state,'playing','restart');advance(5000)
 els['#pause'].click();assert.equal(game.state,'paused','pause');els['#start'].click();assert.equal(game.state,'playing','resume');
 W=844;H=390;win.innerWidth=W;win.innerHeight=H;sb.innerWidth=W;sb.innerHeight=H;for(const f of winListeners.resize||[])f();assert.equal(game.getLayout().width,844);assert.equal(game.getLayout().height,390);
 W=390;H=844;win.innerWidth=W;win.innerHeight=H;sb.innerWidth=W;sb.innerHeight=H;for(const f of winListeners.resize||[])f();assert.equal(game.getLayout().width,390);assert(els['#game'].width>=390,'high DPI canvas');
-console.log(JSON.stringify({result:'PASS',checks:['start/restart','arrow and touch movement','traffic collision','avoiding traffic','pause/resume','local record','portrait/landscape resize'],metrics:game.metrics,stored:saved}));
+els['#start'].click();game.setPlayer(2,6);advance(500);assert.equal(game.state,'playing','ride a river log');
+console.log(JSON.stringify({result:'PASS',checks:['start/restart','arrow and touch movement','traffic collision','avoiding traffic','ride a river log','pause/resume','local record','portrait/landscape resize'],metrics:game.metrics,stored:saved}));
