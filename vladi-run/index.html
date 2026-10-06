@@ -20,7 +20,7 @@
 .play,.again,.home{cursor:pointer;font:1000 clamp(21px,3vw,34px) Arial Black;border-radius:20px;color:white}.play,.again{min-width:min(440px,90%);padding:13px 25px;border:6px solid #07531f;background:linear-gradient(#7cf34f,#13b72b);box-shadow:0 8px #063916;text-shadow:0 3px #063916}.home{margin-top:15px;padding:10px 22px;border:5px solid #4b210d;background:linear-gradient(#c47535,#7c3c19);box-shadow:0 6px #351607}
 .help{margin-top:17px;font-weight:900}.stats{display:flex;justify-content:center;gap:35px;margin:16px 0}.stats div{min-width:130px;padding:10px;border:3px solid #d88b43;border-radius:16px;background:#4a210caa}.stats b{display:block;font:1000 44px Arial Black;color:#ffd026}.paused{position:absolute;z-index:30;inset:0;display:grid;place-items:center;pointer-events:none;background:#00182b99;color:#fff;font:1000 clamp(50px,10vw,110px) Arial Black;text-shadow:0 6px #001525}
 @media(max-width:600px){#hero{left:9%;width:105px;height:132px;bottom:20%}.track{height:22%}.obj{bottom:18%}.star{bottom:40%}.hud{font-size:13px;padding:7px 9px;border-width:3px}.pause{width:48px;height:45px}.panel{padding:18px 10px}.title{font-size:18vw}.preview{width:34vw;height:34vw}.help{font-size:13px}.stats{gap:10px}.stats div{min-width:115px}.stats b{font-size:38px}}
-</style></head><body><main id="game" tabindex="0"><div class="track"></div><div id="dust" class="dust"></div><div id="objects"></div><div id="hero" aria-label="Vladi"><div class="runnerHead"><img src="../flappy-vladi/assets/vladi_final.png" alt=""></div><div class="runnerBody">★</div><i class="arm a1"></i><i class="arm a2"></i><i class="leg l1"></i><i class="leg l2"></i></div><button id="pause" class="hud pause">Ⅱ</button><div id="score" class="hud score">🏃 0 · ⭐ 0</div><div id="best" class="hud best">🏆 0</div><div id="paused" class="paused hidden">PAUSA</div><div id="overlay" class="overlay"><section class="panel"><div class="title"><span>VLADI</span>RUN</div><div class="handle">@vladyerik · V11</div><br><div class="preview runnerPreview">🏃</div><br><button id="start" class="play">▶ CORRER</button><div class="help">TOCÁ / ESPACIO PARA SALTAR · JUNTÁ ⭐</div></section></div></main>
+</style></head><body><main id="game" tabindex="0"><div class="track"></div><div id="dust" class="dust"></div><div id="objects"></div><div id="hero" aria-label="Vladi"><div class="runnerHead"><img src="../flappy-vladi/assets/vladi_final.png" alt=""></div><div class="runnerBody">★</div><i class="arm a1"></i><i class="arm a2"></i><i class="leg l1"></i><i class="leg l2"></i></div><button id="pause" class="hud pause">Ⅱ</button><div id="score" class="hud score">🏃 0 · ⭐ 0</div><div id="best" class="hud best">🏆 0</div><div id="paused" class="paused hidden">PAUSA</div><div id="overlay" class="overlay"><section class="panel"><div class="title"><span>VLADI</span>RUN</div><div class="handle">@vladyerik · V12</div><br><div class="preview runnerPreview">🏃</div><br><button id="start" class="play">▶ CORRER</button><div class="help">TOCÁ / ESPACIO PARA SALTAR · JUNTÁ ⭐</div></section></div></main>
 <script>
 (()=>{const g=document.querySelector('#game'),hero=document.querySelector('#hero'),objs=document.querySelector('#objects'),scoreEl=document.querySelector('#score'),bestEl=document.querySelector('#best'),ov=document.querySelector('#overlay'),pb=document.querySelector('#pause'),pl=document.querySelector('#paused');let running=false,paused=false,y=0,vy=0,dist=0,stars=0,best=+(localStorage.getItem('vladiRunBest')||0),items=[],spawn=1.8,last=0,raf=0;bestEl.textContent='🏆 '+best;
 const mobile=()=>innerWidth<=700;const ground=()=>innerHeight*(mobile()?.20:.19);const heroW=()=>mobile()?120:Math.max(110,Math.min(180,innerWidth*.11));const speed=()=>Math.min(.56,.32+dist/1900);const gravity=()=>mobile()?1420:1360;const jumpV=()=>mobile()?1050:1000;
@@ -33,92 +33,20 @@ function rectsHit(a,b,pad=12){return a.left+pad<b.right&&a.right-pad>b.left&&a.t
 function draw(){hero.style.bottom=(ground()+y)+'px';hero.style.transform='rotate('+Math.max(-5,Math.min(5,-vy*.004))+'deg)';items.forEach(o=>o.el.style.left=o.x+'px')}
 function loop(t){if(!running)return;if(paused){last=t;raf=requestAnimationFrame(loop);return}const dt=Math.min(.032,(t-last)/1000);last=t;dist+=dt*10*(1+speed());vy-=gravity()*dt;y+=vy*dt;if(y<0){y=0;vy=0}spawn-=dt;if(spawn<=0)add();const px=innerWidth*speed()*dt;for(const o of items){o.x-=px;if(o.x<-140){o.el.remove();o.dead=true;continue}const hr=hero.getBoundingClientRect(),or=o.el.getBoundingClientRect();if(o.star&&!o.taken&&rectsHit(hr,or,16)){o.taken=true;stars++;o.el.remove();o.dead=true}else if(!o.star&&dist>22&&rectsHit({left:hr.left+hr.width*.30,right:hr.right-hr.width*.24,top:hr.top+hr.height*.18,bottom:hr.bottom-hr.height*.08},{left:or.left+or.width*.12,right:or.right-or.width*.12,top:or.top+or.height*.12,bottom:or.bottom-or.height*.06},6)){draw();end();return}}items=items.filter(o=>!o.dead);scoreEl.textContent='🏃 '+Math.floor(dist)+' · ⭐ '+stars;draw();raf=requestAnimationFrame(loop)}
 document.querySelector('#start').onclick=e=>{e.stopPropagation();start()};pb.onclick=e=>{e.stopPropagation();if(!running)return;paused=!paused;pb.textContent=paused?'▶':'Ⅱ';pl.classList.toggle('hidden',!paused)};g.addEventListener('pointerdown',e=>{if(!e.target.closest('button')){e.preventDefault();jump()}});g.addEventListener('keydown',e=>{if(e.code==='Space'||e.key==='ArrowUp'){e.preventDefault();jump()}});document.addEventListener('visibilitychange',()=>{if(document.hidden&&running&&!paused){paused=true;pb.textContent='▶';pl.classList.remove('hidden')}});draw()})();
-</script></body></html><style id="v6">
-#game{background-image:url("./assets/premium-scene.jpg")!important;background-size:cover!important;background-position:center!important}
-.runnerV6{position:absolute!important;z-index:15!important;left:12%!important;bottom:22%!important;width:92px!important;height:142px!important;opacity:1!important;filter:drop-shadow(0 6px 5px #0005)}
-.runnerV6 .v6head{position:absolute;left:16px;top:0;font-size:55px;line-height:55px;z-index:4}
-.runnerV6 .v6cap{position:absolute;left:13px;top:-13px;font-size:52px;color:#111;transform:rotate(-12deg);z-index:5}
-.runnerV6 .v6body{position:absolute;left:19px;top:51px;width:55px;height:58px;border-radius:18px 18px 13px 13px;background:linear-gradient(#159ff1,#0868cf);border:4px solid #0752a8;color:#ffd52f;font:bold 35px/52px system-ui;text-align:center}
-.runnerV6 .v6leg{position:absolute;top:105px;width:20px;height:38px;border-radius:9px;background:#0868cf;border-bottom:10px solid white;transform-origin:50% 0}
-.runnerV6 .v6leg.l{left:24px;animation:v6run .28s infinite alternate}.runnerV6 .v6leg.r{left:51px;animation:v6run .28s infinite alternate-reverse}
-@keyframes v6run{to{transform:rotate(32deg) translateY(-3px)}}
-.track{opacity:1!important;height:22%!important;background:linear-gradient(#7ce13c 0 6%,#319c2d 6% 13%,#6b4a2b 13% 100%)!important;border-top:6px solid #b9f05b!important;box-shadow:none!important}
-.obstacle{opacity:1!important}
-.star{font-size:clamp(40px,8vw,62px)!important;filter:drop-shadow(0 3px 2px #7b5100)}
-@media(max-width:600px){.runnerV6{left:13%!important;transform:scale(.92);transform-origin:bottom center}}
-</style><style id="v7-polish">
-/* V7: coherencia visual y mejor lectura en móvil */
-#game{background-position:50% 42%!important}
-#hud{z-index:40!important}
-.panel{border-radius:18px!important;border:3px solid #a85c25!important;background:linear-gradient(#8c491f,#54260f)!important;box-shadow:0 5px 0 #2c1409,0 8px 15px #0004!important}
-.track{height:20%!important;background:linear-gradient(#92e843 0 5%,#3cad32 5% 10%,#80552d 10% 100%)!important;border-top:5px solid #c9f76c!important;box-shadow:inset 0 10px #257e2d!important}
-.runnerV6{bottom:20%!important}
-.obstacle{bottom:20%!important;border-radius:10px!important}
-.star{bottom:calc(20% + 90px)!important}
-@media(max-width:600px){
- .runnerV6{left:10%!important;bottom:20%!important;transform:scale(.82)!important}
- .panel{font-size:16px!important}
-}
-</style><style id="v8-responsive">
-/* V8 responsive: desktop, tablet/landscape y móvil */
-@media(min-width:1000px){
- #game{background-size:cover!important;background-position:center 43%!important}
- .runnerV6{left:15%!important;bottom:20%!important;transform:scale(1.12)!important;transform-origin:bottom center!important}
- .track{height:20%!important}
- .obstacle{bottom:20%!important}
- .star{bottom:calc(20% + 115px)!important}
- #hud{padding:18px 28px!important}
- .panel{font-size:20px!important}
-}
-@media(min-width:601px) and (max-width:999px){
- .runnerV6{left:13%!important;bottom:20%!important;transform:scale(.98)!important;transform-origin:bottom center!important}
- #game{background-position:center 44%!important}
-}
-@media(max-width:600px) and (orientation:landscape){
- #game{background-size:cover!important;background-position:center 46%!important}
- .runnerV6{left:12%!important;bottom:19%!important;transform:scale(.68)!important}
- .track{height:19%!important}
- .obstacle{bottom:19%!important}
- .star{bottom:calc(19% + 65px)!important}
-}
-</style><style id="v9-depth">
-/* V9: profundidad visual sin alterar física */
-#game:before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(180deg,rgba(255,255,255,.08),transparent 28%,transparent 72%,rgba(0,55,50,.10))}
-.track:after{content:"";position:absolute;inset:15% 0 0;background:repeating-linear-gradient(115deg,transparent 0 70px,rgba(255,255,255,.05) 72px 75px,transparent 77px 145px);opacity:.65}
-.obstacle{box-shadow:inset 0 0 0 3px #ffffff20,0 6px 8px #0005!important}
-.runnerV6{transition:filter .15s;filter:drop-shadow(0 8px 5px #0005)!important}
-#objects{z-index:14!important}
-</style><style id="v10-desktop">
-/* V10: límites de escala para evitar gigantismo o elementos diminutos */
-#game{--ground:20%}
-.track{height:var(--ground)!important}
-.runnerV6,.obstacle{bottom:var(--ground)!important}
-.star{bottom:calc(var(--ground) + 105px)!important}
-@media(min-width:1400px){
- .runnerV6{left:16%!important;transform:scale(1.18)!important}
- #hud{max-width:1500px;margin:auto;left:0;right:0}
-}
-@media(max-height:650px) and (min-width:700px){
- #game{--ground:18%}
- .runnerV6{transform:scale(.72)!important}
- .panel{font-size:15px!important}
- .star{bottom:calc(var(--ground) + 62px)!important}
-}
-</style><style id="v11-final-responsive">
-/* V11: encuadre estable y controles táctiles/desktop */
+</script></body></html><style id="v12-clean">
 html,body{width:100%;height:100%;margin:0;overflow:hidden;overscroll-behavior:none}
-#game{width:100vw!important;height:100dvh!important;min-height:100svh;touch-action:manipulation;user-select:none}
-button{touch-action:manipulation}
-@media(pointer:coarse){button{min-width:48px;min-height:48px}}
-@media(min-width:1000px) and (min-height:700px){
- #game{--ground:20%}
- .runnerV6{max-width:110px!important}
-}
-@media(min-aspect-ratio:2/1){
- #game{background-position:center 48%!important}
- .runnerV6{left:17%!important}
-}
-@media(max-aspect-ratio:3/4){
- #game{background-position:center 40%!important}
-}
+#game{--ground:20%;width:100vw!important;height:100dvh!important;min-height:100svh;touch-action:manipulation;user-select:none;background:url("./assets/premium-scene.jpg?v=12") center 44%/cover no-repeat!important}
+#game:before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(180deg,#fff1,transparent 35%,transparent 72%,#00382b1f)}
+#hud{z-index:40!important}.panel{border-radius:18px!important;border:3px solid #a85c25!important;background:linear-gradient(#8c491f,#54260f)!important;box-shadow:0 5px 0 #2c1409,0 8px 15px #0004!important}
+.track{display:block!important;opacity:1!important;height:var(--ground)!important;background:linear-gradient(#a5ee4a 0 5%,#3fae32 5% 11%,#7a502b 11% 100%)!important;border-top:5px solid #d2fa78!important;box-shadow:inset 0 9px #267d2c!important}
+.runnerV6{display:block!important;opacity:1!important;position:absolute!important;z-index:15!important;left:13%!important;bottom:var(--ground)!important;width:92px!important;height:142px!important;filter:drop-shadow(0 8px 5px #0005)!important}
+.runnerV6 .v6head{position:absolute;left:16px;top:0;font-size:55px;line-height:55px;z-index:4}.runnerV6 .v6cap{position:absolute;left:13px;top:-13px;font-size:52px;color:#111;transform:rotate(-12deg);z-index:5}.runnerV6 .v6body{position:absolute;left:19px;top:51px;width:55px;height:58px;border-radius:18px 18px 13px 13px;background:linear-gradient(#159ff1,#0868cf);border:4px solid #0752a8;color:#ffd52f;font:bold 35px/52px system-ui;text-align:center}.runnerV6 .v6leg{position:absolute;top:105px;width:20px;height:38px;border-radius:9px;background:#0868cf;border-bottom:10px solid white;transform-origin:50% 0}.runnerV6 .v6leg.l{left:24px;animation:v12run .28s infinite alternate}.runnerV6 .v6leg.r{left:51px;animation:v12run .28s infinite alternate-reverse}@keyframes v12run{to{transform:rotate(32deg) translateY(-3px)}}
+.obstacle{display:block!important;opacity:1!important;bottom:var(--ground)!important;box-shadow:0 6px 8px #0005!important}.star{bottom:calc(var(--ground) + 100px)!important;filter:drop-shadow(0 3px 2px #7b5100)}
+button{touch-action:manipulation}@media(pointer:coarse){button{min-width:48px;min-height:48px}}
+@media(min-width:1000px){.runnerV6{left:15%!important;transform:scale(1.1);transform-origin:bottom center}.panel{font-size:20px!important}}
+@media(min-width:1400px){.runnerV6{left:16%!important;transform:scale(1.18)}#hud{max-width:1500px;margin:auto;left:0;right:0}}
+@media(max-width:600px){.runnerV6{left:10%!important;transform:scale(.82);transform-origin:bottom center}.panel{font-size:16px!important}}
+@media(max-height:650px) and (min-width:700px){#game{--ground:18%}.runnerV6{transform:scale(.72)}.panel{font-size:15px!important}.star{bottom:calc(var(--ground) + 62px)!important}}
+@media(min-aspect-ratio:2/1){#game{background-position:center 48%!important}.runnerV6{left:17%!important}}
+@media(max-aspect-ratio:3/4){#game{background-position:center 40%!important}}
 </style>
