@@ -1,26 +1,126 @@
-<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"><title>VLADI RUN</title><style>
-*{box-sizing:border-box}html,body,#game{margin:0;width:100%;height:100%;overflow:hidden;background:#24bdf1;touch-action:none;font-family:Arial,sans-serif}canvas{display:block}.hud{position:fixed;z-index:10;top:max(10px,env(safe-area-inset-top));left:10px;right:10px;display:flex;gap:8px;justify-content:space-between;pointer-events:none}.h{background:linear-gradient(#542611,#2d1209);border:3px solid #160904;border-radius:20px;color:#fff;padding:8px 13px;font-size:clamp(15px,4vw,22px);font-weight:900;box-shadow:inset 0 2px #a96436,0 4px 0 #170a05,0 6px 12px #0005;text-shadow:0 2px #000}.back{pointer-events:auto;text-decoration:none}.start{position:fixed;z-index:20;inset:0;display:grid;place-items:center;background:#05243b55}.panel{text-align:center;background:linear-gradient(#542611f2,#291108f5);border:4px solid #140803;border-radius:28px;color:#fff;padding:24px;width:min(86vw,430px);box-shadow:inset 0 3px #ad6a3b,0 12px 30px #0008}.panel h1{font-size:48px;margin:0;text-shadow:0 4px #000}.panel button{font-size:24px;font-weight:900;border:0;border-radius:18px;padding:13px 28px;background:linear-gradient(#ffe84b,#ffac00);box-shadow:0 6px #b76500}.hide{display:none}</style><script src="https://cdn.jsdelivr.net/npm/phaser@3.80.1/dist/phaser.min.js"></script></head><body><div id="game"></div><div class="hud"><div class="h">⭐ <span id="st">0</span></div><div class="h">🏃 <span id="mt">0</span>m</div><div class="h">🏆 <span id="be">0</span>m</div><a class="h back" href="../">JUEGOS</a></div><div class="start" id="start"><div class="panel"><h1>VLADI RUN</h1><p>Corré · saltá · juntá estrellas</p><button id="play">▶ JUGAR</button></div></div><script>
-const $=x=>document.querySelector(x),best=()=>+(localStorage.vrbest||0);$('#be').textContent=best();
-const svg=s=>'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(s);
-const TILE=svg(`<svg xmlns="http://www.w3.org/2000/svg" width="180" height="150"><defs><linearGradient id="d" y2="1"><stop stop-color="#c47732"/><stop offset="1" stop-color="#773a1c"/></linearGradient></defs><rect y="35" width="180" height="115" fill="url(#d)"/><path d="M0 42Q18 7 40 35T82 32T125 34T180 28v38H0Z" fill="#72dc31"/><path d="M0 52Q25 27 48 50T96 47T145 49T180 43" fill="none" stroke="#22a62c" stroke-width="12"/><g fill="#e3a158" opacity=".65"><rect x="18" y="83" width="55" height="8" rx="4"/><rect x="95" y="108" width="64" height="8" rx="4"/></g></svg>`);
-const STAR=svg(`<svg xmlns="http://www.w3.org/2000/svg" width="70" height="70"><circle cx="35" cy="35" r="31" fill="#ffb400" stroke="#fff06b" stroke-width="5"/><path d="m35 9 7 17 19 1-15 12 5 19-16-10-16 10 5-19L9 27l19-1Z" fill="#fff12f" stroke="#e98d00" stroke-width="2"/></svg>`);
-const CRATE=svg(`<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect x="5" y="5" width="90" height="90" rx="7" fill="#b76628" stroke="#5d2b16" stroke-width="8"/><path d="m15 15 70 70M85 15 15 85" stroke="#6e341a" stroke-width="14"/><path d="m15 15 70 70M85 15 15 85" stroke="#dc914a" stroke-width="5"/></svg>`);
-const SPIKE=svg(`<svg xmlns="http://www.w3.org/2000/svg" width="130" height="75"><defs><linearGradient id="s" y2="1"><stop stop-color="#fff"/><stop offset="1" stop-color="#8fa7b5"/></linearGradient></defs><path d="M4 70 25 7l20 63L66 4l21 66 20-61 19 61Z" fill="url(#s)" stroke="#526b78" stroke-width="4"/></svg>`);
-const CRAB=svg(`<svg xmlns="http://www.w3.org/2000/svg" width="110" height="75"><g fill="#ed3e24" stroke="#9e1e13" stroke-width="4"><ellipse cx="55" cy="45" rx="31" ry="22"/><path d="M28 43 8 28 3 12l20 8 10 15M82 43l20-15 5-16-20 8-10 15"/></g><g fill="#fff" stroke="#222" stroke-width="3"><circle cx="43" cy="28" r="9"/><circle cx="67" cy="28" r="9"/></g><circle cx="43" cy="28" r="3"/><circle cx="67" cy="28" r="3"/></svg>`);
-class Game extends Phaser.Scene{
- preload(){this.load.image('bg','assets/reference-bg.jpg');this.load.image('tile',TILE);this.load.image('star',STAR);this.load.image('crate',CRATE);this.load.image('spike',SPIKE);this.load.image('crab',CRAB);this.load.image('face','assets/vladi-face.png')}
- create(){this.go=false;this.dead=false;this.score=0;this.m=0;this.speed=420;this.jumps=0;this.bg=this.add.tileSprite(0,0,1280,720,'bg').setOrigin(0).setDisplaySize(1280,720);
- this.floor=560;this.platforms=this.physics.add.staticGroup();for(let x=-40;x<1400;x+=170){let p=this.platforms.create(x,this.floor,'tile').setOrigin(0,0).setDisplaySize(175,145);p.refreshBody()}
- this.p=this.add.container(190,430);this.physics.add.existing(this.p);this.p.body.setSize(78,120).setOffset(-39,-60);this.p.body.setGravityY(1450);this.p.body.setCollideWorldBounds(true);
- let sh=this.add.ellipse(0,66,88,17,0x12370e,.28),body=this.add.graphics();body.fillStyle(0x1789e7).fillRoundedRect(-35,-5,70,78,22);body.fillStyle(0xffdd24);body.fillPoints([{x:0,y:5},{x:8,y:23},{x:28,y:24},{x:12,y:37},{x:17,y:57},{x:0,y:46},{x:-17,y:57},{x:-12,y:37},{x:-28,y:24},{x:-8,y:23}],true);
- this.l1=this.add.rectangle(-18,65,18,52,0x1456a0).setOrigin(.5,0);this.l2=this.add.rectangle(18,65,18,52,0x1456a0).setOrigin(.5,0);this.s1=this.add.ellipse(-22,117,40,19,0xffffff);this.s2=this.add.ellipse(22,117,40,19,0xffffff);let face=this.add.image(0,-48,'face').setDisplaySize(88,88);let mask=this.make.graphics({add:false});mask.fillCircle(0,-48,40);face.setMask(mask.createGeometryMask());let cap=this.add.graphics();cap.fillStyle(0x10151b).fillEllipse(0,-80,82,29).fillRoundedRect(-35,-93,70,22,9).fillRoundedRect(27,-82,34,8,4);this.p.add([sh,this.l1,this.l2,this.s1,this.s2,body,face,cap]);this.p.setDepth(10);
- this.physics.add.collider(this.p,this.platforms,()=>this.jumps=0);this.obs=this.physics.add.group({allowGravity:false});this.items=this.physics.add.group({allowGravity:false});this.physics.add.overlap(this.p,this.obs,()=>this.end());this.physics.add.overlap(this.p,this.items,(a,b)=>{b.destroy();this.score++;$('#st').textContent=this.score});
- this.input.on('pointerdown',()=>{if(this.go)this.jump()});this.input.keyboard.on('keydown-SPACE',()=>{if(this.go)this.jump()});this.time.addEvent({delay:1450,loop:true,callback:()=>{if(this.go&&!this.dead)this.spawn()}});
- $('#play').onclick=()=>{this.go=true;this.t0=this.time.now;$('#start').classList.add('hide')}}
- jump(){if(this.dead||this.jumps>1)return;this.p.body.setVelocityY(this.jumps?-520:-680);this.jumps++}
- spawn(){let x=1350,r=Math.random(),key=r<.48?'crate':r<.78?'spike':'crab',w=key==='crate'?86:key==='spike'?105:82,h=key==='crate'?86:key==='spike'?58:60;let o=this.obs.create(x,this.floor+4,key).setOrigin(.5,1).setDisplaySize(w,h);o.body.setSize(w*.8,h*.8);o.setVelocityX(-this.speed);for(let i=0,n=Phaser.Math.Between(2,4);i<n;i++){let s=this.items.create(x+110+i*66,this.floor-125-(i%2)*40,'star').setDisplaySize(46,46);s.setVelocityX(-this.speed)}}
- end(){if(this.dead)return;this.dead=true;this.physics.pause();let b=Math.max(best(),this.m);localStorage.vrbest=b;$('#be').textContent=b;let q=this.add.rectangle(640,340,520,200,0x3b180b,.94).setStrokeStyle(5,0x170904).setDepth(30);this.add.text(640,300,'¡GRAN CARRERA!',{fontSize:'38px',fontStyle:'bold',color:'#fff'}).setOrigin(.5).setDepth(31);this.add.text(640,350,this.m+'m   ⭐ '+this.score,{fontSize:'28px',color:'#ffdd2c'}).setOrigin(.5).setDepth(31);this.add.text(640,400,'TOCÁ PARA REINICIAR',{fontSize:'20px',fontStyle:'bold',color:'#fff'}).setOrigin(.5).setDepth(31);this.input.once('pointerdown',()=>location.reload())}
- update(t){if(!this.go||this.dead)return;let sec=(t-this.t0)/1000;this.speed=Math.min(650,420+sec*3);this.bg.tilePositionX+=.18;for(const x of this.obs.children.entries)x.setVelocityX(-this.speed);for(const x of this.items.children.entries)x.setVelocityX(-this.speed);this.m=Math.floor(sec*10);$('#mt').textContent=this.m;let g=this.p.body.blocked.down||this.p.body.touching.down,p=t*.023;if(g){this.l1.rotation=Math.sin(p)*.62;this.l2.rotation=-Math.sin(p)*.62;this.s1.x=-22+Math.sin(p)*17;this.s2.x=22-Math.sin(p)*17;this.p.angle=Math.sin(p*2)*1.3}else{this.l1.rotation=-.35;this.l2.rotation=.45;this.p.angle=-6}}
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>Vladi Run</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#061a29;font-family:Arial,Helvetica,sans-serif}
+button{font:inherit}
+#game{position:fixed;inset:0;overflow:hidden;touch-action:none;user-select:none;background:#19b7f2 url("assets/tropical-premium.png") center center/cover no-repeat}
+
+/* Clean scenery drawn from scratch: NO baked-in hero, pipes or UI */
+.skyGlow{display:none;position:absolute;inset:0 0 38% 0;background:radial-gradient(circle at 50% 15%,#d9f8ff 0 4%,transparent 22%),linear-gradient(#18b7f2,#66d8f6);z-index:0}
+.cloud{display:none;position:absolute;z-index:1;width:150px;height:48px;background:#fff;border-radius:60px;opacity:.9;filter:drop-shadow(0 4px 0 #5fb9d733)}
+.cloud:before,.cloud:after{content:"";position:absolute;background:#fff;border-radius:50%}.cloud:before{width:70px;height:70px;left:25px;top:-32px}.cloud:after{width:92px;height:92px;right:16px;top:-48px}
+.c1{left:7%;top:15%;transform:scale(.7)}.c2{left:48%;top:10%;transform:scale(.5)}.c3{right:7%;top:22%;transform:scale(.65)}
+.mountains{display:none;position:absolute;z-index:1;left:0;right:0;bottom:31%;height:40%;overflow:hidden}
+.m{position:absolute;bottom:-8%;width:31%;height:85%;background:linear-gradient(135deg,#2fba86 0 23%,#168e75 24% 52%,#0b7468 53%);clip-path:polygon(50% 0,100% 100%,0 100%);filter:drop-shadow(0 10px 0 #075f6044)}
+.m:after{content:"";position:absolute;inset:18% 34% 0 34%;background:#d8f2d8;clip-path:polygon(50% 0,100% 100%,0 100%);opacity:.75}.m1{left:-5%;transform:scale(.78)}.m2{left:18%;transform:scale(1.02)}.m3{left:52%;transform:scale(.88)}.m4{right:-8%;transform:scale(.72)}
+.ocean{display:none;position:absolute;z-index:2;left:0;right:0;bottom:8%;height:32%;background:linear-gradient(#12b8e7,#039dd4 40%,#078ec9);border-top:4px solid #a9f3ff}
+.ocean:before{content:"";position:absolute;inset:12% 0 auto 0;height:5px;background:repeating-linear-gradient(90deg,transparent 0 7%,#b8f7ff 7% 13%,transparent 13% 22%);opacity:.8}
+.island{display:none;position:absolute;z-index:3;bottom:7%;width:34%;height:17%;background:linear-gradient(#52b84b 0 20%,#f6d379 21% 50%,#b97a42 51%);border-radius:50% 50% 8% 8%;filter:drop-shadow(0 5px 0 #004a5f55)}.i1{left:-9%}.i2{right:-8%;transform:scale(.82)}
+.palm{display:none;position:absolute;z-index:4;bottom:14%;width:14px;height:120px;background:linear-gradient(90deg,#75431f,#c98542,#75431f);border-radius:40%;transform-origin:bottom}.palm:before{content:"✦";position:absolute;left:-52px;top:-58px;width:120px;height:75px;color:#1d9d42;font-size:92px;line-height:70px;text-shadow:-18px 10px #24b94c,20px 10px #0f8535}.p1{left:8%;transform:rotate(7deg)}.p2{right:11%;transform:rotate(-7deg) scale(.9)}.p3{left:67%;transform:rotate(4deg) scale(.7)}
+.ground{position:absolute;z-index:7;left:0;right:0;bottom:0;height:8%;min-height:58px;background:linear-gradient(#74e94a 0 12%,#178b2d 12% 23%,#f3b64f 23% 100%);border-top:5px solid #075b23}
+
+/* Runner objects */
+.pipe{position:absolute;z-index:9;width:clamp(62px,7vw,96px);height:clamp(62px,7vw,96px);background:linear-gradient(135deg,#e29a51,#9a4d22);border:6px solid #633017;border-radius:10px;box-shadow:inset 0 0 0 5px #f2b86d,0 6px #4b2414}.pipe:before,.pipe:after{content:"";position:absolute;left:8%;right:8%;top:46%;height:10%;background:#6d351b;transform:rotate(38deg)}.pipe:after{transform:rotate(-38deg)}
+#hero{position:absolute;z-index:12;left:20%;width:clamp(105px,11vw,165px);height:clamp(105px,11vw,165px);object-fit:contain;filter:drop-shadow(0 5px 4px #003b5d88)}
+.runnerGround{position:absolute;z-index:8;left:0;right:0;bottom:0;height:18%;min-height:110px;background:linear-gradient(#70e84b 0 10%,#168c2e 10% 20%,#d78b3d 20% 100%);border-top:6px solid #075b23}
+#score{position:absolute;z-index:17;top:3%;left:0;right:0;text-align:center;color:white;font-size:clamp(50px,6vw,88px);font-weight:1000;text-shadow:0 5px #092a49,4px 0 #092a49,-4px 0 #092a49}
+#best{position:absolute;z-index:17;right:max(2%,env(safe-area-inset-right));top:max(2%,env(safe-area-inset-top));padding:10px 18px;border:4px solid #78e3ff;border-radius:18px;background:linear-gradient(#176aa1,#063c69);box-shadow:0 5px #052d4c;color:white;font-size:clamp(15px,1.7vw,25px);font-weight:1000}
+#pause{position:absolute;z-index:40;left:max(2%,env(safe-area-inset-left));top:max(2%,env(safe-area-inset-top));width:clamp(58px,5vw,82px);aspect-ratio:1;border:4px solid #744500;border-radius:18px;background:linear-gradient(#ffe34c,#ffa100);box-shadow:0 5px #754000;color:#7b2c00;font-size:clamp(25px,2.6vw,40px);font-weight:1000}
+
+/* Premium real UI */
+.overlay{position:absolute;z-index:30;inset:0;display:flex;align-items:center;justify-content:center;padding:24px;background:linear-gradient(#00294422,#001a2e66)}
+.menu{width:min(1040px,90vw);display:grid;grid-template-columns:1.05fr .95fr;align-items:center;gap:clamp(20px,5vw,70px)}
+.brand{text-align:center}.flappy{color:#fff;font-size:clamp(54px,7vw,108px);font-weight:1000;line-height:.8;text-shadow:0 8px #082e58,5px 0 #082e58,-5px 0 #082e58}.vladi{color:#ffc51c;font-size:clamp(78px,10vw,154px);font-weight:1000;line-height:.82;text-shadow:0 10px #8b4100,6px 0 #082e58,-6px 0 #082e58}.handle{margin-top:12px;color:#fff;font-size:clamp(20px,2.2vw,32px);font-weight:1000;text-shadow:0 3px #082e58}.preview{width:min(360px,31vw);object-fit:contain;filter:drop-shadow(0 12px 8px #00324f88)}
+.play,.again,.home{border-radius:24px;font-weight:1000;cursor:pointer}.play{margin-top:26px;width:min(470px,92%);min-height:78px;border:6px solid #075d25;background:linear-gradient(#8bf55c,#17bb2b);box-shadow:0 9px #075d25;color:#092d18;font-size:clamp(26px,3vw,42px)}.play:active,.again:active,.home:active{transform:translateY(5px)}
+.menuRecord{display:inline-block;margin-top:24px;padding:10px 22px;border:4px solid #79e2ff;border-radius:17px;background:#0b4a79;color:#fff;font-size:clamp(16px,2vw,25px);font-weight:1000}
+.result{width:min(720px,90vw);padding:clamp(22px,4vw,42px);text-align:center;color:#0b2d4b;background:linear-gradient(#fff9e8,#ffe8b7);border:7px solid #a86b32;border-radius:34px;box-shadow:0 12px #653919,0 24px 55px #0008}.result h1{margin:0;color:#ff4352;font-size:clamp(52px,8vw,96px);line-height:.9;text-shadow:0 6px #74131d,4px 0 #74131d,-4px 0 #74131d}.resultHero{width:clamp(105px,13vw,175px);height:clamp(105px,13vw,175px);object-fit:contain}.stats{display:flex;justify-content:center;gap:clamp(40px,10vw,110px);margin:6px 0 22px;font-size:clamp(15px,2vw,24px);font-weight:900}.stats b{display:block;font-size:clamp(44px,6vw,74px)}.again{width:min(470px,95%);min-height:72px;border:5px solid #075d25;background:linear-gradient(#83ef55,#17b92a);box-shadow:0 8px #075d25;color:#092c18;font-size:clamp(21px,3vw,34px)}.home{margin-top:17px;width:min(360px,85%);min-height:56px;border:4px solid #07517e;background:linear-gradient(#41bff3,#087bc0);box-shadow:0 6px #07517e;color:#fff;font-size:clamp(17px,2.2vw,25px)}.tag{margin-top:18px;font-weight:1000;font-size:clamp(16px,2vw,23px)}
+.paused{position:absolute;z-index:25;pointer-events:none;inset:0;display:flex;align-items:center;justify-content:center;background:#00182b99;color:#fff;font-size:clamp(48px,8vw,100px);font-weight:1000;text-shadow:0 6px #001525}.hidden{display:none!important}
+
+.tropicalDecor{position:absolute;left:50%;top:-18px;transform:translateX(-50%);font-size:clamp(28px,4vw,52px);filter:drop-shadow(0 3px #173b20)}
+.welcomeCard{position:relative;width:min(1120px,92vw);padding:clamp(22px,4vw,46px);border:5px solid #ffffff55;border-radius:38px;background:linear-gradient(135deg,#003c68cc,#00669db8 52%,#00345fc7);box-shadow:0 18px 60px #001b2e99,inset 0 2px #ffffff66;backdrop-filter:blur(5px);overflow:hidden}
+.welcomeCard:before{content:"";position:absolute;inset:-40% 45% 45% -15%;background:radial-gradient(circle,#79e9ff55,transparent 68%);pointer-events:none}
+.welcomeGrid{position:relative;display:grid;grid-template-columns:1.05fr .8fr;align-items:center;gap:clamp(16px,5vw,64px)}
+.welcomeHero{position:relative;text-align:center}.welcomeHero .preview{animation:floaty 2.4s ease-in-out infinite}.miniHint{margin-top:16px;color:#eafaff;font-weight:900;font-size:clamp(14px,1.5vw,20px);text-shadow:0 2px #002d4b}
+.play{transition:transform .12s,filter .12s;animation:softPulse 2.1s ease-in-out infinite}
+.gameBadge{display:inline-flex;align-items:center;gap:8px;margin-bottom:14px;padding:7px 15px;border-radius:999px;background:#001f3d88;border:2px solid #8ceaff88;color:#dffaff;font-weight:900;font-size:clamp(12px,1.3vw,17px)}
+.result{position:relative;overflow:hidden;background:linear-gradient(#fff8d9,#ffd986 74%,#efb34d);border-color:#7d4a1e;box-shadow:0 12px #553016,0 26px 70px #00172dbb,inset 0 3px #fff8}
+.result:before,.result:after{content:"";position:absolute;top:-20px;width:125px;height:150px;background:radial-gradient(ellipse at center,#2ba94c 0 24%,transparent 26%) 0 0/54px 42px;opacity:.55;pointer-events:none}.result:before{left:-34px;transform:rotate(-18deg)}.result:after{right:-34px;transform:rotate(18deg)}
+.result h1{position:relative;z-index:1}.resultHero{position:relative;z-index:1;animation:floaty 2s ease-in-out infinite}.medal{position:relative;z-index:1;display:inline-flex;align-items:center;justify-content:center;min-width:94px;height:44px;margin:8px auto 5px;padding:0 18px;border-radius:999px;border:3px solid #9a601e;background:linear-gradient(#fff4a7,#ffc72d);box-shadow:0 4px #7b4717;color:#643600;font-weight:1000;font-size:clamp(16px,2vw,24px)}
+.stats{position:relative;z-index:1}.stats span{min-width:150px;padding:9px 20px;border-radius:20px;background:#fff7df99;border:2px solid #c88b3e}.resultActions{position:relative;z-index:1}.tag{position:relative;z-index:1;color:#17405b}
+@keyframes floaty{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-10px) rotate(2deg)}}@keyframes softPulse{0%,100%{filter:brightness(1);transform:scale(1)}50%{filter:brightness(1.08);transform:scale(1.018)}}
+@media(prefers-reduced-motion:reduce){.welcomeHero .preview,.resultHero,.play{animation:none}}
+
+@media(max-width:700px) and (orientation:portrait){
+#game{background-position:center center}
+.overlay{padding:max(10px,env(safe-area-inset-top)) 10px max(10px,env(safe-area-inset-bottom))}
+#score{top:max(2%,env(safe-area-inset-top));font-size:52px}
+#best{padding:7px 10px;border-width:3px;border-radius:13px;font-size:13px}
+#pause{width:52px;border-width:3px;border-radius:14px;font-size:23px}
+.menu{display:flex;flex-direction:column;gap:10px}.welcomeCard{width:94vw;padding:18px 14px;border-radius:28px}.welcomeGrid{display:flex;flex-direction:column;gap:5px}.welcomeHero .preview{width:36vw}.miniHint{margin-top:6px}.preview{width:43vw;max-height:180px}.flappy{font-size:15vw}.vladi{font-size:21vw}.play{margin-top:12px;min-height:64px}.menuRecord{margin-top:15px}.pipe{width:72px}#hero{left:20%;width:108px;height:108px}.result{padding:22px 14px}.cloud{transform:scale(.45)}}
+
+@media(max-height:520px) and (orientation:landscape){
+.overlay{padding:8px}.welcomeCard{width:min(900px,94vw);padding:10px 22px;border-radius:24px}.welcomeGrid{grid-template-columns:1.15fr .55fr;gap:18px}
+.flappy{font-size:42px}.vladi{font-size:64px}.handle{font-size:16px;margin-top:5px}.gameBadge{margin-bottom:5px;padding:4px 10px}.play{min-height:48px;margin-top:9px;font-size:22px;border-width:4px}.menuRecord{margin-top:9px;padding:5px 12px;font-size:15px}.miniHint{margin-top:6px;font-size:12px}.preview{width:150px}
+.result{width:min(650px,92vw);padding:12px 22px;border-radius:24px}.result h1{font-size:48px}.resultHero{width:80px;height:80px}.medal{height:34px;margin:4px auto}.stats{margin:3px 0 9px;gap:30px}.stats b{font-size:34px}.again{min-height:48px;font-size:20px}.home{min-height:42px;margin-top:8px;font-size:16px}.tag{margin-top:7px}
 }
-new Phaser.Game({type:Phaser.AUTO,parent:'game',width:1280,height:720,physics:{default:'arcade',arcade:{gravity:{y:0},debug:false}},scale:{mode:Phaser.Scale.ENVELOP,autoCenter:Phaser.Scale.CENTER_BOTH},scene:[Game]});
-</script></body></html>
+
+/* FINAL PREMIUM UI — independent live controls, styled to match the approved reference */
+.welcomeCard{background:transparent!important;border:0!important;box-shadow:none!important;backdrop-filter:none!important;overflow:visible!important}
+.welcomeCard:before{display:none!important}
+.brand{position:relative}
+.flappy,.vladi{display:inline-block;padding:.04em .14em;border-radius:.16em;background:linear-gradient(#a96027,#6f3517);box-shadow:0 .09em #4b210d,0 0 0 .055em #3d1a08, inset 0 .035em #e6a15f;text-shadow:0 .07em #082e58,.035em 0 #082e58,-.035em 0 #082e58}
+.flappy{color:#f8fdff;background:linear-gradient(#b96e30,#713719)}
+.vladi{color:#ffc51c;margin-top:.06em}
+.handle,.menuRecord,.miniHint,.gameBadge{background:linear-gradient(#a95b25,#6d3215)!important;border:4px solid #48200c!important;box-shadow:0 6px #3d1908,inset 0 2px #e9a05c!important;color:#fff!important;border-radius:15px!important;padding:8px 16px!important}
+.handle{display:inline-block}
+.play,.again{background:linear-gradient(#7cf34f,#16bd2d 62%,#08a424)!important;border:6px solid #064e20!important;box-shadow:0 8px #063a18,inset 0 3px #baff93!important;color:white!important;text-shadow:0 3px #063b19,2px 0 #063b19,-2px 0 #063b19}
+.home{background:linear-gradient(#b5682e,#7c3d19)!important;border:5px solid #4b220d!important;box-shadow:0 7px #351607,inset 0 3px #e9a064!important}
+#pause,#best,#score{font-family:Arial Black,Arial,sans-serif}
+#best{background:linear-gradient(#a75b28,#6d3216)!important;border-color:#4b210d!important;box-shadow:0 5px #361607!important}
+#pause{background:linear-gradient(#c57838,#8a451e)!important;border-color:#4b210d!important;box-shadow:0 5px #351607!important;color:white!important}
+#score{display:inline-block;left:50%;right:auto;transform:translateX(-50%);padding:4px 34px;border-radius:12px;background:linear-gradient(#aa6029,#703517);border:5px solid #4a200c;box-shadow:0 6px #341506,inset 0 2px #e9a05d;font-size:clamp(40px,5vw,72px);line-height:1.05}
+.result{background:linear-gradient(#a95d29,#713617)!important;border-color:#4b210d!important;box-shadow:0 12px #341506,0 28px 70px #00172dbb,inset 0 4px #e9a05d!important;color:#fff!important}
+.result h1{display:inline-block;padding:10px 24px;border-radius:20px;background:linear-gradient(#ad602a,#6e3215);border:5px solid #481f0c;box-shadow:0 7px #341506;color:#ff493d!important;text-shadow:0 5px #67140f,3px 0 #67140f,-3px 0 #67140f!important}
+.medal{background:linear-gradient(#f9d24b,#d79018)!important;border-color:#71400e!important}
+.stats span{background:#4c220dbd!important;border-color:#d68b42!important;color:#fff!important}
+.tag{color:#fff!important}.gameOverHero{width:clamp(180px,26vw,350px)!important;height:auto!important;max-height:190px;object-fit:contain}
+@media(max-width:700px) and (orientation:portrait){
+.flappy{font-size:13vw!important}.vladi{font-size:18vw!important}.handle{font-size:4.4vw!important}
+.gameOverHero{width:58vw!important;max-height:145px}.result h1{font-size:12vw!important;padding:7px 14px}
+}
+
+
+@media(max-width:430px) and (orientation:portrait){
+.pipe{width:68px}
+#hero{width:104px;height:104px}
+}
+</style>
+</head>
+<body>
+<main id="game" tabindex="0" aria-label="Vladi Run">
+<div class="skyGlow"></div><div class="cloud c1"></div><div class="cloud c2"></div><div class="cloud c3"></div>
+<div class="mountains"><div class="m m1"></div><div class="m m2"></div><div class="m m3"></div><div class="m m4"></div></div>
+<div class="ocean"></div><div class="island i1"></div><div class="island i2"></div><div class="palm p1"></div><div class="palm p2"></div><div class="palm p3"></div>
+<div id="pipes"></div><div class="runnerGround"></div><img id="hero" src="assets/vladi_final.png" alt="Vladi corriendo">
+<div id="score">0</div><div id="best">👑 RÉCORD 0</div><button id="pause" type="button" aria-label="Pausar">Ⅱ</button><div id="pauseLayer" class="paused hidden">PAUSA</div>
+<div id="overlay" class="overlay"><section class="welcomeCard"><div class="tropicalDecor">🌿🌺</div><div class="welcomeGrid"><div class="brand"><div class="gameBadge">🌴 AVENTURA TROPICAL</div><div class="flappy">VLADI</div><div class="vladi">RUN</div><div class="handle">@vladyerik</div><button id="start" type="button" class="play">▶ JUGAR</button><div id="menuRecord" class="menuRecord">🏆 RÉCORD 0</div><div class="miniHint">TOCÁ / ESPACIO PARA SALTAR</div></div><div class="welcomeHero"><img class="preview" src="assets/vladi_final.png" alt="Vladi"></div></div></section></div>
+</main>
+<script>
+(()=>{const g=document.querySelector('#game'),hero=document.querySelector('#hero'),box=document.querySelector('#pipes'),se=document.querySelector('#score'),be=document.querySelector('#best'),ov=document.querySelector('#overlay'),pb=document.querySelector('#pause'),pl=document.querySelector('#pauseLayer');let y=0,v=0,score=0,best=0,on=false,paused=false,obs=[],last=0,next=0,raf=0,meters=0;try{best=+(localStorage.getItem('vladiRunBest')||0)}catch(e){}be.textContent='👑 RÉCORD '+best;const mr=document.querySelector('#menuRecord');if(mr)mr.textContent='🏆 RÉCORD '+best;
+function d(){let h=g.clientHeight,w=g.clientWidth,ground=Math.max(110,h*.18),hw=innerWidth<=700?110:Math.max(115,Math.min(165,w*.11));return{w,h,ground,hw,hx:w*.20}}
+function clearO(){obs.forEach(o=>o.el.remove());obs=[]}function jump(){if(!on||paused)return;let D=d(),floor=D.h-D.ground-D.hw;if(y>=floor-5)v=-Math.max(520,D.h*.72)}
+function add(){let D=d(),el=document.createElement('div');el.className='pipe';box.append(el);obs.push({x:D.w+40,el,pass:false})}
+function draw(){let D=d();hero.style.top=y+'px';hero.style.transform='rotate('+Math.max(-10,Math.min(12,v*.025))+'deg)';obs.forEach(o=>{o.el.style.left=o.x+'px';o.el.style.bottom=D.ground+'px'})}
+function hit(o){let D=d(),ow=Math.max(62,Math.min(96,D.w*.07)),oh=ow,hx=D.hx+D.hw*.2,hy=y+D.hw*.18,hw=D.hw*.6,hh=D.hw*.7;return hx+hw>o.x&&hx<o.x+ow&&hy+hh>D.h-D.ground-oh}
+function startGame(){clearO();score=0;meters=0;se.textContent='0m';let D=d();y=D.h-D.ground-D.hw;v=0;next=1.8;ov.className='overlay hidden';on=true;paused=false;pb.textContent='Ⅱ';pl.classList.add('hidden');last=performance.now();g.focus();cancelAnimationFrame(raf);raf=requestAnimationFrame(loop)}
+function menu(){on=false;cancelAnimationFrame(raf);clearO();location.reload()}
+function endGame(){if(!on)return;on=false;cancelAnimationFrame(raf);best=Math.max(best,meters);try{localStorage.setItem('vladiRunBest',best)}catch(e){}be.textContent='👑 RÉCORD '+best;ov.className='overlay';ov.innerHTML='<section class="result"><h1>GAME OVER</h1><div class="medal">🏃 '+meters+'m</div><br><img class="resultHero gameOverHero" src="assets/vladi_gameover.png" alt="Vladi"><div class="stats"><span>ESTRELLAS<b>'+score+'</b></span><span>RÉCORD<b>'+best+'m</b></span></div><div class="resultActions"><button id="again" class="again">↻ VOLVER A JUGAR</button><br><button id="home" class="home">⌂ MENÚ PRINCIPAL</button></div></section>';document.querySelector('#again').onclick=e=>{e.stopPropagation();startGame()};document.querySelector('#home').onclick=e=>{e.stopPropagation();menu()}}
+function loop(t){if(!on)return;if(paused){last=t;raf=requestAnimationFrame(loop);return}let dt=Math.min(.03,(t-last)/1000);last=t;let D=d(),floor=D.h-D.ground-D.hw;v+=Math.max(1450,D.h*1.7)*dt;y+=v*dt;if(y>floor){y=floor;v=0}next-=dt;if(next<=0){add();next=Math.max(1.15,2.15-meters*.004)}let speed=Math.min(D.w*.52,D.w*(.25+meters*.00045));for(let o of obs){o.x-=speed*dt;if(!o.pass&&o.x<D.hx){o.pass=true;score++}if(hit(o)){draw();endGame();return}}obs.filter(o=>o.x<-130).forEach(o=>o.el.remove());obs=obs.filter(o=>o.x>=-130);meters=Math.floor((t-lastStart)/100);se.textContent=meters+'m';draw();raf=requestAnimationFrame(loop)}
+let lastStart=performance.now();function go(){lastStart=performance.now();startGame()}
+document.querySelector('#start').onclick=e=>{e.stopPropagation();go()};pb.onclick=e=>{e.stopPropagation();if(!on)return;paused=!paused;pl.classList.toggle('hidden',!paused);pb.textContent=paused?'▶':'Ⅱ'};g.addEventListener('pointerdown',e=>{if(!e.target.closest('button')){e.preventDefault();jump()}});g.addEventListener('keydown',e=>{if(e.code==='Space'||e.key==='ArrowUp'){e.preventDefault();jump()}});draw()})();
+</script>
+</body></html>
