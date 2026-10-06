@@ -31,7 +31,7 @@
 .card h1{margin:0;font-size:clamp(32px,8vw,49px);line-height:.98;letter-spacing:-.055em;font-weight:1000;color:#fff7e9;text-shadow:0 3px 16px #e4b44a2b}
 .heroWrap{height:clamp(178px,29vh,260px);margin:-2px auto 3px;display:flex;align-items:center;justify-content:center;position:relative}.heroWrap:after{content:"";position:absolute;bottom:7%;width:48%;height:10%;background:#e5ae5532;filter:blur(18px);border-radius:50%}.heroArt{position:relative;z-index:1;height:100%;width:auto;max-width:80%;object-fit:contain;filter:drop-shadow(0 16px 20px #0009);animation:idle 2.8s ease-in-out infinite}
 @keyframes idle{0%,100%{transform:translateY(3px) rotate(-1deg)}50%{transform:translateY(-4px) rotate(1deg)}}
-.subtitle{max-width:380px;margin:3px auto 16px;color:#cbd5df;font-size:14px;line-height:1.55;font-weight:620}.miniStats{display:flex;justify-content:center;gap:9px;margin:15px 0 18px}.miniStats span{padding:7px 10px;border-radius:999px;border:1px solid #ffffff18;background:#ffffff09;color:#dce5eb;font-size:10px;font-weight:850;letter-spacing:.045em}
+.subtitle{max-width:380px;margin:3px auto 12px;color:#cbd5df;font-size:14px;line-height:1.5;font-weight:620}.howto{max-width:365px;margin:0 auto 13px;padding:10px 12px;border:1px solid #f6d78c30;border-radius:15px;background:#ffffff08;text-align:left}.howtoTitle{margin:0 0 6px;color:#f2d18a;font-size:9px;font-weight:1000;letter-spacing:.15em;text-align:center}.howtoRow{display:flex;align-items:center;gap:7px;padding:3px 0;color:#e8edf1;font-size:11px;font-weight:760}.howtoRow b{color:#fff3d2}.howtoArrow{color:#f4c45b;font-weight:1000}.howtoFoot{margin:6px 0 0;color:#9eafbf;font-size:9px;font-weight:700;text-align:center}.miniStats{display:flex;justify-content:center;gap:9px;margin:10px 0 14px}.miniStats span{padding:7px 10px;border-radius:999px;border:1px solid #ffffff18;background:#ffffff09;color:#dce5eb;font-size:10px;font-weight:850;letter-spacing:.045em}
 .primary{width:min(100%,350px);min-height:58px;border:1px solid #ffe6a1;border-radius:17px;background:linear-gradient(180deg,#ffd976,#e2a936);box-shadow:0 5px 0 #855d22,0 12px 24px #0005,inset 0 1px #fff9;color:#211b12;font-size:18px;font-weight:1000;letter-spacing:.06em;cursor:pointer}.primary:active{transform:translateY(3px);box-shadow:0 2px 0 #855d22,0 5px 12px #0005}
 .cardFoot{margin:15px 0 0;color:#91a3b4;font-size:11px;font-weight:700}
 .resultLine{margin:10px auto 0;font-size:15px;color:#f2dca9;font-weight:800}
@@ -49,7 +49,7 @@
  .actionName{font-size:8px;letter-spacing:.04em}.actionKey{display:none}
  .hint{bottom:max(91px,calc(env(safe-area-inset-bottom) + 82px));font-size:9px}
  .card{border-radius:25px;padding:20px 20px 23px}.card:before{inset:5px;border-radius:20px}
- .heroWrap{height:clamp(150px,24vh,205px);margin:0 auto}.subtitle{font-size:13px;margin:3px auto 13px}.miniStats{gap:6px}.miniStats span{font-size:9px}
+ .heroWrap{height:clamp(135px,21vh,185px);margin:0 auto}.subtitle{font-size:13px;margin:3px auto 9px}.howto{margin-bottom:9px;padding:8px 10px}.howtoRow{font-size:10px}.howtoFoot{font-size:8px}.miniStats{gap:6px}.miniStats span{font-size:9px}
 }
 @media(max-height:600px) and (orientation:landscape){
  .brand{font-size:0}.topbar{left:50%;width:auto}.stat{min-width:75px;padding:5px 9px}.stat b{font-size:16px}
@@ -90,7 +90,8 @@
   <p class="eyebrow" id="panelEyebrow">ARCADE DE ARTES MARCIALES</p>
   <h1 id="panelTitle">VLADI<br>TAEKWONDO</h1>
   <div class="heroWrap"><img class="heroArt" id="heroArt" src="./assets/vladi-fighter.webp" alt="Vladi preparado para entrenar taekwondo"></div>
-  <p class="subtitle" id="panelText">Leé el movimiento del compañero de práctica: bloqueá, esquivá y contraatacá. ¡Encadená respuestas perfectas para romper las tablas!</p>
+  <p class="subtitle" id="panelText">Mirá qué movimiento anuncia el compañero y elegí la respuesta correcta antes de que se acabe el tiempo.</p>
+  <div class="howto" aria-label="Cómo jugar"><p class="howtoTitle">CUANDO VEAS…</p><div class="howtoRow"><b>GOLPE ARRIBA</b><span class="howtoArrow">→</span><span>BLOQUEAR</span></div><div class="howtoRow"><b>BARRIDO BAJO</b><span class="howtoArrow">→</span><span>ESQUIVAR</span></div><div class="howtoRow"><b>ABERTURA</b><span class="howtoArrow">→</span><span>CONTRAATACAR</span></div><p class="howtoFoot">3 oportunidades · 5 movimientos por ronda · A / S / D en PC</p></div>
   <div class="miniStats" id="miniStats"><span>🥋 Cinturón verde · punta roja</span><span>📱 Táctil y teclado</span></div>
   <button class="primary" id="start">▶&nbsp; EMPEZAR ENTRENAMIENTO</button>
   <p class="cardFoot" id="panelFoot">Récord: <b id="best">0</b> · 3 oportunidades</p>
