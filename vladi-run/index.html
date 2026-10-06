@@ -1,26 +1,26 @@
 <!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no"><title>VLADI RUN</title><style>
 html,body,#game{margin:0;width:100%;height:100%;overflow:hidden;background:#55c7ff;font-family:Arial,sans-serif}canvas{display:block;margin:auto;touch-action:none}.hud{position:fixed;z-index:5;inset:12px 12px auto 12px;display:flex;justify-content:space-between;pointer-events:none;color:#fff;font-weight:900;text-shadow:0 3px 5px #000}.pill{background:#142a48cc;border:2px solid #fff8;border-radius:18px;padding:8px 13px}.tip{position:fixed;z-index:5;bottom:12px;left:50%;transform:translateX(-50%);color:white;background:#142a48bb;border-radius:14px;padding:7px 12px;font-weight:800;pointer-events:none}.home{pointer-events:auto;text-decoration:none;color:white}
 </style><script src="https://cdn.jsdelivr.net/npm/phaser@3.80.1/dist/phaser.min.js"></script></head><body><div id="game"></div><div class="hud"><div class="pill">⭐ <span id="stars">0</span> · 🏃 <span id="meters">0</span> m</div><a class="pill home" href="../">JUEGOS</a><div class="pill">🏆 <span id="best">0</span></div></div><div class="tip">TOCÁ / ESPACIO = SALTAR · ↓ = BAJAR</div><script>
-const A='https://raw.githubusercontent.com/saltymouse/phaser3-infinite-runner/master/src/assets/sprites/';
+const A='https://raw.githubusercontent.com/KenneyNL/';
 let stars=0,meters=0,best=+(localStorage.vladiRunBest||0);document.querySelector('#best').textContent=best;
 class Run extends Phaser.Scene{
  preload(){
-  for(let i=1;i<=4;i++)this.load.image('bg'+i,A+'Background/bg_layer'+i+'.png');
-  this.load.image('ground',A+'Environment/ground_grass.png');this.load.image('spikes',A+'Environment/spikes_top.png');
-  this.load.image('coin',A+'Items/gold_1.png');this.load.image('smoke',A+'Particles/smoke.png');
+  const B='https://raw.githubusercontent.com/saltymouse/phaser3-infinite-runner/master/src/assets/sprites/';
+  this.load.image('hills',B+'Background/bg_layer2.png'); this.load.image('clouds',B+'Background/bg_layer3.png');
+  this.load.image('ground',B+'Environment/ground_grass.png'); this.load.image('spikes',B+'Environment/spikes_top.png');
+  this.load.image('coin',B+'Items/gold_1.png'); this.load.image('hero1',B+'Players/bunny1_walk1.png'); this.load.image('hero2',B+'Players/bunny1_walk2.png'); this.load.image('heroJump',B+'Players/bunny1_jump.png');
   this.load.image('face','assets/vladi-face.png');
  }
  create(){
   this.speed=310;this.dead=false;this.t0=this.time.now;
-  this.bg=[];for(let i=1;i<=4;i++){let t=this.add.tileSprite(0,0,960,540,'bg'+i).setOrigin(0).setDisplaySize(960,540);this.bg.push(t)}
+  this.add.rectangle(480,270,960,540,0x55c9f3);this.clouds=this.add.tileSprite(0,0,960,360,'clouds').setOrigin(0).setAlpha(.9).setScale(2.2,1.8);this.hills=this.add.tileSprite(0,120,960,390,'hills').setOrigin(0).setScale(2.3,2.0);
   this.floorY=470;this.ground=this.physics.add.staticGroup();
   for(let x=0;x<1050;x+=128){let g=this.ground.create(x,this.floorY,'ground').setOrigin(0,0).setDisplaySize(130,90);g.refreshBody()}
-  this.player=this.add.container(150,360);this.physics.add.existing(this.player);this.player.body.setSize(58,105).setOffset(-29,-53);this.player.body.setGravityY(1050);this.player.body.setCollideWorldBounds(true);this.player.body.setBounce(0);
-  let shadow=this.add.ellipse(0,55,58,13,0x000000,.22),body=this.add.graphics();body.fillStyle(0x1685e8).fillRoundedRect(-27,-15,54,70,16);body.fillStyle(0xffd83d);body.fillPoints([{x:0,y:-2},{x:6,y:12},{x:22,y:13},{x:10,y:23},{x:14,y:39},{x:0,y:30},{x:-14,y:39},{x:-10,y:23},{x:-22,y:13},{x:-6,y:12}],true);
-  let face=this.add.image(0,-48,'face').setDisplaySize(68,68);let maskShape=this.make.graphics({x:0,y:0,add:false});maskShape.fillCircle(0,-48,32);face.setMask(maskShape.createGeometryMask());
-  let cap=this.add.graphics();cap.fillStyle(0x111722).fillEllipse(0,-73,66,25).fillRoundedRect(-29,-82,58,18,8);cap.fillStyle(0x111722).fillRoundedRect(22,-74,28,7,4);
-  this.legL=this.add.rectangle(-15,58,14,48,0x174e9a).setOrigin(.5,0);this.legR=this.add.rectangle(15,58,14,48,0x174e9a).setOrigin(.5,0);this.shoeL=this.add.ellipse(-17,106,30,15,0xffffff);this.shoeR=this.add.ellipse(17,106,30,15,0xffffff);
-  this.player.add([shadow,this.legL,this.legR,this.shoeL,this.shoeR,body,face,cap]);this.player.setDepth(20);
+  this.player=this.add.container(150,345);this.physics.add.existing(this.player);this.player.body.setSize(74,112).setOffset(-37,-56);this.player.body.setGravityY(1100);this.player.body.setCollideWorldBounds(true);
+  this.hero=this.add.image(0,10,'hero1').setDisplaySize(122,122);this.hero.setTint(0x3b91ff);
+  this.face=this.add.image(0,-35,'face').setDisplaySize(62,62);let m=this.make.graphics({add:false});m.fillCircle(0,-35,29);this.face.setMask(m.createGeometryMask());
+  let cap=this.add.graphics();cap.fillStyle(0x111722).fillEllipse(0,-60,64,23).fillRoundedRect(-28,-70,56,18,8).fillRoundedRect(22,-62,25,7,4);
+  this.player.add([this.hero,this.face,cap]);this.player.setDepth(20);
   this.physics.add.collider(this.player,this.ground);this.player.body.setVelocityY(20);
   this.obs=this.physics.add.group({allowGravity:false});this.coins=this.physics.add.group({allowGravity:false});
   this.physics.add.overlap(this.player,this.obs,()=>this.gameOver());this.physics.add.overlap(this.player,this.coins,(p,c)=>{c.destroy();stars++;document.querySelector('#stars').textContent=stars;});
@@ -33,9 +33,9 @@ class Run extends Phaser.Scene{
  }
  gameOver(){if(this.dead)return;this.dead=true;this.physics.pause();best=Math.max(best,meters);localStorage.vladiRunBest=best;document.querySelector('#best').textContent=best;let box=this.add.rectangle(480,270,520,220,0x10233d,.94).setStrokeStyle(4,0xffffff).setDepth(50);this.add.text(480,225,'¡A CORRER OTRA VEZ!',{fontSize:'34px',fontStyle:'bold',color:'#fff'}).setOrigin(.5).setDepth(51);this.add.text(480,278,meters+' m   ·   ⭐ '+stars,{fontSize:'26px',color:'#ffd83d'}).setOrigin(.5).setDepth(51);this.add.text(480,330,'TOCÁ PARA REINICIAR',{fontSize:'22px',fontStyle:'bold',color:'#fff'}).setOrigin(.5).setDepth(51);this.input.once('pointerdown',()=>location.reload());this.input.keyboard.once('keydown-SPACE',()=>location.reload())}
  update(t){
-  if(this.dead)return;let dt=Math.min((t-this.t0)/1000,90);this.speed=310+dt*3;this.bg[0].tilePositionX+=.12;this.bg[1].tilePositionX+=.3;this.bg[2].tilePositionX+=.65;this.bg[3].tilePositionX+=1.1;
+  if(this.dead)return;let dt=Math.min((t-this.t0)/1000,90);this.speed=310+dt*3;this.clouds.tilePositionX+=.18;this.hills.tilePositionX+=.65;
   for(const o of this.obs.children.entries)o.setVelocityX(-this.speed);for(const c of this.coins.children.entries)c.setVelocityX(-this.speed);
-  let grounded=this.player.body.blocked.down||this.player.body.touching.down||this.player.y>=this.floorY-112;let phase=t*.018;if(grounded){this.legL.rotation=Math.sin(phase)*.55;this.legR.rotation=-Math.sin(phase)*.55;this.shoeL.x=-17+Math.sin(phase)*12;this.shoeR.x=17-Math.sin(phase)*12}else{this.legL.rotation=-.25;this.legR.rotation=.3}
+  let grounded=this.player.body.blocked.down||this.player.body.touching.down||this.player.y>=this.floorY-112;if(grounded){this.hero.setTexture(Math.floor(t/110)%2?'hero1':'hero2');this.hero.angle=Math.sin(t*.02)*2}else{this.hero.setTexture('heroJump');this.hero.angle=-7}
   meters=Math.floor((t-this.t0)/95);document.querySelector('#meters').textContent=meters;
  }
 }
