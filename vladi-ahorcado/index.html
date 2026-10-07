@@ -79,6 +79,32 @@
       .controls{gap:5px;margin-top:3px}.action{min-height:28px;padding:0 4px;font-size:10px}
       .note{display:none}
     }
+    @media(min-width:731px){
+      html,body{height:100%;overflow:hidden}
+      .top{height:50px;min-height:50px}
+      main.shell{height:calc(100dvh - 50px);min-height:0;padding:8px 0 10px;display:flex;flex-direction:column;overflow:hidden}
+      .heading{flex:0 0 auto;margin:0 auto 10px}
+      .heading h1{margin:4px 0;font-size:clamp(30px,4vw,44px)}
+      .heading p{font-size:12px}
+      .game{flex:1;min-height:0;gap:12px}
+      .scene,.play{min-height:0}
+      .scene{padding:12px}
+      .art{min-height:0}
+      .gallows{height:min(250px,36vh)}
+      .play{padding:12px;overflow:hidden}
+      .stats{gap:6px;margin-bottom:8px}
+      .stat{padding:7px 9px}
+      .clue{padding:8px 11px}
+      .clue p{font-size:12px}
+      .word{min-height:58px;margin:1px 0 4px}
+      .letter{height:39px}
+      .message{min-height:18px;margin:0 0 4px}
+      .keyboard{gap:4px}
+      .key{min-height:clamp(32px,4vh,38px)}
+      .controls{margin-top:8px}
+      .action{min-height:38px}
+      .note{display:none}
+    }
         @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
   </style>
   <link rel="stylesheet" href="../arcade-ui.css?v=3caf1eaf">
