@@ -14,6 +14,21 @@ function ground(){return H*.855}
 function playerHeight(){return clamp(H*.27,158,260)}
 function playerBox(){const h=playerHeight(),w=h*.596,x=W*.075,y=ground()-h;return{x,y,w,h}}
 function ballStart(){const p=playerBox();return{x:p.x+p.w*.79,y:p.y+p.h*.34}}
+function shotFromAim(end){
+ const o=ballStart(),dx=end.x-o.x,dy=end.y-o.y,wide=W/H>1.2;
+ const angle=clamp(Math.atan2(dy,Math.max(1,dx)),wide?-1.2:-1.43,-.14);
+ const maxDist=Math.min(W*.55,H*.76),dist=clamp(Math.hypot(dx,dy),48,maxDist);
+ const strength=(dist-48)/(maxDist-48),screenScale=Math.sqrt(W*H/(900*560));
+ const baseScale=Math.max(1,Math.min(1.65,screenScale));
+ let speed=(480+strength*460)*baseScale;
+ // Calibrate desktop throws to the actual ring distance: pixel distance grows
+ // with the wide PC viewport, while portrait/mobile keeps its proven behavior.
+ if(wide){
+  const run=Math.max(1,hoopX-o.x),rise=o.y-hoopY,denom=run*Math.tan(-angle)-rise;
+  if(denom>0){const required=Math.sqrt(H*1.8*run*run/(2*Math.cos(angle)**2*denom));speed=required*(.65+strength*.40)}
+ }
+ return{o,angle,dist,strength,speed,vx:Math.cos(angle)*speed,vy:Math.sin(angle)*speed};
+}
 function setHoop(initial=false){hoopX=W*.79;hoopY=H*(.423-Math.min(round-1,8)*.004);hoopVX=(initial?0:((round%2)?1:-1))*W*(.028+Math.min(round*.002, .012));}
 function show(which){Object.values(overlays).forEach(o=>o.classList.remove('show'));if(which)overlays[which].classList.add('show')}
 function initAudio(){if(!audioCtx){const AC=window.AudioContext||window.webkitAudioContext;if(AC)audioCtx=new AC()}if(audioCtx?.state==='suspended')audioCtx.resume()}
@@ -27,7 +42,7 @@ function endGame(){mode='over';ball=null;aim=null;show('gameover');$('finalScore
 function award(){score++;streak++;if(score>best){best=score;localStorage.setItem('vladiBasquetBest',String(best));bestEl.textContent=menuBest.textContent=overBest.textContent=best}sound('swish');popup(streak>=3?'¡EN RACHA!':'¡ENCESTA!');burst(hoopX,hoopY,18);if(score%3===0){round++;setHoop(false);popup('RONDA '+round)}updateHud()}
 function miss(){lives--;streak=0;updateHud();sound('miss');popup(lives?'¡CERCA!':'¡FIN DEL PARTIDO!');if(lives<=0){setTimeout(endGame,350)}}
 function fire(vx,vy){if(mode!=='playing'||ball)return;ball={...ballStart(),vx,vy,r:clamp(W*.018,8,17),t:0,checked:false};aim=null;sound('shot');$('powerMeter').classList.remove('active');$('aimHint').textContent='¡Seguí el tiro! Arrastrá en arco para volver a lanzar'}
-function fireFromAim(end){const o=ballStart(),dx=end.x-o.x,dy=end.y-o.y;const angle=clamp(Math.atan2(dy,Math.max(1,dx)),-1.43,-.14);const dist=clamp(Math.hypot(dx,dy),48,Math.min(W*.55,H*.76));const strength=(dist-48)/(Math.min(W*.55,H*.76)-48);const speed=(480+strength*460)*Math.max(1,Math.min(1.65,Math.sqrt(W*H/(900*560))));fire(Math.cos(angle)*speed,Math.sin(angle)*speed)}
+function fireFromAim(end){const shot=shotFromAim(end);fire(shot.vx,shot.vy)}
 function defaultShot(){const o=ballStart();fireFromAim({x:o.x+W*.30,y:o.y-H*.34})}
 function burst(x,y,n){for(let i=0;i<n;i++){const a=Math.random()*Math.PI*2,s=70+Math.random()*260;particles.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s-100,t:0,life:.55+Math.random()*.55,c:['#ffd447','#ff813a','#5be0ff','#70ec74'][i%4],r:3+Math.random()*5})}}
 function rounded(x,y,w,h,r){ctx.beginPath();ctx.roundRect(x,y,w,h,r)}
@@ -76,7 +91,7 @@ function drawHoop(){
 }
 function drawPlayer(dt){const p=playerBox();const bob=(mode==='playing'&&!ball?Math.sin(elapsed*7)*2:0);ctx.save();ctx.globalAlpha=.26;ctx.fillStyle='#111625';ctx.beginPath();ctx.ellipse(p.x+p.w*.45,ground()+3,p.w*.53,8,0,0,Math.PI*2);ctx.fill();ctx.restore();if(sprite.complete&&sprite.naturalWidth){ctx.drawImage(sprite,p.x,p.y+bob,p.w,p.h)}else{ctx.fillStyle='#087ad2';ctx.fillRect(p.x,p.y,p.w,p.h)} }
 function drawBasketball(x,y,r){const g=ctx.createRadialGradient(x-r*.35,y-r*.4,r*.1,x,y,r);g.addColorStop(0,'#ffbf62');g.addColorStop(.52,'#f47a20');g.addColorStop(1,'#bd4118');ctx.fillStyle=g;ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill();ctx.save();ctx.beginPath();ctx.arc(x,y,r*.9,0,Math.PI*2);ctx.clip();ctx.strokeStyle='#512a20';ctx.lineWidth=Math.max(1,r*.09);ctx.beginPath();ctx.moveTo(x-r,y);ctx.lineTo(x+r,y);ctx.moveTo(x,y-r);ctx.lineTo(x,y+r);ctx.moveTo(x-r*.72,y-r*.72);ctx.quadraticCurveTo(x+r*.1,y-r*.2,x+r*.72,y+r*.72);ctx.moveTo(x+r*.72,y-r*.72);ctx.quadraticCurveTo(x-r*.1,y+r*.2,x-r*.72,y+r*.72);ctx.stroke();ctx.restore();ctx.strokeStyle='#ffd286';ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(x-r*.31,y-r*.35,r*.2,Math.PI,Math.PI*1.55);ctx.stroke()}
-function drawAim(){if(!aim){$('powerMeter').classList.remove('active');return}const o=ballStart(),pt=aim.point;ctx.save();ctx.setLineDash([7,7]);ctx.strokeStyle='rgba(255,245,205,.7)';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(o.x,o.y);ctx.lineTo(pt.x,pt.y);ctx.stroke();ctx.setLineDash([]);const dx=pt.x-o.x,dy=pt.y-o.y,ang=clamp(Math.atan2(dy,Math.max(1,dx)),-1.43,-.14),dist=clamp(Math.hypot(dx,dy),48,Math.min(W*.55,H*.76)),strength=(dist-48)/(Math.min(W*.55,H*.76)-48),speed=(480+strength*460)*Math.max(1,Math.min(1.65,Math.sqrt(W*H/(900*560)))),vx=Math.cos(ang)*speed,vy=Math.sin(ang)*speed,g=H*1.8,tEnd=Math.min(1.35,(hoopX-o.x)/vx);for(let t=.08;t<tEnd;t+=.12){const xx=o.x+vx*t,yy=o.y+vy*t+.5*g*t*t;ctx.fillStyle=`rgba(255,236,165,${.8-t*.35})`;ctx.beginPath();ctx.arc(xx,yy,Math.max(2,5-t*2),0,Math.PI*2);ctx.fill()}drawBasketball(pt.x,pt.y,clamp(W*.018,8,17));$('powerMeter').classList.add('active');const pct=Math.round(strength*100);$('powerLabel').textContent='FUERZA '+pct+'%';$('powerFill').style.width=pct+'%';ctx.restore()}
+function drawAim(){if(!aim){$('powerMeter').classList.remove('active');return}const shot=shotFromAim(aim.point),o=shot.o,pt=aim.point;ctx.save();ctx.setLineDash([7,7]);ctx.strokeStyle='rgba(255,245,205,.7)';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(o.x,o.y);ctx.lineTo(pt.x,pt.y);ctx.stroke();ctx.setLineDash([]);const g=H*1.8,tEnd=Math.min(W/H>1.2?2.35:1.35,(hoopX-o.x)/shot.vx);for(let t=.08;t<tEnd;t+=.12){const xx=o.x+shot.vx*t,yy=o.y+shot.vy*t+.5*g*t*t;ctx.fillStyle=`rgba(255,236,165,${.8-t*.35})`;ctx.beginPath();ctx.arc(xx,yy,Math.max(2,5-t*2),0,Math.PI*2);ctx.fill()}drawBasketball(pt.x,pt.y,clamp(W*.018,8,17));$('powerMeter').classList.add('active');const pct=Math.round(shot.strength*100);$('powerLabel').textContent='FUERZA '+pct+'%';$('powerFill').style.width=pct+'%';ctx.restore()}
 function drawBall(){if(!ball)return;drawBasketball(ball.x,ball.y,ball.r)}
 function drawParticles(dt){for(let i=particles.length-1;i>=0;i--){const p=particles[i];ctx.globalAlpha=clamp(1-p.t/p.life,0,1);ctx.fillStyle=p.c;ctx.beginPath();ctx.arc(p.x,p.y,p.r*(1-p.t/p.life*.3),0,7);ctx.fill()}ctx.globalAlpha=1}
 function draw(){if(!ctx)return;drawBackground();drawHoop();drawPlayer(0);drawAim();drawBall();drawParticles(0);}
