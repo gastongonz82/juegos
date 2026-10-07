@@ -15,7 +15,7 @@ function generateMaze(){const box=arena.getBoundingClientRect(),targetCell=Math.
  // Cuatro calabazas bien separadas, una en cada zona extrema del laberinto.
  const powers=Math.min(6,4+Math.floor((level-1)/4)),mx=Math.floor(cols/2),my=Math.floor(rows/2);
  // Las dos del fondo quedan en las esquinas bajas, pero por encima del control táctil.
- const lowerY=Math.max(my+1,rows-5),lowerScale=.92+.48*(lowerY/(rows-1));
+ const lowerY=Math.max(my+1,rows-5),lowerScale=.92+.18*(lowerY/(rows-1));
  const lowerX=Math.max(2,Math.ceil(cols*(.5-.5/lowerScale))+1),lowerRightX=cols-1-lowerX;
  const targets=[{x:1,y:1,side:'tl'},{x:cols-2,y:1,side:'tr'},{x:lowerX,y:lowerY,side:'bl'},{x:lowerRightX,y:lowerY,side:'br'}];
  if(powers>4)targets.push({x:mx,y:1,side:'top'});if(powers>5)targets.push({x:mx,y:lowerY,side:'bottom'});
@@ -54,27 +54,27 @@ for(const btn of document.querySelectorAll('.pad button')){btn.addEventListener(
 window.addEventListener('keydown',e=>{const map={ArrowUp:'up',w:'up',W:'up',ArrowRight:'right',d:'right',D:'right',ArrowDown:'down',s:'down',S:'down',ArrowLeft:'left',a:'left',A:'left'};if(e.key==='Escape'||e.key==='p'||e.key==='P'){e.preventDefault();state==='playing'?pause():state==='paused'?resume():null;return;}if(map[e.key]){e.preventDefault();if(!e.repeat)setDir(map[e.key]);}});
 canvas.addEventListener('pointerdown',e=>{swipeStart={x:e.clientX,y:e.clientY};});canvas.addEventListener('pointerup',e=>{if(!swipeStart)return;const dx=e.clientX-swipeStart.x,dy=e.clientY-swipeStart.y;if(Math.max(Math.abs(dx),Math.abs(dy))>18)setDir(Math.abs(dx)>Math.abs(dy)?(dx>0?'right':'left'):(dy>0?'down':'up'));swipeStart=null;});
 function rr(x,y,w,h,r){ctx.beginPath();ctx.roundRect(x,y,w,h,r);}
-function project(gx,gy){const w=canvas.clientWidth,h=canvas.clientHeight,z=Math.max(0,Math.min(1,gy/(rows-1))),scale=.92+.48*z;return{x:w*.5+(gx-cols*.5)*(w/cols)*scale,y:h*(.08+.92*z),scale,z};}
+function project(gx,gy){const w=canvas.clientWidth,h=canvas.clientHeight,z=Math.max(0,Math.min(1,gy/(rows-1))),scale=.92+.18*z;return{x:w*.5+(gx-cols*.5)*(w/cols)*scale,y:h*(.08+.92*z),scale,z};}
 function quad(a,b,c,d){ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.lineTo(c.x,c.y);ctx.lineTo(d.x,d.y);ctx.closePath();}
 function drawFloor(x,y){const a=project(x,y),b=project(x+1,y),c=project(x+1,y+1),d=project(x,y+1);const grad=ctx.createLinearGradient(a.x,a.y,d.x,d.y);grad.addColorStop(0,'#080710');grad.addColorStop(1,'#171223');quad(a,b,c,d);ctx.fillStyle=grad;ctx.fill();ctx.strokeStyle='#6972d018';ctx.lineWidth=1;ctx.stroke();}
 function drawWall(x,y){const a=project(x,y),b=project(x+1,y),c=project(x+1,y+1),d=project(x,y+1),size=projectedSize(y+1),depth=Math.max(3,size.h*.35),shift=Math.max(1,size.w*.08);ctx.save();ctx.shadowColor='#03030b';ctx.shadowBlur=Math.max(2,size.w*.14);ctx.shadowOffsetY=depth*.42;quad(a,b,c,d);ctx.fillStyle='#161735';ctx.fill();ctx.shadowBlur=0;ctx.shadowOffsetY=0;
  ctx.beginPath();ctx.moveTo(d.x,d.y);ctx.lineTo(c.x,c.y);ctx.lineTo(c.x+shift,c.y+depth);ctx.lineTo(d.x+shift,d.y+depth);ctx.closePath();const front=ctx.createLinearGradient(d.x,d.y,d.x,d.y+depth);front.addColorStop(0,'#30264c');front.addColorStop(1,'#171126');ctx.fillStyle=front;ctx.fill();ctx.strokeStyle='#584773';ctx.lineWidth=Math.max(1,size.w*.035);ctx.stroke();
  ctx.beginPath();ctx.moveTo(b.x,b.y);ctx.lineTo(c.x,c.y);ctx.lineTo(c.x+shift,c.y+depth);ctx.lineTo(b.x+shift,b.y+depth*.55);ctx.closePath();ctx.fillStyle='#211836';ctx.fill();
  quad(a,b,c,d);const top=ctx.createLinearGradient(a.x,a.y,c.x,c.y);top.addColorStop(0,'#625184');top.addColorStop(.48,'#493967');top.addColorStop(1,'#33264e');ctx.fillStyle=top;ctx.fill();ctx.strokeStyle='#7963a0';ctx.lineWidth=Math.max(1,size.w*.045);ctx.stroke();ctx.strokeStyle='#fff2a44a';ctx.lineWidth=Math.max(1,size.w*.025);ctx.beginPath();ctx.moveTo(a.x+shift,a.y+1);ctx.lineTo(b.x-shift,b.y+1);ctx.stroke();ctx.restore();}
-function projectedSize(y){const w=canvas.clientWidth,h=canvas.clientHeight,z=Math.max(0,Math.min(1,y/(rows-1))),scale=.92+.48*z;return{w:w/cols*scale,h:h/rows*(.8+1.05*z),scale};}
+function projectedSize(y){const w=canvas.clientWidth,h=canvas.clientHeight,z=Math.max(0,Math.min(1,y/(rows-1))),scale=.92+.18*z;return{w:w/cols*scale,h:h/rows*(.8+1.05*z),scale};}
 function projectedCenter(x,y){const a=project(x+.5,y),b=project(x+.5,y+1);return{x:(a.x+b.x)/2,y:(a.y+b.y)/2};}
 function drawVladi(x,y,t){
  if(!faceSprite.complete||!faceSprite.naturalWidth)return;
  const pos=projectedCenter(x,y),dims=projectedSize(y),ratio=faceSprite.naturalWidth/faceSprite.naturalHeight;
  const moving=state==='playing'&&player.t<1,gait=moving?Math.sin(t*.018):0;
  // Cabeza completa recortada desde la referencia, sin círculo ni recorte geométrico.
- const w=Math.min(dims.w*1.42,dims.h*1.3*ratio),h=w/ratio;
+ const w=Math.min(dims.w*(1.42+.42*dims.scale),dims.h*1.3*ratio),h=w/ratio;
  const bob=gait*dims.h*.04,visibleY=Math.min(pos.y,canvas.clientHeight-h/2-Math.abs(bob)-4);
  ctx.save();ctx.translate(pos.x,visibleY+bob);ctx.rotate(gait*.025);ctx.shadowColor='#c9a4ff';ctx.shadowBlur=Math.max(4,dims.w*.18);
  ctx.drawImage(faceSprite,-w/2,-h/2,w,h);ctx.restore();
 }
 function drawMonster(g,t){
- const pos=projectedCenter(g.x,g.y),dims=projectedSize(g.y),s=Math.max(30,Math.min(dims.w*1.04,dims.h*.9)),bob=Math.sin(t/210+g.x)*s*.025;
+ const pos=projectedCenter(g.x,g.y),dims=projectedSize(g.y),s=Math.max(30,Math.min(dims.w*(1.04+.35*dims.scale),dims.h*.9)),bob=Math.sin(t/210+g.x)*s*.025;
  ctx.save();ctx.translate(pos.x,pos.y+bob);
  const pumpkin=g.kind===3,powered=power>0,face=ctx.createLinearGradient(-s*.42,-s*.42,s*.4,s*.46);
  face.addColorStop(0,powered?'#e7fcff':pumpkin?'#ffd17a':'#fff8eb');face.addColorStop(.48,powered?'#63d5ff':pumpkin?'#f39b42':'#ded7e0');face.addColorStop(1,powered?'#5264ce':pumpkin?'#b9562f':'#82778f');
