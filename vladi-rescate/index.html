@@ -27,7 +27,7 @@ body{height:100vh;height:100dvh}#app{position:relative;width:100%;height:100%;ov
 </head>
 <body>
 <main id="app" aria-label="Vladi Rescate Arcade">
-<canvas id="world" aria-label="Laberinto de aventura. Mové a Vladi, rescatá a los animales y encontrá la salida"></canvas>
+<canvas id="world" aria-label="Laberinto de aventura. Mové a Vladi, rescatá a los animales y alcanzá la abertura de salida"></canvas>
 <div class="hud" id="hud">
  <div class="stat"><small>RONDA</small><b id="round">1</b></div>
  <div class="stat" id="timerStat"><small>TIEMPO</small><b id="time">1:30</b></div>
@@ -37,13 +37,14 @@ body{height:100vh;height:100dvh}#app{position:relative;width:100%;height:100%;ov
  <div class="stat hearts"><small>VIDAS</small><b id="hearts">♥♥♥</b></div>
  <button id="soundBtn" aria-label="Silenciar sonido">♫</button><button id="pauseBtn" aria-label="Pausar">Ⅱ</button>
 </div>
-<div id="status">Rescatá a los animales y encontrá la salida</div>
+<div id="status">Rescatá a los animales y encontrá la salida abierta</div>
 <div id="pad" class="pad" aria-label="Controles táctiles"><button class="up" data-dir="up" aria-label="Arriba">▲</button><button data-dir="left" aria-label="Izquierda">◀</button><button data-dir="right" aria-label="Derecha">▶</button><button class="up" data-dir="down" aria-label="Abajo">▼</button></div>
 <div id="toast" role="status"></div>
-<div class="panelWrap" id="menu"><section class="panel"><div class="kicker">Aventura arcade</div><h1>VLADI RESCATE</h1><div class="hero" role="img" aria-label="Vladi corriendo listo para la aventura"></div><p class="copy">¡Se perdieron los animalitos en la selva! Abrite camino por el laberinto, rescatá a todos y llegá al portal antes que se termine el tiempo. Cada ronda es más difícil.</p><div class="how"><div><strong>🧭</strong>Explorá el laberinto</div><div><strong>🐾</strong>Rescatá a todos</div><div><strong>🚪</strong>Buscá la salida</div></div><button class="primary" id="playBtn">▶ JUGAR</button><div class="record">Récord: <span id="menuBest">0</span> puntos</div></section></div>
+<div class="panelWrap" id="menu"><section class="panel"><div class="kicker">Aventura arcade</div><h1>VLADI RESCATE</h1><div class="hero" role="img" aria-label="Vladi corriendo listo para la aventura"></div><p class="copy">¡Se perdieron los animalitos en la selva! Abrite camino por el laberinto, rescatá a todos y alcanzá la abertura en el borde antes que se termine el tiempo. Cada ronda es más difícil.</p><div class="how"><div><strong>🧭</strong>Explorá el laberinto</div><div><strong>🐾</strong>Rescatá a todos</div><div><strong>🚪</strong>Buscá la abertura</div></div><button class="primary" id="playBtn">▶ JUGAR</button><div class="record">Récord: <span id="menuBest">0</span> puntos</div></section></div>
 <div class="panelWrap hidden" id="pause"><section class="panel"><div class="kicker">Pausa de aventura</div><h2>PAUSA</h2><div class="hero" role="img" aria-label="Vladi preparado para continuar"></div><p class="copy">Los animalitos te esperan. Cuando estés listo, seguí explorando.</p><button class="primary" id="resumeBtn">▶ SEGUIR</button><button class="secondary" id="restartPause">↻ Reiniciar partida</button></section></div>
 <div class="panelWrap hidden" id="gameover"><section class="panel"><div class="kicker">Fin de la aventura</div><h2 id="overTitle">¡A SEGUIR INTENTANDO!</h2><div class="hero" role="img" aria-label="Vladi listo para volver a rescatar animalitos"></div><p class="copy">Rescataste <b id="finalSaved">0</b> animalitos, sumaste <b id="finalScore">0</b> puntos y llegaste a la ronda <b id="finalRound">1</b>.</p><button class="primary" id="againBtn">▶ JUGAR OTRA VEZ</button><div class="record">Récord: <span id="overBest">0</span> puntos</div></section></div>
 </main>
-<script src="../game-audio.js?v=2"></script><script src="./game.js?v=4"></script>
+<script src="../game-audio.js?v=2"></script><script src="./game.js?v=5"></script>
 </body>
 </html>
+
