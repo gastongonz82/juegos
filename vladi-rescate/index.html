@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#082b34">
+<title>Vladi Rescate · Aventura Arcade</title>
+<style>
+:root{color-scheme:dark;--gold:#ffd46b;--cream:#fff0ca;--navy:#10243a;--brown:#4a281b;--green:#27ad50}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{width:100%;height:100%;margin:0;overflow:hidden;overscroll-behavior:none;touch-action:none;user-select:none;-webkit-user-select:none;background:#092b36;color:#fff;font-family:system-ui,-apple-system,Segoe UI,Arial,sans-serif}
+body{height:100vh;height:100dvh}#app{position:relative;width:100%;height:100%;overflow:hidden;background:linear-gradient(#137fca 0%,#56d5e8 38%,#276d50 74%,#153d2e 100%)}
+#world{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none}
+.hud{position:absolute;z-index:3;top:max(8px,env(safe-area-inset-top));left:max(8px,env(safe-area-inset-left));right:max(8px,env(safe-area-inset-right));display:flex;align-items:center;justify-content:center;gap:clamp(4px,.7vw,9px);pointer-events:none}
+.stat{min-width:clamp(55px,10vw,126px);padding:7px clamp(6px,1vw,14px) 8px;border:1px solid rgba(255,221,132,.72);border-radius:15px;background:linear-gradient(145deg,rgba(34,47,59,.97),rgba(14,28,40,.97));box-shadow:0 4px 0 #091b23,inset 0 1px rgba(255,255,255,.17);text-align:center;line-height:1;backdrop-filter:blur(8px)}
+.stat small{display:block;color:#ffe08a;font-size:clamp(8px,1.1vw,12px);font-weight:1000;letter-spacing:.1em;margin-bottom:4px}.stat b{display:block;font-size:clamp(16px,2.3vw,26px);font-weight:1000;font-variant-numeric:tabular-nums;white-space:nowrap}.stat.hearts b{font-size:clamp(12px,1.8vw,20px);letter-spacing:.02em;color:#ff8b87}
+.hud button{pointer-events:auto;flex:0 0 auto;width:clamp(42px,4.4vw,54px);height:clamp(42px,4.4vw,54px);border:2px solid #f1c86d;border-radius:15px;background:linear-gradient(145deg,#a9602c,#542b19);box-shadow:0 4px 0 #29170f;color:#fff;font-size:20px;font-weight:1000;cursor:pointer;touch-action:manipulation}
+#status{position:absolute;z-index:2;left:50%;top:max(74px,calc(env(safe-area-inset-top) + 70px));transform:translateX(-50%);padding:8px 15px;border:1px solid #ffdfa078;border-radius:99px;background:#102737c9;box-shadow:0 5px 18px #0018;color:#fff4d9;font-size:clamp(11px,1.55vw,15px);font-weight:900;white-space:nowrap;pointer-events:none;backdrop-filter:blur(6px)}
+.pad{position:absolute;z-index:3;right:max(14px,env(safe-area-inset-right));bottom:max(14px,env(safe-area-inset-bottom));display:grid;grid-template:repeat(2,clamp(46px,6vw,60px))/repeat(2,clamp(46px,6vw,60px));gap:5px;touch-action:none}.pad button{border:2px solid #f3dda9;border-radius:17px;background:linear-gradient(145deg,#205c56ed,#143d40f2);box-shadow:0 4px 0 #09272b;color:#fff;font-size:clamp(23px,3vw,30px);font-weight:1000;touch-action:none}.pad button:active{transform:translateY(2px);background:#29836d}.pad .up{grid-column:1/3;justify-self:center;width:calc(clamp(46px,6vw,60px) + 8px)}
+.panelWrap{position:absolute;z-index:5;inset:0;display:flex;align-items:center;justify-content:center;padding:max(14px,env(safe-area-inset-top)) 14px max(14px,env(safe-area-inset-bottom));background:linear-gradient(180deg,#06192d79,#08221ac2);backdrop-filter:blur(5px)}.panel{width:min(510px,100%);max-height:100%;overflow:auto;touch-action:pan-y;border:5px solid #74431f;border-radius:30px;background:linear-gradient(155deg,#fff3d3 0%,#ffe08d 72%,#f5bb58);color:#472719;box-shadow:0 12px 0 #351d13,0 24px 50px #0007;text-align:center;padding:clamp(18px,3.4vh,30px) clamp(19px,5vw,38px)}
+.kicker{color:#96602d;font-size:11px;font-weight:1000;letter-spacing:.25em;text-transform:uppercase}.panel h1,.panel h2{margin:5px 0 0;font-size:clamp(34px,7.5vw,50px);line-height:1.03;color:#442519;font-weight:1000;letter-spacing:-.045em;text-shadow:0 2px #fff8}.hero{height:clamp(112px,21vh,176px);width:100%;margin:7px auto 4px;background-image:url('../vladi-run/assets/vladi-runner.webp');background-size:400% 100%;background-repeat:no-repeat;background-position:0 50%;filter:drop-shadow(0 8px 5px #57321f55);animation:run 650ms steps(4) infinite}@keyframes run{to{background-position:400% 50%}}
+.copy{margin:5px auto 13px;max-width:400px;font-size:clamp(14px,2.1vw,17px);line-height:1.43;font-weight:760}.how{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0 15px}.how div{padding:9px 5px;border:1px solid #e4b657;border-radius:14px;background:#ffebba;font-size:clamp(10px,1.7vw,12px);font-weight:850}.how strong{display:block;font-size:22px;margin-bottom:2px}.primary,.secondary{width:100%;border:4px solid #075424;border-radius:19px;background:linear-gradient(#67ee45,#14b82d);box-shadow:0 6px 0 #064119;color:#fff;padding:12px 16px;font-size:clamp(21px,4vw,27px);font-weight:1000;cursor:pointer;touch-action:manipulation}.secondary{margin-top:10px;background:linear-gradient(#506483,#233752);border-color:#1c2a42;box-shadow:0 5px 0 #101827;font-size:17px}.primary:active,.secondary:active{transform:translateY(3px)}.record{margin-top:12px;color:#835025;font-weight:900}.hidden{display:none!important}
+#toast{position:absolute;z-index:4;left:50%;top:42%;transform:translate(-50%,-8px);opacity:0;padding:10px 17px;border-radius:14px;background:#ffdc7c;color:#492717;font-size:clamp(17px,3vw,26px);font-weight:1000;box-shadow:0 5px 0 #965421;transition:opacity .18s,transform .18s;white-space:nowrap;pointer-events:none}#toast.on{opacity:1;transform:translate(-50%,0)}
+@media(max-width:600px){.hud{justify-content:flex-start;gap:4px}.stat{flex:1;min-width:0;padding:7px 4px;border-radius:13px}.stat small{font-size:8px;letter-spacing:.055em}.stat b{font-size:clamp(15px,4.7vw,22px)}.stat.hearts b{font-size:clamp(11px,3.2vw,15px)}.hud button{width:40px;height:42px;border-radius:12px;font-size:17px}.pad{right:max(10px,env(safe-area-inset-right));bottom:max(10px,env(safe-area-inset-bottom));grid-template:repeat(2,48px)/repeat(2,48px)}.pad .up{width:56px}.pad button{border-radius:15px}.panel{border-width:4px;border-radius:24px}.how{gap:5px}.how div{padding:8px 3px}}
+@media(max-height:520px){.hud{top:max(5px,env(safe-area-inset-top))}.stat{padding:5px 7px}.stat small{margin-bottom:2px}.pad{grid-template:repeat(2,40px)/repeat(2,40px);right:9px;bottom:8px}.pad .up{width:47px}.panel{padding:10px 22px;border-radius:20px}.panel h1{font-size:32px}.hero{height:clamp(68px,17vh,100px);margin:1px auto}.copy{font-size:13px;margin:3px auto 7px}.how{margin:7px 0}.primary{padding:8px}.record{margin-top:6px}#status{top:57px}}
+</style>
+</head>
+<body>
+<main id="app" aria-label="Vladi Rescate Arcade">
+<canvas id="world" aria-label="Laberinto de aventura. Mové a Vladi, rescatá a los animales y encontrá la salida"></canvas>
+<div class="hud" id="hud">
+ <div class="stat"><small>RONDA</small><b id="round">1</b></div>
+ <div class="stat"><small>PUNTOS</small><b id="score">0</b></div>
+ <div class="stat"><small>RESCATES</small><b id="saved">0/3</b></div>
+ <div class="stat"><small>RÉCORD</small><b id="best">0</b></div>
+ <div class="stat hearts"><small>VIDAS</small><b id="hearts">♥♥♥</b></div>
+ <button id="soundBtn" aria-label="Silenciar sonido">♫</button><button id="pauseBtn" aria-label="Pausar">Ⅱ</button>
+</div>
+<div id="status">Rescatá a los animales y encontrá la salida</div>
+<div id="pad" class="pad" aria-label="Controles táctiles"><button class="up" data-dir="up" aria-label="Arriba">▲</button><button data-dir="left" aria-label="Izquierda">◀</button><button data-dir="right" aria-label="Derecha">▶</button><button class="up" data-dir="down" aria-label="Abajo">▼</button></div>
+<div id="toast" role="status"></div>
+<div class="panelWrap" id="menu"><section class="panel"><div class="kicker">Aventura arcade</div><h1>VLADI RESCATE</h1><div class="hero" role="img" aria-label="Vladi corriendo listo para la aventura"></div><p class="copy">¡Se perdieron los animalitos en la selva! Abrite camino por el laberinto, rescatá a todos y llegá al portal antes que los bichitos guardianes.</p><div class="how"><div><strong>🧭</strong>Explorá el laberinto</div><div><strong>🐾</strong>Rescatá a todos</div><div><strong>🚪</strong>Buscá la salida</div></div><button class="primary" id="playBtn">▶ JUGAR</button><div class="record">Récord: <span id="menuBest">0</span> puntos</div></section></div>
+<div class="panelWrap hidden" id="pause"><section class="panel"><div class="kicker">Pausa de aventura</div><h2>PAUSA</h2><div class="hero" role="img" aria-label="Vladi preparado para continuar"></div><p class="copy">Los animalitos te esperan. Cuando estés listo, seguí explorando.</p><button class="primary" id="resumeBtn">▶ SEGUIR</button><button class="secondary" id="restartPause">↻ Reiniciar partida</button></section></div>
+<div class="panelWrap hidden" id="gameover"><section class="panel"><div class="kicker">Fin de la aventura</div><h2 id="overTitle">¡A SEGUIR INTENTANDO!</h2><div class="hero" role="img" aria-label="Vladi listo para volver a rescatar animalitos"></div><p class="copy">Rescataste <b id="finalSaved">0</b> animalitos, sumaste <b id="finalScore">0</b> puntos y llegaste a la ronda <b id="finalRound">1</b>.</p><button class="primary" id="againBtn">▶ JUGAR OTRA VEZ</button><div class="record">Récord: <span id="overBest">0</span> puntos</div></section></div>
+</main>
+<script src="../game-audio.js?v=2"></script><script src="./game.js?v=1"></script>
+</body>
+</html>
