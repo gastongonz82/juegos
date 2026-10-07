@@ -28,7 +28,9 @@
 .stick-knob:after{content:'';position:absolute;left:24%;top:18%;width:34%;height:20%;border-radius:50%;background:#fff9;filter:blur(1px)}
 @media(max-height:500px){.stick{width:76px;height:76px}.stick-knob{width:54%;height:54%}.stick-shaft{width:8px}}
 
-</style></head>
+</style>  <link rel="stylesheet" href="../arcade-ui.css">
+  <script src="../arcade-ui.js" defer></script>
+</head>
 <body><main id="app">
 <header class="top"><div class="brand">VLADI <span>HALLOWEEN</span> MAZE</div><div class="stats"><div class="stat"><small>NIVEL</small><b id="level">1</b></div><div class="stat"><small>PUNTOS</small><b id="score">0</b></div><div class="stat"><small>RÉCORD</small><b id="best">0</b></div><div class="stat"><small>VIDAS</small><b class="hearts" id="lives">♥♥♥</b></div><button class="iconbtn" id="sound" aria-label="Silenciar música y efectos">♫</button><button class="iconbtn" id="pause" aria-label="Pausar">Ⅱ</button><button class="iconbtn" id="fullscreen" aria-label="Activar pantalla completa">⛶</button></div></header>
 <section class="arena" id="arena"><canvas id="game" aria-label="Laberinto de Halloween: mové a Vladi y juntá caramelos"></canvas><div class="powerbar hiddenbar" id="powerbar"><i id="powerfill"></i></div><div class="toast" id="toast"></div>
