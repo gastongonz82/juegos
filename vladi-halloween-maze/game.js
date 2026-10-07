@@ -11,7 +11,22 @@ function generateMaze(){const box=arena.getBoundingClientRect(),targetCell=Math.
  for(let i=0;i<Math.floor(cols*rows*.055);i++){const x=1+Math.floor(Math.random()*(cols-2)),y=1+Math.floor(Math.random()*(rows-2));if(maze[y][x]&&((maze[y-1][x]===0&&maze[y+1][x]===0)||(maze[y][x-1]===0&&maze[y][x+1]===0)))maze[y][x]=0;}
  player={x:spawnX,y:spawnY,fromX:spawnX,fromY:spawnY,t:1};let open=[];for(let y=1;y<rows-1;y++)for(let x=1;x<cols-1;x++)if(!maze[y][x]&&!(x===spawnX&&y===spawnY))open.push({x,y});open.sort((a,b)=>dist(b)-dist(a));function dist(p){return Math.abs(p.x-spawnX)+Math.abs(p.y-spawnY)}
  ghosts=[];const ghostCount=Math.min(4,3+Math.floor((level-1)/2)),visibleOpen=open.filter(p=>p.x>cols*.17&&p.x<cols*.83);for(let i=0;i<ghostCount;i++){const p=visibleOpen.splice(Math.min(visibleOpen.length-1,Math.floor(visibleOpen.length*(.2+i*.2))),1)[0]||open[0];if(!p)continue;const oi=open.findIndex(q=>q.x===p.x&&q.y===p.y);if(oi>=0)open.splice(oi,1);ghosts.push({x:p.x,y:p.y,fromX:p.x,fromY:p.y,t:1,color:['#bd85d1','#8172b1','#bd8980','#9a83c8'][i],kind:i%4});}
- const farther=open.filter(p=>dist(p)>4);items=Array.from({length:rows},()=>Array(cols).fill(''));for(const p of open)items[p.y][p.x]='c';const powers=Math.min(16,Math.max(9,Math.floor(cols*rows/90)));for(let i=0;i<powers&&farther.length;i++){const idx=Math.floor(i*(farther.length-1)/Math.max(1,powers-1));const p=farther[idx];items[p.y][p.x]='p';}resize();updateHud();}
+ const farther=open.filter(p=>dist(p)>4);items=Array.from({length:rows},()=>Array(cols).fill(''));for(const p of open)items[p.y][p.x]='c';
+ // Cuatro calabazas bien separadas, una en cada zona extrema del laberinto.
+ const powers=Math.min(6,4+Math.floor((level-1)/4)),mx=Math.floor(cols/2),my=Math.floor(rows/2);
+ const targets=[{x:1,y:1,side:'tl'},{x:cols-2,y:1,side:'tr'},{x:1,y:rows-2,side:'bl'},{x:cols-2,y:rows-2,side:'br'}];
+ if(powers>4)targets.push({x:mx,y:1,side:'top'});if(powers>5)targets.push({x:mx,y:rows-2,side:'bottom'});
+ const placed=[],spacing=Math.max(5,Math.min(cols,rows)*.38);
+ for(const target of targets){let candidates=farther.filter(p=>{
+  if(target.side==='tl')return p.x<mx&&p.y<my;if(target.side==='tr')return p.x>=mx&&p.y<my;
+  if(target.side==='bl')return p.x<mx&&p.y>=my;if(target.side==='br')return p.x>=mx&&p.y>=my;
+  if(target.side==='top')return p.y<my;return p.y>=my;
+ });
+ candidates.sort((a,b)=>(Math.abs(a.x-target.x)+Math.abs(a.y-target.y))-(Math.abs(b.x-target.x)+Math.abs(b.y-target.y)));
+ let pick=candidates.find(p=>placed.every(q=>Math.hypot(p.x-q.x,p.y-q.y)>=spacing))||candidates[0];
+ if(pick){items[pick.y][pick.x]='p';placed.push(pick);farther.splice(farther.findIndex(p=>p.x===pick.x&&p.y===pick.y),1);}
+ }
+ resize();updateHud();}
 function saveBest(){if(score>best){best=score;localStorage.setItem('vladiHalloweenBest',best);}}
 function updateHud(){ui.level.textContent=level;ui.score.textContent=score;ui.best.textContent=best;ui.lives.textContent='♥'.repeat(lives)+'♡'.repeat(3-lives);ui.menuBest.textContent=best;ui.powerbar.classList.toggle('hiddenbar',power<=0);ui.powerfill.style.width=`${Math.min(100,power/9*100)}%`;}
 function beep(freq=500,dur=.07,type='sine',vol=.04){if(!sound)return;try{audio=audio||new(window.AudioContext||window.webkitAudioContext)();if(audio.state==='suspended')audio.resume();const o=audio.createOscillator(),g=audio.createGain();o.type=type;o.frequency.value=freq;g.gain.setValueAtTime(vol,audio.currentTime);g.gain.exponentialRampToValueAtTime(.001,audio.currentTime+dur);o.connect(g).connect(audio.destination);o.start();o.stop(audio.currentTime+dur);}catch{}}
@@ -48,10 +63,11 @@ function projectedCenter(x,y){const a=project(x+.5,y),b=project(x+.5,y+1);return
 function drawVladi(x,y,t){
  if(!faceSprite.complete||!faceSprite.naturalWidth)return;
  const pos=projectedCenter(x,y),dims=projectedSize(y),ratio=faceSprite.naturalWidth/faceSprite.naturalHeight;
+ const moving=state==='playing'&&player.t<1,gait=moving?Math.sin(t*.018):0;
  // Cabeza completa recortada desde la referencia, sin círculo ni recorte geométrico.
  const w=Math.min(dims.w*1.42,dims.h*1.3*ratio),h=w/ratio;
- ctx.save();ctx.shadowColor='#c9a4ff';ctx.shadowBlur=Math.max(4,dims.w*.18);
- ctx.drawImage(faceSprite,pos.x-w/2,pos.y-h/2,w,h);ctx.restore();
+ ctx.save();ctx.translate(pos.x,pos.y+gait*dims.h*.04);ctx.rotate(gait*.025);ctx.shadowColor='#c9a4ff';ctx.shadowBlur=Math.max(4,dims.w*.18);
+ ctx.drawImage(faceSprite,-w/2,-h/2,w,h);ctx.restore();
 }
 function drawMonster(g,t){
  const pos=projectedCenter(g.x,g.y),dims=projectedSize(g.y),s=Math.max(30,Math.min(dims.w*1.04,dims.h*.9)),bob=Math.sin(t/210+g.x)*s*.025;
@@ -87,8 +103,17 @@ function drawMonster(g,t){
 function render(t){
  const w=canvas.clientWidth,h=canvas.clientHeight;ctx.clearRect(0,0,w,h);if(!maze.length){requestAnimationFrame(render);return;}
  for(let y=0;y<rows;y++)for(let x=0;x<cols;x++){if(maze[y][x])drawWall(x,y);else{drawFloor(x,y);const item=items[y]?.[x],p=projectedCenter(x,y),dims=projectedSize(y),r=Math.max(2,Math.min(dims.w,dims.h)*.13);if(item==='c'){ctx.save();ctx.shadowColor='#ffe66e';ctx.shadowBlur=r*2.5;const orb=ctx.createRadialGradient(p.x-r*.3,p.y-r*.35,1,p.x,p.y,r*1.4);orb.addColorStop(0,'#fffbc2');orb.addColorStop(.4,'#ffe84c');orb.addColorStop(1,'#db862c');ctx.fillStyle=orb;ctx.beginPath();ctx.ellipse(p.x,p.y,r,r*.78,0,0,Math.PI*2);ctx.fill();ctx.restore();}else if(item==='p'){const q=r*2.8;ctx.save();ctx.shadowColor='#ff812a';ctx.shadowBlur=q*.8;const pumpkin=ctx.createRadialGradient(p.x-q*.25,p.y-q*.25,1,p.x,p.y,q);pumpkin.addColorStop(0,'#fff0a0');pumpkin.addColorStop(.42,'#ffaf38');pumpkin.addColorStop(1,'#e34c19');ctx.fillStyle=pumpkin;ctx.beginPath();ctx.ellipse(p.x,p.y,q*.75,q*.65,0,0,Math.PI*2);ctx.fill();ctx.strokeStyle='#b94a20';ctx.lineWidth=Math.max(1,q*.1);for(const k of [-.35,0,.35]){ctx.beginPath();ctx.ellipse(p.x+q*k,p.y,q*.24,q*.55,0,0,Math.PI*2);ctx.stroke();}ctx.fillStyle='#71a448';ctx.beginPath();ctx.ellipse(p.x,p.y-q*.62,q*.13,q*.22,-.28,0,Math.PI*2);ctx.fill();ctx.restore();}}}
+ const dt=Math.min(Math.max(0,(t-last)/1000),.05),ghostStep=Math.max(.36,.86-(level-1)*.025);if(state==='playing'){
+  last=t;const step=Math.max(.095,.145-(level-1)*.0012);let progress=player.t+dt/step,hops=0;
+  // Carry the fractional remainder through each cell instead of dropping it at tile boundaries.
+  while(progress>=1&&hops++<4){let next=queued||dir,v=dirs[next];if(!v||!passable(player.x+v[0],player.y+v[1])){next=dir;v=dirs[next];}
+   if(!v||!passable(player.x+v[0],player.y+v[1])){progress=1;break;}
+   player.t=1;movePlayer(next);progress-=1;if(state!=='playing')break;
+  }
+  player.t=Math.min(1,Math.max(0,progress));ghostAcc+=dt;while(ghostAcc>=ghostStep){ghostAcc-=ghostStep;moveGhosts();if(state!=='playing')break;}
+  for(const g of ghosts)if(g.t<1)g.t=Math.min(1,g.t+dt/ghostStep);if(power>0)power=Math.max(0,power-dt);checkCollisions();checkClear();updateHud();
+ }else last=t;
  const moveT=player.t,px=player.fromX+(player.x-player.fromX)*moveT,py=player.fromY+(player.y-player.fromY)*moveT;
- const dt=Math.min(Math.max(0,(t-last)/1000),.05);if(state==='playing'){last=t;const step=Math.max(.095,.16-(level-1)*.0015);if(player.t<1)player.t=Math.min(1,player.t+dt/step);if(player.t>=1){let next=queued;let v=next&&dirs[next];if(!v||!passable(player.x+v[0],player.y+v[1])){next=dir;v=dirs[next];}if(v&&passable(player.x+v[0],player.y+v[1]))movePlayer(next);}ghostAcc+=dt;const ghostStep=Math.max(.36,.86-(level-1)*.025);if(ghostAcc>ghostStep){ghostAcc=0;moveGhosts();}for(const g of ghosts)if(g.t<1)g.t=Math.min(1,g.t+dt/.2);if(power>0)power=Math.max(0,power-dt);checkCollisions();checkClear();updateHud();}else last=t;
  for(const g of ghosts){const gx=g.fromX+(g.x-g.fromX)*Math.min(1,g.t),gy=g.fromY+(g.y-g.fromY)*Math.min(1,g.t);drawMonster({...g,x:gx,y:gy},t);}if(state!=='menu')drawVladi(px,py,t);requestAnimationFrame(render);
 }
 requestAnimationFrame(render);
