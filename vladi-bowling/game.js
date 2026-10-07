@@ -1,7 +1,8 @@
 (() => {
   'use strict';
   const canvas = document.querySelector('#game');
-  const ctx = canvas.getContext('2d', { alpha: false, desynchronized: true });
+  let ctx = canvas.getContext('2d', { alpha: false });
+  let scenery = null;
   const $ = id => document.getElementById(id);
   const frameLabel = $('frame-label'), scoreLabel = $('score-label'), bestLabel = $('best-label');
   const frameStrip = $('frame-strip'), hint = $('hint'), overlay = $('overlay');
@@ -21,8 +22,9 @@
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     const laneW = Math.min(w * .94, h * 2.2);
     const topY = Math.max(93, h * .19), bottomY = h - Math.max(18, h * .025);
-    layout = { cx: w / 2, laneW, topW: laneW * .43, bottomW: laneW * .94, topY, bottomY, laneH: bottomY - topY };
+    layout = { cx: w / 2, laneW, topW: laneW * .24, bottomW: laneW * .80, topY, bottomY, laneH: bottomY - topY };
     if (ball && !ball.moving) ball.x = ballStart().x;
+    scenery = null;
     draw();
   };
   function ballStart() { return { x: layout.cx + aim * layout.laneW * .18, y: layout.bottomY - layout.laneH * .105 }; }
@@ -39,11 +41,11 @@
   }
   function projectPin(pin) {
     const { cx, laneW, topY, laneH } = layout;
-    // Rack sits at the far end of the lane. Row 3 faces the player.
-    const y = topY + laneH * (.055 + pin.row * .036);
+    // The single headpin faces the ball; the four-pin row is farthest away.
+    const y = topY + laneH * (.11 + (3 - pin.row) * .031);
     const depth = (y - topY) / laneH;
     const half = laneW * (.215 + depth * .25);
-    return { x: cx + pin.nx * laneW, y, scale: .76 + depth * .52, half };
+    return { x: cx + pin.nx * laneW * .52 * (1 + depth), y, scale: Math.max(.50, Math.min(1.05, laneW / 600)) * (1 + depth), half };
   }
   function scoreBowls() {
     let value = 0, ri = 0;
@@ -119,7 +121,7 @@
     rolls = []; frames = Array.from({ length: 10 }, () => []); frame = 0; ballsInCurrent = 0;
     tenthNeedsBonus = false; totalScore = 0; aim = 0; spin = 0; flash = 0; lastResult = '';
     pins = newRack(); ball = null; state = 'aim'; overlay.hidden = true;
-    hint.textContent = 'Arrastrá la pelota hacia atrás y soltá. Flechas para apuntar.';
+    hint.textContent = 'Deslizá la pelota hacia los pinos y soltá. Flechas + espacio en PC.';
     updateHud(); sound('start'); draw();
   }
   function pinShape(x, y, scale, falling = 0, direction = 1) {
@@ -152,56 +154,52 @@
     ctx.strokeStyle = 'rgba(255,239,206,.28)'; ctx.lineWidth = Math.max(1, r * .04); ctx.beginPath(); ctx.arc(0, 0, r * .88, -1.9, .45); ctx.stroke();
     ctx.restore();
   }
+  function paintScenery() {
+    const { cx, laneW, topW, bottomW, topY, bottomY, laneH } = layout;
+    const bg = ctx.createLinearGradient(0,0,0,h); bg.addColorStop(0,'#101525'); bg.addColorStop(1,'#050b14');
+    ctx.fillStyle=bg; ctx.fillRect(0,0,w,h);
+    // Bowling machine and a stable, softly lit neon surround.
+    const houseW=topW*1.65, houseY=topY-40;
+    ctx.fillStyle='#080e18'; ctx.fillRect(cx-houseW/2,houseY,houseW,laneH*.27+40);
+    ctx.strokeStyle='#46d9d2';ctx.lineWidth=4;ctx.shadowColor='#35ddd2';ctx.shadowBlur=12;
+    ctx.beginPath();ctx.moveTo(cx-houseW/2,topY+laneH*.22);ctx.lineTo(cx-houseW/2,houseY);ctx.lineTo(cx+houseW/2,houseY);ctx.lineTo(cx+houseW/2,topY+laneH*.22);ctx.stroke();ctx.shadowBlur=0;
+    ctx.fillStyle='#efd49b';ctx.font=`700 ${Math.max(11,Math.min(18,topW*.07))}px system-ui`;ctx.textAlign='center';ctx.fillText('VLADI • BOWLING',cx,topY-17);
+    function trapezoid(extra,fill) {
+      ctx.beginPath();ctx.moveTo(cx-topW/2-extra*.3,topY);ctx.lineTo(cx+topW/2+extra*.3,topY);ctx.lineTo(cx+bottomW/2+extra,bottomY);ctx.lineTo(cx-bottomW/2-extra,bottomY);ctx.closePath();ctx.fillStyle=fill;ctx.fill();
+    }
+    const gutter=ctx.createLinearGradient(0,topY,0,bottomY);gutter.addColorStop(0,'#283647');gutter.addColorStop(.5,'#111c28');gutter.addColorStop(1,'#344352');
+    trapezoid(laneW*.065,gutter);
+    const wood=ctx.createLinearGradient(0,topY,0,bottomY);wood.addColorStop(0,'#b17d4e');wood.addColorStop(.35,'#edbf7e');wood.addColorStop(1,'#c58e54');trapezoid(0,wood);
+    ctx.save();ctx.clip();
+    for(let i=0;i<25;i++) {
+      const fraction=i/24-.5;
+      ctx.strokeStyle=i%3===0?'#76512a45':'#fff1c343';ctx.lineWidth=1;
+      ctx.beginPath();ctx.moveTo(cx+fraction*topW,topY);ctx.lineTo(cx+fraction*bottomW,bottomY);ctx.stroke();
+      // Deterministic wood grain: no animated noise or opacity changes.
+      for(let j=0;j<8;j++) {
+        const t=(j+.25+(i%4)*.13)/8, y=topY+laneH*t;
+        const width=topW+(bottomW-topW)*t;
+        ctx.strokeStyle='#704c2523';ctx.beginPath();ctx.moveTo(cx+fraction*width,y);ctx.lineTo(cx+fraction*width+width/24,y+laneH*.012);ctx.stroke();
+      }
+    }
+    for(let i=-3;i<=3;i++) {
+      const y=topY+laneH*(.56+Math.abs(i)*.014), width=topW+(bottomW-topW)*.56, x=cx+i*width*.09;
+      ctx.fillStyle='#49362b';ctx.beginPath();ctx.moveTo(x,y-6);ctx.lineTo(x-3,y+3);ctx.lineTo(x+3,y+3);ctx.closePath();ctx.fill();
+    }
+    ctx.strokeStyle='#57392370';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(0,topY+laneH*.87);ctx.lineTo(w,topY+laneH*.87);ctx.stroke();
+    ctx.restore();
+    ctx.strokeStyle='#55c8ca77';ctx.lineWidth=2;
+    for(const sign of [-1,1]) {ctx.beginPath();ctx.moveTo(cx+sign*(topW/2+laneW*.014),topY);ctx.lineTo(cx+sign*(bottomW/2+laneW*.047),bottomY);ctx.stroke();}
+  }
   function draw() {
     if (!w || !h) return;
     const { cx, laneW, topW, bottomW, topY, bottomY, laneH } = layout;
-    const bg = ctx.createLinearGradient(0, 0, 0, h); bg.addColorStop(0, '#10172b'); bg.addColorStop(.48, '#17233b'); bg.addColorStop(1, '#09121c');
-    ctx.fillStyle = bg; ctx.fillRect(0, 0, w, h);
-    // Arena wall and soft light beams
-    const wallY = Math.max(66, h * .15);
-    const wall = ctx.createLinearGradient(0, wallY, 0, topY + laneH * .31); wall.addColorStop(0, '#202c48'); wall.addColorStop(1, '#18243b');
-    ctx.fillStyle = wall; ctx.fillRect(0, wallY, w, Math.max(0, topY + laneH * .31 - wallY));
+    if(!scenery) {
+      scenery=document.createElement('canvas');scenery.width=canvas.width;scenery.height=canvas.height;
+      const main=ctx;ctx=scenery.getContext('2d',{alpha:false});ctx.setTransform(dpr,0,0,dpr,0,0);paintScenery();ctx=main;
+    }
+    ctx.drawImage(scenery,0,0,scenery.width,scenery.height,0,0,w,h);
     ctx.save();
-    for (let i = 0; i < 7; i++) {
-      const lx = w * (i + .5) / 7, pulse = .72 + Math.sin(clock * 1.6 + i) * .04;
-      const beam = ctx.createRadialGradient(lx, wallY + 8, 2, lx, wallY + laneH * .32, laneW * .12);
-      beam.addColorStop(0, `rgba(255,210,135,${.17 * pulse})`); beam.addColorStop(1, 'rgba(255,210,135,0)');
-      ctx.fillStyle = beam; ctx.fillRect(lx - laneW * .14, wallY, laneW * .28, laneH * .38);
-      ctx.fillStyle = '#f6dca4'; ctx.shadowColor = '#ffe8ae'; ctx.shadowBlur = 15; ctx.beginPath(); ctx.roundRect(lx - 11, wallY + 3, 22, 5, 3); ctx.fill(); ctx.shadowBlur = 0;
-    }
-    ctx.restore();
-    // Crowd rows
-    for (let row = 0; row < 3; row++) {
-      const yy = wallY + 19 + row * 16;
-      for (let x = 8; x < w; x += Math.max(13, w / 70)) {
-        const pick = Math.sin(x * .17 + row * 5.3);
-        ctx.fillStyle = pick > .55 ? '#e2ab55' : pick < -.38 ? '#6fbad4' : '#b77fa6';
-        ctx.globalAlpha = .35 + .1 * Math.sin(x + clock * .8);
-        ctx.beginPath(); ctx.arc(x, yy, 1.7, 0, Math.PI * 2); ctx.fill();
-      }
-    }
-    ctx.globalAlpha = 1;
-    ctx.fillStyle = '#6a403e'; ctx.fillRect(0, wallY + 66, w, Math.max(7, h * .018));
-    ctx.fillStyle = '#f0b663'; ctx.fillRect(0, wallY + 66, w, 2);
-    // Lane apron shadow and wood trapezoid
-    ctx.save(); ctx.shadowColor = '#000b'; ctx.shadowBlur = 30; ctx.shadowOffsetY = 12;
-    ctx.beginPath(); ctx.moveTo(cx - topW / 2, topY); ctx.lineTo(cx + topW / 2, topY); ctx.lineTo(cx + bottomW / 2, bottomY); ctx.lineTo(cx - bottomW / 2, bottomY); ctx.closePath();
-    const wood = ctx.createLinearGradient(0, topY, 0, bottomY); wood.addColorStop(0, '#ab6848'); wood.addColorStop(.22, '#d3945c'); wood.addColorStop(.58, '#a85e44'); wood.addColorStop(1, '#77403d'); ctx.fillStyle = wood; ctx.fill(); ctx.restore();
-    ctx.save(); ctx.beginPath(); ctx.moveTo(cx - topW / 2, topY); ctx.lineTo(cx + topW / 2, topY); ctx.lineTo(cx + bottomW / 2, bottomY); ctx.lineTo(cx - bottomW / 2, bottomY); ctx.closePath(); ctx.clip();
-    for (let i = -5; i <= 5; i++) {
-      const x1 = cx + i * topW * .085, x2 = cx + i * bottomW * .085;
-      ctx.strokeStyle = i === 0 ? 'rgba(255,234,177,.25)' : 'rgba(60,32,44,.19)'; ctx.lineWidth = 1;
-      ctx.beginPath(); ctx.moveTo(x1, topY); ctx.lineTo(x2, bottomY); ctx.stroke();
-    }
-    for (let i = 0; i < 22; i++) {
-      const t = i / 22, y = topY + laneH * t;
-      ctx.fillStyle = i % 2 ? 'rgba(255,223,153,.055)' : 'rgba(54,27,34,.045)'; ctx.fillRect(cx - laneW, y, laneW * 2, Math.max(1, laneH / 22));
-    }
-    const arrowsY = topY + laneH * .51;
-    for (let i = -2; i <= 2; i++) {
-      const px = cx + i * laneW * .055, py = arrowsY + Math.abs(i) * 4;
-      ctx.fillStyle = 'rgba(255,235,187,.58)'; ctx.beginPath(); ctx.moveTo(px, py - 8); ctx.lineTo(px - 4, py + 3); ctx.lineTo(px + 4, py + 3); ctx.closePath(); ctx.fill();
-    }
     // Aim guides
     if (state === 'aim' || state === 'title') {
       const start = ballStart(), targetX = cx + aim * laneW * .12;
@@ -223,12 +221,12 @@
     if (state !== 'title' || !overlay.hidden) {
       let bx, by, br, rotation = 0;
       if (ball && ball.moving) {
-        const t = Math.min(1, ball.t), ease = t * t * (3 - 2 * t);
+        const t = Math.min(1, ball.t), ease = t;
         const p = ballStart(); bx = p.x + (ball.targetX - p.x) * ease; by = p.y + (ball.targetY - p.y) * ease;
-        br = 6 + 17 * ease; rotation = ease * 12 + clock * 5;
+        br = Math.min(48, laneW * .105) * (1 - ease * .78); rotation = ease * 12;
       } else if (ball && (state === 'falling' || state === 'settle')) {
-        bx = ball.targetX; by = ball.targetY + 4; br = 21; rotation = clock * 4;
-      } else { const p = ballStart(); bx = p.x; by = p.y; br = Math.min(18, laneW * .024); }
+        bx = ball.targetX; by = ball.targetY + 4; br = Math.min(48, laneW * .105) * .22; rotation = 12;
+      } else { const p = ballStart(); bx = p.x; by = p.y; br = Math.min(48, laneW * .105); }
       if (!ball || !ball.moving || ball.t < .98) drawBall(bx, by, br, rotation);
       if (drag && !ball) {
         const p = ballStart(), power = Math.max(0, Math.min(100, (p.y - drag.y) / (h * .22) * 100));
@@ -247,7 +245,7 @@
     if (!standing.length) return [];
     const laneHalf = layout.laneW * .24;
     const localTarget = (targetX - layout.cx) / laneHalf;
-    const distance = pin => Math.abs(pin.nx / .19 - localTarget);
+    const distance = pin => Math.abs(pin.nx * .52 * 1.16 / .24 - localTarget);
     const strikePocket = strength >= .84 && (Math.abs(localTarget - .105) <= .038 || Math.abs(localTarget + .105) <= .038);
     let falls;
     if (strikePocket && standing.length === 10) {
@@ -256,20 +254,22 @@
     } else {
       const impactRadius = .16 + strength * .15;
       const firstThrow = frames[frame].length === 0;
-      const front = standing.filter(pin => pin.row === 3).sort((a, b) => distance(a) - distance(b));
+      const front = standing.filter(pin => pin.row === 0).sort((a, b) => distance(a) - distance(b));
       if (!firstThrow) {
         let primary = standing.filter(pin => distance(pin) <= impactRadius);
-        if (!primary.length && standing.length && Math.abs(localTarget) < .92) primary = [standing.slice().sort((a, b) => distance(a) - distance(b))[0]];
+        
         falls = primary;
       } else {
         let primary = front.filter(pin => distance(pin) <= impactRadius);
-        if (!primary.length && front.length && Math.abs(localTarget) < .92) primary = [front[0]];
+        if (!primary.length) primary = standing.filter(pin => distance(pin) <= impactRadius * .7).sort((a,b)=>a.row-b.row).slice(0,1);
         const ids = new Set(primary.map(pin => pin.id));
         // Only pins immediately behind the first contact can join this throw. A modest
         // hit clips a few pins; it cannot domino the entire rack by itself.
         const chainLimit = .061 + strength * .02 + Math.abs(shotSpin) * .004;
-        const secondary = standing.filter(pin => pin.row === 2 && primary.some(hit => Math.abs(pin.nx - hit.nx) <= chainLimit));
+        const secondary = standing.filter(pin => pin.row === 1 && primary.some(hit => Math.abs(pin.nx - hit.nx) <= chainLimit));
         secondary.forEach(pin => ids.add(pin.id));
+        if(strength>.62) standing.filter(pin=>pin.row===2 && secondary.some(hit=>Math.abs(pin.nx-hit.nx)<.073)).forEach(pin=>ids.add(pin.id));
+        if(strength>.90 && Math.abs(localTarget)<.09) standing.filter(pin=>pin.row===3 && Math.abs(pin.nx)<.10).forEach(pin=>ids.add(pin.id));
         falls = standing.filter(pin => ids.has(pin.id));
       }
     }
@@ -321,7 +321,7 @@
     if (state !== 'aim' || ball?.moving) return;
     power = Math.max(.2, Math.min(1, power));
     sound('kick');
-    ball = { moving: true, t: 0, duration: .98 - power * .16, targetX, targetY: layout.topY + layout.laneH * .20, power, spin: shotSpin };
+    ball = { moving: true, t: 0, duration: 1.9 - power * .35, targetX, targetY: layout.topY + layout.laneH * .20, power, spin: shotSpin };
     state = 'roll'; hint.textContent = '¡Allá va!'; draw();
   }
   function completeRoll() {
@@ -341,7 +341,7 @@
     draw();
   }
   function tick(now) {
-    const dt = Math.min(.04, Math.max(0, (now - lastTime) / 1000 || 0)); lastTime = now; clock += dt; crowdPulse += dt;
+    const dt = Math.min(.12, Math.max(0, (now - lastTime) / 1000 || 0)); lastTime = now; clock += dt; crowdPulse += dt;
     if (state === 'roll' && ball) { ball.t += dt / ball.duration; if (ball.t >= 1) completeRoll(); }
     if (state === 'falling') {
       pins.forEach(pin => { if (pin.down) pin.fall = Math.min(1, pin.fall + dt * (2.9 + pin.row * .08)); });
