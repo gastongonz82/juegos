@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#10162b">
+  <meta name="description" content="Un juego de palabras y aventura con Vladi.">
+  <title>Rescatá a Vladi — Arcade de Vladi</title>
+  <style>
+    :root{color-scheme:dark;--bg:#0b1020;--panel:#151e35;--line:#ffffff20;--text:#f8f7ff;--muted:#aab4cf;--gold:#ffd166;--cyan:#77e5dd;--pink:#ff92b6;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    *{box-sizing:border-box}body{margin:0;min-height:100svh;color:var(--text);background:radial-gradient(ellipse at 12% 0%,#47427c55,transparent 34rem),radial-gradient(ellipse at 92% 52%,#168e9650,transparent 31rem),linear-gradient(160deg,#10162b,#090e1b 74%)}
+    body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.25;background-image:radial-gradient(#dce7ff66 .7px,transparent .8px);background-size:32px 32px;mask-image:linear-gradient(#000,transparent 90%)}
+    button,a{font:inherit}a{color:inherit}.shell{position:relative;width:min(1030px,calc(100% - 30px));margin:auto}.top{height:64px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line)}.brand{display:flex;align-items:center;gap:9px;text-decoration:none;font-size:12px;font-weight:900;letter-spacing:.12em}.brand b{display:grid;place-items:center;width:33px;height:33px;border:1px solid #ffd16670;border-radius:11px;color:var(--gold);background:#ffd16618;font-size:17px}.back{color:var(--muted);text-decoration:none;font-size:13px;font-weight:700}.back:hover{color:#fff}
+    main{padding:28px 0 35px}.heading{text-align:center;margin:0 auto 20px}.eyebrow{color:var(--cyan);font-size:11px;font-weight:900;letter-spacing:.16em;text-transform:uppercase}.heading h1{margin:8px 0 7px;font-size:clamp(31px,6vw,50px);line-height:1;letter-spacing:-.055em}.heading h1 span{color:var(--gold)}.heading p{margin:0;color:var(--muted);font-size:14px}
+    .game{display:grid;grid-template-columns:.88fr 1.12fr;gap:15px;align-items:stretch}.scene,.play{border:1px solid var(--line);border-radius:24px;background:linear-gradient(155deg,#1b2540ed,#121a2eee);box-shadow:0 20px 50px #0005,inset 0 1px #ffffff09}.scene{position:relative;min-height:400px;overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;padding:18px;background:radial-gradient(ellipse at 50% 82%,#28adb14d,transparent 46%),linear-gradient(160deg,#283b67,#17203b 65%,#151d31)}.scene:before{content:"";position:absolute;left:-18%;right:-12%;bottom:21%;height:1px;background:linear-gradient(90deg,transparent,#82f1dd77,transparent);transform:rotate(-13deg)}.scene-head{position:relative;z-index:1;display:flex;justify-content:space-between;align-items:center}.scene-head span{font-size:11px;font-weight:850;color:#d6e3ff}.energy{display:flex;gap:5px}.energy i{width:14px;height:14px;border-radius:50%;background:var(--gold);box-shadow:0 0 12px #ffd16688;transition:.2s}.energy i.off{background:#59627b;box-shadow:none;transform:scale(.78)}.art{position:relative;z-index:1;flex:1;display:grid;place-items:center;min-height:240px}.rocket{width:min(100%,330px);height:270px;overflow:visible;filter:drop-shadow(0 15px 18px #04081677)}.rocket .piece{opacity:0;transition:opacity .25s,transform .25s}.rocket .piece.on{opacity:1}.rocket #window{opacity:1}.rocket #spark{opacity:1;animation:twinkle 2s ease-in-out infinite alternate;transform-origin:center}.rocket #flame{animation:flicker .18s ease-in-out infinite alternate;transform-origin:50% 0}.rocket .pilot{fill:#ffd166}.rocket .body{fill:#dfe9ff}.rocket .fin{fill:#ff8eaa}.rocket .glass{fill:#66d9dc;stroke:#f4fcff;stroke-width:5}.rocket .line{fill:none;stroke:#fff;stroke-width:5;stroke-linecap:round;stroke-linejoin:round}.rocket .detail{fill:#7383a9}.rocket #flame{fill:#ffae5d}.rocket #smile{fill:none;stroke:#25334f;stroke-width:3;stroke-linecap:round}.rocket #star{fill:#ffd166}.progress-label{position:relative;z-index:1;text-align:center;color:#c5d5f3;font-size:12px}.progress-label strong{color:#fff}.play{padding:20px;display:flex;flex-direction:column}.stats{display:flex;gap:8px;margin-bottom:14px}.stat{flex:1;padding:9px 11px;border:1px solid #ffffff14;border-radius:14px;background:#ffffff07}.stat span{display:block;color:var(--muted);font-size:10px;font-weight:750;text-transform:uppercase;letter-spacing:.08em}.stat b{display:block;margin-top:2px;color:#fff;font-size:18px}.clue{padding:12px 14px;border:1px solid #77e5dd34;border-radius:15px;background:#77e5dd0c}.clue small{display:block;color:var(--cyan);font-size:10px;font-weight:900;letter-spacing:.12em;text-transform:uppercase}.clue p{margin:5px 0 0;color:#eef4ff;font-size:14px;font-weight:700}.word{display:flex;justify-content:center;align-items:center;gap:clamp(5px,1.2vw,10px);min-height:76px;margin:7px 0 8px}.letter{width:clamp(27px,5.8vw,43px);height:48px;display:grid;place-items:center;border-bottom:3px solid #78e5dd;border-radius:2px;color:#fff;font-size:clamp(19px,4vw,28px);font-weight:900;text-transform:uppercase}.letter.space{width:14px;border:0}.letter.reveal{color:var(--gold);border-color:var(--gold)}.message{min-height:22px;margin:0 0 8px;text-align:center;color:#c3cde2;font-size:12px;font-weight:700}.message.good{color:#90efc7}.message.bad{color:#ffabc2}
+    .keyboard{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;margin-top:auto}.key{min-height:39px;padding:0;border:1px solid #ffffff20;border-radius:11px;background:#ffffff0a;color:#f5f7ff;font-weight:850;cursor:pointer;transition:transform .12s,background .12s,border-color .12s}.key:hover:not(:disabled){transform:translateY(-2px);border-color:#77e5dd88;background:#77e5dd20}.key:focus-visible,.action:focus-visible,.back:focus-visible{outline:3px solid var(--gold);outline-offset:2px}.key:disabled{color:#8d97af;background:#ffffff04;cursor:default}.key.hit{color:#8ef0c7;border-color:#8ef0c755;background:#8ef0c712}.key.miss{color:#ff9db8;border-color:#ff92b644;background:#ff92b60d}.controls{display:flex;gap:9px;margin-top:13px}.action{flex:1;min-height:43px;border:0;border-radius:13px;background:linear-gradient(135deg,#ffe18c,#ffbd59);color:#241b27;font-weight:900;cursor:pointer;box-shadow:0 7px 18px #eaa94430}.action.secondary{border:1px solid #ffffff25;background:#ffffff0a;color:#e0e7f6;box-shadow:none}.action:hover{filter:brightness(1.06)}.note{margin:10px 0 0;color:#8d9ab8;font-size:10px;text-align:center}
+    @keyframes twinkle{to{opacity:.45;transform:scale(.9)}}@keyframes flicker{to{transform:scaleX(.83) scaleY(1.14);filter:brightness(1.2)}}
+    @media(max-width:730px){.shell{width:min(520px,calc(100% - 24px))}.top{height:57px}main{padding:20px 0}.heading{margin-bottom:15px}.heading p{font-size:12px}.game{grid-template-columns:1fr;gap:11px}.scene{min-height:215px;padding:13px 15px 11px;border-radius:20px}.art{min-height:128px}.rocket{height:150px;width:220px}.scene:before{bottom:22%}.progress-label{font-size:10px}.play{padding:14px;border-radius:20px}.stats{margin-bottom:10px}.stat{padding:7px 10px}.word{min-height:60px;margin:3px 0}.letter{height:40px}.keyboard{gap:5px}.key{min-height:41px}.note{display:none}}
+    @media(max-width:390px){.keyboard{grid-template-columns:repeat(6,minmax(0,1fr))}.key{min-height:39px}.play{padding:12px}.letter{width:25px;font-size:18px}.letter.space{width:9px}.top-note{display:none}}
+    @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+  </style>
+</head>
+<body>
+  <header class="shell top"><a class="brand" href="../" aria-label="Arcade de Vladi, inicio"><b>V</b> ARCADE DE VLADI</a><a class="back" href="../">← Volver al arcade</a></header>
+  <main class="shell">
+    <header class="heading"><span class="eyebrow">Desafío de palabras · Juego 2</span><h1>Rescatá a <span>Vladi</span></h1><p>Descubrí la palabra y ayudá a terminar la nave antes de que se agote la energía.</p></header>
+    <section class="game" aria-label="Juego de palabras Rescatá a Vladi">
+      <aside class="scene" aria-label="Ilustración de la nave de rescate">
+        <div class="scene-head"><span>NAVE DE RESCATE</span><span class="energy" id="energy" aria-label="Seis oportunidades"><i></i><i></i><i></i><i></i><i></i><i></i></span></div>
+        <div class="art">
+          <svg class="rocket" viewBox="0 0 320 290" role="img" aria-label="Nave de rescate de Vladi en construcción">
+            <path id="spark" class="piece on" d="M53 53l6 14 14 6-14 6-6 14-6-14-14-6 14-6z" fill="#ffd166"/>
+            <path class="piece on" d="M251 70l4 9 9 4-9 4-4 9-4-9-9-4 9-4z" fill="#9ceee2"/>
+            <path id="flame" class="piece" data-step="5" d="M142 205q18 35 0 50 20-9 18-28 11 16 5 31 25-22 7-53z"/>
+            <path class="piece" data-step="4" d="M130 189l-28 31 41-7z" fill="#ffb95d"/><path class="piece" data-step="4" d="M185 189l28 31-41-7z" fill="#ffb95d"/>
+            <path class="piece" data-step="1" d="M119 151l-35 21 37 12z" fill="#78e5dd"/><path class="piece" data-step="1" d="M197 151l35 21-37 12z" fill="#78e5dd"/>
+            <path d="M159 45c-31 34-44 64-44 101v46q44 25 88 0v-46c0-37-13-67-44-101z" fill="#eef3ff" stroke="#c3d3f5" stroke-width="5"/>
+            <path class="piece" data-step="3" d="M119 143h80v44q-40 22-80 0z" fill="#ff8eaa"/>
+            <circle id="window" cx="159" cy="123" r="24" fill="#65d9dc" stroke="#fff" stroke-width="6"/>
+            <circle class="piece" data-step="2" cx="159" cy="123" r="11" fill="#fbd37c"/>
+            <path id="smile" d="M153 127q6 7 12 0"/>
+            <path class="piece" data-step="4" d="M148 206h22l-4 12h-14z" fill="#8a9bbc"/>
+            <path class="piece" data-step="6" d="M159 76l5 11 12 2-9 8 2 12-10-6-10 6 2-12-9-8 12-2z" fill="#ffd166"/>
+            <path class="piece" data-step="3" d="M126 163h15m37 0h15" stroke="#fff" stroke-width="4" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="progress-label" id="progress-label">La nave espera sus piezas. <strong>¡Vamos!</strong></div>
+      </aside>
+      <div class="play">
+        <div class="stats"><div class="stat"><span>Puntos</span><b id="score">0</b></div><div class="stat"><span>Récord</span><b id="best">0</b></div><div class="stat"><span>Racha</span><b id="streak">0</b></div></div>
+        <div class="clue"><small id="category">Categoría</small><p id="hint">Pista</p></div>
+        <div class="word" id="word" aria-label="Palabra oculta"></div>
+        <p class="message" id="message" aria-live="polite">Elegí una letra para empezar.</p>
+        <div class="keyboard" id="keyboard" role="group" aria-label="Teclado de letras"></div>
+        <div class="controls"><button class="action secondary" id="hint-button" type="button">💡 Otra pista</button><button class="action" id="next-button" type="button" hidden>Siguiente palabra →</button></div>
+        <p class="note">También podés usar el teclado de la compu. Los acentos no cambian la letra.</p>
+      </div>
+    </section>
+  </main>
+  <script>
+  (()=>{
+    "use strict";
+    const words=[
+      {word:"MARIPOSA",category:"Animales",hint:"Tiene alas de colores y visita las flores."},
+      {word:"PINGUINO",category:"Animales",hint:"Es un ave que camina gracioso y vive en lugares fríos."},
+      {word:"TORTUGA",category:"Animales",hint:"Lleva su casita sobre la espalda."},
+      {word:"DELFIN",category:"Animales",hint:"Salta en el agua y se comunica con silbidos."},
+      {word:"JIRAFA",category:"Animales",hint:"Tiene un cuello larguísimo y manchas."},
+      {word:"COCODRILO",category:"Animales",hint:"Un reptil grande que vive cerca del agua."},
+      {word:"ESTRELLA",category:"Espacio",hint:"Brilla en el cielo y nuestro Sol también es una."},
+      {word:"PLANETA",category:"Espacio",hint:"La Tierra es uno de ellos."},
+      {word:"COHETE",category:"Espacio",hint:"Viaja al espacio con mucho combustible."},
+      {word:"COMETA",category:"Espacio",hint:"Cruza el cielo con una cola brillante."},
+      {word:"BRUJULA",category:"Aventura",hint:"Ayuda a encontrar el norte cuando explorás."},
+      {word:"MOCHILA",category:"Aventura",hint:"La llevás en la espalda para guardar tus cosas."},
+      {word:"TESORO",category:"Aventura",hint:"Un premio escondido que buscan los exploradores."},
+      {word:"CASCADA",category:"Naturaleza",hint:"Agua que cae desde una altura en un río."},
+      {word:"VOLCAN",category:"Naturaleza",hint:"Una montaña que puede expulsar lava."},
+      {word:"BICICLETA",category:"Objetos",hint:"Tiene dos ruedas y se mueve con pedales."},
+      {word:"ARCOIRIS",category:"Naturaleza",hint:"Aparece con el sol y la lluvia, con muchos colores."},
+      {word:"DINOSAURIO",category:"Animales",hint:"Un animal prehistórico gigante que ya no existe."}
+    ];
+    const alphabet=[..."ABCDEFGHIJKLMNÑOPQRSTUVWXYZ"];
+    const $=id=>document.getElementById(id);
+    const game={score:0,streak:0,best:Number(localStorage.getItem("vladiAhorcadoBest")||0),misses:0,used:new Set(),current:null,seen:new Set(),locked:false,hintUsed:false};
+    const norm=s=>s.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toUpperCase();
+    const svgParts=[...document.querySelectorAll(".rocket [data-step]")];
+    function draw(){svgParts.forEach(el=>el.classList.toggle("on",Number(el.dataset.step)<=game.misses));$("energy").querySelectorAll("i").forEach((el,i)=>el.classList.toggle("off",i<game.misses));$("progress-label").innerHTML=game.misses===0?"La nave espera sus piezas. <strong>¡Vamos!</strong>":game.misses<6?`¡Bien! La nave ya tiene <strong>${game.misses} de 6</strong> piezas.`:"¡La nave está lista! Probemos otra palabra.";}
+    function pick(){let available=words.map((_,i)=>i).filter(i=>!game.seen.has(i));if(!available.length){game.seen.clear();available=words.map((_,i)=>i)}const index=available[Math.floor(Math.random()*available.length)];game.seen.add(index);game.current=words[index];game.used.clear();game.misses=0;game.locked=false;game.hintUsed=false;$("category").textContent=game.current.category;$("hint").textContent=game.current.hint;$("message").textContent="Elegí una letra para empezar.";$("message").className="message";$("hint-button").hidden=false;$("next-button").hidden=true;render();draw();}
+    function render(){const answer=norm(game.current.word);const won=[...answer].every(ch=>ch===" "||game.used.has(ch));$("word").replaceChildren();[...game.current.word].forEach((raw,i)=>{if(raw===" "){const gap=document.createElement("span");gap.className="letter space";gap.setAttribute("aria-hidden","true");$("word").append(gap);return}const ch=norm(raw);const box=document.createElement("span");box.className="letter"+(game.locked&&!won?" reveal":"");box.textContent=game.used.has(ch)||game.locked?raw:"";box.setAttribute("aria-label",game.used.has(ch)||game.locked?raw:"letra oculta");$("word").append(box)});$("keyboard").replaceChildren();alphabet.forEach(letter=>{const b=document.createElement("button");b.type="button";b.className="key";b.textContent=letter;b.disabled=game.used.has(letter)||game.locked;b.setAttribute("aria-label",`Letra ${letter}`);if(game.used.has(letter))b.classList.add(answer.includes(letter)?"hit":"miss");b.addEventListener("click",()=>guess(letter));$("keyboard").append(b)});$("score").textContent=game.score;$("best").textContent=game.best;$("streak").textContent=game.streak;}
+    function finish(win){game.locked=true;if(win){const bonus=game.misses===0?50:0;game.score+=100+bonus;game.streak++;$("message").textContent=bonus?"¡Perfecto! Palabra descubierta sin errores: +150 puntos.":"¡Muy bien! Palabra descubierta: +100 puntos.";$("message").className="message good";}else{game.streak=0;$("message").textContent=`¡Nave lista! La palabra era ${game.current.word}. ¡Vamos por otra!`;$("message").className="message bad";}if(game.score>game.best){game.best=game.score;localStorage.setItem("vladiAhorcadoBest",String(game.best));}$("hint-button").hidden=true;$("next-button").hidden=false;$("next-button").textContent=win?"Siguiente palabra →":"Intentar otra palabra →";render();draw();$("next-button").focus();}
+    function guess(letter){if(game.locked||game.used.has(letter))return;game.used.add(letter);if(!norm(game.current.word).includes(letter)){game.misses++;$("message").textContent=game.misses<6?"Esa letra no está. ¡Todavía podés!":"La nave ya está lista…";$("message").className="message bad";}else{$("message").textContent="¡Esa letra sí está!";$("message").className="message good";}const won=[...norm(game.current.word)].every(ch=>ch===" "||game.used.has(ch));if(won){finish(true);return}if(game.misses>=6){finish(false);return}render();draw();}
+    $("hint-button").addEventListener("click",()=>{if(game.hintUsed||game.locked)return;game.hintUsed=true;const answer=norm(game.current.word);const unguessed=[...new Set([...answer].filter(ch=>ch!==" "&&!game.used.has(ch)))];if(unguessed.length){game.score=Math.max(0,game.score-20);guess(unguessed[Math.floor(Math.random()*unguessed.length)]);if(!game.locked){$("message").textContent="Pista extra: revelamos una letra (−20 puntos).";$("message").className="message";}}$("hint-button").hidden=true;render();});
+    $("next-button").addEventListener("click",pick);
+    document.addEventListener("keydown",e=>{if(e.altKey||e.ctrlKey||e.metaKey)return;const key=norm(e.key);if(key.length===1&&alphabet.includes(key)&&!game.locked){e.preventDefault();guess(key)}});
+    pick();
+  })();
+  </script>
+</body>
+</html>
