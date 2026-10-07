@@ -69,7 +69,8 @@ function drawVladi(x,y,t){
  const moving=state==='playing'&&player.t<1,gait=moving?Math.sin(t*.018):0;
  // Cabeza completa recortada desde la referencia, sin círculo ni recorte geométrico.
  const w=Math.min(dims.w*1.42,dims.h*1.3*ratio),h=w/ratio;
- ctx.save();ctx.translate(pos.x,pos.y+gait*dims.h*.04);ctx.rotate(gait*.025);ctx.shadowColor='#c9a4ff';ctx.shadowBlur=Math.max(4,dims.w*.18);
+ const bob=gait*dims.h*.04,visibleY=Math.min(pos.y,canvas.clientHeight-h/2-Math.abs(bob)-4);
+ ctx.save();ctx.translate(pos.x,visibleY+bob);ctx.rotate(gait*.025);ctx.shadowColor='#c9a4ff';ctx.shadowBlur=Math.max(4,dims.w*.18);
  ctx.drawImage(faceSprite,-w/2,-h/2,w,h);ctx.restore();
 }
 function drawMonster(g,t){
