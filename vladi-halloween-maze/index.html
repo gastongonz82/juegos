@@ -13,7 +13,7 @@
 .top{position:absolute;z-index:4;top:max(7px,env(safe-area-inset-top));left:max(10px,env(safe-area-inset-left));right:max(10px,env(safe-area-inset-right));pointer-events:none}
 .top>*{pointer-events:auto}
 .arena{position:absolute;z-index:1;inset:0;min-height:0;border:0;border-radius:0;background:radial-gradient(ellipse at center,#211a38 0,#0c0a17 72%);box-shadow:none;overflow:hidden}
-.bottom{position:absolute;z-index:4;left:0;right:0;bottom:max(8px,env(safe-area-inset-bottom));min-height:0;padding:0 max(12px,env(safe-area-inset-right)) 0 max(12px,env(safe-area-inset-left));pointer-events:none}
+.bottom{position:absolute;z-index:4;left:0;right:0;bottom:max(8px,env(safe-area-inset-bottom));min-height:0;padding:0 max(18px,env(safe-area-inset-right)) 0 max(12px,env(safe-area-inset-left));justify-content:flex-end;pointer-events:none}
 .bottom .pad{pointer-events:auto}
 .powerbar{bottom:calc(max(10px,env(safe-area-inset-bottom)) + 82px)}
 @media(max-width:620px){.bottom{justify-content:flex-end;padding-right:max(12px,env(safe-area-inset-right))}}
@@ -28,4 +28,4 @@
 <div class="overlay hidden" id="levelOverlay"><section class="card"><div class="eyebrow">LABERINTO SUPERADO</div><h2>¡NIVEL <span id="doneLevel">1</span>!</h2><p class="copy">¡Qué valiente! Los monstruos se escondieron en un nuevo laberinto. El próximo será más difícil.</p><div class="how"><span><b>🍬</b>¡Todo recogido!</span><span><b>⭐</b>Bonus +500</span></div><button class="primary" id="next">▶ SIGUIENTE NIVEL</button></section></div>
 <div class="overlay hidden" id="over"><section class="card"><div class="eyebrow">FIN DE LA AVENTURA</div><h2>¡GAME OVER!</h2><div class="hero" role="img" aria-label="Vladi listo para otro intento"></div><p class="copy">Puntaje: <b id="finalScore">0</b> · Nivel: <b id="finalLevel">1</b><br>Récord: <b id="finalBest">0</b></p><button class="primary" id="again">↻ JUGAR DE NUEVO</button></section></div></section>
 <footer class="bottom"><div class="hint"><strong>TECLADO:</strong> ← ↑ → ↓ / WASD<br><strong>CELULAR:</strong> tocá flechas o deslizá</div><nav class="pad" aria-label="Controles táctiles"><button data-dir="up" aria-label="Arriba">▲</button><button data-dir="left" aria-label="Izquierda">◀</button><button data-dir="down" aria-label="Abajo">▼</button><button data-dir="right" aria-label="Derecha">▶</button></nav></footer>
-</main><script src="./game.js?v=6"></script></body></html>
+</main><script src="./game.js?v=7"></script></body></html>
