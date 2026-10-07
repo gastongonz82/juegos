@@ -25,7 +25,7 @@
   </style>
 </head>
 <body>
-  <canvas id="game" aria-label="Pista de bowling. Arrastrá la pelota hacia atrás y soltá para lanzar. Con teclado: flechas para apuntar y espacio para lanzar."></canvas>
+  <canvas id="game" tabindex="0" role="img" aria-label="Pista de bowling. Arrastrá la pelota hacia atrás y soltá para lanzar. Con teclado: flechas para apuntar y espacio para lanzar."></canvas>
   <header class="hud" aria-label="Marcador">
     <div class="brand"><span class="mark">V</span><div><strong>Vladi Bowling</strong><small>ARCADE • 10 FRAMES</small></div></div>
     <div class="stats"><div class="stat"><label>FRAME</label><b id="frame-label">1 / 10</b></div><div class="stat"><label>PUNTOS</label><b id="score-label">0</b></div><div class="stat"><label>RÉCORD</label><b id="best-label">0</b></div></div>
@@ -39,6 +39,6 @@
   <script>window.VladiMusicSource='../music/vladi-bowling.ogg';</script>
   <script src="../game-music.js"></script>
   <script src="../game-audio.js"></script>
-  <script src="./game.js?v=1"></script>
+  <script src="./game.js?v=2"></script>
 </body>
 </html>

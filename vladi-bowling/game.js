@@ -39,10 +39,11 @@
   }
   function projectPin(pin) {
     const { cx, laneW, topY, laneH } = layout;
-    const y = topY + laneH * (.355 + pin.row * .033);
+    // Rack sits at the far end of the lane. Row 3 faces the player.
+    const y = topY + laneH * (.055 + pin.row * .036);
     const depth = (y - topY) / laneH;
     const half = laneW * (.215 + depth * .25);
-    return { x: cx + pin.nx * laneW + aim * laneW * .008, y, scale: .63 + depth * .58, half };
+    return { x: cx + pin.nx * laneW, y, scale: .76 + depth * .52, half };
   }
   function scoreBowls() {
     let value = 0, ri = 0;
@@ -122,7 +123,7 @@
     updateHud(); sound('start'); draw();
   }
   function pinShape(x, y, scale, falling = 0, direction = 1) {
-    const bodyW = 17 * scale, bodyH = 39 * scale;
+    const bodyW = 19 * scale, bodyH = 46 * scale;
     ctx.save(); ctx.translate(x, y); if (falling) ctx.rotate(direction * falling * 1.05);
     ctx.shadowColor = '#0009'; ctx.shadowBlur = 10 * scale; ctx.shadowOffsetY = 4 * scale;
     const grad = ctx.createLinearGradient(-bodyW / 2, 0, bodyW / 2, 0);
@@ -205,8 +206,8 @@
     if (state === 'aim' || state === 'title') {
       const start = ballStart(), targetX = cx + aim * laneW * .12;
       ctx.save(); ctx.setLineDash([5, 8]); ctx.strokeStyle = drag ? 'rgba(255,235,177,.8)' : 'rgba(255,232,187,.28)'; ctx.lineWidth = 2;
-      ctx.beginPath(); ctx.moveTo(start.x, start.y); ctx.quadraticCurveTo((start.x + targetX) / 2, topY + laneH * .54, targetX, topY + laneH * .42); ctx.stroke(); ctx.setLineDash([]);
-      ctx.fillStyle = 'rgba(255,214,135,.55)'; ctx.beginPath(); ctx.arc(targetX, topY + laneH * .42, 5, 0, Math.PI * 2); ctx.fill(); ctx.restore();
+      ctx.beginPath(); ctx.moveTo(start.x, start.y); ctx.quadraticCurveTo((start.x + targetX) / 2, topY + laneH * .48, targetX, topY + laneH * .19); ctx.stroke(); ctx.setLineDash([]);
+      ctx.fillStyle = 'rgba(255,214,135,.55)'; ctx.beginPath(); ctx.arc(targetX, topY + laneH * .19, 5, 0, Math.PI * 2); ctx.fill(); ctx.restore();
     }
     ctx.restore();
     // Lane edges
@@ -225,6 +226,8 @@
         const t = Math.min(1, ball.t), ease = t * t * (3 - 2 * t);
         const p = ballStart(); bx = p.x + (ball.targetX - p.x) * ease; by = p.y + (ball.targetY - p.y) * ease;
         br = 6 + 17 * ease; rotation = ease * 12 + clock * 5;
+      } else if (ball && (state === 'falling' || state === 'settle')) {
+        bx = ball.targetX; by = ball.targetY + 4; br = 21; rotation = clock * 4;
       } else { const p = ballStart(); bx = p.x; by = p.y; br = Math.min(18, laneW * .024); }
       if (!ball || !ball.moving || ball.t < .98) drawBall(bx, by, br, rotation);
       if (drag && !ball) {
@@ -244,27 +247,32 @@
     if (!standing.length) return [];
     const laneHalf = layout.laneW * .24;
     const localTarget = (targetX - layout.cx) / laneHalf;
-    let nearest = standing.map(pin => ({ pin, d: Math.abs(pin.nx / .19 - localTarget) })).sort((a, b) => a.d - b.d);
-    const radius = .12 + strength * .14;
-    const primary = nearest.filter(x => x.d < radius).map(x => x.pin);
-    if (!primary.length) {
-      // A gutter shot only misses if aim is far outside the rack; near edges clip the outside pin.
-      if (Math.abs(localTarget) < 1.02) primary.push(nearest[0].pin);
-      else return [];
-    }
-    const affected = new Set(primary.map(pin => pin.id));
-    let frontier = [...primary];
-    const chainRange = .115 + strength * .14 + Math.abs(shotSpin) * .025;
-    for (let step = 0; step < 3; step++) {
-      const next = [];
-      for (const hit of frontier) for (const other of standing) {
-        if (!affected.has(other.id) && Math.abs(other.nx - hit.nx) <= chainRange && Math.abs(other.row - hit.row) <= 1) {
-          affected.add(other.id); next.push(other);
-        }
+    const distance = pin => Math.abs(pin.nx / .19 - localTarget);
+    const strikePocket = strength >= .84 && (Math.abs(localTarget - .105) <= .038 || Math.abs(localTarget + .105) <= .038);
+    let falls;
+    if (strikePocket && standing.length === 10) {
+      // A high, accurate hit in either pocket sends the full rack down.
+      falls = standing;
+    } else {
+      const impactRadius = .16 + strength * .15;
+      const firstThrow = frames[frame].length === 0;
+      const front = standing.filter(pin => pin.row === 3).sort((a, b) => distance(a) - distance(b));
+      if (!firstThrow) {
+        let primary = standing.filter(pin => distance(pin) <= impactRadius);
+        if (!primary.length && standing.length && Math.abs(localTarget) < .92) primary = [standing.slice().sort((a, b) => distance(a) - distance(b))[0]];
+        falls = primary;
+      } else {
+        let primary = front.filter(pin => distance(pin) <= impactRadius);
+        if (!primary.length && front.length && Math.abs(localTarget) < .92) primary = [front[0]];
+        const ids = new Set(primary.map(pin => pin.id));
+        // Only pins immediately behind the first contact can join this throw. A modest
+        // hit clips a few pins; it cannot domino the entire rack by itself.
+        const chainLimit = .061 + strength * .02 + Math.abs(shotSpin) * .004;
+        const secondary = standing.filter(pin => pin.row === 2 && primary.some(hit => Math.abs(pin.nx - hit.nx) <= chainLimit));
+        secondary.forEach(pin => ids.add(pin.id));
+        falls = standing.filter(pin => ids.has(pin.id));
       }
-      frontier = next;
     }
-    const falls = standing.filter(pin => affected.has(pin.id));
     falls.forEach(pin => { pin.down = true; pin.fall = 0; pin.dir = Math.sign(pin.nx - localTarget) || (shotSpin >= 0 ? 1 : -1); });
     return falls;
   }
@@ -277,6 +285,7 @@
   }
   function afterRoll(knocked) {
     const r = frames[frame]; r.push(knocked); rolls.push(knocked); lastPinfall = knocked;
+    ball = null;
     totalScore = scoreBowls(); updateBest(); updateHud();
     if (frame < 9) {
       const spareOrStrike = r[0] === 10 || (r.length === 2 && r[0] + r[1] === 10);
@@ -312,7 +321,7 @@
     if (state !== 'aim' || ball?.moving) return;
     power = Math.max(.2, Math.min(1, power));
     sound('kick');
-    ball = { moving: true, t: 0, duration: .9 - power * .16, targetX, targetY: layout.topY + layout.laneH * .43, power, spin: shotSpin };
+    ball = { moving: true, t: 0, duration: .98 - power * .16, targetX, targetY: layout.topY + layout.laneH * .20, power, spin: shotSpin };
     state = 'roll'; hint.textContent = '¡Allá va!'; draw();
   }
   function completeRoll() {
@@ -378,7 +387,7 @@
     if (state !== 'aim') return;
     if (e.code === 'ArrowLeft' || e.code === 'KeyA') { e.preventDefault(); aim = Math.max(-1, aim - .055); draw(); }
     else if (e.code === 'ArrowRight' || e.code === 'KeyD') { e.preventDefault(); aim = Math.min(1, aim + .055); draw(); }
-    else if (e.code === 'Space' || e.code === 'Enter') { e.preventDefault(); throwBall(.74); }
+    else if (e.code === 'Space' || e.code === 'Enter') { e.preventDefault(); throwBall(.86); }
   });
   function togglePause() {
     if (state === 'aim' || state === 'roll' || state === 'falling' || state === 'settle') {
