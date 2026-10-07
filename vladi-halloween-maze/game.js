@@ -49,10 +49,10 @@ function drawVladi(x,y,t){
  const pos=projectedCenter(x,y),dims=projectedSize(y),size=Math.max(18,Math.min(dims.w*.98,dims.h*.9));
  ctx.save();ctx.translate(pos.x,pos.y);
  // Recorte de rostro: frente, mejillas y mandíbula, sin gorra ni marco.
- const face=()=>{ctx.beginPath();ctx.moveTo(-size*.31,-size*.37);ctx.quadraticCurveTo(-size*.1,-size*.46,size*.12,-size*.4);ctx.quadraticCurveTo(size*.31,-size*.36,size*.36,-size*.2);ctx.lineTo(size*.43,-size*.09);ctx.quadraticCurveTo(size*.48,-size*.01,size*.4,size*.08);ctx.lineTo(size*.34,size*.27);ctx.quadraticCurveTo(size*.22,size*.43,0,size*.46);ctx.quadraticCurveTo(-size*.22,size*.43,-size*.34,size*.27);ctx.lineTo(-size*.4,size*.08);ctx.quadraticCurveTo(-size*.48,-size*.01,-size*.43,-size*.09);ctx.lineTo(-size*.36,-size*.2);ctx.closePath();};
+ const face=()=>{ctx.beginPath();ctx.moveTo(-size*.3,-size*.34);ctx.quadraticCurveTo(-size*.25,-size*.46,-size*.08,-size*.44);ctx.quadraticCurveTo(size*.09,-size*.47,size*.23,-size*.37);ctx.lineTo(size*.34,-size*.25);ctx.quadraticCurveTo(size*.4,-size*.15,size*.4,-size*.05);ctx.lineTo(size*.46,size*.02);ctx.quadraticCurveTo(size*.47,size*.1,size*.38,size*.13);ctx.lineTo(size*.32,size*.29);ctx.quadraticCurveTo(size*.2,size*.45,0,size*.48);ctx.quadraticCurveTo(-size*.2,size*.45,-size*.32,size*.29);ctx.lineTo(-size*.38,size*.13);ctx.quadraticCurveTo(-size*.47,size*.1,-size*.46,size*.02);ctx.lineTo(-size*.4,-size*.05);ctx.quadraticCurveTo(-size*.4,-size*.15,-size*.34,-size*.25);ctx.closePath();};
  face();ctx.save();ctx.clip();
- if(faceSprite.complete&&faceSprite.naturalWidth){ctx.drawImage(faceSprite,104,78,170,91,-size*.47,-size*.4,size*.94,size*.82);}
- else if(sprite.complete&&sprite.naturalWidth){ctx.drawImage(sprite,0,0,sprite.naturalWidth/4,sprite.naturalHeight,-size*.47,-size*.4,size*.94,size*.82);}
+ if(faceSprite.complete&&faceSprite.naturalWidth){ctx.drawImage(faceSprite,104,70,170,103,-size*.46,-size*.45,size*.92,size*.9);}
+ else if(sprite.complete&&sprite.naturalWidth){ctx.drawImage(sprite,0,0,sprite.naturalWidth/4,sprite.naturalHeight,-size*.46,-size*.45,size*.92,size*.9);}
  ctx.restore();
  ctx.restore();
 }
