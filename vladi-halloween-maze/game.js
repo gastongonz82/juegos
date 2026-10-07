@@ -35,7 +35,21 @@ function updateHud(){ui.level.textContent=level;ui.score.textContent=score;ui.be
 function beep(freq=500,dur=.07,type='sine',vol=.04){if(!sound)return;try{audio=audio||new(window.AudioContext||window.webkitAudioContext)();if(audio.state==='suspended')audio.resume();const o=audio.createOscillator(),g=audio.createGain();o.type=type;o.frequency.value=freq;g.gain.setValueAtTime(vol,audio.currentTime);g.gain.exponentialRampToValueAtTime(.001,audio.currentTime+dur);o.connect(g).connect(audio.destination);o.start();o.stop(audio.currentTime+dur);}catch{}}
 function blip(kind){if(kind==='candy')beep(720,.045,'triangle');else if(kind==='pumpkin'){[440,660,880].forEach((f,i)=>setTimeout(()=>beep(f,.14,'sine',.055),i*75));}else if(kind==='eat')beep(220,.18,'square',.035);else if(kind==='hit'){beep(130,.26,'sawtooth',.06);}else if(kind==='win'){[523,659,784,1046].forEach((f,i)=>setTimeout(()=>beep(f,.16),i*95));}}
 function pop(msg){ui.toast.textContent=msg;ui.toast.classList.add('on');clearTimeout(toastTimer);toastTimer=setTimeout(()=>ui.toast.classList.remove('on'),1050)}
-function setDir(d){if(state!=='playing')return;queued=d;const v=dirs[d],nx=player.x+v[0],ny=player.y+v[1];if(!maze[ny]?.[nx])movePlayer(d);}
+function setDir(d){
+ if(state!=='playing'||!player)return;queued=d;const v=dirs[d];
+ if(player.t>=1){if(passable(player.x+v[0],player.y+v[1]))movePlayer(d);return;}
+ const moveX=player.x-player.fromX,moveY=player.y-player.fromY;
+ // Invertir el tramo actual sin frenar ni saltar de posición.
+ if((moveX>0&&d==='left')||(moveX<0&&d==='right')||(moveY>0&&d==='up')||(moveY<0&&d==='down')){
+  const x=player.x,y=player.y,progress=player.t;player.x=player.fromX;player.y=player.fromY;player.fromX=x;player.fromY=y;player.t=1-progress;dir=d;queued=null;return;
+ }
+ // Ventana de giro generosa: al tocar cerca de una esquina, alinea a Vladi con ella y dobla.
+ const horizontal=moveX!==0,perpendicular=horizontal?(d==='up'||d==='down'):(d==='left'||d==='right');
+ if(perpendicular){const t=player.t,fromSide=t<=.5,dist=fromSide?t:1-t,nodeX=fromSide?player.fromX:player.x,nodeY=fromSide?player.fromY:player.y;
+  if(dist<=.34&&passable(nodeX+v[0],nodeY+v[1])){player.x=nodeX;player.y=nodeY;player.fromX=nodeX;player.fromY=nodeY;player.t=1;movePlayer(d);return;}
+ }
+ if(passable(player.x+v[0],player.y+v[1])&&player.t>=.92)movePlayer(d);
+}
 function movePlayer(d){if(state!=='playing'||player.t<1)return;const [dx,dy]=dirs[d],nx=player.x+dx,ny=player.y+dy;if(maze[ny]?.[nx]!==0)return;dir=d;queued=null;player.fromX=player.x;player.fromY=player.y;player.x=nx;player.y=ny;player.t=0;collect();checkCollisions();}
 function collect(){const item=items[player.y]?.[player.x];if(item==='c'){items[player.y][player.x]='';score+=10;saveBest();blip('candy');}else if(item==='p'){items[player.y][player.x]='';power=9;score+=50;saveBest();blip('pumpkin');pop('¡PODER DE CALABAZA!');}updateHud();}
 function passable(x,y){return maze[y]?.[x]===0;}
