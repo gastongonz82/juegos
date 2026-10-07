@@ -38,12 +38,26 @@ function fieldBackground(){const sky=ctx.createLinearGradient(0,0,0,H*.57);sky.a
  // field and pitch perspective
  const gy=goal().y;const turf=ctx.createLinearGradient(0,gy,0,H);turf.addColorStop(0,'#58bd75');turf.addColorStop(.14,'#258456');turf.addColorStop(1,'#07503f');ctx.fillStyle=turf;ctx.beginPath();ctx.moveTo(0,gy+H*.21);ctx.lineTo(W,gy+H*.21);ctx.lineTo(W,H);ctx.lineTo(0,H);ctx.fill();
  for(let i=0;i<8;i++){const y=gy+H*.22+i*(H-gy-H*.22)/8;ctx.fillStyle=i%2?'#ffffff08':'#071c1510';ctx.fillRect(0,y,W,(H-gy-H*.22)/8)}
- ctx.strokeStyle='#f0ffe7aa';ctx.lineWidth=Math.max(1.4,W*.002);ctx.beginPath();ctx.moveTo(W*.18,gy+H*.23);ctx.lineTo(W*.82,gy+H*.23);ctx.lineTo(W*.99,H);ctx.moveTo(W*.82,gy+H*.23);ctx.lineTo(W*.01,H);ctx.moveTo(W*.27,gy+H*.4);ctx.lineTo(W*.73,gy+H*.4);ctx.lineTo(W*.91,H);ctx.moveTo(W*.73,gy+H*.4);ctx.lineTo(W*.09,H);ctx.stroke();
+ // Markings drawn as closed perspective rectangles; each baseline connects its own sides.
+ ctx.strokeStyle='#f0ffe7aa';ctx.lineWidth=Math.max(1.4,Math.min(W,H)*.0025);ctx.lineJoin='round';ctx.beginPath();
+ ctx.moveTo(W*.18,gy+H*.23);ctx.lineTo(W*.82,gy+H*.23);ctx.lineTo(W*.99,H);ctx.lineTo(W*.01,H);ctx.closePath();
+ ctx.moveTo(W*.27,gy+H*.4);ctx.lineTo(W*.73,gy+H*.4);ctx.lineTo(W*.91,H);ctx.lineTo(W*.09,H);ctx.closePath();ctx.stroke();
  ctx.fillStyle='#effff0';ctx.beginPath();ctx.arc(W*.5,gy+H*.48,3,0,Math.PI*2);ctx.fill();ctx.strokeStyle='#effff055';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(W*.5,gy+H*.48,W*.065,H*.035,0,0,Math.PI*2);ctx.stroke();
  // atmospheric glints
  sparkles.forEach(p=>{ctx.globalAlpha=.16+.16*Math.sin(time*1.4+p.p);ctx.fillStyle='#fff2ca';ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fill()});ctx.globalAlpha=1;
 }
-function drawBall(x,y,r,rot=0){ctx.save();ctx.translate(x,y);ctx.rotate(rot);ctx.shadowColor='#001b22aa';ctx.shadowBlur=r*.55;ctx.shadowOffsetY=r*.3;ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(0,0,r,0,Math.PI*2);ctx.fill();ctx.shadowColor='transparent';ctx.shadowBlur=0;ctx.shadowOffsetY=0;ctx.fillStyle='#17202c';for(const [a,b,s] of [[0,0,.28],[-.63,-.28,.18],[.65,-.22,.18],[-.4,.62,.17],[.49,.62,.17]]){ctx.beginPath();ctx.arc(a*r*1.5,b*r*1.5,r*s,0,Math.PI*2);ctx.fill()}ctx.strokeStyle='#d8e0df';ctx.lineWidth=Math.max(1,r*.045);ctx.beginPath();ctx.arc(0,0,r*.82,0,Math.PI*2);ctx.stroke();ctx.restore()}
+function ballRadius(){return clamp(Math.min(W,H)*.028,13,28)}
+function drawBall(x,y,r,rot=0){
+ ctx.save();ctx.translate(x,y);ctx.rotate(rot);ctx.shadowColor='#001b22aa';ctx.shadowBlur=r*.5;ctx.shadowOffsetY=r*.28;
+ const leather=ctx.createRadialGradient(-r*.32,-r*.38,r*.04,0,0,r);leather.addColorStop(0,'#fff');leather.addColorStop(.72,'#f4f6f6');leather.addColorStop(1,'#bcc9ce');ctx.fillStyle=leather;ctx.beginPath();ctx.arc(0,0,r,0,Math.PI*2);ctx.fill();
+ ctx.shadowColor='transparent';ctx.shadowBlur=0;ctx.shadowOffsetY=0;ctx.beginPath();ctx.arc(0,0,r*.94,0,Math.PI*2);ctx.clip();
+ ctx.fillStyle='#17232c';
+ const pentagon=(x,y,size,angle)=>{ctx.beginPath();for(let i=0;i<5;i++){const a=angle+i*Math.PI*2/5,px=x+Math.cos(a)*size,py=y+Math.sin(a)*size;if(i===0)ctx.moveTo(px,py);else ctx.lineTo(px,py)}ctx.closePath();ctx.fill()};
+ pentagon(0,0,r*.245,-Math.PI/2);
+ for(let i=0;i<5;i++){const a=-Math.PI/2+i*Math.PI*2/5;pentagon(Math.cos(a)*r*.62,Math.sin(a)*r*.62,r*.205,a+Math.PI/5)}
+ ctx.strokeStyle='#3b4a52';ctx.lineWidth=Math.max(1,r*.025);ctx.beginPath();for(let i=0;i<5;i++){const a=-Math.PI/2+i*Math.PI*2/5;ctx.moveTo(Math.cos(a)*r*.27,Math.sin(a)*r*.27);ctx.lineTo(Math.cos(a)*r*.94,Math.sin(a)*r*.94)}ctx.stroke();
+ ctx.strokeStyle='#c5d1d5';ctx.lineWidth=Math.max(1,r*.04);ctx.beginPath();ctx.arc(0,0,r*.91,0,Math.PI*2);ctx.stroke();ctx.restore();
+}
 function drawGoal(){const g=goal(),post=Math.max(6,W*.009);ctx.save();
  // goal shadow and net body
  ctx.fillStyle='#00141a55';ctx.beginPath();ctx.ellipse(W*.5,g.y+g.h+14,g.w*.53,19,0,0,Math.PI*2);ctx.fill();
@@ -63,8 +77,8 @@ function drawKeeper(){const g=goal(),cx=W*.5,baseY=g.y+g.h*.88;let dx=0,dy=0,sca
  ctx.fillStyle='#eec49b';ctx.beginPath();ctx.arc(0,-105,22,0,Math.PI*2);ctx.fill();ctx.fillStyle='#392821';ctx.beginPath();ctx.arc(0,-111,23,Math.PI,Math.PI*2);ctx.lineTo(22,-104);ctx.quadraticCurveTo(0,-97,-22,-104);ctx.fill();ctx.fillStyle='#18243a';ctx.beginPath();ctx.arc(-7,-105,2,0,Math.PI*2);ctx.arc(7,-105,2,0,Math.PI*2);ctx.fill();ctx.strokeStyle='#9d4c35';ctx.lineWidth=2;ctx.beginPath();ctx.arc(0,-98,5,.2,Math.PI-.2);ctx.stroke();ctx.restore();}
 function drawPlayer(){if(!player.complete||!player.naturalWidth)return;const h=Math.min(H*.34,W*.54),w=h*player.naturalWidth/player.naturalHeight;const x=W*.45-w*.82,y=H*.53+Math.sin(time*5)*2;ctx.save();ctx.shadowColor='#06140f';ctx.shadowBlur=16;ctx.shadowOffsetY=8;ctx.drawImage(player,x,y,w,h);ctx.restore();return{x,y,w,h}}
 function drawAim(){const g=goal();ctx.save();const pulse=.5+.5*Math.sin(time*4);if(selected>=0&&!shot){const col=selected%3,row=Math.floor(selected/3);const x=g.x+g.w*(col/3),y=g.y+g.h*(row/2);ctx.globalAlpha=.2+pulse*.15;ctx.fillStyle='#ffe18a';ctx.fillRect(x,y,g.w/3,g.h/2);ctx.globalAlpha=1;ctx.strokeStyle='#ffe18a';ctx.lineWidth=3;ctx.strokeRect(x+2,y+2,g.w/3-4,g.h/2-4)}ctx.restore()}
-function drawShot(){if(!shot)return;const p=clamp(shot.t/shot.duration,0,1),ease=p*p*(3-2*p),x=shot.sx+(shot.tx-shot.sx)*ease,y=shot.sy+(shot.ty-shot.sy)*ease- Math.sin(Math.PI*p)*H*.1,r=Math.max(7,W*.022)*(1-ease*.58);ctx.save();if(!shot.saved){ctx.strokeStyle='#fff9';ctx.lineWidth=4;ctx.globalAlpha=.35;ctx.beginPath();ctx.moveTo(shot.sx,shot.sy);ctx.lineTo(x,y);ctx.stroke();ctx.globalAlpha=1}drawBall(x,y,r,p*5);ctx.restore()}
-function draw(){if(!W||!H)return;fieldBackground();const g=drawGoal();drawKeeper();drawAim();const pos=drawPlayer();if(pos&&!shot){const bx=pos.x+pos.w*.81,by=pos.y+pos.h*.91;drawBall(bx,by,Math.max(9,W*.022),time*.5)}if(shot)drawShot();
+function drawShot(){if(!shot)return;const p=clamp(shot.t/shot.duration,0,1),ease=p*p*(3-2*p),x=shot.sx+(shot.tx-shot.sx)*ease,y=shot.sy+(shot.ty-shot.sy)*ease- Math.sin(Math.PI*p)*H*.1,r=ballRadius()*(1-ease*.48);ctx.save();if(!shot.saved){ctx.strokeStyle='#fff9';ctx.lineWidth=4;ctx.globalAlpha=.35;ctx.beginPath();ctx.moveTo(shot.sx,shot.sy);ctx.lineTo(x,y);ctx.stroke();ctx.globalAlpha=1}drawBall(x,y,r,p*5);ctx.restore()}
+function draw(){if(!W||!H)return;fieldBackground();const g=drawGoal();drawKeeper();drawAim();const pos=drawPlayer();if(pos&&!shot){const bx=pos.x+pos.w*.81,by=pos.y+pos.h*.91;drawBall(bx,by,ballRadius(),time*.5)}if(shot)drawShot();
  // lives for saves and round marker remain readable above the shot area
  if(phase==='playing'){ctx.save();ctx.textAlign='left';ctx.font='900 '+Math.max(15,Math.min(20,W*.032))+'px system-ui';ctx.fillStyle='#ff8075';ctx.shadowColor='#0009';ctx.shadowBlur=5;ctx.fillText('🥅 '+'♥ '.repeat(lives),16,H*.17);ctx.restore()}
 }
