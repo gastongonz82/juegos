@@ -48,12 +48,12 @@ function projectedCenter(x,y){const a=project(x+.5,y),b=project(x+.5,y+1);return
 function drawVladi(x,y,t){
  const pos=projectedCenter(x,y),dims=projectedSize(y),size=Math.max(18,Math.min(dims.w*.98,dims.h*.84));
  ctx.save();ctx.translate(pos.x,pos.y);
- // Silueta de cabeza para que se vea la cara, sin medallón ni aro.
- const head=()=>{ctx.beginPath();ctx.moveTo(-size*.39,-size*.31);ctx.quadraticCurveTo(-size*.36,-size*.47,0,-size*.47);ctx.quadraticCurveTo(size*.38,-size*.46,size*.4,-size*.25);ctx.lineTo(size*.36,size*.1);ctx.quadraticCurveTo(size*.31,size*.4,0,size*.46);ctx.quadraticCurveTo(-size*.31,size*.4,-size*.36,size*.1);ctx.closePath();};
- head();ctx.save();ctx.clip();
- if(faceSprite.complete&&faceSprite.naturalWidth){ctx.drawImage(faceSprite,98,0,176,180,-size*.46,-size*.52,size*.92,size*1.04);}
- else if(sprite.complete&&sprite.naturalWidth){ctx.drawImage(sprite,0,0,sprite.naturalWidth/4,sprite.naturalHeight,-size*.46,-size*.52,size*.92,size*1.04);}
- ctx.restore();ctx.strokeStyle='#291b2d';ctx.lineWidth=Math.max(1,size*.025);head();ctx.stroke();
+ // Recorte ancho de la cara, sin gorra, borde ni medallón.
+ const face=()=>{ctx.beginPath();ctx.moveTo(-size*.43,-size*.24);ctx.quadraticCurveTo(-size*.42,-size*.4,0,-size*.4);ctx.quadraticCurveTo(size*.42,-size*.4,size*.43,-size*.2);ctx.lineTo(size*.4,size*.08);ctx.quadraticCurveTo(size*.34,size*.35,0,size*.39);ctx.quadraticCurveTo(-size*.34,size*.35,-size*.4,size*.08);ctx.closePath();};
+ face();ctx.save();ctx.clip();
+ if(faceSprite.complete&&faceSprite.naturalWidth){ctx.drawImage(faceSprite,98,48,176,116,-size*.49,-size*.4,size*.98,size*.8);}
+ else if(sprite.complete&&sprite.naturalWidth){ctx.drawImage(sprite,0,0,sprite.naturalWidth/4,sprite.naturalHeight,-size*.49,-size*.4,size*.98,size*.8);}
+ ctx.restore();
  ctx.restore();
 }
 function drawMonster(g,t){
