@@ -14,10 +14,19 @@
 .top>*{pointer-events:auto}
 .arena{position:absolute;z-index:1;inset:0;min-height:0;border:0;border-radius:0;background:radial-gradient(ellipse at center,#211a38 0,#0c0a17 72%);box-shadow:none;overflow:hidden}
 .bottom{position:absolute;z-index:4;left:0;right:0;bottom:max(8px,env(safe-area-inset-bottom));min-height:0;padding:0 max(18px,env(safe-area-inset-right)) 0 max(12px,env(safe-area-inset-left));justify-content:flex-end;pointer-events:none}
-.bottom .pad{pointer-events:auto}
+.bottom .pad,.bottom .stick{pointer-events:auto}
 .powerbar{bottom:calc(max(10px,env(safe-area-inset-bottom)) + 82px)}
 @media(max-width:620px){.bottom{justify-content:flex-end;padding-right:max(12px,env(safe-area-inset-right))}}
 @media(max-height:500px){.bottom{min-height:0}}
+/* Joystick arcade de bola: la palanca se arrastra desde el centro hacia cada dirección. */
+.stick{--dx:0px;--dy:0px;position:relative;flex:none;width:clamp(112px,18vw,146px);height:clamp(112px,18vw,146px);border-radius:50%;touch-action:none;user-select:none;-webkit-user-select:none;cursor:grab;filter:drop-shadow(0 7px 8px #0009)}
+.stick-base{position:absolute;inset:0;border:2px solid #c28c6b;border-radius:50%;background:radial-gradient(circle at 50% 48%,#21192f 0 35%,transparent 36%),radial-gradient(circle at 35% 24%,#786488 0,#493858 43%,#29213b 70%,#171322 100%);box-shadow:inset 0 3px 5px #fff4,inset 0 -8px 13px #07050c,0 3px #090711}
+.stick-base:before{content:'';position:absolute;inset:13%;border:2px solid #96769d;border-radius:50%;box-shadow:inset 0 0 0 5px #171225,0 0 0 2px #42324e;background:radial-gradient(circle at 42% 34%,#352846,#181322 72%)}
+.stick-base:after{content:'';position:absolute;inset:4%;border-radius:50%;background:radial-gradient(circle at 50% 5%,#edc58c 0 2px,transparent 3px),radial-gradient(circle at 95% 50%,#edc58c 0 2px,transparent 3px),radial-gradient(circle at 50% 95%,#edc58c 0 2px,transparent 3px),radial-gradient(circle at 5% 50%,#edc58c 0 2px,transparent 3px);pointer-events:none}
+.stick-shaft{position:absolute;z-index:2;left:50%;top:50%;width:13px;height:0;border-radius:99px;background:linear-gradient(90deg,#684c58,#f2cf9a 45%,#916b61);box-shadow:0 1px 4px #05030b;transform-origin:50% 0;pointer-events:none}
+.stick-knob{position:absolute;z-index:3;left:50%;top:50%;width:43%;height:43%;border:2px solid #f0c58a;border-radius:50%;background:radial-gradient(circle at 33% 24%,#fff0c3 0,#e8c48b 18%,#b78a69 46%,#705167 78%,#43354c 100%);box-shadow:inset 0 2px 4px #fff8,inset 0 -5px 8px #39253f,0 4px 5px #05030b;transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy)));pointer-events:none}
+.stick-knob:after{content:'';position:absolute;left:24%;top:18%;width:34%;height:20%;border-radius:50%;background:#fff9;filter:blur(1px)}
+@media(max-height:500px){.stick{width:90px;height:90px}.stick-knob{width:40%;height:40%}.stick-shaft{width:11px}}
 
 </style></head>
 <body><main id="app">
@@ -27,5 +36,5 @@
 <div class="overlay hidden" id="pauseOverlay"><section class="card"><div class="eyebrow">TOMATE UN RESPIRO</div><h2>PAUSA</h2><div class="hero" role="img" aria-label="Vladi en pausa"></div><p class="copy">Los monstruos quedaron congelados. ¿Seguimos?</p><button class="primary" id="resume">▶ SEGUIR</button><button class="secondary" id="restart">↻ Reiniciar partida</button></section></div>
 <div class="overlay hidden" id="levelOverlay"><section class="card"><div class="eyebrow">LABERINTO SUPERADO</div><h2>¡NIVEL <span id="doneLevel">1</span>!</h2><p class="copy">¡Qué valiente! Los monstruos se escondieron en un nuevo laberinto. El próximo será más difícil.</p><div class="how"><span><b>🍬</b>¡Todo recogido!</span><span><b>⭐</b>Bonus +500</span></div><button class="primary" id="next">▶ SIGUIENTE NIVEL</button></section></div>
 <div class="overlay hidden" id="over"><section class="card"><div class="eyebrow">FIN DE LA AVENTURA</div><h2>¡GAME OVER!</h2><div class="hero" role="img" aria-label="Vladi listo para otro intento"></div><p class="copy">Puntaje: <b id="finalScore">0</b> · Nivel: <b id="finalLevel">1</b><br>Récord: <b id="finalBest">0</b></p><button class="primary" id="again">↻ JUGAR DE NUEVO</button></section></div></section>
-<footer class="bottom"><div class="hint"><strong>TECLADO:</strong> ← ↑ → ↓ / WASD<br><strong>CELULAR:</strong> tocá flechas o deslizá</div><nav class="pad" aria-label="Controles táctiles"><button data-dir="up" aria-label="Arriba">▲</button><button data-dir="left" aria-label="Izquierda">◀</button><button data-dir="down" aria-label="Abajo">▼</button><button data-dir="right" aria-label="Derecha">▶</button></nav></footer>
-</main><script src="./game.js?v=24"></script></body></html>
+<footer class="bottom"><div class="hint"><strong>TECLADO:</strong> ← ↑ → ↓ / WASD<br><strong>CELULAR:</strong> mové el joystick o deslizá</div><div class="stick" id="stick" role="application" tabindex="0" aria-label="Joystick retro: arrastrá la palanca hacia arriba, abajo, izquierda o derecha"><div class="stick-base"></div><div class="stick-shaft" id="stickShaft"></div><div class="stick-knob" id="stickKnob"></div></div></footer>
+</main><script src="./game.js?v=25"></script></body></html>
