@@ -21,6 +21,10 @@
     @media(max-width:680px){.hud{inset:calc(env(safe-area-inset-top) + 8px) 8px auto;gap:5px}.brand{min-width:0;gap:6px}.mark{width:36px;height:36px;font-size:18px;border-radius:11px}.brand strong{max-width:64px;font-size:8px;letter-spacing:.04em}.brand small{font-size:7px}.stats{gap:4px}.stat{min-width:47px;padding:6px 4px;border-radius:11px}.stat label{font-size:7px;letter-spacing:.07em}.stat b{font-size:15px}.buttons{gap:3px}.icon{width:32px;height:34px;border-radius:10px;font-size:16px}#frame-strip{top:calc(env(safe-area-inset-top) + 53px);gap:2px;padding:4px}.frame{width:27px;height:29px}.frame small{font-size:7px}.frame b{font-size:10px}#hint{bottom:calc(env(safe-area-inset-bottom) + 12px);font-size:11px;padding:9px 12px}}
     @media(max-width:370px){.hud{gap:3px}.brand{gap:4px}.brand strong{max-width:40px;font-size:7px;letter-spacing:0}.brand small{display:none}.mark{width:28px;height:28px}.stats{gap:3px}.stat{min-width:38px;padding-inline:2px}.stat label{font-size:6px}.stat b{font-size:14px}.buttons{gap:2px}.icon{width:25px;height:29px;font-size:14px}.frame{width:24px}}
     @media(orientation:landscape) and (max-height:520px){.hud{inset:calc(env(safe-area-inset-top) + 6px) 12px auto}.mark,.icon{width:34px;height:34px}.stat{padding:4px 8px}.stat b{font-size:15px}#frame-strip{top:calc(env(safe-area-inset-top) + 48px)}#hint{bottom:calc(env(safe-area-inset-bottom) + 7px);padding:7px 12px}}
+    #shot-controls{position:fixed;z-index:3;left:50%;bottom:calc(env(safe-area-inset-bottom) + 62px);transform:translateX(-50%);display:flex;gap:14px;padding:10px 14px;width:min(440px,calc(100vw - 24px));border:1px solid #ffdc9c40;border-radius:14px;background:#111827ef;box-shadow:0 6px 18px #0006}#shot-controls[hidden]{display:none}#shot-controls label{flex:1;min-width:0;font-size:10px;color:#e7cd99;font-weight:800}#shot-controls output{float:right;color:#fff;font-size:10px}#shot-controls input{display:block;width:100%;margin:7px 0 0;accent-color:#f9ba67;height:22px;touch-action:pan-x} .frame{width:38px}.frame b{font-size:10px;white-space:nowrap}
+    @media(max-width:680px){.frame{width:27px}.frame b{font-size:8px}#shot-controls{gap:9px;padding:7px 10px;bottom:calc(env(safe-area-inset-bottom) + 53px)}#shot-controls label,#shot-controls output{font-size:9px}}
+    @media(max-width:370px){.frame{width:24px}.frame b{font-size:7px}}
+    @media(orientation:landscape) and (max-height:520px){#shot-controls{left:10px;bottom:12px;transform:none;width:240px;gap:7px;padding:6px 8px}#shot-controls label,#shot-controls output{font-size:8px}#hint{left:auto;right:10px;transform:none;max-width:calc(100vw - 270px)}}
     @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
   </style>
 </head>
@@ -33,12 +37,18 @@
   </header>
   <div id="frame-strip" aria-label="Marcador por frames"></div>
   <div id="hint" aria-live="polite">Arrastrá la pelota hacia los pinos y soltá. Flechas para apuntar.</div>
+  <div id="shot-controls" hidden aria-label="Preparar lanzamiento">
+    <label>Posición <output id="position-value">Centro</output><input id="position" aria-label="Posición de lanzamiento" type="range" min="-40" max="40" step="1" value="0"></label>
+    <label>Fuerza <output id="power-value">72%</output><input id="power" aria-label="Fuerza del lanzamiento" type="range" min="20" max="100" step="1" value="72"></label>
+    <label>Efecto <output id="spin-value">Recto</output><input id="spin" aria-label="Efecto de la pelota" type="range" min="-100" max="100" step="5" value="0"></label>
+  </div>
   <section class="overlay" id="overlay" aria-modal="true" role="dialog">
-    <div class="card"><div class="badge" id="overlay-badge">La pista es tuya</div><div class="hero-art" aria-hidden="true"><span class="mini-pin"></span><span class="mini-pin" style="transform:rotate(5deg)"></span><span class="mini-pin" style="transform:rotate(12deg)"></span><span class="mini-ball"></span><span class="mini-pin" style="transform:rotate(-7deg)"></span><span class="mini-pin" style="transform:rotate(3deg)"></span></div><h1 id="overlay-title">¡A buscar el strike!</h1><p id="overlay-copy">Diez frames, una pista brillante y todo el público alentando a Vladi. Apuntá, elegí la fuerza y tirá.</p><button class="primary" id="main-action">EMPEZAR PARTIDA</button><button class="secondary" id="back-link">Volver al arcade</button></div>
+    <div class="card"><div class="badge" id="overlay-badge">La pista es tuya</div><div class="hero-art" aria-hidden="true"><span class="mini-pin"></span><span class="mini-pin" style="transform:rotate(5deg)"></span><span class="mini-pin" style="transform:rotate(12deg)"></span><span class="mini-ball"></span><span class="mini-pin" style="transform:rotate(-7deg)"></span><span class="mini-pin" style="transform:rotate(3deg)"></span></div><h1 id="overlay-title">¡A buscar el strike!</h1><p id="overlay-copy">Tocá la pista para apuntar y deslizá la pelota hacia adelante para lanzar. Ajustá posición, fuerza y efecto. Diez frames con reglas de bowling.</p><button class="primary" id="main-action">EMPEZAR PARTIDA</button><button class="secondary" id="back-link">Volver al arcade</button></div>
   </section>
   <script>window.VladiMusicSource='../music/vladi-bowling.ogg';</script>
   <script src="../game-music.js"></script>
   <script src="../game-audio.js"></script>
-  <script src="./game.js?v=4"></script>
+  <script src="./physics.js?v=1"></script>
+  <script src="./game.js?v=5"></script>
 </body>
 </html>

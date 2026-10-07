@@ -1,5 +1,6 @@
 (() => {
   'use strict';
+  const Physics = window.BowlingPhysics;
   const canvas = document.querySelector('#game');
   let ctx = canvas.getContext('2d', { alpha: false });
   let scenery = null;
@@ -10,10 +11,10 @@
   const BEST_KEY = 'vladiBowlingBestV1';
   let best = 0;
   try { best = Number(localStorage.getItem(BEST_KEY)) || 0; } catch (_) {}
-  let w = 0, h = 0, dpr = 1, layout = {}, state = 'title', aim = 0, spin = 0;
+  let w = 0, h = 0, dpr = 1, layout = {}, state = 'title', aim = 0, spin = 0, position = 0, power = .72;
   let frame = 0, rolls = [], frames = Array.from({ length: 10 }, () => []), pins = [], ball = null;
   let drag = null, lastTime = 0, clock = 0, flash = 0, crowdPulse = 0, lastResult = '';
-  let ballsInCurrent = 0, tenthNeedsBonus = false, totalScore = 0, lastPinfall = 0;
+  let totalScore = 0, lastPinfall = 0, simulation = null, accumulator = 0, hitSoundAt = -1, hitSounds = 0, resumeState = 'aim';
   const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const resize = () => {
     const r = canvas.getBoundingClientRect();
@@ -21,70 +22,46 @@
     canvas.width = Math.round(w * dpr); canvas.height = Math.round(h * dpr);
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     const laneW = Math.min(w * .94, h * 2.2);
-    const topY = Math.max(93, h * .19), bottomY = h - Math.max(18, h * .025);
-    layout = { cx: w / 2, laneW, topW: laneW * .24, bottomW: laneW * .80, topY, bottomY, laneH: bottomY - topY };
-    if (ball && !ball.moving) ball.x = ballStart().x;
+    const topY = Math.max(93, h * .19), bottomY = h - (w > h && h < 520 ? 32 : 110);
+    layout = { cx: w / 2, laneW, topW: laneW * .16, bottomW: laneW * .80, topY, bottomY, laneH: bottomY - topY };
     scenery = null;
     draw();
   };
-  function ballStart() { return { x: layout.cx + aim * layout.laneW * .18, y: layout.bottomY - layout.laneH * .105 }; }
-  function newRack() {
-    const rows = [1, 2, 3, 4], rack = [];
-    let id = 0;
-    rows.forEach((count, row) => {
-      for (let col = 0; col < count; col++) {
-        const colX = col - (count - 1) / 2;
-        rack.push({ id: id++, row, col, count, nx: colX * .095, x: 0, y: 0, down: false, fall: 0, dir: 0 });
-      }
-    });
-    return rack;
+  function project(x,z) {
+    const {cx,topW,bottomW,topY,laneH}=layout;
+    const t=z<=Physics.C.headZ ? .91-.74*z/Physics.C.headZ : .17-(z-Physics.C.headZ)*.105;
+    const width=topW+(bottomW-topW)*t;
+    return {x:cx+x*width/Physics.C.width,y:topY+laneH*t,metre:width/Physics.C.width};
   }
+  function ballStart() {
+    const p=project(position,0),r=p.metre*Physics.C.ballRadius;
+    return {x:p.x,y:p.y-r*.58};
+  }
+  function newRack() {return Physics.rack();}
   function projectPin(pin) {
-    const { cx, laneW, topY, laneH } = layout;
-    // The single headpin faces the ball; the four-pin row is farthest away.
-    const y = topY + laneH * (.11 + (3 - pin.row) * .031);
-    const depth = (y - topY) / laneH;
-    const half = laneW * (.215 + depth * .25);
-    return { x: cx + pin.nx * laneW * .52 * (1 + depth), y, scale: Math.max(.50, Math.min(1.05, laneW / 600)) * (1 + depth), half };
+    const p=project(pin.x,pin.z);
+    return {...p,scale:p.metre*Physics.C.pinRadius*2/19};
   }
-  function scoreBowls() {
-    let value = 0, ri = 0;
-    const list = rolls;
-    for (let f = 0; f < 10; f++) {
-      if (ri >= list.length) break;
-      if (f === 9) {
-        value += list.slice(ri, ri + 3).reduce((sum, pins) => sum + pins, 0);
-        break;
-      } else if (list[ri] === 10) {
-        if (ri + 2 < list.length) value += 10 + list[ri + 1] + list[ri + 2];
-        ri++;
-      } else if (ri + 1 < list.length && list[ri] + list[ri + 1] === 10) {
-        if (ri + 2 < list.length) value += 10 + list[ri + 2];
-        ri += 2;
-      } else {
-        if (ri + 1 < list.length) value += list[ri] + list[ri + 1];
-        ri += 2;
-      }
-    }
-    return value;
+  function scoreBowls() {return Physics.score(rolls).total;}
+  function shotOptions() {return {position,target:aim,power,spin};}
+  function syncControls() {
+    $('power').value=Math.round(power*100);$('power-value').textContent=Math.round(power*100)+'%';
+    $('spin').value=Math.round(spin*100);$('spin-value').textContent=spin===0?'Recto':(spin<0?'← ':'→ ')+Math.round(Math.abs(spin)*100)+'%';
+    $('position').value=Math.round(position*100);$('position-value').textContent=Math.abs(position)<.01?'Centro':position<0?'Izq.':'Der.';
+    $('shot-controls').hidden=state!=='aim';
+    for(const id of ['power','spin','position'])$(id).disabled=state!=='aim';
   }
   function frameMark(index) {
-    const r = frames[index] || [];
-    if (!r.length) return '';
-    if (index < 9) {
-      if (r[0] === 10) return 'X';
-      if (r.length > 1 && r[0] + r[1] === 10) return r[0] === 0 ? '–' : '/';
-      return String(r[r.length - 1]);
-    }
-    if (r.length === 1) return r[0] === 10 ? 'X' : String(r[0]);
-    if (r.length === 2) {
-      if (r[1] === 10) return 'X';
-      return r[0] + r[1] === 10 ? '/' : String(r[1]);
-    }
-    return r[2] === 10 ? 'X' : (r[1] + r[2] === 10 ? '/' : String(r[2]));
+    const r=frames[index]||[];
+    return r.map((n,i)=> {
+      if(n===10&&(i===0||r[i-1]===10))return 'X';
+      if(i>0&&r[i-1]!==10&&((index===9&&r[0]===10)||i===1)&&r[i-1]+n===10)return '/';
+      return n===0?'–':String(n);
+    }).join(' ');
   }
   function updateHud() {
     totalScore = scoreBowls();
+    canvas.dataset.state=state;canvas.dataset.standing=String(pins.filter(p=>!p.down).length);
     frameLabel.textContent = `${Math.min(frame + 1, 10)} / 10`;
     scoreLabel.textContent = String(totalScore);
     bestLabel.textContent = String(Math.max(best, totalScore));
@@ -94,6 +71,7 @@
       cell.className = 'frame' + (i === frame && state !== 'finished' ? ' current' : '');
       const number = document.createElement('small'), mark = document.createElement('b');
       number.textContent = String(i + 1); mark.textContent = frameMark(i);
+      const cumulative=Physics.score(rolls).frames[i];cell.title=`Frame ${i+1}: ${frameMark(i)||'pendiente'}${cumulative!==null?' · '+cumulative+' puntos':''}`;
       cell.append(number, mark); frameStrip.append(cell);
     }
   }
@@ -103,10 +81,10 @@
   }
   function sound(name) { if (window.VladiSound) window.VladiSound.play(name); }
   function showOverlay(which) {
-    state = which; overlay.hidden = false; drag = null;
+    state = which; overlay.hidden = false; drag = null; syncControls();
     if (which === 'title') {
       badge.textContent = 'La pista es tuya'; title.textContent = '¡A buscar el strike!';
-      copy.textContent = 'Diez frames, una pista brillante y todo el público alentando a Vladi. Apuntá, elegí la fuerza y tirá.';
+      copy.textContent = 'Diez frames, dos tiros por turno y bonos por strike o spare. Tocá la pista para apuntar; deslizá la pelota hacia adelante para lanzar. Podés ajustar fuerza, posición y efecto.';
       action.textContent = 'EMPEZAR PARTIDA'; $('back-link').hidden = false;
     } else if (which === 'paused') {
       badge.textContent = 'Tiempo fuera'; title.textContent = 'Partida en pausa';
@@ -118,11 +96,11 @@
     }
   }
   function startGame() {
-    rolls = []; frames = Array.from({ length: 10 }, () => []); frame = 0; ballsInCurrent = 0;
-    tenthNeedsBonus = false; totalScore = 0; aim = 0; spin = 0; flash = 0; lastResult = '';
+    rolls = []; frames = Array.from({ length: 10 }, () => []); frame = 0; simulation = null; accumulator = 0;
+    totalScore = 0; aim = 0; spin = 0; position = 0; power = .72; flash = 0; lastResult = '';
     pins = newRack(); ball = null; state = 'aim'; overlay.hidden = true;
-    hint.textContent = 'Deslizá la pelota hacia los pinos y soltá. Flechas + espacio en PC.';
-    updateHud(); sound('start'); draw();
+    hint.textContent = 'Tocá la pista para apuntar · Deslizá hacia adelante';
+    syncControls();updateHud(); sound('start'); draw();
   }
   function pinShape(x, y, scale, falling = 0, direction = 1) {
     const bodyW = 19 * scale, bodyH = 46 * scale;
@@ -183,10 +161,10 @@
       }
     }
     for(let i=-3;i<=3;i++) {
-      const y=topY+laneH*(.56+Math.abs(i)*.014), width=topW+(bottomW-topW)*.56, x=cx+i*width*.09;
+      const y=topY+laneH*(.725+Math.abs(i)*.008), width=topW+(bottomW-topW)*.725, x=cx+i*width*.09;
       ctx.fillStyle='#49362b';ctx.beginPath();ctx.moveTo(x,y-6);ctx.lineTo(x-3,y+3);ctx.lineTo(x+3,y+3);ctx.closePath();ctx.fill();
     }
-    ctx.strokeStyle='#57392370';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(0,topY+laneH*.87);ctx.lineTo(w,topY+laneH*.87);ctx.stroke();
+    ctx.strokeStyle='#57392370';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(0,topY+laneH*.91);ctx.lineTo(w,topY+laneH*.91);ctx.stroke();
     ctx.restore();
     ctx.strokeStyle='#55c8ca77';ctx.lineWidth=2;
     for(const sign of [-1,1]) {ctx.beginPath();ctx.moveTo(cx+sign*(topW/2+laneW*.014),topY);ctx.lineTo(cx+sign*(bottomW/2+laneW*.047),bottomY);ctx.stroke();}
@@ -200,81 +178,33 @@
     }
     ctx.drawImage(scenery,0,0,scenery.width,scenery.height,0,0,w,h);
     ctx.save();
-    // Aim guides
-    if (state === 'aim' || state === 'title') {
-      const start = ballStart(), targetX = cx + aim * laneW * .12;
-      ctx.save(); ctx.setLineDash([5, 8]); ctx.strokeStyle = drag ? 'rgba(255,235,177,.8)' : 'rgba(255,232,187,.28)'; ctx.lineWidth = 2;
-      ctx.beginPath(); ctx.moveTo(start.x, start.y); ctx.quadraticCurveTo((start.x + targetX) / 2, topY + laneH * .48, targetX, topY + laneH * .19); ctx.stroke(); ctx.setLineDash([]);
-      ctx.fillStyle = 'rgba(255,214,135,.55)'; ctx.beginPath(); ctx.arc(targetX, topY + laneH * .19, 5, 0, Math.PI * 2); ctx.fill(); ctx.restore();
+    // The guide uses exactly the same world trajectory as the delivered ball.
+    if(state==='aim'||state==='title') {
+      const points=Physics.preview(shotOptions());
+      ctx.strokeStyle=drag?'#fff0bbcc':'#fff0bb66';ctx.lineWidth=2;ctx.setLineDash([4,7]);ctx.beginPath();
+      points.forEach((point,i)=>{const p=project(point.x,point.z);if(i===0)ctx.moveTo(p.x,p.y);else ctx.lineTo(p.x,p.y);});ctx.stroke();ctx.setLineDash([]);
+      const end=points[points.length-1],p=project(end.x,end.z);ctx.strokeStyle='#ffe29a';ctx.beginPath();ctx.arc(p.x,p.y,5,0,Math.PI*2);ctx.stroke();
     }
     ctx.restore();
-    // Lane edges
-    ctx.strokeStyle = 'rgba(255,222,161,.47)'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(cx - topW / 2, topY); ctx.lineTo(cx - bottomW / 2, bottomY); ctx.moveTo(cx + topW / 2, topY); ctx.lineTo(cx + bottomW / 2, bottomY); ctx.stroke();
-    // Pin shadows then pins
-    pins.slice().sort((a, b) => projectPin(a).y - projectPin(b).y).forEach(pin => {
-      if (pin.down && pin.fall >= 1) return;
-      const p = projectPin(pin), r = 8.5 * p.scale;
-      ctx.fillStyle = 'rgba(32,20,27,.35)'; ctx.beginPath(); ctx.ellipse(p.x + 1, p.y + 13 * p.scale, r * .9, r * .22, -.05, 0, Math.PI * 2); ctx.fill();
-      pinShape(p.x + (pin.down ? pin.dir * pin.fall * 10 : 0), p.y + (pin.down ? pin.fall * 9 : 0), p.scale, pin.down ? pin.fall : 0, pin.dir || 1);
-    });
-    // Ball and power indicator
-    if (state !== 'title' || !overlay.hidden) {
-      let bx, by, br, rotation = 0;
-      if (ball && ball.moving) {
-        const t = Math.min(1, ball.t), ease = t;
-        const p = ballStart(); bx = p.x + (ball.targetX - p.x) * ease; by = p.y + (ball.targetY - p.y) * ease;
-        br = Math.min(48, laneW * .105) * (1 - ease * .78); rotation = ease * 12;
-      } else if (ball && (state === 'falling' || state === 'settle')) {
-        bx = ball.targetX; by = ball.targetY + 4; br = Math.min(48, laneW * .105) * .22; rotation = 12;
-      } else { const p = ballStart(); bx = p.x; by = p.y; br = Math.min(48, laneW * .105); }
-      if (!ball || !ball.moving || ball.t < .98) drawBall(bx, by, br, rotation);
-      if (drag && !ball) {
-        const p = ballStart(), power = Math.max(0, Math.min(100, (p.y - drag.y) / (h * .22) * 100));
-        const barW = Math.min(190, laneW * .42), y = p.y + br * 2.2;
-        ctx.fillStyle = '#171d2bba'; ctx.beginPath(); ctx.roundRect(cx - barW / 2, y, barW, 10, 6); ctx.fill();
-        const grad = ctx.createLinearGradient(cx - barW / 2, y, cx + barW / 2, y); grad.addColorStop(0, '#74dfae'); grad.addColorStop(.65, '#f1d56d'); grad.addColorStop(1, '#f48152');
-        ctx.fillStyle = grad; ctx.beginPath(); ctx.roundRect(cx - barW / 2 + 2, y + 2, (barW - 4) * power / 100, 6, 4); ctx.fill();
+    ctx.strokeStyle='rgba(255,222,161,.47)';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(cx-topW/2,topY);ctx.lineTo(cx-bottomW/2,bottomY);ctx.moveTo(cx+topW/2,topY);ctx.lineTo(cx+bottomW/2,bottomY);ctx.stroke();
+    // Depth order includes the moving ball, so it never draws through standing pins.
+    const entities=pins.filter(p=>!p.removed).map(pin=>({z:pin.z,pin}));
+    if(ball&&!ball.exited)entities.push({z:ball.z,ball});
+    else if(!ball&&(state==='aim'||state==='title'))entities.push({z:0,ball:{x:position,z:0,rotation:0,gutter:false}});
+    entities.sort((a,b)=>b.z-a.z).forEach(entity=>{
+      if(entity.ball) {
+        const b=entity.ball,p=project(b.x,b.z),r=p.metre*Physics.C.ballRadius;
+        drawBall(p.x,p.y-r*(b.gutter?.15:.58),r,b.rotation||0);
+      }else{
+        const pin=entity.pin,p=projectPin(pin),tilt=pin.tilt||0;
+        ctx.fillStyle='#20141b55';ctx.beginPath();ctx.ellipse(p.x,p.y,9*p.scale,2.5*p.scale,0,0,Math.PI*2);ctx.fill();
+        const rotation=(Math.sin(pin.angle)*1.35+Math.cos(pin.angle)*.30)*tilt;
+        pinShape(p.x,p.y-46*p.scale*.54*(1-tilt*.65),p.scale,Math.abs(rotation)/1.05,Math.sign(rotation)||1);
       }
-    }
+    });
     if (flash > 0) {
       ctx.save(); ctx.globalAlpha = Math.min(.15, flash * .025); ctx.fillStyle = '#fff1c7'; ctx.fillRect(0, 0, w, h); ctx.restore();
     }
-  }
-  function choosePinfall(targetX, strength, shotSpin) {
-    const standing = pins.filter(pin => !pin.down);
-    if (!standing.length) return [];
-    const laneHalf = layout.laneW * .24;
-    const localTarget = (targetX - layout.cx) / laneHalf;
-    const distance = pin => Math.abs(pin.nx * .52 * 1.16 / .24 - localTarget);
-    const strikePocket = strength >= .84 && (Math.abs(localTarget - .105) <= .038 || Math.abs(localTarget + .105) <= .038);
-    let falls;
-    if (strikePocket && standing.length === 10) {
-      // A high, accurate hit in either pocket sends the full rack down.
-      falls = standing;
-    } else {
-      const impactRadius = .16 + strength * .15;
-      const firstThrow = frames[frame].length === 0;
-      const front = standing.filter(pin => pin.row === 0).sort((a, b) => distance(a) - distance(b));
-      if (!firstThrow) {
-        let primary = standing.filter(pin => distance(pin) <= impactRadius);
-        
-        falls = primary;
-      } else {
-        let primary = front.filter(pin => distance(pin) <= impactRadius);
-        if (!primary.length) primary = standing.filter(pin => distance(pin) <= impactRadius * .7).sort((a,b)=>a.row-b.row).slice(0,1);
-        const ids = new Set(primary.map(pin => pin.id));
-        // Only pins immediately behind the first contact can join this throw. A modest
-        // hit clips a few pins; it cannot domino the entire rack by itself.
-        const chainLimit = .061 + strength * .02 + Math.abs(shotSpin) * .004;
-        const secondary = standing.filter(pin => pin.row === 1 && primary.some(hit => Math.abs(pin.nx - hit.nx) <= chainLimit));
-        secondary.forEach(pin => ids.add(pin.id));
-        if(strength>.62) standing.filter(pin=>pin.row===2 && secondary.some(hit=>Math.abs(pin.nx-hit.nx)<.073)).forEach(pin=>ids.add(pin.id));
-        if(strength>.90 && Math.abs(localTarget)<.09) standing.filter(pin=>pin.row===3 && Math.abs(pin.nx)<.10).forEach(pin=>ids.add(pin.id));
-        falls = standing.filter(pin => ids.has(pin.id));
-      }
-    }
-    falls.forEach(pin => { pin.down = true; pin.fall = 0; pin.dir = Math.sign(pin.nx - localTarget) || (shotSpin >= 0 ? 1 : -1); });
-    return falls;
   }
   function isTenthComplete() {
     const r = frames[9];
@@ -285,7 +215,7 @@
   }
   function afterRoll(knocked) {
     const r = frames[frame]; r.push(knocked); rolls.push(knocked); lastPinfall = knocked;
-    ball = null;
+    ball = null;simulation = null;
     totalScore = scoreBowls(); updateBest(); updateHud();
     if (frame < 9) {
       const spareOrStrike = r[0] === 10 || (r.length === 2 && r[0] + r[1] === 10);
@@ -295,8 +225,8 @@
         else lastResult = knocked ? `${knocked} pinos` : 'A la próxima';
         state = 'settle'; clock = 0;
       } else {
-        pins = pins.filter(pin => !pin.down); pins.forEach(pin => { pin.down = false; pin.fall = 0; });
-        ball = null; ballsInCurrent = 1; state = 'aim';
+        pins = pins.filter(pin => !pin.down && !pin.removed); pins.forEach(pin => {pin.vx=0;pin.vz=0;});
+        ball = null;  state = 'aim';
         hint.textContent = knocked ? `Quedan ${10 - knocked} pinos. ¡Probá el segundo tiro!` : 'Quedó el segundo tiro. Apuntá un poco más al centro.';
       }
     } else {
@@ -306,7 +236,7 @@
       } else {
         // A strike or spare earns a bonus ball. Ordinary second balls keep only the standing pins.
         if ((r.length === 1 && r[0] < 10) || (r.length === 2 && r[0] === 10 && r[1] < 10)) {
-          pins = pins.filter(pin => !pin.down);
+          pins = pins.filter(pin => !pin.down && !pin.removed);
           hint.textContent = `Quedan ${pins.length} pinos. ¡Cerrá el frame!`;
         } else {
           pins = newRack();
@@ -316,86 +246,103 @@
       }
     }
     if (state === 'settle') hint.textContent = lastResult;
+    syncControls();
   }
-  function throwBall(power = .68, targetX = layout.cx + aim * layout.laneW * .12, shotSpin = spin) {
-    if (state !== 'aim' || ball?.moving) return;
-    power = Math.max(.2, Math.min(1, power));
-    sound('kick');
-    ball = { moving: true, t: 0, duration: 1.9 - power * .35, targetX, targetY: layout.topY + layout.laneH * .20, power, spin: shotSpin };
-    state = 'roll'; hint.textContent = '¡Allá va!'; draw();
+  function throwBall(force = power, target = aim, effect = spin) {
+    if(state!=='aim'||ball)return;
+    simulation=Physics.create(pins,{position,target,power:force,spin:effect});
+    ball=simulation.ball;accumulator=0;hitSoundAt=-1;hitSounds=0;state='roll';clock=0;
+    hint.textContent='¡Allá va!';canvas.dataset.state=state;syncControls();sound('kick');draw();
   }
-  function completeRoll() {
-    if (!ball || !ball.moving) return;
-    const shot = ball, falls = choosePinfall(shot.targetX, shot.power, shot.spin);
-    if (!falls.length) sound('save'); else if (falls.length >= 5) sound('goal'); else sound('hit');
-    ball.moving = false; ball.t = 1;
-    clock = 0; state = 'falling'; lastPinfall = falls.length;
-    hint.textContent = falls.length >= 8 ? '¡Tremendo tiro!' : (falls.length ? `${falls.length} pinos abajo` : '¡Se escapó por un lado!');
+  function finishRoll() {
+    const knocked=pins.filter(p=>p.down||p.removed).length;
+    const gutter=ball.gutter;ball=null;simulation=null;
+    if(!knocked)sound('save');
+    hint.textContent=gutter?'Canaleta · 0 pinos':`${knocked} pinos abajo`;
+    afterRoll(knocked);
   }
-  function finishFalling() {
-    if (state !== 'falling') return;
-    afterRoll(lastPinfall);
-  }
-  function render() {
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    draw();
-  }
+  function render() {ctx.setTransform(dpr,0,0,dpr,0,0);draw();}
   function tick(now) {
-    const dt = Math.min(.12, Math.max(0, (now - lastTime) / 1000 || 0)); lastTime = now; clock += dt; crowdPulse += dt;
-    if (state === 'roll' && ball) { ball.t += dt / ball.duration; if (ball.t >= 1) completeRoll(); }
-    if (state === 'falling') {
-      pins.forEach(pin => { if (pin.down) pin.fall = Math.min(1, pin.fall + dt * (2.9 + pin.row * .08)); });
-      if (clock > .72) finishFalling();
-    }
-    if (state === 'settle') {
-      pins.forEach(pin => { if (pin.down) pin.fall = Math.min(1, pin.fall + dt * 3.2); });
-      if (clock > .93) {
-        if (frame < 9) { frame++; ballsInCurrent = 0; pins = newRack(); ball = null; state = 'aim'; hint.textContent = 'Siguiente frame: buscá otro strike.'; updateHud(); }
-        else { state = 'finished'; updateBest(); updateHud(); showOverlay('finished'); sound('goal'); }
+    const dt=Math.min(.25,Math.max(0,(now-lastTime)/1000||0));lastTime=now;
+    const active=state==='roll'||state==='settle';
+    if(active)clock+=dt;
+    if(state==='roll'&&simulation) {
+      accumulator+=dt;
+      while(accumulator>=Physics.C.step&&!simulation.done) {
+        const hits=Physics.step(simulation);accumulator-=Physics.C.step;
+        if(hits&&hitSounds<8&&simulation.time-hitSoundAt>.11){sound('hit');hitSoundAt=simulation.time;hitSounds++;}
       }
+      if(simulation.done)finishRoll();
     }
-    if (flash > 0) flash = Math.max(0, flash - dt * 7);
-    render(); requestAnimationFrame(tick);
+    if(state==='settle'&&clock>.85) {
+      if(frame<9){frame++;pins=newRack();ball=null;state='aim';hint.textContent='Nuevo frame. Apuntá al espacio entre el pino 1 y el de al lado.';updateHud();syncControls();}
+      else {updateBest();updateHud();showOverlay('finished');sound('goal');}
+    }
+    if(active)render();
+    requestAnimationFrame(tick);
   }
   function local(e) { const r = canvas.getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top }; }
-  canvas.addEventListener('pointerdown', e => {
-    if (state !== 'aim' || ball) return;
-    const p = local(e), start = ballStart();
-    if (p.y < layout.topY + layout.laneH * .55) {
-      if (p.x < w * .4) aim = Math.max(-1, aim - .12); else if (p.x > w * .6) aim = Math.min(1, aim + .12);
-      updateHud(); draw(); return;
+  const clamp=(value,min,max)=>Math.max(min,Math.min(max,value));
+  function setTarget(p) {
+    const plane=project(0,Physics.C.headZ);
+    aim=clamp((p.x-layout.cx)/plane.metre,-1.20,1.20);draw();
+  }
+  canvas.addEventListener('pointerdown',e=> {
+    if(state!=='aim'||ball)return;
+    canvas.focus();const p=local(e),start=ballStart();
+    if(p.y<layout.topY+layout.laneH*.62){setTarget(p);return;}
+    drag={id:e.pointerId,x:p.x,y:p.y,startX:p.x,startY:p.y,initialAim:aim,at:performance.now()};
+    canvas.setPointerCapture(e.pointerId);draw();
+  });
+  canvas.addEventListener('pointermove',e=>{
+    if(!drag||drag.id!==e.pointerId)return;
+    const p=local(e),dy=drag.startY-p.y,dx=p.x-drag.startX;
+    if(dy>18)aim=clamp(drag.initialAim+dx/Math.max(65,dy)*.90,-1.20,1.20);
+    drag.x=p.x;drag.y=p.y;draw();
+  });
+  canvas.addEventListener('pointerup',e=>{
+    if(!drag||drag.id!==e.pointerId)return;
+    const p=local(e),dy=drag.startY-p.y,dx=p.x-drag.startX;
+    if(dy<28){
+      if(Math.abs(dx)<18){const plane=project(0,0);position=clamp((p.x-layout.cx)/plane.metre,-.40,.40);}
+      drag=null;syncControls();draw();return;
     }
-    drag = { id: e.pointerId, x: p.x, y: p.y, sx: start.x, sy: start.y, at: performance.now() };
-    canvas.setPointerCapture(e.pointerId); draw();
+    aim=clamp(drag.initialAim+dx/Math.max(65,dy)*.90,-1.20,1.20);
+    // Swipe length adjusts force; direction is independent of pointer event frequency.
+    power=clamp(.25+dy/Math.max(110,Math.min(w,h)*.42)*.65,.20,1);
+    drag=null;throwBall(power,aim,spin);
   });
-  canvas.addEventListener('pointermove', e => {
-    if (!drag || drag.id !== e.pointerId) return;
-    const p = local(e), dy = drag.y - p.y;
-    aim = Math.max(-1, Math.min(1, aim + (p.x - drag.x) / (w * .75)));
-    spin = Math.max(-1, Math.min(1, (p.x - drag.x) / (w * .32)));
-    drag.x = p.x; drag.y = p.y; draw();
+  canvas.addEventListener('pointercancel',()=>{drag=null;draw();});
+  for(const id of ['power','spin','position'])$(id).addEventListener('input',()=> {
+    if(state!=='aim')return;
+    if(id==='power')power=Number($(id).value)/100;
+    if(id==='spin')spin=Number($(id).value)/100;
+    if(id==='position')position=Number($(id).value)/100;
+    syncControls();draw();
   });
-  canvas.addEventListener('pointerup', e => {
-    if (!drag || drag.id !== e.pointerId) return;
-    const p = local(e), travel = Math.max(0, drag.sy - p.y), elapsed = Math.max(.08, (performance.now() - drag.at) / 1000);
-    const power = Math.max(.28, Math.min(1, .32 + travel / Math.max(110, h * .23) * .72 + Math.min(.18, travel / elapsed / 2500)));
-    drag = null; throwBall(power, layout.cx + aim * layout.laneW * .12, spin);
-  });
-  canvas.addEventListener('pointercancel', () => { drag = null; draw(); });
-  window.addEventListener('keydown', e => {
-    if (e.code === 'Escape' || e.code === 'KeyP') { e.preventDefault(); togglePause(); return; }
-    if (state !== 'aim') return;
-    if (e.code === 'ArrowLeft' || e.code === 'KeyA') { e.preventDefault(); aim = Math.max(-1, aim - .055); draw(); }
-    else if (e.code === 'ArrowRight' || e.code === 'KeyD') { e.preventDefault(); aim = Math.min(1, aim + .055); draw(); }
-    else if (e.code === 'Space' || e.code === 'Enter') { e.preventDefault(); throwBall(.86); }
+  window.addEventListener('keydown',e=> {
+    if(e.code==='Escape'||e.code==='KeyP'){e.preventDefault();togglePause();return;}
+    if(state!=='aim'||e.target?.tagName==='INPUT')return;
+    let handled=true;
+    if(e.code==='ArrowLeft')aim=clamp(aim-.018,-1.2,1.2);
+    else if(e.code==='ArrowRight')aim=clamp(aim+.018,-1.2,1.2);
+    else if(e.code==='KeyA')position=clamp(position-.025,-.40,.40);
+    else if(e.code==='KeyD')position=clamp(position+.025,-.40,.40);
+    else if(e.code==='KeyQ')spin=clamp(spin-.10,-1,1);
+    else if(e.code==='KeyE')spin=clamp(spin+.10,-1,1);
+    else if(e.code==='ArrowUp')power=clamp(power+.05,.20,1);
+    else if(e.code==='ArrowDown')power=clamp(power-.05,.20,1);
+    else if(e.code==='Space'||e.code==='Enter')throwBall();
+    else handled=false;
+    if(handled){e.preventDefault();syncControls();draw();}
   });
   function togglePause() {
-    if (state === 'aim' || state === 'roll' || state === 'falling' || state === 'settle') {
-      window.__bowlingResumeState = state; showOverlay('paused'); sound('pause'); $('pause').textContent = '▶'; $('pause').setAttribute('aria-label', 'Continuar');
-    } else if (state === 'paused') { state = window.__bowlingResumeState || 'aim'; overlay.hidden = true; $('pause').textContent = 'Ⅱ'; $('pause').setAttribute('aria-label', 'Pausar'); sound('resume'); }
+    if (state === 'aim' || state === 'roll' || state === 'settle') {
+      resumeState = state; showOverlay('paused'); sound('pause'); $('pause').textContent = '▶'; $('pause').setAttribute('aria-label', 'Continuar');
+    } else if (state === 'paused') { state = resumeState; overlay.hidden = true; $('pause').textContent = 'Ⅱ'; $('pause').setAttribute('aria-label', 'Pausar'); sound('resume');syncControls();draw(); }
   }
   action.addEventListener('click', () => {
-    if (state === 'paused') { state = window.__bowlingResumeState || 'aim'; overlay.hidden = true; $('pause').textContent = 'Ⅱ'; $('pause').setAttribute('aria-label', 'Pausar'); sound('resume'); }
+    if (state === 'paused') { state = resumeState; overlay.hidden = true; $('pause').textContent = 'Ⅱ'; $('pause').setAttribute('aria-label', 'Pausar'); sound('resume');syncControls();draw(); }
     else startGame();
   });
   $('pause').addEventListener('click', togglePause);
@@ -406,7 +353,7 @@
   $('back-link').addEventListener('click', () => { window.location.href = '../'; });
   window.addEventListener('resize', resize, { passive: true });
   window.addEventListener('orientationchange', () => setTimeout(resize, 140), { passive: true });
-  document.addEventListener('visibilitychange', () => { if (document.hidden && ['aim', 'roll', 'falling', 'settle'].includes(state)) togglePause(); });
-  pins = newRack(); updateHud(); bestLabel.textContent = String(best); resize(); requestAnimationFrame(tick);
+  document.addEventListener('visibilitychange', () => { if (document.hidden && ['aim', 'roll', 'settle'].includes(state)) togglePause(); });
+  pins = newRack(); syncControls();updateHud(); bestLabel.textContent = String(best); resize(); requestAnimationFrame(tick);
   window.VladiBowlingTest = { startGame, throwBall, getState: () => ({ state, frame, rolls: [...rolls], frames: frames.map(x => [...x]), score: totalScore, pinsStanding: pins.filter(p => !p.down).length, best }), scoreBowls };
 })();
