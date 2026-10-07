@@ -14,8 +14,10 @@ function generateMaze(){const box=arena.getBoundingClientRect(),targetCell=Math.
  const farther=open.filter(p=>dist(p)>4);items=Array.from({length:rows},()=>Array(cols).fill(''));for(const p of open)items[p.y][p.x]='c';
  // Cuatro calabazas bien separadas, una en cada zona extrema del laberinto.
  const powers=Math.min(6,4+Math.floor((level-1)/4)),mx=Math.floor(cols/2),my=Math.floor(rows/2);
- const targets=[{x:1,y:1,side:'tl'},{x:cols-2,y:1,side:'tr'},{x:1,y:rows-2,side:'bl'},{x:cols-2,y:rows-2,side:'br'}];
- if(powers>4)targets.push({x:mx,y:1,side:'top'});if(powers>5)targets.push({x:mx,y:rows-2,side:'bottom'});
+ // Las dos del fondo quedan en las esquinas bajas, pero por encima del control táctil.
+ const lowerY=Math.max(my+1,rows-5);
+ const targets=[{x:1,y:1,side:'tl'},{x:cols-2,y:1,side:'tr'},{x:1,y:lowerY,side:'bl'},{x:cols-2,y:lowerY,side:'br'}];
+ if(powers>4)targets.push({x:mx,y:1,side:'top'});if(powers>5)targets.push({x:mx,y:lowerY,side:'bottom'});
  const placed=[],spacing=Math.max(5,Math.min(cols,rows)*.38);
  for(const target of targets){let candidates=farther.filter(p=>{
   if(target.side==='tl')return p.x<mx&&p.y<my;if(target.side==='tr')return p.x>=mx&&p.y<my;
