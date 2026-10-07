@@ -8,10 +8,14 @@
   let muted = false, started = false, userPaused = false, autoPaused = false;
   try { muted = localStorage.getItem(KEY) === '1'; } catch (_) {}
   track.muted = muted;
+  function syncState(state) {
+    document.documentElement.setAttribute('data-vladi-music-state', state || (!started ? 'stopped' : userPaused ? 'paused' : track.paused ? 'stopped' : muted ? 'muted' : 'playing'));
+  }
   function play() {
     if (!started || userPaused) return;
     const result = track.play();
-    if (result && result.catch) result.catch(() => {});
+    if (result && result.then) result.then(() => syncState(), () => syncState('blocked'));
+    else syncState();
   }
   function start() {
     started = true;
@@ -22,6 +26,7 @@
     if (!started) return;
     userPaused = true;
     track.pause();
+    syncState();
   }
   function resume() {
     if (!started) return;
@@ -32,6 +37,7 @@
     muted = !muted;
     track.muted = muted;
     try { localStorage.setItem(KEY, muted ? '1' : '0'); } catch (_) {}
+    syncState();
   }
   document.addEventListener('click', event => {
     const target = event.target instanceof Element ? event.target : null;
@@ -64,4 +70,5 @@
     }
   });
   window.VladiMusic = { start, pause, resume, get muted() { return muted; }, get playing() { return !track.paused; } };
+  syncState();
 })();
