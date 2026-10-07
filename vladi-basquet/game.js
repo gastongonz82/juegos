@@ -53,14 +53,26 @@ function drawBackground(){
  ctx.strokeStyle='rgba(255,229,174,.47)';ctx.lineWidth=Math.max(2,W*.0025);ctx.beginPath();ctx.ellipse(W*.49,H*.80,W*.39,H*.31,0,Math.PI,Math.PI*2);ctx.stroke();ctx.beginPath();ctx.moveTo(W*.5,H*.4);ctx.lineTo(W*.5,H);ctx.stroke();ctx.beginPath();ctx.arc(W*.5,H*.69,W*.11,0,Math.PI*2);ctx.stroke();
  const vign=ctx.createRadialGradient(W*.5,H*.47,H*.1,W*.5,H*.55,W*.8);vign.addColorStop(0,'rgba(255,255,255,0)');vign.addColorStop(1,'rgba(8,13,23,.25)');ctx.fillStyle=vign;ctx.fillRect(0,0,W,H);
 }
-function drawHoop(){const x=hoopX,y=hoopY,s=clamp(W/900,.56,1.55);const backX=x+W*.105,backY=y-H*.16,bw=clamp(W*.105,48,112),bh=clamp(H*.13,48,95);
- // pole, base and arm
- ctx.fillStyle='#313b53';rounded(backX+bw*.39,backY+bh*.8,bw*.23,ground()-(backY+bh*.8),7);ctx.fill();ctx.fillStyle='#19243a';rounded(backX+bw*.1,ground()-H*.018,bw*.8,H*.025,8);ctx.fill();
- ctx.fillStyle='#dcefff';rounded(backX,backY,bw,bh,8);ctx.fill();ctx.strokeStyle='#44546f';ctx.lineWidth=3;rounded(backX+3,backY+3,bw-6,bh-6,5);ctx.stroke();ctx.strokeStyle='#d46b37';ctx.lineWidth=3;ctx.beginPath();ctx.ellipse(x,y+H*.005,clamp(W*.025,13,28),clamp(H*.012,6,11),0,0,Math.PI*2);ctx.stroke();
- // net
- ctx.strokeStyle='rgba(255,255,255,.79)';ctx.lineWidth=1.5;for(let i=-2;i<=2;i++){ctx.beginPath();ctx.moveTo(x+i*W*.008,y+H*.01);ctx.lineTo(x+i*W*.014,y+H*.07);ctx.stroke()}for(let j=1;j<=3;j++){ctx.beginPath();ctx.moveTo(x-W*.025+j*W*.006,y+j*H*.016);ctx.lineTo(x+W*.025-j*W*.006,y+j*H*.016);ctx.stroke()}
- // rim glint
- ctx.strokeStyle='#ff9c4b';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(x,y,clamp(W*.027,14,30),clamp(H*.013,6,12),0,Math.PI,Math.PI*2);ctx.stroke();
+function drawHoop(){
+ const x=hoopX,y=hoopY,rimRx=clamp(W*.027,14,30),rimRy=clamp(H*.013,6,11);
+ const bw=clamp(W*.075,44,88),bh=clamp(H*.13,48,95);
+ // El tablero queda justo detrás del aro, con su borde inferior a la altura del soporte.
+ const backX=x+clamp(rimRx*.82,9,22),backY=y-bh+3,postX=backX+bw*.53;
+ ctx.fillStyle='#222d44';rounded(postX-bw*.085,backY+bh*.58,bw*.17,ground()-(backY+bh*.58),7);ctx.fill();
+ ctx.fillStyle='#121d33';rounded(postX-bw*.39,ground()-H*.018,bw*.78,H*.025,8);ctx.fill();
+ // Tablero, sombra y marco interior.
+ ctx.fillStyle='rgba(8,13,25,.34)';rounded(backX+4,backY+5,bw,bh,9);ctx.fill();
+ const glass=ctx.createLinearGradient(backX,backY,backX+bw,backY+bh);glass.addColorStop(0,'#f5fbff');glass.addColorStop(1,'#b9def5');ctx.fillStyle=glass;rounded(backX,backY,bw,bh,9);ctx.fill();
+ ctx.strokeStyle='#465975';ctx.lineWidth=3;rounded(backX+3,backY+3,bw-6,bh-6,6);ctx.stroke();
+ // Cuadrado de puntería del tablero y brazo corto que sostiene el aro.
+ ctx.strokeStyle='rgba(71,105,133,.62)';ctx.lineWidth=2;ctx.strokeRect(backX+bw*.28,backY+bh*.48,bw*.42,bh*.34);
+ ctx.strokeStyle='#8999ad';ctx.lineWidth=Math.max(3,rimRy*.55);ctx.lineCap='round';ctx.beginPath();ctx.moveTo(x+rimRx*.72,y-2);ctx.lineTo(backX+bw*.2,y-2);ctx.stroke();
+ // Aro unido al soporte; la red nace desde el borde inferior.
+ ctx.strokeStyle='#d86532';ctx.lineWidth=Math.max(3,rimRy*.42);ctx.beginPath();ctx.ellipse(x,y+2,rimRx,rimRy,0,0,Math.PI*2);ctx.stroke();
+ ctx.strokeStyle='rgba(255,250,236,.92)';ctx.lineWidth=1.5;
+ for(let i=-2;i<=2;i++){ctx.beginPath();ctx.moveTo(x+i*rimRx*.48,y+rimRy*.72);ctx.lineTo(x+i*rimRx*.72,y+H*.064);ctx.stroke()}
+ for(let j=1;j<=3;j++){const t=j/4,half=rimRx*(1-t*.28);ctx.beginPath();ctx.moveTo(x-half,y+H*.064*t);ctx.lineTo(x+half,y+H*.064*t);ctx.stroke()}
+ ctx.strokeStyle='#ffb15b';ctx.lineWidth=1.5;ctx.beginPath();ctx.ellipse(x,y+2,rimRx*.82,rimRy*.72,0,Math.PI,Math.PI*2);ctx.stroke();
 }
 function drawPlayer(dt){const p=playerBox();const bob=(mode==='playing'&&!ball?Math.sin(elapsed*7)*2:0);ctx.save();ctx.globalAlpha=.26;ctx.fillStyle='#111625';ctx.beginPath();ctx.ellipse(p.x+p.w*.45,ground()+3,p.w*.53,8,0,0,Math.PI*2);ctx.fill();ctx.restore();if(sprite.complete&&sprite.naturalWidth){ctx.drawImage(sprite,p.x,p.y+bob,p.w,p.h)}else{ctx.fillStyle='#087ad2';ctx.fillRect(p.x,p.y,p.w,p.h)} }
 function drawBasketball(x,y,r){const g=ctx.createRadialGradient(x-r*.35,y-r*.4,r*.1,x,y,r);g.addColorStop(0,'#ffbf62');g.addColorStop(.52,'#f47a20');g.addColorStop(1,'#bd4118');ctx.fillStyle=g;ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill();ctx.save();ctx.beginPath();ctx.arc(x,y,r*.9,0,Math.PI*2);ctx.clip();ctx.strokeStyle='#512a20';ctx.lineWidth=Math.max(1,r*.09);ctx.beginPath();ctx.moveTo(x-r,y);ctx.lineTo(x+r,y);ctx.moveTo(x,y-r);ctx.lineTo(x,y+r);ctx.moveTo(x-r*.72,y-r*.72);ctx.quadraticCurveTo(x+r*.1,y-r*.2,x+r*.72,y+r*.72);ctx.moveTo(x+r*.72,y-r*.72);ctx.quadraticCurveTo(x-r*.1,y+r*.2,x-r*.72,y+r*.72);ctx.stroke();ctx.restore();ctx.strokeStyle='#ffd286';ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(x-r*.31,y-r*.35,r*.2,Math.PI,Math.PI*1.55);ctx.stroke()}
