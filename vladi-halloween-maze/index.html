@@ -19,14 +19,14 @@
 @media(max-width:620px){.bottom{justify-content:flex-end;padding-right:max(12px,env(safe-area-inset-right))}}
 @media(max-height:500px){.bottom{min-height:0}}
 /* Joystick arcade de bola: la palanca se arrastra desde el centro hacia cada dirección. */
-.stick{--dx:0px;--dy:0px;position:relative;flex:none;width:clamp(112px,18vw,146px);height:clamp(112px,18vw,146px);border-radius:50%;touch-action:none;user-select:none;-webkit-user-select:none;cursor:grab;filter:drop-shadow(0 7px 8px #0009)}
-.stick-base{position:absolute;inset:0;border:2px solid #c28c6b;border-radius:50%;background:radial-gradient(circle at 50% 48%,#21192f 0 35%,transparent 36%),radial-gradient(circle at 35% 24%,#786488 0,#493858 43%,#29213b 70%,#171322 100%);box-shadow:inset 0 3px 5px #fff4,inset 0 -8px 13px #07050c,0 3px #090711}
-.stick-base:before{content:'';position:absolute;inset:13%;border:2px solid #96769d;border-radius:50%;box-shadow:inset 0 0 0 5px #171225,0 0 0 2px #42324e;background:radial-gradient(circle at 42% 34%,#352846,#181322 72%)}
-.stick-base:after{content:'';position:absolute;inset:4%;border-radius:50%;background:radial-gradient(circle at 50% 5%,#edc58c 0 2px,transparent 3px),radial-gradient(circle at 95% 50%,#edc58c 0 2px,transparent 3px),radial-gradient(circle at 50% 95%,#edc58c 0 2px,transparent 3px),radial-gradient(circle at 5% 50%,#edc58c 0 2px,transparent 3px);pointer-events:none}
-.stick-shaft{position:absolute;z-index:2;left:50%;top:50%;width:13px;height:0;border-radius:99px;background:linear-gradient(90deg,#684c58,#f2cf9a 45%,#916b61);box-shadow:0 1px 4px #05030b;transform-origin:50% 0;pointer-events:none}
-.stick-knob{position:absolute;z-index:3;left:50%;top:50%;width:43%;height:43%;border:2px solid #f0c58a;border-radius:50%;background:radial-gradient(circle at 33% 24%,#fff0c3 0,#e8c48b 18%,#b78a69 46%,#705167 78%,#43354c 100%);box-shadow:inset 0 2px 4px #fff8,inset 0 -5px 8px #39253f,0 4px 5px #05030b;transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy)));pointer-events:none}
+.stick{--dx:0px;--dy:0px;position:relative;flex:none;width:clamp(82px,10vw,100px);height:clamp(82px,10vw,100px);border-radius:50%;touch-action:none;user-select:none;-webkit-user-select:none;cursor:grab;filter:drop-shadow(0 7px 8px #0009)}
+.stick-base{position:absolute;inset:5%;border:1px solid #c28c6b70;border-radius:50%;background:radial-gradient(circle,#21192f22 0 34%,transparent 36%);box-shadow:inset 0 0 0 1px #ffffff0b}
+.stick-base:before{content:'';position:absolute;inset:17%;border:1px solid #96769d55;border-radius:50%;box-shadow:inset 0 0 0 4px #17122544,0 0 0 1px #42324e55;background:transparent}
+.stick-base:after{content:'';position:absolute;display:none}
+.stick-shaft{position:absolute;z-index:2;left:50%;top:50%;width:9px;height:0;border-radius:99px;background:linear-gradient(90deg,#684c58,#f2cf9a 45%,#916b61);box-shadow:0 1px 4px #05030b;transform-origin:50% 0;pointer-events:none}
+.stick-knob{position:absolute;z-index:3;left:50%;top:50%;width:54%;height:54%;border:2px solid #f0c58a;border-radius:50%;background:radial-gradient(circle at 33% 24%,#fff0c3 0,#e8c48b 18%,#b78a69 46%,#705167 78%,#43354c 100%);box-shadow:inset 0 2px 4px #fff8,inset 0 -4px 6px #39253f,0 3px 4px #05030b;transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy)));pointer-events:none}
 .stick-knob:after{content:'';position:absolute;left:24%;top:18%;width:34%;height:20%;border-radius:50%;background:#fff9;filter:blur(1px)}
-@media(max-height:500px){.stick{width:90px;height:90px}.stick-knob{width:40%;height:40%}.stick-shaft{width:11px}}
+@media(max-height:500px){.stick{width:76px;height:76px}.stick-knob{width:54%;height:54%}.stick-shaft{width:8px}}
 
 </style></head>
 <body><main id="app">
