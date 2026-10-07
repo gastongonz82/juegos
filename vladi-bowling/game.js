@@ -19,7 +19,7 @@
     w = Math.max(1, r.width); h = Math.max(1, r.height); dpr = Math.min(1.65, window.devicePixelRatio || 1);
     canvas.width = Math.round(w * dpr); canvas.height = Math.round(h * dpr);
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    const laneW = Math.min(w * .96, h * 1.16);
+    const laneW = Math.min(w * .94, h * 2.2);
     const topY = Math.max(93, h * .19), bottomY = h - Math.max(18, h * .025);
     layout = { cx: w / 2, laneW, topW: laneW * .43, bottomW: laneW * .94, topY, bottomY, laneH: bottomY - topY };
     if (ball && !ball.moving) ball.x = ballStart().x;
