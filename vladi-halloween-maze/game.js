@@ -49,8 +49,9 @@ function drawVladi(x,y,t){
  if(!faceSprite.complete||!faceSprite.naturalWidth)return;
  const pos=projectedCenter(x,y),dims=projectedSize(y),ratio=faceSprite.naturalWidth/faceSprite.naturalHeight;
  // Cabeza completa recortada desde la referencia, sin círculo ni recorte geométrico.
- const w=Math.min(dims.w*1.18,dims.h*1.05*ratio),h=w/ratio;
- ctx.drawImage(faceSprite,pos.x-w/2,pos.y-h/2,w,h);
+ const w=Math.min(dims.w*1.42,dims.h*1.3*ratio),h=w/ratio;
+ ctx.save();ctx.shadowColor='#c9a4ff';ctx.shadowBlur=Math.max(4,dims.w*.18);
+ ctx.drawImage(faceSprite,pos.x-w/2,pos.y-h/2,w,h);ctx.restore();
 }
 function drawMonster(g,t){
  const pos=projectedCenter(g.x,g.y),dims=projectedSize(g.y),s=Math.max(30,Math.min(dims.w*1.04,dims.h*.9)),bob=Math.sin(t/210+g.x)*s*.025;
