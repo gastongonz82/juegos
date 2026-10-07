@@ -1,16 +1,16 @@
 (()=>{'use strict';
-const canvas=document.querySelector('#game'),ctx=canvas.getContext('2d'),scene=new Image(),playerArt=new Image();
-scene.src='assets/circuit.webp';playerArt.src='assets/vladi-kart.webp';
+const canvas=document.querySelector('#game'),ctx=canvas.getContext('2d'),playerArt=new Image();
+playerArt.src='assets/vladi-kart.webp';
 const $=s=>document.querySelector(s),overlay=$('#overlay'),title=$('#title'),subtitle=$('#subtitle'),chips=$('#chips'),help=$('#help'),start=$('#start'),hud=$('#hud'),pauseButton=$('#pause'),controls=$('.controls');
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v)),rand=(a,b)=>a+Math.random()*(b-a);
 let W=0,H=0,DPR=1,state='menu',last=0,elapsed=0,distance=0,stars=0,avoided=0,lane=1,obstacles=[],spawnTimer=.55,wave=0,best=+(localStorage.getItem('vladiDodgeBest')||0),flash=0,shake=0,toast='',toastUntil=0,swipeStart=null;
 function resize(){DPR=Math.min(devicePixelRatio||1,1.75);W=innerWidth;H=innerHeight;canvas.width=Math.round(W*DPR);canvas.height=Math.round(H*DPR);ctx.setTransform(DPR,0,0,DPR,0,0)}addEventListener('resize',resize,{passive:true});resize();
-const roadWidth=()=>Math.min(W*.82,900),roadLeft=()=> (W-roadWidth())/2,playerY=()=>H*.805,carWidth=()=>Math.min(roadWidth()*.42,W*.47,H*.33),carHeight=()=>carWidth()/1.31;
+const roadWidth=()=>Math.min(W*.82,W>1000?620:900),roadLeft=()=> (W-roadWidth())/2,playerY=()=>H*.805,carWidth=()=>Math.min(roadWidth()*.42,W*.47,H*.33,W>1000?150:Infinity),carHeight=()=>carWidth()/1.31;
 function roadCenter(y){return W/2+Math.sin((y/H)*2.05+distance*.004)*Math.min(W*.035,42)}
 function laneX(n,y){return roadCenter(y)+(n-1)*roadWidth()/3}
 function roundRect(x,y,w,h,r,fill,stroke){ctx.beginPath();ctx.roundRect(x,y,w,h,r);ctx.fillStyle=fill;ctx.fill();if(stroke){ctx.lineWidth=2;ctx.strokeStyle=stroke;ctx.stroke()}}
 function poly(points,fill,stroke,lw=1){ctx.beginPath();ctx.moveTo(points[0][0],points[0][1]);for(let i=1;i<points.length;i++)ctx.lineTo(points[i][0],points[i][1]);ctx.closePath();ctx.fillStyle=fill;ctx.fill();if(stroke){ctx.lineWidth=lw;ctx.strokeStyle=stroke;ctx.stroke()}}
-function backdrop(){ctx.fillStyle='#72c9f4';ctx.fillRect(0,0,W,H);if(scene.complete&&scene.naturalWidth){const scale=Math.max(W/scene.naturalWidth,H/scene.naturalHeight),dw=scene.naturalWidth*scale,dh=scene.naturalHeight*scale;ctx.drawImage(scene,(W-dw)/2,(H-dh)/2,dw,dh)}ctx.fillStyle='#207d2e30';ctx.fillRect(0,0,W,H)}
+function backdrop(){const grass=ctx.createLinearGradient(0,0,W,0);grass.addColorStop(0,'#438d32');grass.addColorStop(.5,'#6bac43');grass.addColorStop(1,'#438d32');ctx.fillStyle=grass;ctx.fillRect(0,0,W,H);const strip=72,offset=distance*2%strip;ctx.fillStyle='#b8d96b12';for(let y=-strip+offset;y<H;y+=strip*2)ctx.fillRect(0,y,W,strip);}
 function track(){const rw=roadWidth(),left=[],right=[];for(let y=0;y<=H+10;y+=18){const c=roadCenter(y);left.push([c-rw/2,y]);right.push([c+rw/2,y])}ctx.save();ctx.shadowColor='#06192799';ctx.shadowBlur=18;ctx.shadowOffsetY=5;ctx.beginPath();left.forEach((p,i)=>i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]));for(let i=right.length-1;i>=0;i--)ctx.lineTo(right[i][0],right[i][1]);ctx.closePath();const asphalt=ctx.createLinearGradient(roadLeft(),0,roadLeft()+rw,0);asphalt.addColorStop(0,'#26313b');asphalt.addColorStop(.5,'#3e4852');asphalt.addColorStop(1,'#26313b');ctx.fillStyle=asphalt;ctx.fill();ctx.restore();
  const step=34,offset=distance*2%step;for(let y=-step+offset,idx=0;y<H+step;y+=step,idx++){for(const side of [-1,1]){const c=roadCenter(y),edge=c+side*rw/2,inside=c+side*(rw/2-9),nextC=roadCenter(y+step),nextEdge=nextC+side*rw/2,nextInside=nextC+side*(rw/2-9);poly([[edge,y],[inside,y],[nextInside,y+step],[nextEdge,y+step]],idx%2?'#f7f1d9':'#e34b3c')}}
  for(let div=1;div<3;div++){for(let y=-(distance*2%76);y<H;y+=76){const y2=Math.min(H,y+42),x1=roadCenter(y)+(div-1.5)*rw/3,x2=roadCenter(y2)+(div-1.5)*rw/3;ctx.strokeStyle='#f4f5dfbd';ctx.lineWidth=Math.max(2,rw*.006);ctx.beginPath();ctx.moveTo(x1,y);ctx.lineTo(x2,y2);ctx.stroke()}}
