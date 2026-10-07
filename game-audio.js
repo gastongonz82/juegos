@@ -53,6 +53,9 @@
     else if (name === 'gameover') { tone(380,.20,'triangle',0,.12,270); tone(270,.24,'triangle',.17,.12,165); tone(165,.32,'sine',.37,.12,110); }
     else if (name === 'pause') tone(510,.075,'sine',0,.08,390);
     else if (name === 'resume') tone(390,.075,'sine',0,.08,590);
+    else if (name === 'kick') { noiseBurst(.11,'lowpass',720,120,.18); tone(92,.14,'sine',.012,.16,58); tone(235,.075,'triangle',0,.05,130); }
+    else if (name === 'goal') { tone(520,.16,'triangle',0,.10,710); tone(780,.20,'sine',.10,.11,980); tone(1040,.27,'sine',.22,.12,1320); noiseBurst(.15,'bandpass',900,1350,.07,.08); }
+    else if (name === 'save') { noiseBurst(.14,'lowpass',980,170,.18); tone(180,.12,'triangle',.012,.12,92); }
     else if (name === 'start') { tone(470,.10,'triangle',0,.09,650); tone(670,.13,'sine',.09,.10,880); }
   }
   function syncEngine() {
