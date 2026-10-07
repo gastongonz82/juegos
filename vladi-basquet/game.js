@@ -5,9 +5,9 @@ const $=id=>document.getElementById(id), app=$('app');
 const scoreEl=$('score'),streakEl=$('streak'),bestEl=$('best'),lifeEl=$('lifeDisplay'),menuBest=$('menuBest'),overBest=$('overBest');
 const overlays={menu:$('menu'),pause:$('pause'),gameover:$('gameover')};
 const sprite=new Image();sprite.src='./assets/vladi-basquet.webp';
-let W=innerWidth,H=innerHeight,DPR=1,scale=1,raf=0,last=0,mode='menu',muted=false,audioCtx=null;
+let W=innerWidth,H=innerHeight,DPR=1,scale=1,raf=0,last=0,mode='menu',muted=(()=>{try{return localStorage.getItem('vladiArcadeMuted')==='1'}catch(_){return false}})(),audioCtx=null;
 let score=0,streak=0,best=Number(localStorage.getItem('vladiBasquetBest')||0),lives=5,round=1,elapsed=0,hoopX=0,hoopY=0,hoopVX=0,ball=null,aim=null,particles=[],toastTimer=0,keeperFlash=0;
-bestEl.textContent=menuBest.textContent=overBest.textContent=best;
+bestEl.textContent=menuBest.textContent=overBest.textContent=best;$('soundBtn').textContent=muted?'♫̸':'♫';$('soundBtn').setAttribute('aria-label',muted?'Activar sonido':'Silenciar sonido');
 const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
 function resize(){const rect=app.getBoundingClientRect();W=rect.width;H=rect.height;DPR=Math.min(devicePixelRatio||1,2);canvas.width=Math.round(W*DPR);canvas.height=Math.round(H*DPR);canvas.style.width=W+'px';canvas.style.height=H+'px';ctx.setTransform(DPR,0,0,DPR,0,0);scale=Math.min(W/900,H/560);if(!ball) setHoop(true);draw();}
 function ground(){return H*.855}
