@@ -4,7 +4,7 @@ const ui={level:$('level'),score:$('score'),best:$('best'),lives:$('lives'),menu
 const dirs={up:[0,-1],right:[1,0],down:[0,1],left:[-1,0]};
 let level=1,score=0,best=+(localStorage.getItem('vladiHalloweenBest')||0),lives=3,state='menu',cols=21,rows=21,spawnX=1,spawnY=1,maze=[],items=[],player,ghosts=[],cell=20,ox=0,oy=0,ghostAcc=0,last=0,power=0,invuln=0,queued=null,dir='left',sound=true,audio=null,toastTimer=0,anim=0,swipeStart=null,lastAspect=0;
 $('best').textContent=ui.menuBest.textContent=best;
-const sprite=new Image();sprite.src='../vladi-run/assets/vladi-runner.webp';const faceSprite=new Image();faceSprite.src='../vladi-run/assets/vladi-face.png';
+const sprite=new Image();sprite.src='../vladi-run/assets/vladi-runner.webp';const faceSprite=new Image();faceSprite.src='./assets/vladi-head.png';
 function resize(){const rect=arena.getBoundingClientRect();const aspect=rect.width/Math.max(1,rect.height);const changed=lastAspect>0&&Math.abs(aspect-lastAspect)>.08;lastAspect=aspect;const dpr=Math.min(devicePixelRatio||1,2);canvas.width=Math.max(1,Math.floor(rect.width*dpr));canvas.height=Math.max(1,Math.floor(rect.height*dpr));canvas.style.width=rect.width+'px';canvas.style.height=rect.height+'px';ctx.setTransform(dpr,0,0,dpr,0,0);const header=document.querySelector('.top').getBoundingClientRect().height,footer=document.querySelector('.bottom').getBoundingClientRect().height;let availW=rect.width-12,availH=rect.height-12;cell=Math.max(7,Math.floor(Math.min(availW/cols,availH/rows)));ox=(rect.width-cols*cell)/2;oy=(rect.height-rows*cell)/2;if(changed&&state==='playing')generateMaze();}
 new ResizeObserver(resize).observe(arena);window.addEventListener('orientationchange',()=>setTimeout(()=>{resize();if(state==='playing'){generateMaze();pop('Laberinto adaptado a la pantalla');}},180));
 function generateMaze(){const box=arena.getBoundingClientRect(),targetCell=Math.max(24,40-Math.floor((level-1)*.8));rows=Math.min(39,Math.max(17,Math.round(box.height/targetCell)));if(rows%2===0)rows+=rows<39?1:-1;cols=Math.min(61,Math.max(13,Math.round(box.width/Math.max(1,box.height)*rows)));if(cols%2===0)cols+=cols<61?1:-1;spawnX=Math.floor(cols/2);if(spawnX%2===0)spawnX--;spawnY=rows-4;maze=Array.from({length:rows},()=>Array(cols).fill(1));let stack=[[spawnX,spawnY]];maze[spawnY][spawnX]=0;while(stack.length){const [x,y]=stack[stack.length-1],opts=[];for(const [dx,dy]of [[0,-2],[2,0],[0,2],[-2,0]]){const nx=x+dx,ny=y+dy;if(nx>0&&ny>0&&nx<cols-1&&ny<rows-1&&maze[ny][nx])opts.push([nx,ny,dx,dy]);}if(!opts.length){stack.pop();continue;}const[nx,ny,dx,dy]=opts[Math.floor(Math.random()*opts.length)];maze[y+dy/2][x+dx/2]=0;maze[ny][nx]=0;stack.push([nx,ny]);}
@@ -46,15 +46,11 @@ function drawWall(x,y){const a=project(x,y),b=project(x+1,y),c=project(x+1,y+1),
 function projectedSize(y){const w=canvas.clientWidth,h=canvas.clientHeight,z=Math.max(0,Math.min(1,y/(rows-1))),scale=.92+.48*z;return{w:w/cols*scale,h:h/rows*(.8+1.05*z),scale};}
 function projectedCenter(x,y){const a=project(x+.5,y),b=project(x+.5,y+1);return{x:(a.x+b.x)/2,y:(a.y+b.y)/2};}
 function drawVladi(x,y,t){
- const pos=projectedCenter(x,y),dims=projectedSize(y),size=Math.max(18,Math.min(dims.w*.98,dims.h*.9));
- ctx.save();ctx.translate(pos.x,pos.y);
- // Recorte de rostro: frente, mejillas y mandíbula, sin gorra ni marco.
- const face=()=>{ctx.beginPath();ctx.moveTo(-size*.3,-size*.34);ctx.quadraticCurveTo(-size*.25,-size*.46,-size*.08,-size*.44);ctx.quadraticCurveTo(size*.09,-size*.47,size*.23,-size*.37);ctx.lineTo(size*.34,-size*.25);ctx.quadraticCurveTo(size*.4,-size*.15,size*.4,-size*.05);ctx.lineTo(size*.46,size*.02);ctx.quadraticCurveTo(size*.47,size*.1,size*.38,size*.13);ctx.lineTo(size*.32,size*.29);ctx.quadraticCurveTo(size*.2,size*.45,0,size*.48);ctx.quadraticCurveTo(-size*.2,size*.45,-size*.32,size*.29);ctx.lineTo(-size*.38,size*.13);ctx.quadraticCurveTo(-size*.47,size*.1,-size*.46,size*.02);ctx.lineTo(-size*.4,-size*.05);ctx.quadraticCurveTo(-size*.4,-size*.15,-size*.34,-size*.25);ctx.closePath();};
- face();ctx.save();ctx.clip();
- if(faceSprite.complete&&faceSprite.naturalWidth){ctx.drawImage(faceSprite,104,70,170,103,-size*.46,-size*.45,size*.92,size*.9);}
- else if(sprite.complete&&sprite.naturalWidth){ctx.drawImage(sprite,0,0,sprite.naturalWidth/4,sprite.naturalHeight,-size*.46,-size*.45,size*.92,size*.9);}
- ctx.restore();
- ctx.restore();
+ if(!faceSprite.complete||!faceSprite.naturalWidth)return;
+ const pos=projectedCenter(x,y),dims=projectedSize(y),ratio=faceSprite.naturalWidth/faceSprite.naturalHeight;
+ // Cabeza completa recortada desde la referencia, sin círculo ni recorte geométrico.
+ const w=Math.min(dims.w*1.18,dims.h*1.05*ratio),h=w/ratio;
+ ctx.drawImage(faceSprite,pos.x-w/2,pos.y-h/2,w,h);
 }
 function drawMonster(g,t){
  const pos=projectedCenter(g.x,g.y),dims=projectedSize(g.y),s=Math.max(30,Math.min(dims.w*1.04,dims.h*.9)),bob=Math.sin(t/210+g.x)*s*.025;
