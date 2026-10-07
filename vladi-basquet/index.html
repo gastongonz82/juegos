@@ -15,9 +15,10 @@ body{height:100vh;height:100dvh}
 .hud{position:absolute;z-index:3;top:max(10px,env(safe-area-inset-top));left:max(12px,env(safe-area-inset-left));right:max(12px,env(safe-area-inset-right));display:flex;align-items:flex-start;justify-content:center;gap:clamp(6px,1vw,12px);pointer-events:none}
 .stat{min-width:clamp(78px,13vw,150px);padding:8px 15px 9px;border:1px solid rgba(255,219,123,.65);border-radius:16px;background:linear-gradient(145deg,rgba(35,43,65,.96),rgba(18,25,41,.96));box-shadow:0 4px 0 #090f1d, inset 0 1px rgba(255,255,255,.16);text-align:center;line-height:1;backdrop-filter:blur(8px)}
 .stat small{display:block;color:#f6d681;font-size:clamp(9px,1.2vw,13px);font-weight:900;letter-spacing:.12em;margin-bottom:4px}.stat b{display:block;font-size:clamp(17px,2.6vw,29px);font-weight:1000;font-variant-numeric:tabular-nums}
-.hud button{pointer-events:auto;flex:0 0 auto;width:clamp(44px,5vw,58px);height:clamp(44px,5vw,58px);border:2px solid #e7bc60;border-radius:15px;background:linear-gradient(145deg,#9c5a26,#542b19 72%);box-shadow:0 4px 0 #27160f;color:white;font-size:21px;font-weight:1000;cursor:pointer}
+.stat.lives b{font-size:clamp(13px,1.8vw,20px);letter-spacing:.015em;color:#ff8e8b}.hud button{pointer-events:auto;flex:0 0 auto;width:clamp(44px,5vw,58px);height:clamp(44px,5vw,58px);border:2px solid #e7bc60;border-radius:15px;background:linear-gradient(145deg,#9c5a26,#542b19 72%);box-shadow:0 4px 0 #27160f;color:white;font-size:21px;font-weight:1000;cursor:pointer}
 #soundBtn{margin-left:2px}
 #aimHint{position:absolute;z-index:2;left:50%;bottom:max(18px,env(safe-area-inset-bottom));transform:translateX(-50%);width:max-content;max-width:calc(100% - 24px);padding:10px 16px;border:1px solid rgba(255,224,151,.65);border-radius:99px;background:rgba(12,22,40,.82);box-shadow:0 5px 18px #0006;color:#fff7e5;font-size:clamp(12px,1.7vw,16px);font-weight:800;text-align:center;pointer-events:none;backdrop-filter:blur(6px)}
+#powerMeter{position:absolute;z-index:3;left:50%;bottom:max(68px,calc(env(safe-area-inset-bottom) + 62px));transform:translateX(-50%);display:none;width:clamp(150px,22vw,240px);padding:8px 12px;border:1px solid #ffe09a;border-radius:14px;background:rgba(14,25,44,.9);box-shadow:0 4px 14px #0006;color:#fff2ce;font-size:11px;font-weight:1000;letter-spacing:.1em;text-align:center;pointer-events:none}#powerMeter.active{display:block}#powerMeter .track{height:8px;border-radius:8px;margin-top:6px;background:#ffffff2b;overflow:hidden}#powerFill{display:block;width:0;height:100%;border-radius:8px;background:linear-gradient(90deg,#61df65,#ffe267,#ff7b42);transition:width .06s}
 #toast{position:absolute;z-index:4;left:50%;top:20%;transform:translate(-50%,-8px);opacity:0;padding:10px 20px;border-radius:14px;background:#ffda76;color:#42251b;font-weight:1000;font-size:clamp(19px,3vw,32px);box-shadow:0 6px 0 #9b5b24;transition:opacity .16s,transform .16s;pointer-events:none;white-space:nowrap}#toast.on{opacity:1;transform:translate(-50%,0)}
 .overlay{position:absolute;z-index:5;inset:0;display:none;align-items:center;justify-content:center;padding:max(18px,env(safe-area-inset-top)) 16px max(18px,env(safe-area-inset-bottom));background:linear-gradient(180deg,rgba(7,13,26,.54),rgba(8,15,30,.72));backdrop-filter:blur(5px)}
 .overlay.show{display:flex}
@@ -25,7 +26,7 @@ body{height:100vh;height:100dvh}
 .eyebrow{color:#9b5928;font-size:12px;font-weight:1000;letter-spacing:.24em;text-transform:uppercase}.panel h1{margin:6px 0 2px;font-size:clamp(34px,7vw,52px);line-height:1.05;color:#43251d;text-shadow:0 2px #fff8;font-weight:1000;letter-spacing:-.04em}.panel h2{margin:4px 0 2px;font-size:clamp(28px,6vw,42px);color:#47271c}.hero{height:clamp(142px,26vh,220px);display:flex;align-items:center;justify-content:center;margin:2px auto 7px}.hero img{height:100%;width:auto;max-width:90%;object-fit:contain;filter:drop-shadow(0 9px 5px #5b311b48)}
 .copy{margin:4px auto 14px;max-width:390px;font-size:clamp(14px,2.1vw,17px);line-height:1.45;font-weight:750}.how{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:14px 0 16px}.how div{border-radius:14px;padding:10px 6px;background:#ffe9ad;border:1px solid #e3ad51;font-size:12px;font-weight:850}.how strong{display:block;font-size:22px;margin-bottom:2px}
 .primary,.secondary{width:100%;border:4px solid #075224;border-radius:19px;background:linear-gradient(#62ef42,#15b82d);box-shadow:0 6px 0 #064119;color:white;padding:13px 16px;font-size:clamp(21px,4vw,28px);font-weight:1000;cursor:pointer}.secondary{margin-top:10px;background:linear-gradient(#506483,#233752);border-color:#1c2a42;box-shadow:0 5px 0 #101827;font-size:17px}.record{margin-top:13px;color:#855020;font-weight:900}.hidden{display:none!important}
-@media(max-width:580px){.hud{justify-content:flex-start;gap:5px}.stat{flex:1;min-width:0;padding:8px 5px;border-radius:14px}.stat small{letter-spacing:.07em;font-size:9px}.stat b{font-size:clamp(17px,5vw,24px)}.hud button{width:44px;height:44px;border-radius:13px;font-size:18px}.panel{border-width:4px;border-radius:24px}.hero{height:clamp(122px,22vh,175px)}.how{gap:5px}.how div{font-size:10px;padding:8px 3px}}
+@media(max-width:580px){.hud{justify-content:flex-start;gap:5px}.stat{flex:1;min-width:0;padding:8px 5px;border-radius:14px}.stat small{letter-spacing:.07em;font-size:9px}.stat b{font-size:clamp(17px,5vw,24px)}.stat.lives b{font-size:clamp(11px,3vw,15px)}.hud button{width:44px;height:44px;border-radius:13px;font-size:18px}.panel{border-width:4px;border-radius:24px}.hero{height:clamp(122px,22vh,175px)}.how{gap:5px}.how div{font-size:10px;padding:8px 3px}}
 @media(max-height:520px){.panel{padding:12px 22px;border-radius:21px}.hero{height:clamp(90px,23vh,132px);margin:0}.copy{margin:2px auto 7px;font-size:13px}.how{margin:8px 0}.primary{padding:9px}.record{margin-top:7px}.stat{padding-top:6px;padding-bottom:7px}.overlay{padding:9px}}
 </style>
 </head>
@@ -36,17 +37,19 @@ body{height:100vh;height:100dvh}
  <div class="stat"><small>PUNTOS</small><b id="score">0</b></div>
  <div class="stat"><small>RACHA</small><b id="streak">0</b></div>
  <div class="stat"><small>RÉCORD</small><b id="best">0</b></div>
+ <div class="stat lives"><small>VIDAS</small><b id="lifeDisplay">♥♥♥♥♥</b></div>
  <button id="soundBtn" aria-label="Activar o silenciar sonido">♫</button>
  <button id="pauseBtn" aria-label="Pausar">Ⅱ</button>
 </div>
-<div id="aimHint">Arrastrá desde la pelota hacia el aro y soltá para tirar</div>
+<div id="powerMeter"><span id="powerLabel">FUERZA 0%</span><div class="track"><i id="powerFill"></i></div></div>
+<div id="aimHint">Arrastrá en arco; usá los puntos para llegar al aro</div>
 <div id="toast" role="status"></div>
 <div class="overlay show" id="menu">
  <section class="panel">
   <div class="eyebrow">Desafío arcade</div><h1>VLADI BÁSQUET</h1>
   <div class="hero"><img src="./assets/vladi-basquet.webp" alt="Vladi con uniforme de básquet y pelota"></div>
-  <p class="copy">Apuntá el tiro, medí la fuerza y encadená encestes. Cada ronda mueve el aro y te aleja un poco más.</p>
-  <div class="how"><div><strong>↗</strong>Arrastrá para apuntar</div><div><strong>🏀</strong>Soltá para lanzar</div><div><strong>♥ ♥ ♥</strong>Tenés 5 fallos</div></div>
+  <p class="copy">Apuntá siguiendo la guía de puntos, medí la fuerza y encadená encestes. Cada ronda mueve el aro y te aleja un poco más.</p>
+  <div class="how"><div><strong>↗</strong>Dibujá el arco</div><div><strong>🏀</strong>Soltá para lanzar</div><div><strong>♥ ♥ ♥</strong>Tenés 5 fallos</div></div>
   <button class="primary" id="playBtn">▶ JUGAR</button><div class="record">Récord: <span id="menuBest">0</span> encestes</div>
  </section>
 </div>
@@ -57,5 +60,5 @@ body{height:100vh;height:100dvh}
  <section class="panel"><div class="eyebrow">Fin del partido</div><h2>¡BUEN TIRO!</h2><div class="hero"><img src="./assets/vladi-basquet.webp" alt="Vladi basquetbolista"></div><p class="copy">Encestes: <b id="finalScore">0</b> · Mejor racha: <b id="finalStreak">0</b></p><button class="primary" id="againBtn">▶ JUGAR OTRA VEZ</button><div class="record">Récord: <span id="overBest">0</span> encestes</div></section>
 </div>
 </main>
-<script src="./game.js?v=2"></script>
+<script src="./game.js?v=3"></script>
 </body></html>
