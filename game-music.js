@@ -13,6 +13,7 @@
   }
   function play() {
     if (!started || userPaused) return;
+    syncState('loading');
     const result = track.play();
     if (result && result.then) result.then(() => syncState(), () => syncState('blocked'));
     else syncState();
@@ -46,15 +47,17 @@
       toggleMute();
       return;
     }
-    if (target.closest('#pause, #pauseBtn')) {
-      if (track.paused) resume(); else pause();
+    const button = target.closest('button');
+    if (button && (button.id === 'pause' || button.id === 'pauseBtn')) {
+      const label = (button.getAttribute('aria-label') || '') + ' ' + (button.textContent || '');
+      if (/▶|play|resume|continuar|reanudar/i.test(label)) resume(); else pause();
       return;
     }
     if (!started || userPaused) start();
   }, true);
   document.addEventListener('keydown', event => {
     if (event.code === 'Escape' || event.code === 'KeyP' || event.key?.toLowerCase() === 'p') {
-      if (track.paused) resume(); else pause();
+      if (userPaused) resume(); else pause();
       return;
     }
     if (!started && (event.code === 'Enter' || event.code === 'Space')) start();
