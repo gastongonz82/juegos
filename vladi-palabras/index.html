@@ -86,7 +86,7 @@
     const $=id=>document.getElementById(id), tiles=$('tiles'), slots=$('slots'), message=$('message'), checkBtn=$('checkBtn'), hintBtn=$('hintBtn');
     const clean=s=>s.toUpperCase().replace(/Ñ/g,'~').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/~/g,'Ñ');
     const pickSet=()=>{const a=[...bank];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a.slice(0,10)};
-    const scramble=word=>{const chars=[...word];if(new Set(chars).size<2)return chars;for(let attempt=0;attempt<24;attempt++){const a=chars.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}if(a.join('')!==word)return a}for(let shift=1;shift<chars.length;shift++){const a=chars.slice(shift).concat(chars.slice(0,shift));if(a.join('')!==word)return a}return chars};
+    const scramble=word=>{const a=[...word];for(let attempt=0;attempt<8;attempt++){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}if(a.join('')!==word)return a.slice()}return [...word].reverse()};
     let round=0,score=0,best=0,questions=pickSet(),current=null,selected=[],locked=false,hinted=false;
     try{best=Number(localStorage.getItem('vladiPalabrasBest')||0)}catch(_){} $('best').textContent=best;
     function say(text,kind=''){message.textContent=text;message.className='message'+(kind?' '+kind:'')}
