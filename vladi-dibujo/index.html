@@ -53,7 +53,7 @@ $('eraser').onclick=()=>{erasing=!erasing;if(erasing)drawMode=true;board.classLi
 $('continue').onclick=()=>{if($('continue').dataset.final==='true'){round=0;score=0}screen('game');render();window.VladiMusic?.start()};
 $('restart').onclick=()=>{round=0;score=0;screen('intro');$('introBest').textContent=best};
 svg.addEventListener('click',e=>{if(drawMode)return;const z=e.target.closest('.zone');if(!z)return;z.setAttribute('fill',erasing?'#fffdf5':activeColor);$('feedback').textContent=erasing?'PARTE BORRADA.':'¡BUEN COLOR!';window.VladiSound?.play('collect')});
-function point(e){const r=board.getBoundingClientRect();return[Math.max(0,Math.min(1,(e.clientX-r.left)/r.width)),Math.max(0,Math.min(1,(e.clientY-r.top)/r.height))}
+function point(e){const r=board.getBoundingClientRect();return [Math.max(0,Math.min(1,(e.clientX-r.left)/r.width)),Math.max(0,Math.min(1,(e.clientY-r.top)/r.height))]}
 layer.addEventListener('pointerdown',e=>{if(!drawMode)return;e.preventDefault();layer.setPointerCapture(e.pointerId);currentStroke={color:activeColor,size:brush,erase:erasing,points:[point(e)]};strokes.push(currentStroke);drawStrokes()});
 layer.addEventListener('pointermove',e=>{if(!currentStroke)return;e.preventDefault();currentStroke.points.push(point(e));drawStrokes()});
 layer.addEventListener('pointerup',()=>currentStroke=null);layer.addEventListener('pointercancel',()=>currentStroke=null);
