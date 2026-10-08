@@ -62,11 +62,12 @@
     const plays={piedra:{label:'PIEDRA',icon:'✊'},papel:{label:'PAPEL',icon:'✋'},tijera:{label:'TIJERA',icon:'✌️'}};
     const names=Object.keys(plays);
     const $=id=>document.getElementById(id);
-    const state={round:0,streak:0,best:0,score:{player:0,vladi:0,draw:0}};
+    const state={round:0,streak:0,best:0,score:{player:0,vladi:0,draw:0},level:1,levelRound:0};
     try{const saved=JSON.parse(localStorage.getItem('vladiPiedraPapelTijera')||'{}');Object.assign(state.score,saved.score||{});state.best=Number(saved.best)||0}catch(_){}
     function save(){try{localStorage.setItem('vladiPiedraPapelTijera',JSON.stringify({score:state.score,best:state.best}))}catch(_){}}
-    function render(){ $('playerScore').textContent=state.score.player;$('vladiScore').textContent=state.score.vladi;$('drawScore').textContent=state.score.draw;$('record').textContent='RACHA RÉCORD: '+state.best;$('round').textContent='RONDA '+Math.max(1,state.round); }
+    function render(){ $('playerScore').textContent=state.score.player;$('vladiScore').textContent=state.score.vladi;$('drawScore').textContent=state.score.draw;$('record').textContent='RACHA RÉCORD: '+state.best;$('round').textContent='NIVEL '+state.level+' · '+(state.levelRound+1)+' / 10'; }
     function play(user){
+      if(state.levelRound>=10){state.level++;state.levelRound=0}
       const computer=names[Math.floor(Math.random()*names.length)];
       $('playerChoice').textContent=plays[user].icon;$('playerChoice').setAttribute('aria-label','Elegiste '+plays[user].label);
       $('vladiChoice').textContent=plays[computer].icon;$('vladiChoice').setAttribute('aria-label','Vladi eligió '+plays[computer].label);
@@ -75,7 +76,7 @@
       if(user===computer){state.score.draw++;state.streak=0;$('outcome').textContent='¡EMPATE! LOS DOS ELIGIERON '+plays[user].label;window.VladiSound?.play('collect');$('outcome').classList.add('tie')}
       else if((user==='piedra'&&computer==='tijera')||(user==='papel'&&computer==='piedra')||(user==='tijera'&&computer==='papel')){state.score.player++;state.streak++;state.best=Math.max(state.best,state.streak);$('outcome').textContent='¡GANASTE ESTA RONDA!';window.VladiSound?.play('goal');$('outcome').classList.add('win')}
       else{state.score.vladi++;state.streak=0;$('outcome').textContent='¡ESTA VEZ GANÓ VLADI!';window.VladiSound?.play('wrong');$('outcome').classList.add('loss')}
-      state.round++;save();render();
+      state.round++;state.levelRound++;if(state.levelRound===10){$('outcome').textContent+=' ¡NIVEL '+state.level+' COMPLETADO! TOCÁ UNA OPCIÓN PARA CONTINUAR AL NIVEL '+(state.level+1)+'.'}save();render();
     }
     document.querySelectorAll('.choice').forEach(button=>button.addEventListener('click',()=>play(button.dataset.choice)));
     document.addEventListener('keydown',event=>{if(event.altKey||event.ctrlKey||event.metaKey)return;const map={'1':'piedra','2':'papel','3':'tijera'};if(map[event.key])play(map[event.key])});
