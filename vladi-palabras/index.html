@@ -65,7 +65,7 @@
         <div class="scene-copy"><strong>¡VAMOS, VLADI!</strong>Ordená las letras y descubrí<br>100 palabras en cada partida.</div>
       </aside>
       <section class="game">
-        <div class="topline"><div class="round">PALABRA <b id="round">1</b> / 100</div><div class="stats"><div class="stat"><span>PUNTOS</span><b id="score">0</b></div><div class="stat"><span>RÉCORD</span><b id="best">0</b></div></div></div>
+        <div class="topline"><div class="round">PALABRA <b id="round">1</b><span id="roundTotal"> / 10</span></div><div class="stats"><div class="stat"><span>PUNTOS</span><b id="score">0</b></div><div class="stat"><span>RÉCORD</span><b id="best">0</b></div></div></div>
         <div class="progress" aria-label="Progreso de la partida"><i id="progress"></i></div>
         <div class="clue"><small id="category">CATEGORÍA</small><p id="clue">LEÉ LA PISTA Y ORDENÁ LAS LETRAS.</p></div>
         <div class="section-label">LETRAS DESORDENADAS · TOCÁ PARA ELEGIR</div>
@@ -100,7 +100,7 @@
     function say(text,kind=''){message.textContent=text;message.className='message'+(kind?' '+kind:'')}
     function render(){
       if(!current)return;
-      $('round').textContent=(round-levelStart+1)+' / '+Math.min(10,questions.length-levelStart);$('score').textContent=score;$('category').textContent=current[0];$('clue').textContent=current[1];$('progress').style.width=((round)/100*100)+'%';
+      $('round').textContent=round-levelStart+1;$('roundTotal').textContent=' / '+Math.min(10,questions.length-levelStart);$('score').textContent=score;$('category').textContent=current[0];$('clue').textContent=current[1];$('progress').style.width=((round)/100*100)+'%';
       tiles.replaceChildren();current.scrambled.forEach((letter,i)=>{const b=document.createElement('button');b.type='button';b.className='tile';b.textContent=letter;b.dataset.index=i;b.disabled=locked||selected.some(x=>x.index===i);b.setAttribute('aria-label','Letra '+letter);b.addEventListener('click',()=>choose(i));tiles.append(b)});
       slots.replaceChildren();for(let i=0;i<current[2].length;i++){const chosen=selected[i],s=document.createElement('button');s.type='button';s.className='slot '+(chosen?'filled':'empty');s.textContent=chosen?chosen.letter:'_';s.disabled=locked;s.setAttribute('aria-label',chosen?'Quitar letra '+chosen.letter:'Espacio '+(i+1));s.addEventListener('click',()=>removeAt(i));slots.append(s)}
       checkBtn.disabled=locked||selected.length!==current[2].length;hintBtn.disabled=locked||hinted;
@@ -112,7 +112,7 @@
     function check(){if(locked||!current||selected.length!==current[2].length)return;const answer=clean(selected.map(x=>x.letter).join(''));if(answer===current.answer){correct();return}window.VladiSound?.play('wrong');say('CASI… PROBÁ CAMBIAR EL ORDEN DE LAS LETRAS.','bad');tiles.classList.remove('shake');void tiles.offsetWidth;tiles.classList.add('shake')}
     function hint(){if(locked||hinted||!current)return;const target=current[2][selected.length];const tile=current.scrambled.findIndex((l,i)=>l===target&&!selected.some(x=>x.index===i));if(tile<0)return;hinted=true;selected.push({index:tile,letter:current.scrambled[tile]});if(selected.length===current[2].length){correct();return}say('¡PISTA! LA PRÓXIMA LETRA ES '+target+'.','help');render()}
     function next(){current=questions[round];current.answer=clean(current[2]);current.scrambled=scramble(current[2]);selected=[];hinted=false;locked=false;say('¡ELEGÍ LAS LETRAS PARA FORMAR LA PALABRA!');render()}
-    function finish(){current=null;$('progress').style.width='100%';tiles.replaceChildren();slots.replaceChildren();$('category').textContent='NIVEL '+level+' COMPLETADO';$('clue').textContent='RESOLVISTE '+levelHits+' PALABRAS. LLEVÁS '+score+' PUNTOS.';say('¡MUY BIEN! YA PODÉS CONTINUAR AL PRÓXIMO NIVEL.','good');window.VladiSound?.play('correct');checkBtn.textContent='CONTINUAR AL NIVEL '+(level+1)+' ➜';checkBtn.disabled=false;hintBtn.disabled=true;$('round').textContent=Math.min(10,questions.length-levelStart)+' / '+Math.min(10,questions.length-levelStart);}
+    function finish(){current=null;$('progress').style.width='100%';tiles.replaceChildren();slots.replaceChildren();$('category').textContent='NIVEL '+level+' COMPLETADO';$('clue').textContent='RESOLVISTE '+levelHits+' PALABRAS. LLEVÁS '+score+' PUNTOS.';say('¡MUY BIEN! YA PODÉS CONTINUAR AL PRÓXIMO NIVEL.','good');window.VladiSound?.play('correct');checkBtn.textContent='CONTINUAR AL NIVEL '+(level+1)+' ➜';checkBtn.disabled=false;hintBtn.disabled=true;$('round').textContent=Math.min(10,questions.length-levelStart);$('roundTotal').textContent=' / '+Math.min(10,questions.length-levelStart);}
     function restart(){questions=pickSet();round=0;score=0;level=1;levelStart=0;levelHits=0;$('score').textContent='0';checkBtn.textContent='COMPROBAR';hintBtn.disabled=false;next()}
     function nextLevel(){level++;levelStart=round;levelHits=0;if(round>=questions.length){questions=pickSet();round=0;levelStart=0}checkBtn.textContent='COMPROBAR';hintBtn.disabled=false;next()}
     checkBtn.addEventListener('click',()=>{if(!current)nextLevel();else check()});hintBtn.addEventListener('click',hint);$('clearBtn').addEventListener('click',clear);
