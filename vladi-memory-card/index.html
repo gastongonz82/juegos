@@ -91,7 +91,7 @@
     function reset(playSound=true){
       const completed=state.pairs===8;if(completed){state.level++;try{localStorage.setItem('vladiMemoryLevel',String(state.level))}catch(_){}}
       window.clearInterval(state.timer);state.timer=null;state.deck=mix(characters.flatMap(item=>[item,item]));state.first=null;state.locked=false;state.moves=0;state.pairs=0;state.seconds=0;state.started=false;
-      $('message').textContent='NIVEL '+state.level+' · TOCÁ DOS TARJETAS Y ENCONTRÁ SU PAREJA.';$('message').className='message';$('reset').textContent=completed?'CONTINUAR AL NIVEL '+state.level+' ➜':'MEZCLAR Y JUGAR OTRA VEZ ↻';renderDeck();updateStats();if(playSound)window.VladiSound?.play('start')
+      $('message').textContent='NIVEL '+state.level+' · TOCÁ DOS TARJETAS Y ENCONTRÁ SU PAREJA.';$('message').className='message';$('reset').textContent='MEZCLAR Y JUGAR OTRA VEZ ↻';renderDeck();updateStats();if(playSound)window.VladiSound?.play('start')
     }
     $('reset').addEventListener('click',()=>reset(true));reset(false);
   })();
