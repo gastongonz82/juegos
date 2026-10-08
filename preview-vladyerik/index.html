@@ -107,6 +107,19 @@
 #sobre:after,#taekwondo:after,#cosplay:after{display:none!important}
 #sobre img,#taekwondo img,#cosplay img{display:block!important;width:100%!important;height:auto!important}
 }
+/* Divisores orgánicos desktop inspirados en el boceto, sin recortar contenido */
+@media(min-width:801px){
+.arcadeSection,.videos,#sobre,#taekwondo,#cosplay,.followSection{clip-path:none!important}
+#sobre,#taekwondo,#cosplay{position:relative;isolation:isolate;background:#06164c!important}
+#sobre{padding-bottom:64px!important}
+#taekwondo{padding-top:34px!important;padding-bottom:64px!important}
+#cosplay{padding-top:34px!important;padding-bottom:46px!important}
+#sobre:after,#taekwondo:after,#cosplay:after{display:block!important;content:"";position:absolute;z-index:5;left:0;right:0;bottom:-1px;height:54px;pointer-events:none;opacity:1!important;filter:none!important;background:#06164c!important}
+#sobre:after{clip-path:path("M0 30 C150 2 300 5 430 26 C570 49 710 50 850 22 C1010 -8 1140 4 1280 30 L1280 54 L0 54 Z")}
+#taekwondo:after{clip-path:path("M0 18 C170 52 310 47 455 19 C610 -10 750 2 895 31 C1040 57 1160 45 1280 14 L1280 54 L0 54 Z")}
+#cosplay:after{clip-path:path("M0 32 C145 4 285 0 425 24 C580 51 715 52 865 20 C1015 -10 1145 4 1280 30 L1280 54 L0 54 Z")}
+#sobre:before,#taekwondo:before,#cosplay:before{content:"";position:absolute;z-index:6;left:0;right:0;bottom:7px;height:3px;pointer-events:none;background:linear-gradient(90deg,transparent,#27dcff 18%,#8750ff 52%,#ff3f9a 82%,transparent);opacity:.45;filter:blur(.4px)}
+}
 </style><meta property="og:title" content="VLADYERIK | Juegos, desafíos y aventuras"><meta property="og:description" content="Entrá al mundo de Vladi: juegos, videos, desafíos y aventuras."><meta property="og:type" content="website"><meta name="theme-color" content="#071450"></head><body>
 <nav class="nav"><div class="wrap"><a class="brand" href="#"><span class="vlad">VLAD</span><span class="yerik">YERIK</span></a><div class="links"><a href="#">🏠 INICIO</a><a href="#juegos">🎮 JUEGOS</a><a href="#videos">▶ VIDEOS</a><a href="#sobre">👤 SOBRE VLADI</a><a href="#taekwondo">🏆 TAEKWONDO</a><a href="#cosplay">🎭 COSPLAY</a><a href="#redes">❤ SEGUIME</a></div></div></nav>
 <header class="hero"><img class="heroBanner" src="assets/vladi-hero.png" alt="VLADYERIK - Juegos, desafíos y aventuras"></header>
