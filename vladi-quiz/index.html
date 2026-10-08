@@ -34,13 +34,13 @@ main{padding:22px 0 36px}.heading{text-align:center;margin-bottom:18px}.badge{di
 <main>
 <div class="heading"><span class="badge">DESAFÍO DE INGENIO</span><h1>QUIZ <span>RELÁMPAGO</span></h1><p>¡Pensá rápido y juntá puntos con Vladi!</p></div>
 <section class="panel intro" id="intro">
-<div class="mascot" aria-hidden="true">🧠⚡</div><h2>¿Cuánto sabés?</h2><p>Elegí un tema y respondé todas las preguntas del tema. Tenés 15 segundos para cada una. ¡Cada partida mezcla preguntas distintas!</p>
+<div class="mascot" aria-hidden="true">🧠⚡</div><h2>¿Cuánto sabés?</h2><p>Elegí un tema y respondé 10 preguntas por nivel. Al terminar, podés continuar con el siguiente. Hay preguntas diferentes para seguir jugando.</p>
 <div class="cats" id="cats" role="group" aria-label="Elegí una categoría"></div>
 <button class="primary" id="start">¡EMPEZAR A JUGAR! ➜</button>
 <p>🏆 Récord: <strong id="introRecord">0</strong> puntos</p>
 </section>
 <section class="panel play" id="play" aria-live="polite">
-<div class="stats"><div class="stat"><small>PREGUNTA</small><strong id="round">1 / 10</strong></div><div class="stat"><small>PUNTOS</small><strong id="score">0</strong></div><div class="stat"><small>RÉCORD</small><strong id="record">0</strong></div><div class="timer" id="timer">15</div></div>
+<div class="stats"><div class="stat"><small id="levelLabel">NIVEL 1</small><strong id="round">1 / 10</strong></div><div class="stat"><small>PUNTOS</small><strong id="score">0</strong></div><div class="stat"><small>RÉCORD</small><strong id="record">0</strong></div><div class="timer" id="timer">15</div></div>
 <div class="progress"><i id="bar"></i></div>
 <div class="questionbox"><div class="qcat" id="qcat"></div><div class="question" id="question"></div></div>
 <div class="answers" id="answers"></div><p class="feedback" id="feedback" aria-live="assertive"></p>
@@ -162,7 +162,7 @@ $("cats").addEventListener("click",e=>{const b=e.target.closest("[data-cat]");if
 const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
 function playTone(name){try{if(window.VladiSound&&typeof window.VladiSound.play==="function")window.VladiSound.play(name)}catch(_){}}
 function start(){clearInterval(timer);let pool=BANK.filter(q=>category==="TODAS"||q[0]===category);questions=shuffle([...pool]);index=0;score=0;level=1;levelStart=0;levelHits=0;locked=false;try{best=Number(localStorage.getItem(STORE)||0)}catch(_){best=0}$("intro").classList.add("hide");$("result").classList.remove("show");$("play").classList.add("active");$("score").textContent=score;$("record").textContent=best;showQuestion()}
-function showQuestion(){locked=false;clearInterval(timer);const q=questions[index];$("round").textContent="NIVEL "+level+" · "+(index-levelStart+1)+" / "+Math.min(10,questions.length-levelStart);$("qcat").textContent="✦ "+q[0];$("question").textContent=q[1];$("feedback").textContent="";$("feedback").className="feedback";$("bar").style.width=(index/questions.length*100)+"%";time=15;$("timer").textContent=time;
+function showQuestion(){locked=false;clearInterval(timer);const q=questions[index];$("levelLabel").textContent="NIVEL "+level;$("round").textContent=(index-levelStart+1)+" / "+Math.min(10,questions.length-levelStart);$("qcat").textContent="✦ "+q[0];$("question").textContent=q[1];$("feedback").textContent="";$("feedback").className="feedback";$("bar").style.width=(index/questions.length*100)+"%";time=15;$("timer").textContent=time;
 const opts=q[2].split("|").map((label,i)=>({label,ok:i===q[3]}));shuffle(opts);$("answers").innerHTML=opts.map((o,i)=>'<button class="answer" type="button" data-ok="'+o.ok+'"><span class="num">'+(i+1)+'</span><span>'+o.label+'</span></button>').join("");$("answers").querySelectorAll(".answer").forEach(b=>b.addEventListener("click",()=>answer(b)));
 timer=setInterval(()=>{time--;$("timer").textContent=time;if(time<=0){clearInterval(timer);answer(null)}},1000)}
 function answer(button){if(locked)return;locked=true;clearInterval(timer);const all=[...$("answers").querySelectorAll(".answer")];all.forEach(b=>b.disabled=true);const correct=button&&button.dataset.ok==="true";if(button)button.classList.add(correct?"correct":"wrong");if(correct){levelHits++;const earned=100+time*5;score+=earned;$("score").textContent=score;$("feedback").textContent="¡CORRECTO! +"+earned+" PUNTOS 🎉";$("feedback").classList.add("ok");playTone("correct")}else{const winner=all.find(b=>b.dataset.ok==="true");if(winner)winner.classList.add("correct");$("feedback").textContent=button?"¡CASI! ¡A LA PRÓXIMA!":"¡SE ACABÓ EL TIEMPO!";$("feedback").classList.add("no");playTone("wrong")}
