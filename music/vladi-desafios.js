@@ -14,9 +14,21 @@
     historias: {
       melody: [392,440,523,587,659,587,523,440,392,523,587,659,784,659,587,523],
       chords: [[196,246.94,293.66],[261.63,329.63,392],[293.66,369.99,440],[164.81,196,246.94]], bass: .5
+    },
+    sopa: {
+      melody: [659,784,880,784,659,587,659,784,988,880,784,659,523,659,784,659],
+      chords: [[261.63,329.63,392],[293.66,369.99,440],[349.23,440,523.25],[261.63,329.63,392]], bass: .5
+    },
+    crucigramas: {
+      melody: [523,587,659,784,659,523,587,698,784,880,784,698,587,659,784,523],
+      chords: [[220,261.63,329.63],[261.63,329.63,392],[293.66,369.99,440],[220,261.63,329.63]], bass: .5
+    },
+    rompecabezas: {
+      melody: [392,523,659,784,880,784,659,523,440,587,698,880,784,659,523,392],
+      chords: [[196,246.94,293.66],[261.63,329.63,392],[220,293.66,349.23],[196,246.94,293.66]], bass: .5
     }
   };
-  const key = path.includes("secuencias") ? "secuencias" : path.includes("cambios") ? "cambios" : "historias";
+  const key = path.includes("secuencias") ? "secuencias" : path.includes("cambios") ? "cambios" : path.includes("sopa-letras") ? "sopa" : path.includes("crucigramas") ? "crucigramas" : path.includes("rompecabezas") ? "rompecabezas" : "historias";
   const track = tracks[key];
   const add = (freq, start, duration, volume, pad = false) => {
     const begin = Math.floor(start * rate), end = Math.min(count, Math.floor((start + duration) * rate));
