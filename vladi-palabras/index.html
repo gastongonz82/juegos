@@ -26,6 +26,12 @@
     @media(max-width:760px){.shell{width:min(520px,calc(100% - 22px))}.top{height:48px}.back{font-size:12px}main{padding:9px 0 8px}.heading{margin-bottom:8px}.heading p{font-size:12px}.layout{grid-template-columns:1fr;gap:9px}.scene{min-height:155px;padding:10px 14px;border-radius:18px}.scene-head{font-size:9px}.planet{width:105px;left:43%;top:52%}.word-mark{width:88%;height:88%;font-size:0}.mascot{right:8%;bottom:8%;width:54px;height:81px}.orbit{inset:4% 16% 15%}.spark.s1{top:22%;left:16%;font-size:17px}.spark.s2{top:14%;right:18%;font-size:13px}.spark.s3{bottom:26%;right:14%;font-size:16px}.scene-copy{font-size:10px}.scene-copy strong{font-size:12px;margin-bottom:1px}.game{padding:12px;border-radius:18px}.topline{margin-bottom:8px}.round{font-size:13px}.stat{min-width:68px;padding:6px 8px}.stat b{font-size:15px}.progress{margin-bottom:10px}.clue{padding:9px 11px}.clue p{font-size:12px}.section-label{margin:13px 0 6px;font-size:9px}.tiles{gap:5px;min-height:52px}.tile{width:36px;height:40px;border-radius:10px;font-size:21px}.slots{min-height:48px}.slot{width:29px;height:38px;font-size:19px}.message{font-size:11px;min-height:22px;margin:5px 0}.tools{gap:6px}.btn{min-height:42px;padding:0 9px;font-size:11px}.btn.main{font-size:13px}.note{display:none}}
     @media(max-width:390px){.stats{gap:4px}.stat{min-width:58px;padding:5px 6px}.round{font-size:12px}.game{padding:10px}.tile{width:33px;height:38px}.slot{width:26px}}
     @media(max-height:720px) and (min-width:761px){main{padding-top:15px}.heading{margin-bottom:12px}.scene{min-height:430px}.game{padding:14px}.section-label{margin:12px 0 6px}.tiles{min-height:53px}.slot{height:38px}.message{margin:5px 0}.btn{min-height:40px}}
+    /* En PC, el tablero aprovecha el alto libre sin afectar tabletas ni celulares. */
+    @media(min-width:900px){
+      main{min-height:calc(100svh - 52px);display:flex;flex-direction:column}
+      .layout{flex:1;min-height:0}
+      .scene,.game{min-height:0}
+    }
     @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
   </style>
   <link rel="stylesheet" href="../desafios-kids.css?v=20261008-2">
