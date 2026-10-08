@@ -44,6 +44,17 @@ main{padding:22px 0 36px}.heading{text-align:center;margin-bottom:18px}.badge{di
   .play.active .answer{min-height:62px;padding:9px 12px}
   .play.active .feedback{grid-area:feedback;margin:0}
 }
+
+/* Ajuste fino: más aire en pantallas medianas y compacto solo en escritorios bajos. */
+
+@media (min-width:900px) and (min-height:721px) and (max-height:850px){
+  main{padding:10px 0 12px}.heading{margin-bottom:9px}.heading h1{font-size:clamp(34px,4.2vw,44px);margin:6px 0 4px}.heading p{margin:5px 0}.badge{padding:6px 13px;font-size:11px}
+  .panel{padding:17px}.play.active .questionbox{padding:26px 16px}.play.active .question{font-size:clamp(24px,3.2vw,36px)}.play.active .answer{min-height:70px;padding:10px 13px}
+}
+@media (min-width:900px) and (max-height:720px){
+  main{padding:5px 0 7px}.heading{margin-bottom:4px}.heading h1{font-size:clamp(28px,3.5vw,36px);margin:3px 0 2px}.heading p{margin:2px 0}.badge{padding:4px 10px;font-size:9px}
+  .panel{padding:9px}.play.active .questionbox{padding:14px 10px}.play.active .question{font-size:clamp(20px,2.8vw,27px)}.play.active .answer{min-height:52px;padding:7px 10px}
+}
 </style>
 </head>
 <body>
