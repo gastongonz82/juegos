@@ -185,10 +185,10 @@
       ["CASITA PARA PÁJAROS","🏠"],["MOLINO DE PAPEL","🌬️"],["AUTITO DE JUGUETE","🚗"],["CARTUCHERA","✏️"],["TARJETA DE REGALO","💌"]
     ];
     const routines = [
-      ["DIENTES","🦷","🪥"],["MANOS","🧼","🫧"],["CAMA","🛏️","🛌"],["MOCHILA","🎒","📚"],["CORDONES","👟","🪢"],
-      ["FLORES","🌷","💧"],["PLANTAS","🪴","🚿"],["GATO","🐱","🥣"],["PERRO","🐕","🦮"],["MESA","🍽️","🥄"],
-      ["JUGUETES","🧸","🧺"],["TAZA","☕","🧽"],["VENTANA","🪟","✨"],["ROPA","👕","🧺"],["ABRIGO","🧥","🧣"],
-      ["MERIENDA","🍎","🥪"],["MUÑECO DE NIEVE","☃️","❄️"],["HOJAS","🍂","🧹"],["CUADRO","🖼️","🔨"],["VALIJA","🧳","👕"]
+      ["DIENTES","🦷","🪥","SONRISA LIMPIA"],["MANOS","🧼","🫧","MANOS LIMPIAS"],["CAMA","🛏️","🛌","CAMA TENDIDA"],["MOCHILA","🎒","📚","MOCHILA PREPARADA"],["CORDONES","👟","🪢","CORDONES ATADOS"],
+      ["FLORES","🌷","💧","FLORES REGADAS"],["PLANTAS","🪴","🚿","PLANTAS REGADAS"],["GATO","🐱","🥣","GATO ALIMENTADO"],["PERRO","🐕","🦮","PERRO PASEADO"],["MESA","🍽️","🥄","MESA PUESTA"],
+      ["JUGUETES","🧸","🧺","JUGUETES ORDENADOS"],["TAZA","☕","🧽","TAZA LIMPIA"],["VENTANA","🪟","✨","VENTANA LIMPIA"],["ROPA","👕","🧺","ROPA DOBLADA"],["ABRIGO","🧥","🧣","ABRIGO PUESTO"],
+      ["MERIENDA","🍎","🥪","MERIENDA PREPARADA"],["MUÑECO DE NIEVE","☃️","❄️","MUÑECO TERMINADO"],["HOJAS","🍂","🧹","HOJAS JUNTAS"],["CUADRO","🖼️","🔨","CUADRO COLGADO"],["VALIJA","🧳","👕","VALIJA PREPARADA"]
     ];
     const rounds = [...G.rounds];
     const seen = new Set(rounds.map(r => r.steps.map(s => s[1]).join("|")));
@@ -196,11 +196,11 @@
       const key = steps.map(s => s[1]).join("|");
       if (!seen.has(key) && rounds.length < 100) { seen.add(key); rounds.push({ steps }); }
     };
-    plants.forEach((name,i) => add([["🌰","SEMILLA DE "+name],["🌱","BROTE DE "+name],[plantEmojis[i],name+" CRECIÓ"]]));
-    animals.forEach(([name,adult,baby]) => add([["🥚","HUEVO DE "+name], [baby,"NACIÓ LA CRÍA"], [adult,name+" ADULTO"]]));
-    dishes.forEach(([name,emoji]) => add([["🧺","INGREDIENTES PARA "+name],["🥣","PREPARANDO "+name],[emoji,name+" LISTO"]]));
-    crafts.forEach(([name,emoji]) => add([["🧩","PIEZAS PARA "+name],["🛠️","ARMANDO "+name],[emoji,name+" TERMINADO"]]));
-    routines.forEach(([name,before,after]) => add([[before,name+" ANTES"],["👐","HACIENDO "+name],[after,name+" LISTO"]]));
+    plants.forEach((name,i) => add([["🌰","SEMILLA DE "+name],["🌱","BROTE DE "+name],[plantEmojis[i],"CRECIÓ: "+name]]));
+    animals.forEach(([name,adult,baby]) => add([["🥚","HUEVO DE "+name], [baby,"NACIÓ LA CRÍA"], [adult,"CRECIÓ: "+name]]));
+    dishes.forEach(([name,emoji]) => add([["🧺","INGREDIENTES PARA "+name],["🥣","PREPARANDO "+name],[emoji,"¡A COMER: "+name+"!"]]));
+    crafts.forEach(([name,emoji]) => add([["🧩","PIEZAS PARA "+name],["🛠️","ARMANDO "+name],[emoji,"QUEDÓ LISTO: "+name]]));
+    routines.forEach(([name,before,after,done]) => add([[before,name+" ANTES"],["👐","HACIENDO "+name],[after,done]]));
     return shuffled(rounds).slice(0,100);
   };
   window.VladiChallengeRounds = G => {
