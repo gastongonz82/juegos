@@ -65,7 +65,7 @@
     const state={round:0,streak:0,best:0,score:{player:0,vladi:0,draw:0},level:1,levelRound:0};
     try{const saved=JSON.parse(localStorage.getItem('vladiPiedraPapelTijera')||'{}');Object.assign(state.score,saved.score||{});state.best=Number(saved.best)||0}catch(_){}
     function save(){try{localStorage.setItem('vladiPiedraPapelTijera',JSON.stringify({score:state.score,best:state.best}))}catch(_){}}
-    function render(){ $('playerScore').textContent=state.score.player;$('vladiScore').textContent=state.score.vladi;$('drawScore').textContent=state.score.draw;$('record').textContent='RACHA RÉCORD: '+state.best;$('round').textContent='NIVEL '+state.level+' · '+Math.min(10,state.levelRound+1)+' / 10'; }
+    function render(){ $('playerScore').textContent=state.score.player;$('vladiScore').textContent=state.score.vladi;$('drawScore').textContent=state.score.draw;$('record').textContent='RACHA RÉCORD: '+state.best;$('round').textContent='NIVEL '+state.level+' · '+Math.max(1,Math.min(10,state.levelRound))+' / 10'; }
     function play(user){
       if(state.levelRound>=10){state.level++;state.levelRound=0}
       const computer=names[Math.floor(Math.random()*names.length)];
