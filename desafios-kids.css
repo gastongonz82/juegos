@@ -167,3 +167,126 @@ body.kids-scramble .scene{background:
 .kids-memory .memory-card.matched .card-front{border:2px solid #aaff69!important;background:linear-gradient(145deg,#36c67e,#168c8a)!important;box-shadow:0 0 23px rgba(154,255,105,.45),inset 0 1px rgba(255,255,255,.24)!important}
 .kids-memory .character-name{color:#fff!important;text-shadow:0 1px 4px #08144d}
 @media(prefers-reduced-motion:reduce){body:before{opacity:.16!important}}
+
+/* Segunda capa: más luz, volumen y color de arcade infantil. */
+:root{--kids-cyan:#69f5ff;--kids-yellow:#ffe45b;--kids-pink:#ff71c3;--kids-lime:#b5ff67;--kids-purple:#8856ff;--kids-blue:#38a4ff}
+body,button,a{font-family:"Trebuchet MS","Arial Rounded MT Bold",ui-rounded,system-ui,-apple-system,"Segoe UI",sans-serif}
+body{
+ background:
+  radial-gradient(ellipse at 8% 8%,rgba(137,76,255,.63),transparent 28rem),
+  radial-gradient(ellipse at 94% 22%,rgba(0,224,255,.42),transparent 29rem),
+  radial-gradient(ellipse at 50% 100%,rgba(255,66,172,.31),transparent 31rem),
+  radial-gradient(ellipse at 76% 72%,rgba(255,222,67,.12),transparent 22rem),
+  linear-gradient(155deg,#11194e 0%,#0b143b 54%,#101239 100%)!important;
+}
+body:before{
+ opacity:.38!important;
+ background-image:
+  radial-gradient(circle,rgba(255,229,87,.95) 1.2px,transparent 1.9px),
+  radial-gradient(circle,rgba(105,245,255,.9) 1.1px,transparent 1.9px),
+  radial-gradient(circle,rgba(255,113,195,.9) 1px,transparent 1.8px),
+  radial-gradient(circle,rgba(181,255,103,.75) .9px,transparent 1.8px)!important;
+ background-size:43px 39px,67px 61px,83px 79px,109px 101px!important;
+}
+.top{border-bottom:2px solid rgba(105,245,255,.34)!important}
+.back{
+ border-color:#ffe45b!important;
+ background:linear-gradient(135deg,#4548d0,#1d80d4)!important;
+ box-shadow:0 3px 0 #4d3284,0 7px 17px rgba(47,161,255,.34),inset 0 1px rgba(255,255,255,.4)!important;
+}
+.sound-toggle{
+ border-color:#ffe45b!important;
+ background:linear-gradient(145deg,#7f50e8,#198fe0)!important;
+ box-shadow:0 3px 0 #38246d,0 0 19px rgba(105,245,255,.38),inset 0 1px rgba(255,255,255,.42)!important;
+}
+.heading .eyebrow{
+ border:2px solid rgba(105,245,255,.84)!important;
+ background:linear-gradient(100deg,#147bb7d9,#6941cfe8)!important;
+ color:#d5ffff!important;
+ box-shadow:0 3px 0 rgba(25,34,105,.75),0 0 17px rgba(105,245,255,.25),inset 0 1px rgba(255,255,255,.32);
+}
+.heading h1{
+ text-shadow:0 3px 0 #372771,0 0 22px rgba(105,245,255,.28)!important;
+}
+.heading h1 span{
+ color:#ffe45b!important;
+ text-shadow:0 2px 0 #a34d37,0 0 17px rgba(255,228,91,.4)!important;
+}
+.heading p{color:#eff3ff!important;text-shadow:0 1px 3px rgba(31,39,102,.8)}
+.scene,.card,.board-panel,.side-panel,.match,.score-panel,.kids-scramble .game,.kids-memory .game{
+ border:2px solid rgba(105,245,255,.78)!important;
+ background:
+  radial-gradient(ellipse at 16% 8%,rgba(105,245,255,.24),transparent 39%),
+  radial-gradient(ellipse at 90% 95%,rgba(255,113,195,.2),transparent 45%),
+  linear-gradient(145deg,rgba(48,83,174,.97),rgba(57,41,145,.98))!important;
+ box-shadow:0 5px 0 rgba(11,17,68,.95),0 16px 34px rgba(58,50,205,.36),inset 0 2px rgba(255,255,255,.25)!important;
+}
+.stat,.score,.pill,.record,.round,.timer,.statbox,.scorebox,.score-line,.turn-pill{
+ border:2px solid rgba(143,210,255,.68)!important;
+ background:linear-gradient(140deg,rgba(50,112,197,.84),rgba(108,60,185,.78))!important;
+ box-shadow:inset 0 1px rgba(255,255,255,.24),0 3px 0 rgba(12,23,82,.8)!important;
+}
+.action,.primary,.again,.reset,.new-game{
+ border:2px solid rgba(255,249,198,.95)!important;
+ border-radius:17px!important;
+ background:linear-gradient(135deg,#fff06d 0%,#ffc33f 54%,#ff8b43 100%)!important;
+ box-shadow:0 4px 0 #a34e38,0 10px 20px rgba(255,144,54,.36),inset 0 2px rgba(255,255,255,.74)!important;
+}
+.key,.tile,.cell,.choice,.answer,.mode{
+ border:2px solid rgba(163,220,255,.8)!important;
+ box-shadow:inset 0 2px rgba(255,255,255,.28),0 4px 0 rgba(12,23,82,.88),0 9px 15px rgba(5,10,42,.3)!important;
+}
+.key,.cell,.choice,.answer,.mode{
+ background:linear-gradient(145deg,#397fda,#6248cd)!important;
+}
+.key:hover:not(:disabled),.cell:hover:enabled,.choice:hover,.answer:hover:not(:disabled),.mode:hover{
+ border-color:#fff17d!important;
+ filter:brightness(1.14) saturate(1.12);
+}
+.kids-scramble .tile{border:2px solid rgba(255,255,255,.82)!important;border-bottom:5px solid #ffe45b!important;box-shadow:inset 0 2px rgba(255,255,255,.35),0 4px 0 #552d94,0 8px 13px rgba(5,10,42,.28)!important}
+.kids-tateti .cell{border:2px solid rgba(179,226,255,.88)!important;box-shadow:inset 0 2px rgba(255,255,255,.3),0 5px 0 #20225f,0 9px 15px rgba(5,10,42,.27)!important}
+.kids-memory .card-back{
+ border:2px solid #ffe45b!important;
+ background:
+  radial-gradient(circle at 18% 18%,#fff47b 0 2px,transparent 3px),
+  radial-gradient(circle at 82% 76%,#69f5ff 0 2px,transparent 3px),
+  linear-gradient(145deg,#3788e6,#754add)!important;
+ box-shadow:inset 0 2px rgba(255,255,255,.34),0 5px 0 #262269,0 9px 16px rgba(6,11,48,.32)!important;
+}
+.kids-memory .memory-card.matched .card-front{
+ border:2px solid #b5ff67!important;
+ background:linear-gradient(145deg,#54d982,#14999e)!important;
+ box-shadow:0 0 25px rgba(181,255,103,.5),inset 0 2px rgba(255,255,255,.32)!important;
+}
+/* Cada desafío tiene su propio brillo y personalidad. */
+body.kids-hangman{background:
+ radial-gradient(ellipse at 8% 9%,rgba(77,121,255,.6),transparent 30rem),
+ radial-gradient(ellipse at 92% 45%,rgba(0,233,226,.4),transparent 27rem),
+ radial-gradient(ellipse at 50% 100%,rgba(255,213,60,.22),transparent 28rem),
+ linear-gradient(155deg,#0e225c,#0a1740 58%,#101642)!important}
+body.kids-movie{background:
+ radial-gradient(ellipse at 9% 9%,rgba(165,67,255,.62),transparent 29rem),
+ radial-gradient(ellipse at 90% 35%,rgba(255,79,174,.41),transparent 27rem),
+ radial-gradient(ellipse at 53% 100%,rgba(255,179,54,.2),transparent 30rem),
+ linear-gradient(155deg,#22114f,#11153f 58%,#10143a)!important}
+body.kids-scramble{background:
+ radial-gradient(ellipse at 8% 7%,rgba(0,204,223,.48),transparent 28rem),
+ radial-gradient(ellipse at 92% 38%,rgba(123,70,255,.52),transparent 29rem),
+ radial-gradient(ellipse at 50% 100%,rgba(163,255,84,.17),transparent 30rem),
+ linear-gradient(155deg,#0e2857,#101443 58%,#11143c)!important}
+body.kids-tateti{background:
+ radial-gradient(ellipse at 9% 8%,rgba(71,121,255,.58),transparent 29rem),
+ radial-gradient(ellipse at 94% 38%,rgba(0,219,241,.4),transparent 28rem),
+ radial-gradient(ellipse at 50% 100%,rgba(255,209,56,.2),transparent 28rem),
+ linear-gradient(155deg,#151a59,#101540 62%,#12143d)!important}
+body.kids-rps{background:
+ radial-gradient(ellipse at 8% 8%,rgba(108,66,255,.6),transparent 28rem),
+ radial-gradient(ellipse at 92% 30%,rgba(255,71,176,.42),transparent 28rem),
+ radial-gradient(ellipse at 50% 100%,rgba(255,203,52,.2),transparent 30rem),
+ linear-gradient(155deg,#21134f,#11153d 60%,#14113a)!important}
+body.kids-memory{background:
+ radial-gradient(ellipse at 8% 7%,rgba(130,63,255,.62),transparent 28rem),
+ radial-gradient(ellipse at 93% 24%,rgba(0,211,255,.42),transparent 28rem),
+ radial-gradient(ellipse at 50% 100%,rgba(255,112,185,.23),transparent 28rem),
+ linear-gradient(155deg,#17144f,#10143d 60%,#11143a)!important}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
