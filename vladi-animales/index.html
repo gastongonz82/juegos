@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#562f9e">
+<meta name="description" content="Adiviná animales con pistas y sonidos en el desafío infantil de Vladi.">
+<title>Adiviná el animal — Arcade de Vladi</title>
+<link rel="stylesheet" href="../arcade-ui.css?v=1">
+<script src="../arcade-ui.js" defer></script>
+<script src="../game-audio.js?v=3" defer></script>
+<script src="../music/vladi-quiz.js?v=1" defer></script>
+<script src="../game-music.js?v=4" defer></script>
+<style>
+*{box-sizing:border-box}
+:root{color-scheme:dark;--ink:#fff;--muted:#e4eaff;--cyan:#63efff;--gold:#ffe45b;--pink:#ff70c8;--green:#7affb7;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+body{margin:0;min-height:100svh;color:var(--ink);background:radial-gradient(ellipse at 9% 8%,#18b8d866,transparent 34rem),radial-gradient(ellipse at 91% 58%,#9a32de66,transparent 34rem),linear-gradient(145deg,#10246b,#342174 56%,#10234b)}
+button,a{font:inherit}button{color:inherit}
+.shell{width:min(1180px,calc(100% - 28px));margin:auto}
+.top{height:58px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #a6eeff55}
+.back{border:2px solid var(--gold);border-radius:999px;padding:9px 16px;background:#1c53a7;color:#fff;text-decoration:none;font-size:13px;font-weight:950;box-shadow:0 3px 0 #9a5bea}
+.sound{width:42px;height:42px;border:2px solid var(--gold);border-radius:14px;background:#375fd3;cursor:pointer}
+main{padding:18px 0 30px}
+.heading{text-align:center;margin:0 auto 16px}
+.badge{display:inline-block;padding:7px 16px;border:2px solid var(--cyan);border-radius:999px;background:linear-gradient(90deg,#147ba9,#6333c6);font-size:12px;font-weight:1000;letter-spacing:.16em;text-transform:uppercase;box-shadow:0 3px 0 #12286e}
+.heading h1{margin:8px 0 4px;font-size:clamp(34px,6vw,56px);line-height:1;text-transform:uppercase;text-shadow:0 4px #341b72}
+.heading h1 span{color:var(--gold)}
+.heading p{margin:8px 0;color:var(--muted);font-weight:700}
+.game{width:min(100%,1000px);margin:0 auto;padding:clamp(15px,2.6vw,26px);border:2px solid #86e8ff88;border-radius:28px;background:linear-gradient(145deg,#1b54a9dd,#443190e8);box-shadow:0 8px 0 #10154d,0 18px 40px #080d3877,inset 0 2px #ffffff26}
+.intro{text-align:center;padding:clamp(6px,2vw,22px) 0}
+.mascot{font-size:clamp(62px,9vw,88px);line-height:1;filter:drop-shadow(0 8px 0 #231566);margin:0 auto 8px}
+.intro h2,.result h2{font-size:clamp(26px,5vw,40px);margin:5px 0;color:var(--gold);text-shadow:0 3px #8a3ca4}
+.intro>p{max-width:700px;margin:9px auto 19px;color:#edf0ff;line-height:1.5;font-size:clamp(14px,2vw,18px);font-weight:650}
+.feature-row{display:flex;justify-content:center;flex-wrap:wrap;gap:9px;margin:0 auto 21px}
+.feature{padding:8px 13px;border:1px solid #a8edff66;border-radius:999px;background:#173e8677;font-size:12px;font-weight:850;color:#f4f6ff}
+.action{border:0;border-radius:16px;padding:14px 23px;background:linear-gradient(100deg,#fff478,#ffae48);color:#48234c;font-size:16px;font-weight:1000;box-shadow:0 5px #b35146;cursor:pointer}
+.action:hover,.animal-option:hover:not(:disabled){filter:brightness(1.08);transform:translateY(-2px)}
+.play,.result{display:none}
+.play.active,.result.active{display:block}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:12px}
+.stat{min-width:0;padding:9px 12px;border:1px solid #fff7;border-radius:15px;background:#111d5b77;text-align:center}
+.stat small{display:block;font-size:10px;font-weight:1000;letter-spacing:.1em;color:#e0ebff}
+.stat strong{display:block;margin-top:2px;font-size:22px;line-height:1.15}
+.stat:nth-child(2) strong{color:var(--gold)}
+.stat:nth-child(3) strong{color:var(--cyan)}
+.progress{height:10px;overflow:hidden;border-radius:99px;background:#121a54;margin-bottom:15px}
+.progress i{display:block;height:100%;width:0;background:linear-gradient(90deg,#61f0dc,#ffe85b,#ff6bc4);border-radius:inherit;transition:width .3s}
+.clue{text-align:center;padding:clamp(16px,3vw,27px);border:2px solid #d6ceff77;border-radius:24px;background:linear-gradient(135deg,#201a6488,#8d328888)}
+.clue-mark{display:grid;place-items:center;width:clamp(74px,10vw,100px);height:clamp(74px,10vw,100px);margin:0 auto 10px;border:2px solid #ffffff65;border-radius:28px;background:linear-gradient(140deg,#1d92bf,#8446d1);font-size:clamp(40px,6vw,54px);box-shadow:0 7px #291a71,0 0 24px #61eaff44}
+.clue-category{color:var(--cyan);font-size:11px;font-weight:1000;letter-spacing:.16em;text-transform:uppercase}
+.clue-text{max-width:800px;margin:8px auto 0;font-size:clamp(19px,3vw,29px);font-weight:1000;line-height:1.25;text-transform:uppercase;text-shadow:0 2px #291765}
+.listen{display:flex;align-items:center;justify-content:center;gap:8px;margin:12px auto 15px;padding:9px 16px;border:2px solid #8fefff99;border-radius:999px;background:#173c8b;color:#fff;font-size:13px;font-weight:950;cursor:pointer;box-shadow:0 3px #15235a}
+.listen:hover{filter:brightness(1.12)}
+.animal-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.animal-option{min-width:0;min-height:74px;display:flex;align-items:center;gap:12px;padding:12px 16px;border:2px solid #b8dfff9c;border-radius:18px;background:linear-gradient(130deg,#3753a5,#743795);font-size:clamp(16px,2.1vw,21px);font-weight:1000;text-align:left;text-transform:uppercase;cursor:pointer;box-shadow:0 4px #211950;transition:transform .15s,border-color .15s,filter .15s}
+.option-emoji{flex:0 0 auto;font-size:clamp(28px,4vw,38px);line-height:1}
+.option-name{min-width:0;flex:1}
+.animal-option.correct{border-color:#8bffb9;background:linear-gradient(120deg,#117b6e,#205d47);box-shadow:0 0 0 3px #7dffb944,0 4px #155341}
+.animal-option.wrong{border-color:#ff83aa;background:linear-gradient(120deg,#a03a6a,#622459);box-shadow:0 0 0 3px #ff83aa33,0 4px #4d1b53}
+.animal-option:disabled{cursor:default;transform:none}
+.feedback{min-height:32px;margin:13px 0 0;text-align:center;font-size:clamp(16px,2vw,19px);font-weight:1000}
+.feedback.ok{color:#8affbf}.feedback.no{color:#ffb0ca}
+.result{text-align:center;padding:15px 0 8px}
+.result .mascot{font-size:76px}
+.result p{font-size:18px;color:#f1f3ff}
+.result strong{color:var(--cyan)}
+.result-buttons{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:18px}
+@media(max-width:620px){
+ .shell{width:calc(100% - 22px)}main{padding:13px 0 20px}.top{height:54px}.back{font-size:11px;padding:8px 12px}.sound{width:40px;height:40px}
+ .heading{margin-bottom:12px}.heading h1{font-size:clamp(30px,8vw,43px)}.heading p{font-size:13px}
+ .game{padding:13px;border-radius:23px}.intro{padding:5px 0 9px}.intro>p{margin-bottom:14px}.feature-row{gap:7px;margin-bottom:17px}.feature{font-size:10px;padding:7px 10px}.action{width:100%;max-width:420px;min-height:52px}
+ .stats{gap:6px;margin-bottom:9px}.stat{padding:7px 5px;border-radius:12px}.stat small{font-size:8px}.stat strong{font-size:19px}
+ .progress{height:8px;margin-bottom:11px}.clue{padding:14px 10px;border-radius:19px}.clue-mark{width:68px;height:68px;border-radius:21px;font-size:38px;margin-bottom:8px}
+ .clue-text{font-size:clamp(17px,5vw,22px)}.listen{margin:9px auto 12px;min-height:41px}
+ .animal-options{gap:8px}.animal-option{min-height:68px;padding:9px 10px;gap:7px;border-radius:15px;font-size:clamp(13px,3.7vw,17px)}.option-emoji{font-size:clamp(24px,7vw,31px)}.feedback{font-size:15px;margin-top:10px}
+}
+@media(max-width:360px){.animal-options{grid-template-columns:1fr}.animal-option{min-height:58px}.stats{gap:4px}.stat strong{font-size:17px}.game{padding:10px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition-duration:.01ms!important;animation-duration:.01ms!important}}
+</style>
+<link rel="stylesheet" href="../desafios-kids.css?v=20261008-2">
+</head>
+<body class="kids-animals">
+<header class="shell top"><a class="back" href="../arcade.html">← VOLVER AL ARCADE</a><button class="sound" data-sound-toggle type="button" aria-label="Activar o silenciar sonido">🔊</button></header>
+<main class="shell">
+<header class="heading"><span class="badge">Desafío de observación</span><h1>ADIVINÁ <span>EL ANIMAL</span></h1><p>Escuchá la pista y elegí la respuesta correcta.</p></header>
+<section class="game" aria-label="Juego Adiviná el animal">
+<div class="intro" id="intro">
+<div class="mascot" aria-hidden="true">🐾</div>
+<h2>¿QUIÉN SE ESCONDE?</h2>
+<p>Leé la pista o tocá <strong>ESCUCHAR PISTA</strong>. Hay 10 animales en cada partida y las preguntas se vuelven más desafiantes.</p>
+<div class="feature-row"><span class="feature">🐮 42 ANIMALES</span><span class="feature">🔊 PISTAS HABLADAS</span><span class="feature">⭐ RÉCORD GUARDADO</span></div>
+<button class="action" id="startButton" type="button">EMPEZAR A JUGAR →</button>
+</div>
+<div class="play" id="play">
+<div class="stats" aria-label="Marcador">
+<div class="stat"><small>ANIMAL</small><strong id="round">1 / 10</strong></div>
+<div class="stat"><small>PUNTOS</small><strong id="score">0</strong></div>
+<div class="stat"><small>RÉCORD</small><strong id="best">—</strong></div>
+</div>
+<div class="progress" aria-label="Progreso"><i id="progress"></i></div>
+<div class="clue" aria-live="polite">
+<div class="clue-mark" aria-hidden="true">🔎</div>
+<div class="clue-category" id="category">PISTA · GRANJA</div>
+<div class="clue-text" id="hint">¿QUÉ ANIMAL SOY?</div>
+</div>
+<button class="listen" id="listenButton" type="button">🔊 ESCUCHAR PISTA</button>
+<div class="animal-options" id="options" role="group" aria-label="Elegí un animal"></div>
+<div class="feedback" id="feedback" aria-live="polite"></div>
+</div>
+<div class="result" id="result" aria-live="polite">
+<div class="mascot" aria-hidden="true">🏆</div>
+<h2 id="resultTitle">¡GRAN TRABAJO!</h2>
+<p id="resultText">Sumaste <strong>0 puntos</strong>.</p>
+<p id="bestText"></p>
+<div class="result-buttons"><button class="action" id="againButton" type="button">JUGAR OTRA VEZ ↻</button></div>
+</div>
+</section>
+</main>
+<script>
+(() => {
+'use strict';
+const ANIMALS=[
+{id:'gato',name:'GATO',emoji:'🐱',area:'HOGAR',hint:'RONRONEA Y DICE MIAU.',level:1},
+{id:'perro',name:'PERRO',emoji:'🐶',area:'HOGAR',hint:'LADRA Y MUEVE LA COLA CUANDO ESTÁ CONTENTO.',level:1},
+{id:'vaca',name:'VACA',emoji:'🐮',area:'GRANJA',hint:'VIVE EN LA GRANJA Y NOS DA LECHE.',level:1},
+{id:'caballo',name:'CABALLO',emoji:'🐴',area:'GRANJA',hint:'TIENE CRIN Y PODEMOS MONTARLO.',level:1},
+{id:'oveja',name:'OVEJA',emoji:'🐑',area:'GRANJA',hint:'SU CUERPO ESTÁ CUBIERTO DE LANA.',level:1},
+{id:'gallina',name:'GALLINA',emoji:'🐔',area:'GRANJA',hint:'PONE HUEVOS Y VIVE EN EL CORRAL.',level:1},
+{id:'pato',name:'PATO',emoji:'🦆',area:'GRANJA',hint:'TIENE PICO ANCHO Y LE GUSTA NADAR.',level:1},
+{id:'cerdo',name:'CERDO',emoji:'🐷',area:'GRANJA',hint:'LE GUSTA REVOLCARSE EN EL BARRO.',level:1},
+{id:'conejo',name:'CONEJO',emoji:'🐰',area:'JARDÍN',hint:'TIENE OREJAS LARGAS Y SALTA.',level:1},
+{id:'cabra',name:'CABRA',emoji:'🐐',area:'GRANJA',hint:'TIENE CUERNOS Y LE GUSTA TREPAR.',level:1},
+{id:'abeja',name:'ABEJA',emoji:'🐝',area:'JARDÍN',hint:'VUELA DE FLOR EN FLOR Y PRODUCE MIEL.',level:1},
+{id:'mariposa',name:'MARIPOSA',emoji:'🦋',area:'JARDÍN',hint:'TIENE ALAS DE MUCHOS COLORES.',level:1},
+{id:'rana',name:'RANA',emoji:'🐸',area:'LAGUNA',hint:'SALTA Y VIVE CERCA DEL AGUA.',level:1},
+{id:'tortuga',name:'TORTUGA',emoji:'🐢',area:'LAGUNA',hint:'LLEVA UN CAPARAZÓN SOBRE SU ESPALDA.',level:1},
+{id:'elefante',name:'ELEFANTE',emoji:'🐘',area:'SABANA',hint:'ES MUY GRANDE Y USA SU TROMPA PARA OLER Y TOMAR AGUA.',level:2},
+{id:'jirafa',name:'JIRAFA',emoji:'🦒',area:'SABANA',hint:'TIENE EL CUELLO MUY LARGO Y COME HOJAS.',level:2},
+{id:'cebra',name:'CEBRA',emoji:'🦓',area:'SABANA',hint:'TIENE RAYAS BLANCAS Y NEGRAS.',level:2},
+{id:'leon',name:'LEÓN',emoji:'🦁',area:'SABANA',hint:'EL MACHO TIENE UNA MELENA Y VIVE EN ÁFRICA.',level:2},
+{id:'tigre',name:'TIGRE',emoji:'🐯',area:'SELVA',hint:'ES UN FELINO GRANDE CON RAYAS OSCURAS.',level:2},
+{id:'mono',name:'MONO',emoji:'🐵',area:'SELVA',hint:'TREPA ÁRBOLES Y LE GUSTAN LAS BANANAS.',level:2},
+{id:'canguro',name:'CANGURO',emoji:'🦘',area:'AUSTRALIA',hint:'SALTA Y LLEVA A SU CRÍA EN UNA BOLSA.',level:2},
+{id:'pinguino',name:'PINGÜINO',emoji:'🐧',area:'HIELO',hint:'ES UN AVE QUE NADA Y VIVE EN ZONAS FRÍAS.',level:2},
+{id:'delfin',name:'DELFIN',emoji:'🐬',area:'OCÉANO',hint:'ES UN MAMÍFERO MARINO MUY JUGUETÓN.',level:2},
+{id:'pulpo',name:'PULPO',emoji:'🐙',area:'OCÉANO',hint:'VIVE EN EL MAR Y TIENE OCHO BRAZOS.',level:2},
+{id:'tiburon',name:'TIBURÓN',emoji:'🦈',area:'OCÉANO',hint:'ES UN PEZ GRANDE CON MUCHOS DIENTES.',level:2},
+{id:'ballena',name:'BALLENA',emoji:'🐳',area:'OCÉANO',hint:'ES EL MAMÍFERO MÁS GRANDE DEL PLANETA.',level:2},
+{id:'cocodrilo',name:'COCODRILO',emoji:'🐊',area:'RÍO',hint:'ES UN REPTIL CON MANDÍBULAS MUY FUERTES.',level:2},
+{id:'oso',name:'OSO',emoji:'🐻',area:'BOSQUE',hint:'ES GRANDE Y EN ALGUNOS LUGARES PASA EL INVIERNO DURMIENDO.',level:2},
+{id:'camaleon',name:'CAMALEÓN',emoji:'🦎',area:'SELVA',hint:'PUEDE CAMBIAR EL COLOR DE SU PIEL.',level:3},
+{id:'flamenco',name:'FLAMENCO',emoji:'🦩',area:'LAGUNA',hint:'ES UN AVE ROSADA QUE CAMINA EN EL AGUA.',level:3},
+{id:'avestruz',name:'AVESTRUZ',emoji:'🪶',area:'SABANA',hint:'ES UN AVE MUY GRANDE QUE NO PUEDE VOLAR.',level:3},
+{id:'zorro',name:'ZORRO',emoji:'🦊',area:'BOSQUE',hint:'TIENE OREJAS PUNTIAGUDAS Y UNA COLA ESPONJOSA.',level:3},
+{id:'buho',name:'BÚHO',emoji:'🦉',area:'BOSQUE',hint:'ES UN AVE NOCTURNA CON OJOS GRANDES.',level:3},
+{id:'serpiente',name:'SERPIENTE',emoji:'🐍',area:'SELVA',hint:'SE DESLIZA POR EL SUELO Y NO TIENE PATAS.',level:3},
+{id:'panda',name:'PANDA',emoji:'🐼',area:'BOSQUE',hint:'ES BLANCO Y NEGRO Y LE GUSTA EL BAMBÚ.',level:3},
+{id:'koala',name:'KOALA',emoji:'🐨',area:'AUSTRALIA',hint:'VIVE EN AUSTRALIA Y COME HOJAS DE EUCALIPTO.',level:3},
+{id:'perezoso',name:'PEREZOSO',emoji:'🦥',area:'SELVA',hint:'SE MUEVE MUY LENTO Y VIVE EN LOS ÁRBOLES.',level:3},
+{id:'erizo',name:'ERIZO',emoji:'🦔',area:'BOSQUE',hint:'ES PEQUEÑO Y TIENE PÚAS EN SU ESPALDA.',level:3},
+{id:'foca',name:'FOCA',emoji:'🦭',area:'HIELO',hint:'VIVE EN EL MAR Y DESCANSA EN LA PLAYA O SOBRE EL HIELO.',level:3},
+{id:'camello',name:'CAMELLO',emoji:'🐫',area:'DESIERTO',hint:'PUEDE PASAR MUCHO TIEMPO SIN TOMAR AGUA.',level:3},
+{id:'lobo',name:'LOBO',emoji:'🐺',area:'BOSQUE',hint:'VIVE EN GRUPO Y SE PARECE A UN PERRO SALVAJE.',level:3},
+{id:'colibri',name:'COLIBRÍ',emoji:'🐦',area:'JARDÍN',hint:'ES UN AVE MUY PEQUEÑA QUE PUEDE QUEDARSE QUIETA EN EL AIRE.',level:3}
+];
+const $=id=>document.getElementById(id);
+const state={round:0,score:0,correct:0,deck:[],current:null,locked:false,best:0};
+try{state.best=Number(localStorage.getItem('vladiAnimalsBest')||0)||0}catch(_){}
+function shuffle(items){const list=[...items];for(let i=list.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[list[i],list[j]]=[list[j],list[i]]}return list}
+function playTone(name){try{if(window.VladiSound&&typeof window.VladiSound.play==='function')window.VladiSound.play(name)}catch(_){}}
+function updateStats(){
+ $('round').textContent=(state.round+1)+' / 10';
+ $('score').textContent=state.score;
+ $('best').textContent=state.best?state.best+' / 10':'—';
+ $('progress').style.width=(state.round*10)+'%';
+}
+function startGame(){
+ state.round=0;state.score=0;state.correct=0;state.locked=false;
+ state.deck=[...shuffle(ANIMALS.filter(a=>a.level===1)).slice(0,3),...shuffle(ANIMALS.filter(a=>a.level===2)).slice(0,4),...shuffle(ANIMALS.filter(a=>a.level===3)).slice(0,3)];
+ $('intro').style.display='none';$('result').classList.remove('active');$('play').classList.add('active');
+ showQuestion();
+}
+function showQuestion(){
+ if(state.round>=10){finishGame();return}
+ state.current=state.deck[state.round];
+ $('round').textContent=(state.round+1)+' / 10';
+ $('score').textContent=state.score;
+ $('best').textContent=state.best?state.best+' / 10':'—';
+ $('progress').style.width=(state.round*10)+'%';
+ $('category').textContent='PISTA · '+state.current.area;
+ $('hint').textContent=state.current.hint;
+ $('feedback').textContent='';$('feedback').className='feedback';
+ const distractors=shuffle(ANIMALS.filter(a=>a.id!==state.current.id&&a.level===state.current.level)).slice(0,3);
+ const choices=shuffle([state.current,...distractors]);
+ const root=$('options');root.innerHTML='';
+ for(const animal of choices){
+  const button=document.createElement('button');button.type='button';button.className='animal-option';button.dataset.id=animal.id;
+  button.setAttribute('aria-label',animal.name);
+  button.innerHTML='<span class="option-emoji" aria-hidden="true">'+animal.emoji+'</span><span class="option-name">'+animal.name+'</span>';
+  button.addEventListener('click',()=>answer(animal.id,button));
+  root.append(button);
+ }
+ updateStats();
+}
+function speakHint(){
+ if(!('speechSynthesis'in window)||!('SpeechSynthesisUtterance'in window)){
+  $('feedback').textContent='LEÉ LA PISTA: '+state.current.hint;$('feedback').className='feedback';return;
+ }
+ window.speechSynthesis.cancel();
+ const utterance=new SpeechSynthesisUtterance('Pista. '+state.current.hint);
+ utterance.lang='es-AR';utterance.rate=.91;utterance.pitch=1.08;
+ window.speechSynthesis.speak(utterance);
+}
+function answer(id,button){
+ if(state.locked)return;
+ state.locked=true;
+ const all=[...document.querySelectorAll('.animal-option')];
+ all.forEach(el=>{el.disabled=true;if(el.dataset.id===state.current.id)el.classList.add('correct')});
+ const ok=id===state.current.id;
+ if(ok){state.score+=100;state.correct++;button.classList.add('correct');$('feedback').textContent='¡MUY BIEN! '+state.current.emoji+' +100';$('feedback').className='feedback ok';playTone('correct')}
+ else{$('feedback').textContent='CASI. ERA: '+state.current.emoji+' '+state.current.name;$('feedback').className='feedback no';button.classList.add('wrong');playTone('wrong')}
+ $('score').textContent=state.score;
+ $('progress').style.width=((state.round+1)*10)+'%';
+ window.speechSynthesis?.cancel?.();
+ window.setTimeout(()=>{state.round++;state.locked=false;showQuestion()},1150);
+}
+function finishGame(){
+ $('play').classList.remove('active');
+ const previous=state.best;
+ if(state.correct>state.best){state.best=state.correct;try{localStorage.setItem('vladiAnimalsBest',String(state.best))}catch(_){}}
+ $('resultTitle').textContent=state.correct>=8?'¡SOS UN EXPERTO!':state.correct>=5?'¡GRAN TRABAJO!':'¡A SEGUIR JUGANDO!';
+ $('resultText').innerHTML='ACERTASTE <strong>'+state.correct+' DE 10</strong> Y SUMASTE <strong>'+state.score+' PUNTOS</strong>.';
+ $('bestText').textContent=state.best?'TU RÉCORD: '+state.best+' / 10'+(state.correct>previous?' · ¡NUEVO RÉCORD!':''):'';
+ $('result').classList.add('active');playTone('save');
+}
+$('startButton').addEventListener('click',startGame);
+$('againButton').addEventListener('click',startGame);
+$('listenButton').addEventListener('click',speakHint);
+})();
+</script>
+</body>
+</html>
