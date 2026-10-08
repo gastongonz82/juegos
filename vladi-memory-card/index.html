@@ -56,8 +56,8 @@
       {id:'mago',name:'MAGO',icon:'🪄',tint:'#ff92b628'}
     ];
     const $=id=>document.getElementById(id);
-    const state={deck:[],first:null,locked:false,moves:0,pairs:0,seconds:0,timer:null,started:false,best:null};
-    try{const stored=JSON.parse(localStorage.getItem('vladiMemoryBest')||'null');if(stored&&Number.isFinite(stored.seconds))state.best=stored}catch(_){}
+    const state={deck:[],first:null,locked:false,moves:0,pairs:0,seconds:0,timer:null,started:false,best:null,level:1};
+    try{const stored=JSON.parse(localStorage.getItem('vladiMemoryBest')||'null');if(stored&&Number.isFinite(stored.seconds))state.best=stored;state.level=Math.max(1,Number(localStorage.getItem('vladiMemoryLevel')||1))}catch(_){}
     const formatTime=seconds=>String(Math.floor(seconds/60)).padStart(2,'0')+':'+String(seconds%60).padStart(2,'0');
     function mix(items){const copy=[...items];for(let i=copy.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[copy[i],copy[j]]=[copy[j],copy[i]]}return copy}
     function saveBest(){if(!state.best||state.seconds<state.best.seconds||(state.seconds===state.best.seconds&&state.moves<state.best.moves)){state.best={seconds:state.seconds,moves:state.moves};try{localStorage.setItem('vladiMemoryBest',JSON.stringify(state.best))}catch(_){}}}
@@ -81,14 +81,15 @@
       state.moves++;const first=state.first;
       if(first.item.id===item.id){
         first.button.classList.add('matched');button.classList.add('matched');first.button.disabled=true;button.disabled=true;state.pairs++;state.first=null;
-        $('message').textContent=state.pairs===8?'¡ENCONTRASTE TODAS LAS PAREJAS!':'¡PAREJA ENCONTRADA!';$('message').className='message good';window.VladiSound?.play(state.pairs===8?'goal':'correct');
-        if(state.pairs===8){window.clearInterval(state.timer);state.timer=null;saveBest();$('reset').textContent='¡GANASTE! JUGAR OTRA VEZ ↻'}
+        $('message').textContent=state.pairs===8?'¡NIVEL '+state.level+' COMPLETADO! ¡ENCONTRASTE TODAS LAS PAREJAS!':'¡PAREJA ENCONTRADA!';$('message').className='message good';window.VladiSound?.play(state.pairs===8?'goal':'correct');
+        if(state.pairs===8){window.clearInterval(state.timer);state.timer=null;saveBest();$('reset').textContent='CONTINUAR AL NIVEL '+(state.level+1)+' ➜'}
         updateStats();return
       }
       state.locked=true;$('message').textContent='NO SON IGUALES. ¡PROBÁ OTRA VEZ!';$('message').className='message bad';window.VladiSound?.play('wrong');
-      window.setTimeout(()=>{first.button.classList.remove('open');button.classList.remove('open');first.button.setAttribute('aria-label','Carta '+(first.index+1)+', oculta');button.setAttribute('aria-label','Carta '+(index+1)+', oculta');state.first=null;state.locked=false;$('message').textContent='TOCÁ DOS TARJETAS Y ENCONTRÁ SU PAREJA.';$('message').className='message'},780)
+      window.setTimeout(()=>{first.button.classList.remove('open');button.classList.remove('open');first.button.setAttribute('aria-label','Carta '+(first.index+1)+', oculta');button.setAttribute('aria-label','Carta '+(index+1)+', oculta');state.first=null;state.locked=false;$('message').textContent='NIVEL '+state.level+' · TOCÁ DOS TARJETAS Y ENCONTRÁ SU PAREJA.';$('message').className='message'},780)
     }
     function reset(playSound=true){
+      if(state.pairs===8){state.level++;try{localStorage.setItem('vladiMemoryLevel',String(state.level))}catch(_){}}
       window.clearInterval(state.timer);state.timer=null;state.deck=mix(characters.flatMap(item=>[item,item]));state.first=null;state.locked=false;state.moves=0;state.pairs=0;state.seconds=0;state.started=false;
       $('message').textContent='TOCÁ DOS TARJETAS Y ENCONTRÁ SU PAREJA.';$('message').className='message';$('reset').textContent='MEZCLAR Y JUGAR OTRA VEZ ↻';renderDeck();updateStats();if(playSound)window.VladiSound?.play('start')
     }
