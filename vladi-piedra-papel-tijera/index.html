@@ -39,6 +39,17 @@
   .score-head{margin-bottom:7px}
   .choice{min-height:86px}
 }
+
+/* Ajuste fino: más aire en pantallas medianas y compacto solo en escritorios bajos. */
+
+@media (min-width:900px) and (min-height:721px) and (max-height:850px){
+  main{padding:10px 0 12px}.heading{margin-bottom:9px}.heading h1{font-size:clamp(32px,4.2vw,42px);margin:6px 0 4px}.heading p{margin:4px 0}
+  .match{padding:14px}.duel{margin:9px auto 8px}.fighter{min-height:136px;padding:10px}.fighter-icon{height:78px}.outcome{min-height:46px;padding:8px 14px}.score-panel{padding:12px 14px}.choice{min-height:94px}
+}
+@media (min-width:900px) and (max-height:720px){
+  main{padding:5px 0 7px}.heading{margin-bottom:4px}.heading h1{font-size:clamp(27px,3.5vw,35px);margin:3px 0 2px}.heading p{margin:2px 0}
+  .match{padding:8px}.duel{margin:4px auto 3px}.fighter{min-height:106px;padding:7px}.fighter-icon{height:60px}.outcome{min-height:38px;padding:5px 9px}.score-panel{padding:8px}.choice{min-height:72px}.score{padding:5px}
+}
 </style>
   <link rel="stylesheet" href="../desafios-kids.css?v=20261008-2">
 </head>
