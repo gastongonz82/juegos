@@ -8,6 +8,47 @@
 @media(max-width:760px){.shell{width:calc(100% - 14px)}.top{height:44px;flex-basis:44px}.top-title{font-size:10px}.back{font-size:9px;padding:6px 8px}.sound{width:34px;height:34px;border-radius:11px}main{padding:4px 0 5px}.heading{margin-bottom:4px}.badge{font-size:8px;padding:3px 8px}.heading h1{font-size:clamp(21px,6vw,30px)}.heading p{font-size:10px}body.playing main{padding:3px 0 4px}.panel{padding:6px;border-radius:15px;gap:5px}.stats{gap:4px}.stat{padding:4px 3px;border-radius:9px}.stat small{font-size:7px}.stat strong{font-size:14px}.progress{height:5px;flex-basis:5px}.instruction{font-size:10px}.workbench{grid-template-rows:minmax(0,1fr) auto;gap:5px}.board-wrap{padding:3px;border-radius:12px}#canvasBoard{width:100%;height:auto;max-height:100%;border-radius:10px}.dock{gap:5px;padding:6px;border-radius:13px}.dock-title{font-size:9px}.palette{grid-template-columns:repeat(6,minmax(0,1fr));gap:4px;justify-items:center}.swatch{width:min(40px,10vw);height:min(40px,10vw);border-radius:8px}.controls{grid-template-columns:repeat(6,minmax(0,1fr));gap:5px}.tool-row{grid-column:1/-1;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}.tool{min-height:35px;padding:6px 4px;font-size:9px}.size-row{grid-column:1/span2;gap:3px}.size-row span{font-size:9px}.size{width:22px;height:22px;flex-basis:22px}.controls>#blankMode{grid-column:3/span2}.controls>#clear{grid-column:5/span2}.game-actions{grid-column:1/-1}.game-actions .complete{width:100%;min-height:36px}.dock-foot{min-height:12px;gap:4px}.hint{display:none}.feedback{font-size:9px;text-align:center}}
 @media(max-height:560px){.top{height:38px;flex-basis:38px}.sound{width:32px;height:32px}.panel{gap:4px;padding:5px}.stats{gap:4px}.stat{padding:3px 5px}.progress{height:4px;flex-basis:4px}.instruction{font-size:10px}.workbench{gap:4px}.dock{gap:4px;padding:5px}.palette{gap:5px}.swatch{width:30px;height:30px}.tool,.complete{min-height:32px;padding:5px 8px}.size{width:24px;height:24px;flex-basis:24px}.dock-foot{display:none}}
 @media(max-width:760px) and (max-height:560px){.top{height:36px;flex-basis:36px}.top-title{display:none}.stats .stat small{display:none}.instruction{display:none}.workbench{grid-template-rows:minmax(0,1fr) auto}.board-wrap{padding:2px}.dock{gap:3px;padding:4px}.palette{grid-template-columns:repeat(12,minmax(18px,1fr));gap:3px}.swatch{width:min(25px,6vw);height:min(25px,6vw)}.controls{grid-template-columns:repeat(6,minmax(0,1fr));gap:3px}.tool-row{gap:3px}.tool{min-height:29px;font-size:8px;padding:4px 2px}.size-row span{display:none}.size{width:18px;height:18px;flex-basis:18px}.game-actions .complete{min-height:29px}.dock-title{font-size:8px}}
+
+@media(min-width:1100px){
+.panel.game{display:grid;grid-template-columns:minmax(0,1fr) 260px;grid-template-rows:auto 6px auto minmax(0,1fr);align-items:stretch;justify-items:stretch;align-content:stretch;justify-content:stretch;gap:8px}
+.stats{grid-column:2;grid-row:1;gap:5px}.stat{padding:7px 4px}.stat small{font-size:8px}.stat strong{font-size:16px}
+.progress{grid-column:2;grid-row:2;width:100%}
+.instruction{grid-column:2;grid-row:3;align-self:start;text-align:left;line-height:1.4;padding:8px 10px;border:1px solid #a8f6ff55;border-radius:12px;background:#0e205e77}
+.workbench{display:contents}
+.board-wrap{grid-column:1;grid-row:1/5;width:100%;height:100%;min-height:0;padding:8px}
+#canvasBoard{height:100%;width:auto;max-width:100%;max-height:100%;aspect-ratio:3/2}
+.dock{grid-column:2;grid-row:4;min-height:0;height:100%;grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto minmax(0,1fr) auto;gap:10px;padding:12px 10px;align-content:stretch}
+.palette{grid-template-columns:repeat(6,minmax(0,1fr));gap:6px;justify-items:center}
+.swatch{width:min(36px,100%);height:34px}
+.controls{height:100%;grid-template-columns:repeat(2,minmax(0,1fr));align-content:space-between;justify-content:stretch;column-gap:8px;row-gap:10px}
+.tool-row{grid-column:1/-1;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}
+.tool{width:100%;min-height:40px;padding:6px 4px;font-size:9px}
+.size-row{grid-column:1/-1;gap:10px}.size{width:32px;height:32px;flex-basis:32px}
+#blankMode,#clear,.game-actions{grid-column:1/-1}
+.game-actions .complete{width:100%;min-width:0;min-height:42px}
+.complete#clear{min-height:42px}
+.dock-foot{align-self:end;flex-direction:column;align-items:flex-start;gap:6px;min-height:0;padding-top:8px;border-top:1px solid #a8f6ff44}
+.dock-foot .hint,.dock-foot .feedback{text-align:left;font-size:9px}
+}
+@media(min-width:761px) and (max-width:1099px){
+.controls{grid-template-columns:repeat(2,minmax(0,1fr));column-gap:10px;row-gap:8px}
+.tool-row{grid-column:1/-1;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.size-row{grid-column:1/-1;justify-content:center;gap:10px}
+.controls>#blankMode{grid-column:1}.controls>#clear{grid-column:2}.game-actions{grid-column:1/-1}
+}
+@media(max-width:760px){
+.controls{grid-template-columns:repeat(2,minmax(0,1fr));column-gap:8px;row-gap:8px}
+.tool-row{grid-column:1/-1;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+.size-row{grid-column:1/-1;justify-content:center;gap:10px}
+.controls>#blankMode{grid-column:1}.controls>#clear{grid-column:2}.game-actions{grid-column:1/-1}
+}
+@media(max-width:760px) and (max-height:560px){
+.controls{grid-template-columns:repeat(2,minmax(0,1fr));column-gap:5px;row-gap:4px}
+.tool-row{grid-column:1/-1;gap:3px}
+.size-row{grid-column:1/-1;gap:5px}
+.controls>#blankMode{grid-column:1}.controls>#clear{grid-column:2}.game-actions{grid-column:1/-1}
+}
+
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}</style></head><body><div class="shell">
 <header class="top"><a class="back" href="../arcade.html">← VOLVER AL ARCADE</a><span class="top-title">DIBUJO Y COLOREO</span><button class="sound" data-sound-toggle type="button" aria-label="Silenciar sonidos">🔊</button></header>
 <main><div class="heading"><span class="badge">ARTE Y CREATIVIDAD</span><h1>DIBUJO Y <span>COLOREO</span></h1><p>Pintá, dibujá y completá nuevos retos con Vladi.</p></div>
