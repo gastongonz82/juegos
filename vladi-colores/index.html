@@ -29,6 +29,17 @@
   .play.active .answer{min-height:68px}
   .play.active .feedback{grid-area:feedback;margin:0}
 }
+
+/* Ajuste fino: más aire en pantallas medianas y compacto solo en escritorios bajos. */
+
+@media (min-width:900px) and (min-height:721px) and (max-height:850px){
+  main{padding:10px 0 12px}.heading{margin-bottom:9px}.heading h1{font-size:clamp(34px,4.2vw,44px);margin:6px 0 4px}.heading p{margin:5px 0}.badge{padding:6px 13px;font-size:11px}
+  .panel{padding:17px}.play.active .swatch-wrap{min-height:250px}.play.active .answer{min-height:72px}
+}
+@media (min-width:900px) and (max-height:720px){
+  main{padding:5px 0 7px}.heading{margin-bottom:4px}.heading h1{font-size:clamp(28px,3.5vw,36px);margin:3px 0 2px}.heading p{margin:2px 0}.badge{padding:4px 10px;font-size:9px}
+  .panel{padding:9px}.play.active .swatch-wrap{min-height:190px}.play.active .answer{min-height:54px}.play.active .stats{margin-bottom:5px}.play.active .feedback{font-size:14px}
+}
 </style></head>
 <body><div class="shell"><header class="top"><a class="back" href="../arcade.html">← VOLVER AL ARCADE</a><button class="sound" type="button" data-sound-toggle aria-label="Silenciar sonidos">🔊</button></header><main>
 <div class="heading"><span class="badge">APRENDER JUGANDO</span><h1>AVENTURA DE <span>COLORES</span></h1><p>¡Mirá, escuchá y descubrí los colores con Vladi!</p></div>
