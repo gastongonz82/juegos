@@ -230,7 +230,7 @@ function playTone(name){try{if(window.VladiSound&&typeof window.VladiSound.play=
 function updateStats(){
  $('round').textContent=(state.round-state.levelStart+1)+' / '+Math.min(10,state.deck.length-state.levelStart);
  $('score').textContent=state.score;
- $('best').textContent=state.best?state.best+' / '+state.deck.length:'—';
+ $('best').textContent=state.best?state.best+' / '+Math.min(10,state.deck.length-state.levelStart):'—';
  $('progress').style.width=(state.round/state.deck.length*100)+'%';
 }
 function startGame(){
