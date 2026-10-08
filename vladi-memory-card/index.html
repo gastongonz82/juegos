@@ -34,6 +34,21 @@
   .reset{min-height:40px;margin-top:5px}
   .instructions{display:none}
 }
+
+/* Ajuste fino: más aire en pantallas medianas y compacto solo en escritorios bajos. */
+
+@media (min-width:900px) and (min-height:721px) and (max-height:850px){
+  main{padding:10px 0 12px}.heading{margin-bottom:9px}.heading h1{font-size:clamp(30px,4vh,38px);margin:5px 0 4px}.game{padding:14px}.board{aspect-ratio:2.55;gap:9px;margin-bottom:8px}
+}
+@media (min-width:1100px) and (min-height:721px) and (max-height:850px){
+  .game{display:grid;grid-template-columns:minmax(0,1fr) 235px;grid-template-areas:"board toolbar" "board message" "board reset" "board instructions";align-items:center;gap:9px 16px}
+  .board{grid-area:board;width:min(100%,780px);aspect-ratio:1.95;margin:0 auto;gap:8px}
+  .toolbar{grid-area:toolbar;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin:0}
+  .message{grid-area:message}.reset{grid-area:reset;margin:0}.instructions{grid-area:instructions;display:block;margin:0}
+}
+@media (min-width:900px) and (max-height:720px){
+  main{padding:5px 0 7px}.heading{margin-bottom:4px}.heading h1{font-size:clamp(25px,3.5vh,32px);margin:3px 0 2px}.game{padding:8px}.board{aspect-ratio:2.8;gap:6px;margin-bottom:5px}.toolbar{gap:5px;margin-bottom:5px}.reset{min-height:36px;margin-top:4px}.instructions{display:none}
+}
 </style>
   <link rel="stylesheet" href="../desafios-kids.css?v=20261008-2">
 </head>
