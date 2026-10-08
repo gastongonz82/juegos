@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#174b9e">
+<meta name="description" content="Encontrá el dibujo que no pertenece al grupo en el juego infantil de Vladi.">
+<title>Encontrá el intruso — Arcade de Vladi</title>
+<link rel="stylesheet" href="../arcade-ui.css?v=1">
+<script src="../arcade-ui.js" defer></script>
+<script src="../game-audio.js?v=3" defer></script>
+<script src="../music/vladi-educativos.js?v=1" defer></script>
+<script src="../game-music.js?v=4" defer></script>
+<style>
+*{box-sizing:border-box}
+:root{color-scheme:dark;--ink:#fff;--muted:#e4edff;--cyan:#68f2ff;--gold:#ffe45c;--pink:#ff75c8;--green:#7bffb9;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+body{margin:0;min-height:100svh;color:var(--ink);background:radial-gradient(ellipse at 8% 10%,#00c4d366,transparent 34rem),radial-gradient(ellipse at 94% 58%,#bf32ee66,transparent 34rem),linear-gradient(145deg,#133b85,#462889 58%,#112456)}
+button,a{font:inherit}button{color:inherit}
+.shell{width:min(1180px,calc(100% - 28px));margin:0 auto}
+.top{height:58px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #b4edff55}
+.back{padding:9px 16px;border:2px solid var(--gold);border-radius:999px;background:#265cb5;color:#fff;text-decoration:none;font-size:12px;font-weight:1000;box-shadow:0 3px #a64edf}
+.sound{width:42px;height:42px;border:2px solid var(--gold);border-radius:14px;background:#4f5dd1;cursor:pointer}
+main{padding:17px 0 24px}
+.heading{text-align:center;margin:0 auto 14px}
+.badge{display:inline-block;padding:7px 15px;border:2px solid var(--cyan);border-radius:999px;background:linear-gradient(90deg,#128eb0,#7541c8);font-size:12px;font-weight:1000;letter-spacing:.15em;text-transform:uppercase;box-shadow:0 3px #291b70}
+.heading h1{margin:8px 0 4px;font-size:clamp(32px,5vw,52px);line-height:1;text-transform:uppercase;text-shadow:0 4px #392073}
+.heading h1 span{color:var(--gold)}
+.heading p{margin:7px;color:var(--muted);font-weight:750}
+.panel{width:min(100%,1080px);margin:0 auto;border:2px solid #b8eaff99;border-radius:27px;background:linear-gradient(145deg,#1d59a5ed,#4a2a93ed);box-shadow:0 7px #151950,0 19px 40px #07103c66,inset 0 2px #ffffff2e;padding:clamp(15px,2.5vw,24px)}
+.intro{text-align:center}
+.heroicon{font-size:clamp(48px,8vw,72px);line-height:1;margin:3px}
+.intro h2,.result h2{margin:7px 0;color:var(--gold);font-size:clamp(25px,4vw,36px);text-shadow:0 3px #682d91}
+.intro p{max-width:640px;margin:7px auto 15px;line-height:1.45;font-weight:700;color:#f0f3ff}
+.primary,.secondary{border:0;border-radius:16px;padding:13px 21px;background:linear-gradient(100deg,#fff47a,#ffad4a);color:#4b244a;font-size:16px;font-weight:1000;box-shadow:0 4px #ad4c50;cursor:pointer}
+.secondary{background:#4c5fbe;color:#fff;border:2px solid var(--gold);box-shadow:0 4px #23205d}
+.primary:active,.secondary:active{transform:translateY(2px)}
+.recordline{font-size:14px;color:#f3efff}
+.recordline strong{color:var(--cyan)}
+.intro.hide{display:none}
+.play,.result{display:none}
+.play.active,.result.show{display:block}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:0 0 12px}
+.stat{padding:8px 12px;border:1px solid #ffffff55;border-radius:15px;background:#111d5b77}
+.stat small{display:block;font-size:10px;font-weight:1000;letter-spacing:.1em;color:#e0ebff}
+.stat strong{font-size:21px}
+.progress{height:9px;overflow:hidden;border-radius:99px;background:#121a54;margin-bottom:13px}
+.progress i{display:block;height:100%;width:0;background:linear-gradient(90deg,#61f0dc,#ffe85b,#ff6bc4);border-radius:inherit;transition:width .25s}
+.question{text-align:center;margin:0 0 12px}
+.question-label{color:var(--cyan);font-size:clamp(16px,2vw,20px);font-weight:1000;letter-spacing:.06em}
+.question small{display:block;margin-top:4px;color:#ecedff;font-size:13px;font-weight:750}
+.choices{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;align-items:stretch}
+.choice{min-width:0;min-height:clamp(118px,17vh,158px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:9px 7px;border:2px solid #c7e9ff99;border-radius:20px;background:linear-gradient(145deg,#2373b7,#4b348f);box-shadow:0 5px #15184e;cursor:pointer;transition:transform .13s,border-color .13s,filter .13s}
+.choice:nth-child(2){background:linear-gradient(145deg,#3175aa,#57419e)}
+.choice:nth-child(3){background:linear-gradient(145deg,#236c9d,#683a9f)}
+.choice:nth-child(4){background:linear-gradient(145deg,#2459a0,#7250a8)}
+.choice:nth-child(5){background:linear-gradient(145deg,#19768d,#633f9c)}
+.choice:hover:not(:disabled){transform:translateY(-3px);border-color:var(--gold);filter:brightness(1.1)}
+.choice:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.choice .emoji{font-size:clamp(36px,5vw,54px);line-height:1}
+.choice .name{font-size:clamp(12px,1.5vw,16px);font-weight:1000;text-align:center;text-transform:uppercase;overflow-wrap:anywhere}
+.choice.correct{border-color:#7dffb9;background:linear-gradient(135deg,#0a9276,#246249);box-shadow:0 0 0 3px #7dffb944,0 5px #143f47}
+.choice.wrong{border-color:#ff83aa;background:linear-gradient(135deg,#b14278,#6b2d68)}
+.choice:disabled{cursor:default}
+.feedback{min-height:32px;margin:12px 0 0;text-align:center;font-weight:1000;font-size:clamp(14px,1.7vw,18px)}
+.feedback.ok{color:#91ffc7}.feedback.no{color:#ffc0d4}
+.result{text-align:center}.result .heroicon{font-size:70px}.result p{font-size:17px;line-height:1.45}.result strong{color:var(--cyan)}
+.result-actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
+@media(max-width:700px){
+ .shell{width:calc(100% - 22px)}
+ main{padding:12px 0 18px}
+ .top{height:54px}
+ .back{font-size:11px;padding:8px 12px}
+ .sound{width:40px;height:40px}
+ .heading{margin-bottom:10px}
+ .heading h1{font-size:clamp(30px,8vw,40px);margin:7px 0 3px}
+ .heading p{margin:5px 0}
+ .panel{padding:13px;border-radius:23px}
+ .stats{gap:7px;margin-bottom:9px}
+ .stat{padding:7px 9px}
+ .stat strong{font-size:19px}
+ .progress{margin-bottom:10px}
+ .question{margin-bottom:9px}
+ .question-label{font-size:16px}
+ .question small{font-size:12px}
+ .choices{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+ .choice{min-height:clamp(70px,11vh,88px);flex-direction:row;justify-content:flex-start;gap:9px;padding:8px 10px;border-radius:16px}
+ .choice:nth-child(5){grid-column:1/-1;width:calc(50% - 5px);justify-self:center}
+ .choice .emoji{font-size:clamp(30px,9vw,42px);flex:0 0 auto}
+ .choice .name{font-size:clamp(12px,3.3vw,15px);text-align:left}
+ .feedback{min-height:28px;margin-top:9px;font-size:14px}
+}
+@media(max-width:380px){
+ .panel{padding:10px}
+ .stats{gap:5px}
+ .stat{padding:6px 7px}
+ .stat small{font-size:9px}
+ .stat strong{font-size:17px}
+ .choice{min-height:68px;padding:7px 8px;gap:7px}
+ .choice .emoji{font-size:30px}
+ .choice .name{font-size:12px}
+}
+@media(max-width:700px) and (max-height:760px){
+ main{padding:7px 0 12px}
+ .heading{margin-bottom:7px}
+ .heading h1{font-size:clamp(29px,7.3vw,36px);margin:5px 0 2px}
+ .heading p{margin:3px}
+ .panel{padding:10px}
+ .stats{margin-bottom:7px}
+ .progress{margin-bottom:8px}
+ .question{margin-bottom:7px}
+ .choice{min-height:64px}
+ .feedback{margin-top:7px;min-height:24px}
+}
+@media(min-width:701px) and (hover:hover) and (pointer:fine){
+ main{padding-top:12px}
+ .heading{margin-bottom:11px}
+}
+</style>
+</head>
+<body>
+<div class="shell">
+<header class="top"><a class="back" href="../arcade.html">← VOLVER AL ARCADE</a><button class="sound" type="button" data-sound-toggle aria-label="Silenciar sonidos">🔊</button></header>
+<main>
+<div class="heading"><span class="badge">DESAFÍO DE OBSERVACIÓN</span><h1>ENCONTRÁ EL <span>INTRUSO</span></h1><p>¡Mirá bien los dibujos y descubrí cuál no va con los demás!</p></div>
+<section class="panel intro" id="intro"><div class="heroicon" aria-hidden="true">🔎🧩</div><h2>¡Ojos de detective!</h2><p>En cada ronda hay cuatro dibujos que tienen algo en común y uno que se coló. ¡Encontralo antes de pasar a la siguiente!</p><button class="primary" id="start" type="button">¡EMPEZAR A JUGAR! ➜</button><p class="recordline">🏆 Tu récord: <strong id="introRecord">0</strong> puntos</p></section>
+<section class="panel play" id="play" aria-live="polite"><div class="stats"><div class="stat"><small>RONDA</small><strong id="round">1 / 10</strong></div><div class="stat"><small>PUNTOS</small><strong id="score">0</strong></div><div class="stat"><small>RÉCORD</small><strong id="record">0</strong></div></div><div class="progress" aria-label="Progreso"><i id="bar"></i></div><div class="question"><div class="question-label">¿CUÁL ES EL INTRUSO?</div><small>TOCÁ EL DIBUJO QUE NO PERTENECE AL GRUPO</small></div><div class="choices" id="choices"></div><p class="feedback" id="feedback" aria-live="polite"></p></section>
+<section class="panel result" id="result"><div class="heroicon" id="endIcon" aria-hidden="true">🏆🌟</div><h2 id="endTitle">¡QUÉ BUEN OJO!</h2><p id="endText"></p><p>Tu récord: <strong id="finalRecord">0</strong> puntos</p><div class="result-actions"><button class="primary" id="again" type="button">¡JUGAR OTRA VEZ! ➜</button><button class="secondary" id="menu" type="button">VOLVER AL INICIO</button></div></section>
+</main>
+</div>
+<script>
+(()=>{const $=id=>document.getElementById(id),STORE="vladiIntrusoRecordV1";
+const GROUPS=[
+{group:"ANIMALES DE GRANJA",items:[["🐮","VACA"],["🐑","OVEJA"],["🐴","CABALLO"],["🐷","CERDO"]],odd:["🍎","MANZANA"]},
+{group:"ANIMALES DEL MAR",items:[["🐬","DELFIN"],["🐳","BALLENA"],["🦈","TIBURON"],["🐙","PULPO"]],odd:["🍌","BANANA"]},
+{group:"AVES",items:[["🦉","BUHO"],["🦜","LORO"],["🐧","PINGUINO"],["🦚","PAVO REAL"]],odd:["🐟","PEZ"]},
+{group:"INSECTOS",items:[["🐝","ABEJA"],["🦋","MARIPOSA"],["🐜","HORMIGA"],["🐞","MARIQUITA"]],odd:["🐸","RANA"]},
+{group:"MASCOTAS",items:[["🐶","PERRO"],["🐱","GATO"],["🐰","CONEJO"],["🐹","HAMSTER"]],odd:["🚗","AUTO"]},
+{group:"FRUTAS",items:[["🍎","MANZANA"],["🍐","PERA"],["🍌","BANANA"],["🍊","NARANJA"]],odd:["🥕","ZANAHORIA"]},
+{group:"VERDURAS",items:[["🥕","ZANAHORIA"],["🥦","BROCOLI"],["🥬","LECHUGA"],["🌽","CHOCLO"]],odd:["🍇","UVA"]},
+{group:"TRANSPORTES",items:[["🚗","AUTO"],["🚌","COLECTIVO"],["🚆","TREN"],["🚲","BICICLETA"]],odd:["🏠","CASA"]},
+{group:"TRANSPORTES DEL AGUA",items:[["🚤","LANCHA"],["⛵","VELERO"],["🚢","BARCO"],["🛶","CANOA"]],odd:["✈️","AVION"]},
+{group:"ÚTILES ESCOLARES",items:[["✏️","LAPIZ"],["📏","REGLA"],["📓","CUADERNO"],["🖍️","CRAYON"]],odd:["🍴","TENEDOR"]},
+{group:"ROPA",items:[["👕","REMERA"],["🧦","MEDIAS"],["👟","ZAPATILLAS"],["🧢","GORRA"]],odd:["🥣","TAZA"]},
+{group:"INSTRUMENTOS MUSICALES",items:[["🎸","GUITARRA"],["🎹","PIANO"],["🥁","TAMBOR"],["🎺","TROMPETA"]],odd:["📚","LIBROS"]},
+{group:"DEPORTES",items:[["⚽","FUTBOL"],["🏀","BASQUET"],["🎾","TENIS"],["🏐","VOLEY"]],odd:["🍕","PIZZA"]},
+{group:"EL CIELO",items:[["☀️","SOL"],["🌙","LUNA"],["⭐","ESTRELLA"],["☁️","NUBE"]],odd:["🌳","ARBOL"]},
+{group:"EL ESPACIO",items:[["🚀","COHETE"],["🪐","PLANETA"],["🌟","ESTRELLA"],["🌙","LUNA"]],odd:["🌻","GIRASOL"]},
+{group:"COSAS DE COCINA",items:[["🥄","CUCHARA"],["🍽️","PLATO"],["🥣","TAZA"],["🍴","TENEDOR"]],odd:["🛏️","CAMA"]},
+{group:"ANIMALES GRANDES",items:[["🐘","ELEFANTE"],["🦒","JIRAFA"],["🦛","HIPOPOTAMO"],["🦏","RINOCERONTE"]],odd:["🦋","MARIPOSA"]},
+{group:"ANIMALES DE LA SELVA",items:[["🦁","LEON"],["🐒","MONO"],["🐅","TIGRE"],["🦓","CEBRA"]],odd:["🐠","PEZ"]},
+{group:"ANIMALES QUE VUELAN",items:[["🦅","AGUILA"],["🦇","MURCIELAGO"],["🦜","LORO"],["🦋","MARIPOSA"]],odd:["🐢","TORTUGA"]},
+{group:"ANIMALES CON CAPARAZON",items:[["🐢","TORTUGA"],["🐌","CARACOL"],["🦀","CANGREJO"],["🦞","LANGOSTA"]],odd:["🐕","PERRO"]},
+{group:"COMIDAS",items:[["🍕","PIZZA"],["🍔","HAMBURGUESA"],["🌮","TACO"],["🥪","SANDWICH"]],odd:["🧼","JABON"]},
+{group:"COSAS PARA JUGAR",items:[["⚽","PELOTA"],["🪁","BARRILETE"],["🧸","OSO DE PELUCHE"],["🪀","YOYO"]],odd:["🪥","CEPILLO"]},
+{group:"LUGARES DE LA CASA",items:[["🛏️","CAMA"],["🛋️","S sillón"],["🚿","DUCHA"],["🪑","SILLA"]],odd:["🚜","TRACTOR"]},
+{group:"COSAS DEL BAÑO",items:[["🧼","JABON"],["🪥","CEPILLO"],["🧴","SHAMPOO"],["🛁","BAÑERA"]],odd:["⚽","PELOTA"]},
+{group:"CLIMA",items:[["🌧️","LLUVIA"],["❄️","NIEVE"],["🌬️","VIENTO"],["⛈️","TORMENTA"]],odd:["🚘","AUTO"]},
+{group:"FLORES Y PLANTAS",items:[["🌹","ROSA"],["🌻","GIRASOL"],["🌷","TULIPAN"],["🌼","MARGARITA"]],odd:["🍪","GALLETITA"]},
+{group:"ANIMALES DE NOCHE",items:[["🦉","BUHO"],["🦇","MURCIELAGO"],["🦝","MAPACHE"],["🦔","ERIZO"]],odd:["🐓","GALLO"]},
+{group:"FRUTAS ROJAS",items:[["🍓","FRUTILLA"],["🍒","CEREZA"],["🍉","SANDIA"],["🍎","MANZANA"]],odd:["🥒","PEPINO"]},
+{group:"COSAS QUE RUEDAN",items:[["🛹","PATINETA"],["🛼","PATINES"],["🛴","MONOPATIN"],["🚲","BICICLETA"]],odd:["📕","LIBRO"]},
+{group:"ANIMALES DE AGUA",items:[["🐬","DELFIN"],["🐢","TORTUGA"],["🦭","FOCA"],["🐟","PEZ"]],odd:["🦌","CIERVO"]},
+{group:"COSAS QUE TIENEN RUEDAS",items:[["🚕","TAXI"],["🚚","CAMION"],["🏍️","MOTO"],["🚜","TRACTOR"]],odd:["📺","TELE"]},
+{group:"FRÍO Y CALOR",items:[["🧤","GUANTES"],["🧣","BUFANDA"],["🧥","ABRIGO"],["🧦","MEDIAS"]],odd:["🩱","MALLA"]},
+{group:"ANIMALES CON ALAS",items:[["🦜","LORO"],["🦅","AGUILA"],["🦉","BUHO"],["🦢","CISNE"]],odd:["🐍","SERPIENTE"]},
+{group:"FRUTAS AMARILLAS",items:[["🍌","BANANA"],["🍋","LIMON"],["🍍","ANANA"],["🥭","MANGO"]],odd:["🍆","BERENJENA"]},
+{group:"COSAS PARA ESCRIBIR",items:[["🖊️","LAPICERA"],["✏️","LAPIZ"],["🖍️","CRAYON"],["🖋️","PLUMA"]],odd:["🍳","SARTEN"]},
+{group:"ANIMALES CON CUATRO PATAS",items:[["🐕","PERRO"],["🐈","GATO"],["🐄","VACA"],["🦒","JIRAFA"]],odd:["🐍","SERPIENTE"]},
+{group:"COSAS DE LA PLAYA",items:[["🏖️","SOMBRILLA"],["🪣","BALDE"],["🩱","MALLA"],["🩴","OJOTAS"]],odd:["🧤","GUANTES"]},
+{group:"BEBIDAS",items:[["🥛","LECHE"],["🧃","JUGO"],["🫖","TE"],["🥤","LICUADO"]],odd:["🧦","MEDIAS"]},
+{group:"ANIMALES LENTOS",items:[["🐢","TORTUGA"],["🐌","CARACOL"],["🦥","PEREZOSO"],["🐛","ORUGA"]],odd:["🐆","GUEPARDO"]}
+];
+let rounds=[],index=0,score=0,best=0,locked=false;try{best=Number(localStorage.getItem(STORE)||0)}catch(_){}$("introRecord").textContent=best;$("record").textContent=best;
+function tone(name){try{if(window.VladiSound)window.VladiSound.play(name)}catch(_){}}
+function shuffle(a){a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function start(){rounds=shuffle(GROUPS).slice(0,10);index=0;score=0;locked=false;$("score").textContent="0";$("record").textContent=best;$("intro").classList.add("hide");$("result").classList.remove("show");$("play").classList.add("active");show()}
+function show(){locked=false;const r=rounds[index],options=shuffle([...r.items.map(x=>({item:x,odd:false})),{item:r.odd,odd:true}]);$("round").textContent=(index+1)+" / 10";$("bar").style.width=(index/10*100)+"%";$("feedback").textContent="";$("feedback").className="feedback";$("choices").innerHTML=options.map((x,i)=>'<button class="choice" type="button" data-odd="'+x.odd+'" aria-label="Opción '+(i+1)+': '+x.item[1]+'"><span class="emoji" aria-hidden="true">'+x.item[0]+'</span><span class="name">'+x.item[1]+'</span></button>').join("");$("choices").querySelectorAll(".choice").forEach((b,i)=>b.addEventListener("click",()=>answer(b)))}
+function answer(button){if(locked)return;locked=true;const ok=button.dataset.odd==="true",r=rounds[index];document.querySelectorAll(".choice").forEach(b=>b.disabled=true);button.classList.add(ok?"correct":"wrong");if(ok){score+=100;$("score").textContent=score;$("feedback").textContent="¡LO ENCONTRASTE! LOS DEMÁS SON: "+r.group+" ⭐";$("feedback").classList.add("ok");tone("correct")}else{const right=[...document.querySelectorAll(".choice")].find(b=>b.dataset.odd==="true");if(right)right.classList.add("correct");$("feedback").textContent="¡CASI! EL INTRUSO ERA "+r.odd[1]+". LOS DEMÁS SON: "+r.group+" 💡";$("feedback").classList.add("no");tone("wrong")}setTimeout(()=>{index++;if(index>=10)finish();else show()},1100)}
+function finish(){ $("bar").style.width="100%";$("play").classList.remove("active");$("result").classList.add("show");if(score>best){best=score;try{localStorage.setItem(STORE,String(best))}catch(_){}}$("finalRecord").textContent=best;$("endText").innerHTML="Encontraste <strong>"+score/100+" de 10</strong> intrusos y sumaste <strong>"+score+" puntos</strong>.";if(score===1000){$("endTitle").textContent="¡OJO DE SÚPER DETECTIVE!";$("endIcon").textContent="🕵️🏆"}else if(score>=600){$("endTitle").textContent="¡GENIAL, GRAN TRABAJO!";$("endIcon").textContent="🔎🌟"}else{$("endTitle").textContent="¡SEGUÍ ENTRENANDO EL OJO!";$("endIcon").textContent="🧩💪"}}
+$("start").addEventListener("click",start);$("again").addEventListener("click",start);$("menu").addEventListener("click",()=>{$("result").classList.remove("show");$("intro").classList.remove("hide")});document.addEventListener("keydown",e=>{if(!$("play").classList.contains("active")||locked)return;if(["1","2","3","4","5"].includes(e.key)){const b=$("choices").querySelectorAll(".choice")[Number(e.key)-1];if(b)b.click()}});
+})();</script>
+</body>
+</html>
