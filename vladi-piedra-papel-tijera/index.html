@@ -52,6 +52,13 @@
 }
 </style>
   <link rel="stylesheet" href="../desafios-kids.css?v=20261008-2">
+<style id="desktop-screen-fill">
+@media (min-width: 900px) {
+  body > main.shell { min-height: calc(100svh - 58px); display: flex; flex-direction: column; }
+  body > main.shell > .game,
+  body > main.shell > .layout { flex: 1; min-height: 0; align-content: stretch; }
+}
+</style>
 </head>
 <body class="kids-rps">
   <header class="shell top"><a class="back" href="../">← VOLVER AL ARCADE</a><button class="sound-toggle" id="soundToggle" data-sound-toggle type="button" aria-label="Silenciar sonidos">🔊</button></header>
