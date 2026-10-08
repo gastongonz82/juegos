@@ -123,7 +123,7 @@ main{padding:17px 0 24px}
 <main>
 <div class="heading"><span class="badge">DESAFÍO DE OBSERVACIÓN</span><h1>ENCONTRÁ EL <span>INTRUSO</span></h1><p>¡Mirá bien los dibujos y descubrí cuál no va con los demás!</p></div>
 <section class="panel intro" id="intro"><div class="heroicon" aria-hidden="true">🔎🧩</div><h2>¡Ojos de detective!</h2><p>En cada ronda hay cuatro dibujos que tienen algo en común y uno que se coló. ¡Encontralo antes de pasar a la siguiente!</p><button class="primary" id="start" type="button">¡EMPEZAR A JUGAR! ➜</button><p class="recordline">🏆 Tu récord: <strong id="introRecord">0</strong> puntos</p></section>
-<section class="panel play" id="play" aria-live="polite"><div class="stats"><div class="stat"><small>RONDA</small><strong id="round">1 / 39</strong></div><div class="stat"><small>PUNTOS</small><strong id="score">0</strong></div><div class="stat"><small>RÉCORD</small><strong id="record">0</strong></div></div><div class="progress" aria-label="Progreso"><i id="bar"></i></div><div class="question"><div class="question-label">¿CUÁL ES EL INTRUSO?</div><small>TOCÁ EL DIBUJO QUE NO PERTENECE AL GRUPO</small></div><div class="choices" id="choices"></div><p class="feedback" id="feedback" aria-live="polite"></p></section>
+<section class="panel play" id="play" aria-live="polite"><div class="stats"><div class="stat"><small>RONDA</small><strong id="round">1 / 100</strong></div><div class="stat"><small>PUNTOS</small><strong id="score">0</strong></div><div class="stat"><small>RÉCORD</small><strong id="record">0</strong></div></div><div class="progress" aria-label="Progreso"><i id="bar"></i></div><div class="question"><div class="question-label">¿CUÁL ES EL INTRUSO?</div><small>TOCÁ EL DIBUJO QUE NO PERTENECE AL GRUPO</small></div><div class="choices" id="choices"></div><p class="feedback" id="feedback" aria-live="polite"></p></section>
 <section class="panel result" id="result"><div class="heroicon" id="endIcon" aria-hidden="true">🏆🌟</div><h2 id="endTitle">¡QUÉ BUEN OJO!</h2><p id="endText"></p><p>Tu récord: <strong id="finalRecord">0</strong> puntos</p><div class="result-actions"><button class="primary" id="again" type="button">¡JUGAR OTRA VEZ! ➜</button><button class="secondary" id="menu" type="button">VOLVER AL INICIO</button></div></section>
 </main>
 </div>
@@ -169,6 +169,68 @@ const GROUPS=[
 {group:"COSAS DE LA PLAYA",items:[["🏖️","SOMBRILLA"],["🪣","BALDE"],["🩱","MALLA"],["🩴","OJOTAS"]],odd:["🧤","GUANTES"]},
 {group:"BEBIDAS",items:[["🥛","LECHE"],["🧃","JUGO"],["🫖","TE"],["🥤","LICUADO"]],odd:["🧦","MEDIAS"]},
 {group:"ANIMALES LENTOS",items:[["🐢","TORTUGA"],["🐌","CARACOL"],["🦥","PEREZOSO"],["🐛","ORUGA"]],odd:["🐆","GUEPARDO"]}
+,
+{group:"FRUTOS DEL BOSQUE",items:[["🍓","FRUTILLA"],["🫐","ARÁNDANO"],["🍇","MORA"],["🍒","CEREZA"]],odd:["🧀","QUESO"]},
+{group:"FRUTAS CÍTRICAS",items:[["🍋","LIMÓN"],["🍊","NARANJA"],["🍈","LIMA"],["🍊","MANDARINA"]],odd:["🥕","ZANAHORIA"]},
+{group:"FRUTAS TROPICALES",items:[["🍍","PIÑA"],["🥭","MANGO"],["🥥","COCO"],["🍌","BANANA"]],odd:["🧤","GUANTES"]},
+{group:"FRUTAS CON CÁSCARA",items:[["🥥","COCO"],["🍌","BANANA"],["🍊","NARANJA"],["🥝","KIWI"]],odd:["🔨","MARTILLO"]},
+{group:"FRUTOS SECOS",items:[["🥜","MANÍ"],["🌰","CASTAÑA"],["🌰","NUEZ"],["🥜","ALMENDRA"]],odd:["🎈","GLOBO"]},
+{group:"VERDURAS DE RAÍZ",items:[["🥕","ZANAHORIA"],["🥔","PAPA"],["🫜","RABANITO"],["🧅","CEBOLLA"]],odd:["🍪","GALLETITA"]},
+{group:"VERDURAS DE HOJA",items:[["🥬","ESPINACA"],["🥬","ACELGA"],["🥬","LECHUGA"],["🥬","REPOLLO"]],odd:["🚗","AUTO"]},
+{group:"PRODUCTOS LÁCTEOS",items:[["🥛","LECHE"],["🧀","QUESO"],["🧈","MANTECA"],["🥣","YOGUR"]],odd:["🪁","BARRILETE"]},
+{group:"POSTRES HORNEADOS",items:[["🍰","TORTA"],["🧁","CUPCAKE"],["🍪","GALLETITA"],["🥧","TARTA"]],odd:["🐟","PEZ"]},
+{group:"POSTRES HELADOS",items:[["🍦","HELADO"],["🍧","GRANIZADO"],["🍨","COPA HELADA"],["🍡","PALETA"]],odd:["🧦","MEDIAS"]},
+{group:"ALIMENTOS PARA EL DESAYUNO",items:[["🥐","MEDIALUNA"],["🥞","PANQUEQUE"],["🥣","CEREAL"],["🍞","TOSTADA"]],odd:["🛠️","MARTILLO"]},
+{group:"BEBIDAS CALIENTES",items:[["☕","CAFÉ"],["🍵","TÉ"],["🧉","MATE"],["🥛","LECHE CALIENTE"]],odd:["🏀","PELOTA"]},
+{group:"BEBIDAS FRÍAS",items:[["🧃","JUGO"],["🥤","GASEOSA"],["🧋","TÉ CON LECHE"],["🚰","AGUA"]],odd:["🧣","BUFANDA"]},
+{group:"CUBIERTOS",items:[["🍴","TENEDOR"],["🥄","CUCHARA"],["🔪","CUCHILLO"],["🥢","PALITOS"]],odd:["🪴","PLANTA"]},
+{group:"UTENSILIOS DE COCINA",items:[["🥣","BOL"],["🍲","OLLA"],["🍳","SARTÉN"],["🫖","TETERA"]],odd:["🎾","PELOTA DE TENIS"]},
+{group:"ELECTRODOMÉSTICOS",items:[["🧊","HELADERA"],["🧺","LAVARROPAS"],["🔥","HORNO"],["🍞","TOSTADORA"]],odd:["🎸","GUITARRA"]},
+{group:"OBJETOS DEL BAÑO",items:[["🛁","BAÑERA"],["🚿","DUCHA"],["🚽","INODORO"],["🪥","CEPILLO DE DIENTES"]],odd:["🦋","MARIPOSA"]},
+{group:"MUEBLES DEL DORMITORIO",items:[["🛏️","CAMA"],["🪑","MESA DE LUZ"],["🚪","ARMARIO"],["💡","VELADOR"]],odd:["🚲","BICICLETA"]},
+{group:"MUEBLES PARA SENTARSE",items:[["🛋️","SOFÁ"],["🪑","SILLA"],["🪑","SILLÓN"],["🪑","BANQUETA"]],odd:["🍋","LIMÓN"]},
+{group:"COSAS PARA LIMPIAR",items:[["🧹","ESCOBA"],["🧽","ESPONJA"],["🪣","BALDE"],["🧼","JABÓN"]],odd:["🚀","COHETE"]},
+{group:"HERRAMIENTAS",items:[["🔨","MARTILLO"],["🪛","DESTORNILLADOR"],["🔧","LLAVE"],["🪚","SIERRA"]],odd:["🍉","SANDÍA"]},
+{group:"HERRAMIENTAS DE JARDÍN",items:[["🪏","PALA"],["🧤","GUANTES"],["🧹","RASTRILLO"],["🚿","MANGUERA"]],odd:["📚","LIBROS"]},
+{group:"MATERIALES PARA PINTAR",items:[["🖌️","PINCEL"],["🎨","PALETA"],["🖍️","CRAYÓN"],["🖊️","MARCADOR"]],odd:["🥾","BOTAS"]},
+{group:"COSAS PARA VIAJAR",items:[["🧳","VALIJA"],["🗺️","MAPA"],["🎫","BOLETO"],["🎒","MOCHILA"]],odd:["🍳","SARTÉN"]},
+{group:"EQUIPO DE CAMPING",items:[["⛺","CARPA"],["🏮","FAROL"],["🔥","FOGATA"],["🛌","BOLSA DE DORMIR"]],odd:["🧊","HELADERA"]},
+{group:"ROPA DE INVIERNO",items:[["🧣","BUFANDA"],["🧤","GUANTES"],["🧥","ABRIGO"],["🧢","GORRO"]],odd:["🩱","MALLA"]},
+{group:"PRENDAS PARA LA LLUVIA",items:[["☂️","PARAGUAS"],["🧥","PILOTO"],["🥾","BOTAS DE LLUVIA"],["🧢","GORRA IMPERMEABLE"]],odd:["🕶️","ANTEOJOS DE SOL"]},
+{group:"TIPOS DE CALZADO",items:[["👢","BOTAS"],["👟","ZAPATILLAS"],["🩴","OJOTAS"],["🥿","ZAPATOS"]],odd:["👒","SOMBRERO"]},
+{group:"JOYAS",items:[["💍","ANILLO"],["📿","COLLAR"],["👑","CORONA"],["📿","PULSERA"]],odd:["🥣","CEREAL"]},
+{group:"ACCESORIOS PARA VESTIR",items:[["🕶️","ANTEOJOS"],["⌚","RELOJ"],["🧢","GORRA"],["👜","CARTERA"]],odd:["🧽","ESPONJA"]},
+{group:"VEHÍCULOS DE EMERGENCIA",items:[["🚑","AMBULANCIA"],["🚒","AUTOBOMBA"],["🚓","PATRULLERO"],["🚁","HELICÓPTERO DE RESCATE"]],odd:["🚲","BICICLETA"]},
+{group:"VEHÍCULOS DE CONSTRUCCIÓN",items:[["🚜","TRACTOR"],["🏗️","GRÚA"],["🚚","CAMIÓN VOLCADOR"],["🚧","EXCAVADORA"]],odd:["🛶","CANOA"]},
+{group:"VEHÍCULOS DE DOS RUEDAS",items:[["🚲","BICICLETA"],["🏍️","MOTOCICLETA"],["🛵","SCOOTER"],["🛹","MONOPATÍN"]],odd:["✈️","AVIÓN"]},
+{group:"VEHÍCULOS AÉREOS",items:[["✈️","AVIÓN"],["🚁","HELICÓPTERO"],["🚀","COHETE"],["🎈","GLOBO AEROSTÁTICO"]],odd:["🚚","CAMIÓN"]},
+{group:"VEHÍCULOS ACUÁTICOS",items:[["🚤","LANCHA"],["⛵","VELERO"],["🛳️","BARCO"],["🛶","CANOA"]],odd:["🚜","TRACTOR"]},
+{group:"MAQUINARIA DE OBRA",items:[["🚜","EXCAVADORA"],["🏗️","GRÚA"],["🚚","VOLCADOR"],["🦺","CHALECO DE OBRA"]],odd:["🐙","PULPO"]},
+{group:"DEPORTES DE INVIERNO",items:[["🎿","ESQUÍ"],["🏂","SNOWBOARD"],["⛸️","PATÍN DE HIELO"],["🏒","HOCKEY"]],odd:["🍌","BANANA"]},
+{group:"EQUIPO DE NATACIÓN",items:[["🥽","ANTIPARRAS"],["🩱","MALLA"],["🛟","FLOTADOR"],["🤿","MÁSCARA DE BUCEO"]],odd:["🧤","GUANTES DE LANA"]},
+{group:"EQUIPO DE FÚTBOL",items:[["⚽","PELOTA"],["🥅","ARCO"],["👟","BOTINES"],["🧤","GUANTES DE ARQUERO"]],odd:["🎻","VIOLÍN"]},
+{group:"JUEGOS DE MESA",items:[["♟️","AJEDREZ"],["🎲","DADOS"],["🃏","CARTAS"],["🀄","MAHJONG"]],odd:["🧹","ESCOBA"]},
+{group:"JUEGOS DE PLAZA",items:[["🛝","TOBOGÁN"],["🎠","CARRUSEL"],["🎡","RUEDA"],["🪁","BARRILETE"]],odd:["🛏️","CAMA"]},
+{group:"INSTRUMENTOS DE PERCUSIÓN",items:[["🥁","TAMBOR"],["🪇","MARACAS"],["🔔","CAMPANA"],["🎼","CÍMBALOS"]],odd:["🥕","ZANAHORIA"]},
+{group:"INSTRUMENTOS DE CUERDA",items:[["🎸","GUITARRA"],["🎻","VIOLÍN"],["🪕","BANJO"],["🎹","ARPA"]],odd:["🧦","MEDIAS"]},
+{group:"INSTRUMENTOS DE VIENTO",items:[["🎺","TROMPETA"],["🎷","SAXOFÓN"],["🪈","FLAUTA"],["🎶","CLARINETE"]],odd:["🛹","MONOPATÍN"]},
+{group:"OBJETOS DE FOTOGRAFÍA",items:[["📷","CÁMARA"],["📹","VIDEOCÁMARA"],["🔭","LENTE"],["📸","FLASH"]],odd:["🥞","PANQUEQUE"]},
+{group:"OBJETOS QUE DAN LUZ",items:[["💡","BOMBILLA"],["🔦","LINTERNA"],["🕯️","VELA"],["🏮","FAROL"]],odd:["🦀","CANGREJO"]},
+{group:"ASTROS DEL CIELO",items:[["☀️","SOL"],["🌙","LUNA"],["⭐","ESTRELLA"],["🪐","PLANETA"]],odd:["👟","ZAPATILLA"]},
+{group:"PLANETAS CERCANOS AL SOL",items:[["☿️","MERCURIO"],["♀️","VENUS"],["🌍","TIERRA"],["♂️","MARTE"]],odd:["🌙","LUNA"]},
+{group:"FENÓMENOS DEL CLIMA",items:[["🌧️","LLUVIA"],["❄️","NIEVE"],["⚡","RELÁMPAGO"],["🌪️","TORNADO"]],odd:["🍎","MANZANA"]},
+{group:"ESTACIONES DEL AÑO",items:[["🌸","PRIMAVERA"],["☀️","VERANO"],["🍂","OTOÑO"],["❄️","INVIERNO"]],odd:["📺","TELEVISOR"]},
+{group:"PAISAJES NATURALES",items:[["🏔️","MONTAÑA"],["🌋","VOLCÁN"],["🏞️","CASCADA"],["🌲","BOSQUE"]],odd:["🧊","HELADERA"]},
+{group:"ANIMALES NOCTURNOS",items:[["🦉","BÚHO"],["🦇","MURCIÉLAGO"],["🦊","ZORRO"],["🦝","MAPACHE"]],odd:["🦋","MARIPOSA"]},
+{group:"MAMÍFEROS DEL BOSQUE",items:[["🦌","CIERVO"],["🦊","ZORRO"],["🐻","OSO"],["🐿️","ARDILLA"]],odd:["🐬","DELFÍN"]},
+{group:"AVES ACUÁTICAS",items:[["🦆","PATO"],["🪿","GANSO"],["🦢","CISNE"],["🦩","FLAMENCO"]],odd:["🐈","GATO"]},
+{group:"AVES QUE NO VUELAN",items:[["🐧","PINGÜINO"],["🪶","AVESTRUZ"],["🪶","ÑANDÚ"],["🐦","KIWI"]],odd:["🦜","LORO"]},
+{group:"AVES RAPACES",items:[["🦅","ÁGUILA"],["🪶","BUITRE"],["🦉","BÚHO"],["🦅","HALCÓN"]],odd:["🐢","TORTUGA"]},
+{group:"MAMÍFEROS MARINOS",items:[["🐬","DELFÍN"],["🐳","BALLENA"],["🐋","ORCA"],["🦭","FOCA"]],odd:["🕷️","ARAÑA"]},
+{group:"ANIMALES CON ASTAS",items:[["🦌","CIERVO"],["🫎","ALCE"],["🐂","TORO"],["🐐","CABRA"]],odd:["🐟","PEZ"]},
+{group:"ANIMALES QUE SE ARRASTRAN",items:[["🐍","SERPIENTE"],["🐌","CARACOL"],["🪱","GUSANO"],["🐛","ORUGA"]],odd:["🐎","CABALLO"]},
+{group:"INSECTOS QUE CAMBIAN",items:[["🐛","ORUGA"],["🦋","MARIPOSA"],["🦟","MOSQUITO"],["🐞","MARIQUITA"]],odd:["🐕","PERRO"]},
+{group:"PARTES DE UNA PLANTA",items:[["🌸","PÉTALO"],["🍃","HOJA"],["🌱","SEMILLA"],["🌿","TALLO"]],odd:["🥾","BOTA"]}
 ];
 let rounds=[],index=0,score=0,best=0,locked=false;try{best=Number(localStorage.getItem(STORE)||0)}catch(_){}$("introRecord").textContent=best;$("record").textContent=best;
 function tone(name){try{if(window.VladiSound)window.VladiSound.play(name)}catch(_){}}
