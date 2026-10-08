@@ -56,6 +56,16 @@ main{padding:22px 0 36px}.heading{text-align:center;margin-bottom:18px}.badge{di
   .panel{padding:9px}.play.active .questionbox{padding:14px 10px}.play.active .question{font-size:clamp(20px,2.8vw,27px)}.play.active .answer{min-height:52px;padding:7px 10px}
 }
 </style>
+<style id="desktop-screen-fill">
+@media (min-width: 900px) {
+  body > .shell { min-height: 100svh; display: flex; flex-direction: column; }
+  body > .shell > main { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+  body > .shell > main > .panel { flex: 1; min-height: 0; }
+  body > .shell > main > .panel.intro:not(.hide),
+  body > .shell > main > .panel.result.show { display: flex; flex-direction: column; justify-content: center; align-items: center; }
+  body > .shell > main > .panel.play.active { align-content: stretch; }
+}
+</style>
 </head>
 <body>
 <div class="shell">
