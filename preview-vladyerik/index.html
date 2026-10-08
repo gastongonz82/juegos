@@ -120,6 +120,28 @@
 #cosplay:after{clip-path:path("M0 32 C145 4 285 0 425 24 C580 51 715 52 865 20 C1015 -10 1145 4 1280 30 L1280 54 L0 54 Z")}
 #sobre:before,#taekwondo:before,#cosplay:before{content:"";position:absolute;z-index:6;left:0;right:0;bottom:7px;height:3px;pointer-events:none;background:linear-gradient(90deg,transparent,#27dcff 18%,#8750ff 52%,#ff3f9a 82%,transparent);opacity:.45;filter:blur(.4px)}
 }
+/* Boceto final desktop: separadores amplios, orgánicos y sin recortar contenido */
+@media(min-width:801px){
+.hero,.arcadeSection,.videos,#sobre,#taekwondo,#cosplay,.followSection{clip-path:none!important;margin-top:0!important;margin-bottom:0!important;overflow:visible!important}
+.hero,.arcadeSection,.videos,#sobre,#taekwondo,#cosplay,.followSection{position:relative;isolation:isolate}
+.hero{padding-bottom:0!important}
+.arcadeSection{padding-top:78px!important;padding-bottom:92px!important}
+.videos{padding-top:92px!important;padding-bottom:108px!important}
+#sobre{padding:42px 0 76px!important;background:#06164c!important}
+#taekwondo{padding:42px 0 76px!important;background:#06164c!important}
+#cosplay{padding:42px 0 72px!important;background:#06164c!important}
+.followSection{padding-top:96px!important}
+.hero:after,.arcadeSection:after,.videos:after,#sobre:after,#taekwondo:after,#cosplay:after{content:""!important;display:block!important;position:absolute!important;z-index:20!important;left:-2%!important;right:-2%!important;bottom:-38px!important;height:78px!important;pointer-events:none!important;opacity:1!important;filter:none!important;transform:none!important;border-radius:0!important}
+.hero:after{background:#06307d!important;clip-path:ellipse(58% 48% at 50% 0%)}
+.arcadeSection:after{background:#4b0018!important;clip-path:polygon(0 12%,12% 28%,27% 14%,43% 34%,58% 17%,74% 37%,88% 19%,100% 31%,100% 100%,0 100%)}
+.videos:after{background:#06164c!important;clip-path:ellipse(64% 52% at 50% 100%);bottom:-34px!important}
+#sobre:after{background:#06164c!important;clip-path:polygon(0 46%,10% 34%,20% 43%,31% 25%,42% 40%,54% 20%,66% 38%,78% 24%,89% 40%,100% 28%,100% 100%,0 100%);bottom:-42px!important}
+#taekwondo:after{background:#06164c!important;clip-path:ellipse(61% 50% at 50% 0%);bottom:-40px!important}
+#cosplay:after{background:#07113c!important;clip-path:polygon(0 20%,14% 38%,29% 18%,44% 34%,59% 15%,73% 32%,87% 17%,100% 31%,100% 100%,0 100%);bottom:-40px!important}
+.hero:before{display:none!important}
+.arcadeSection:before,.videos:before{z-index:-1!important}
+#sobre:before,#taekwondo:before,#cosplay:before{content:""!important;display:block!important;position:absolute!important;z-index:21!important;left:7%!important;right:7%!important;bottom:-4px!important;height:2px!important;background:linear-gradient(90deg,transparent,#29dcff 22%,#8b4cff 52%,#ff3f99 80%,transparent)!important;opacity:.38!important;filter:blur(.3px)!important;pointer-events:none!important}
+}
 </style><meta property="og:title" content="VLADYERIK | Juegos, desafíos y aventuras"><meta property="og:description" content="Entrá al mundo de Vladi: juegos, videos, desafíos y aventuras."><meta property="og:type" content="website"><meta name="theme-color" content="#071450"></head><body>
 <nav class="nav"><div class="wrap"><a class="brand" href="#"><span class="vlad">VLAD</span><span class="yerik">YERIK</span></a><div class="links"><a href="#">🏠 INICIO</a><a href="#juegos">🎮 JUEGOS</a><a href="#videos">▶ VIDEOS</a><a href="#sobre">👤 SOBRE VLADI</a><a href="#taekwondo">🏆 TAEKWONDO</a><a href="#cosplay">🎭 COSPLAY</a><a href="#redes">❤ SEGUIME</a></div></div></nav>
 <header class="hero"><img class="heroBanner" src="assets/vladi-hero.png" alt="VLADYERIK - Juegos, desafíos y aventuras"></header>
