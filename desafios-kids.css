@@ -1,0 +1,169 @@
+/* Arcade infantil premium: solo cambia la presentación, no el tamaño ni la lógica de juego. */
+:root{
+  --kids-cyan:#54f0ff;
+  --kids-yellow:#ffe254;
+  --kids-pink:#ff61b6;
+  --kids-lime:#9aff69;
+  --kids-purple:#7448ff;
+  --kids-blue:#228bff;
+}
+body{
+  color:#fff;
+  background:
+    radial-gradient(ellipse at 7% 8%,rgba(116,72,255,.46),transparent 30rem),
+    radial-gradient(ellipse at 95% 18%,rgba(0,219,255,.28),transparent 26rem),
+    radial-gradient(ellipse at 52% 100%,rgba(255,65,176,.19),transparent 30rem),
+    linear-gradient(155deg,#111744 0%,#0a1234 58%,#09152c 100%)!important;
+}
+body:before{
+  opacity:.28!important;
+  background-image:
+    radial-gradient(circle,rgba(255,226,84,.95) 1.15px,transparent 1.8px),
+    radial-gradient(circle,rgba(84,240,255,.8) 1px,transparent 1.7px),
+    radial-gradient(circle,rgba(255,97,182,.7) .9px,transparent 1.7px)!important;
+  background-size:47px 43px,71px 67px,89px 83px!important;
+}
+.top{border-bottom-color:rgba(84,240,255,.28)!important}
+.back{
+  min-height:36px;padding:0 13px;display:inline-flex;align-items:center;
+  border:2px solid rgba(84,240,255,.72);border-radius:999px;
+  background:linear-gradient(135deg,#4c46b7,#1465ad)!important;
+  color:#fff!important;font-weight:900!important;letter-spacing:.035em;
+  box-shadow:0 3px 0 #121542,0 7px 16px rgba(27,104,255,.25);
+}
+.sound-toggle{
+  border:2px solid rgba(255,226,84,.85)!important;
+  background:linear-gradient(145deg,#713fd1,#1478c8)!important;
+  color:#fff!important;
+  box-shadow:0 3px 0 #20114b,0 0 15px rgba(84,240,255,.24);
+}
+.heading .eyebrow{
+  display:inline-flex;align-items:center;justify-content:center;
+  min-height:26px;padding:5px 13px;border:1px solid rgba(84,240,255,.48);
+  border-radius:999px;background:linear-gradient(110deg,rgba(20,169,224,.2),rgba(136,66,255,.27));
+  color:#82f6ff!important;text-shadow:0 1px 5px rgba(84,240,255,.35);
+}
+.heading h1{
+  color:#fff;text-shadow:0 3px 0 #21205d,0 0 18px rgba(95,180,255,.22);
+  font-weight:1000!important;
+}
+.heading h1 span{color:var(--kids-yellow)!important;text-shadow:0 2px 0 #815324,0 0 13px rgba(255,226,84,.25)}
+.heading p{color:#d2ddff!important;font-weight:650}
+.scene,.card,.board-panel,.side-panel,.match,.score-panel,.kids-scramble .game,.kids-memory .game{
+  border:2px solid rgba(84,240,255,.5)!important;
+  background:
+    radial-gradient(ellipse at 17% 10%,rgba(84,240,255,.13),transparent 45%),
+    linear-gradient(145deg,rgba(41,57,132,.97),rgba(29,28,91,.97))!important;
+  box-shadow:0 4px 0 rgba(8,12,52,.9),0 13px 30px rgba(36,49,181,.28),inset 0 2px rgba(255,255,255,.15)!important;
+}
+.scene-head,.match-head,.score-head,.panel-top{color:#fff!important}
+.scene-head span:first-child,.match-label,.panel-title,.score-head h2{color:#fff!important;text-shadow:0 2px 0 rgba(25,31,98,.8)}
+.stat,.score,.pill,.record,.round,.timer,.statbox,.scorebox,.score-line,.turn-pill{
+  border-color:rgba(146,206,255,.42)!important;
+  background:linear-gradient(140deg,rgba(44,82,153,.58),rgba(76,49,151,.46))!important;
+  box-shadow:inset 0 1px rgba(255,255,255,.12),0 3px 0 rgba(10,18,66,.7);
+}
+.clue,.status,.outcome,.board-caption{
+  border-color:rgba(84,240,255,.53)!important;
+  background:linear-gradient(120deg,rgba(17,162,204,.22),rgba(117,70,220,.24))!important;
+  color:#f8fbff!important;
+}
+.action,.primary,.again,.reset,.new-game{
+  border:2px solid rgba(255,244,173,.75)!important;
+  background:linear-gradient(135deg,#fff06c 0%,#ffbd35 52%,#ff8437 100%)!important;
+  color:#241545!important;
+  text-shadow:0 1px rgba(255,255,255,.4);
+  box-shadow:0 4px 0 #995228,0 9px 19px rgba(255,153,49,.27),inset 0 1px rgba(255,255,255,.72)!important;
+}
+.action.secondary,.mode,.instructions .secondary{
+  border:2px solid rgba(105,214,255,.6)!important;
+  background:linear-gradient(135deg,rgba(30,105,186,.46),rgba(92,56,167,.58))!important;
+  color:#fff!important;box-shadow:0 3px 0 rgba(15,22,74,.8),inset 0 1px rgba(255,255,255,.12)!important;
+}
+.key,.tile,.cell,.choice,.answer,.mode{
+  border-color:rgba(147,207,255,.55)!important;
+  box-shadow:inset 0 1px rgba(255,255,255,.19),0 4px 0 rgba(9,17,69,.78),0 7px 14px rgba(5,10,42,.24)!important;
+}
+.key,.cell,.choice,.answer,.mode{
+  background:linear-gradient(145deg,rgba(48,91,163,.92),rgba(67,47,143,.94))!important;
+}
+.key:hover:not(:disabled),.cell:hover:enabled,.choice:hover,.answer:hover:not(:disabled),.mode:hover{
+  border-color:var(--kids-yellow)!important;
+  filter:brightness(1.12);
+}
+.key.hit,.answer.correct,.cell.win{
+  border-color:#9aff69!important;
+  background:linear-gradient(145deg,#36c67e,#168c8a)!important;
+  color:#f4ffdc!important;
+}
+.key.miss,.answer.wrong{
+  border-color:#ff78ba!important;
+  background:linear-gradient(145deg,#bf438c,#7f3aab)!important;
+  color:#fff!important;
+}
+/* Ahorcado */
+body.kids-hangman .scene{background:
+  radial-gradient(ellipse at 55% 62%,rgba(255,211,61,.19),transparent 35%),
+  radial-gradient(ellipse at 15% 15%,rgba(84,240,255,.2),transparent 40%),
+  linear-gradient(145deg,#214a91,#38247f)!important}
+.kids-hangman .energy i{box-shadow:0 0 12px rgba(255,226,84,.55)}
+.kids-hangman .word{color:var(--kids-yellow)!important;text-shadow:0 3px 0 #7b5225,0 0 14px rgba(255,226,84,.25)}
+/* Películas */
+body.kids-movie:before{
+  background-image:repeating-linear-gradient(90deg,transparent 0 19px,rgba(255,255,255,.035) 20px 21px),radial-gradient(circle,rgba(255,226,84,.9) 1px,transparent 1.8px),radial-gradient(circle,rgba(255,97,182,.8) 1px,transparent 1.8px)!important;
+  background-size:auto,52px 49px,77px 73px!important;
+}
+.kids-movie .card{border-color:rgba(255,104,192,.62)!important;background:
+  radial-gradient(ellipse at 50% 0,rgba(255,98,188,.2),transparent 46%),
+  linear-gradient(145deg,rgba(49,46,125,.97),rgba(24,24,77,.98))!important}
+.kids-movie .emoji-box{border-color:rgba(255,226,84,.62)!important;background:linear-gradient(145deg,rgba(23,117,190,.44),rgba(106,48,166,.5))!important}
+.kids-movie .pill{color:#fff!important}
+.kids-movie .answer.correct{box-shadow:0 0 0 2px rgba(154,255,105,.35),0 4px 0 #17643f!important}
+/* Palabras desordenadas */
+body.kids-scramble .scene{background:
+  radial-gradient(circle at 50% 50%,rgba(255,226,84,.18),transparent 42%),
+  linear-gradient(145deg,#126caa,#423082)!important}
+.kids-scramble .game{border-color:rgba(255,226,84,.5)!important;background:
+  radial-gradient(ellipse at 95% 5%,rgba(255,97,182,.18),transparent 38%),
+  linear-gradient(145deg,rgba(39,58,130,.98),rgba(28,27,88,.98))!important}
+.kids-scramble .tile{border:2px solid rgba(255,255,255,.58)!important;border-bottom:4px solid #ffbd35!important;color:#fff!important}
+.kids-scramble .tile:nth-child(3n+1){background:linear-gradient(145deg,#ff7b4d,#df477a)!important}
+.kids-scramble .tile:nth-child(3n+2){background:linear-gradient(145deg,#15bbdf,#266cdb)!important}
+.kids-scramble .tile:nth-child(3n){background:linear-gradient(145deg,#9c59ed,#653fca)!important}
+.kids-scramble .tile:disabled{opacity:.42;transform:none!important}
+.kids-scramble .slot{border-bottom-color:var(--kids-yellow)!important;color:#fff!important;text-shadow:0 2px 6px rgba(255,226,84,.4)}
+.kids-scramble .slot.empty{border-bottom-color:#8dd9ff!important;color:#a7c5ff!important}
+/* Ta Te Ti */
+.kids-tateti .turn-pill{border-color:rgba(255,226,84,.7)!important;background:linear-gradient(135deg,#7550d2,#226cb9)!important;color:#fff!important}
+.kids-tateti .cell{border:2px solid rgba(152,204,255,.62)!important}
+.kids-tateti .cell:nth-child(3n+1){background:linear-gradient(145deg,#315bb4,#3a318d)!important}
+.kids-tateti .cell:nth-child(3n+2){background:linear-gradient(145deg,#275d9a,#28428e)!important}
+.kids-tateti .cell:nth-child(3n){background:linear-gradient(145deg,#5841b1,#363386)!important}
+.kids-tateti .cell.x{color:#ffe45f!important;text-shadow:0 2px 0 #a25334,0 0 22px rgba(255,226,84,.65)!important}
+.kids-tateti .cell.o{color:#67f5ff!important;text-shadow:0 2px 0 #21529a,0 0 22px rgba(84,240,255,.65)!important}
+.kids-tateti .cell.win{background:linear-gradient(145deg,#36c67e,#168c8a)!important}
+/* Piedra, papel o tijera */
+.kids-rps .match{background:
+  radial-gradient(ellipse at 50% 28%,rgba(255,97,182,.2),transparent 42%),
+  linear-gradient(145deg,rgba(48,53,137,.98),rgba(35,26,94,.98))!important}
+.kids-rps .fighter-icon{border-color:rgba(255,226,84,.7)!important;background:linear-gradient(145deg,rgba(21,151,207,.5),rgba(115,63,185,.62))!important;box-shadow:inset 0 2px rgba(255,255,255,.2),0 5px 0 rgba(9,15,60,.66),0 0 17px rgba(84,240,255,.15)}
+.kids-rps .choice:nth-child(1){background:linear-gradient(145deg,#287ee4,#5341c8)!important}
+.kids-rps .choice:nth-child(2){background:linear-gradient(145deg,#18a6bf,#1764ad)!important}
+.kids-rps .choice:nth-child(3){background:linear-gradient(145deg,#be4d9b,#6841bc)!important}
+.kids-rps .choice:active{transform:none!important}
+/* Memory Card */
+.kids-memory .card-back{
+  border-color:rgba(255,226,84,.85)!important;
+  background:
+    radial-gradient(circle at 18% 18%,rgba(255,226,84,.28) 0 2px,transparent 3px),
+    radial-gradient(circle at 82% 76%,rgba(84,240,255,.28) 0 2px,transparent 3px),
+    linear-gradient(145deg,#286ed1,#623fc1)!important;
+}
+.kids-memory .card-back:before{border-color:rgba(255,226,84,.76)!important}
+.kids-memory .back-mark{border:2px solid #ffe254!important;background:linear-gradient(145deg,#ffdf4b,#ff9d39)!important;color:#573080!important;box-shadow:0 0 19px rgba(255,226,84,.4)}
+.kids-memory .card-front{border-color:rgba(255,255,255,.55)!important;background:
+  radial-gradient(ellipse at 50% 18%,var(--tint),transparent 68%),
+  linear-gradient(145deg,#266fc1,#4d329d)!important}
+.kids-memory .memory-card.matched .card-front{border:2px solid #aaff69!important;background:linear-gradient(145deg,#36c67e,#168c8a)!important;box-shadow:0 0 23px rgba(154,255,105,.45),inset 0 1px rgba(255,255,255,.24)!important}
+.kids-memory .character-name{color:#fff!important;text-shadow:0 1px 4px #08144d}
+@media(prefers-reduced-motion:reduce){body:before{opacity:.16!important}}
