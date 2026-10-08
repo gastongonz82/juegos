@@ -58,7 +58,7 @@
     const $ = id => document.getElementById(id);
     const lines = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
     const cells = [];
-    const state = { board:Array(9).fill(''), mode:'cpu', over:false, aiThinking:false, scores:loadScores(), round:0 };
+    const state = { board:Array(9).fill(''), mode:'cpu', over:false, aiThinking:false, scores:loadScores(), round:0, level:1, levelMatch:0 };
     function loadScores(){const fresh=()=>({player:0,vladi:0,draw:0});try{const saved=JSON.parse(localStorage.getItem('vladiTaTeTiScores')||'{}');if(saved.cpu&&saved.two)return saved;if(saved.player!==undefined)return {cpu:{player:Number(saved.player)||0,vladi:Number(saved.vladi)||0,draw:Number(saved.draw)||0},two:fresh()}}catch(_){}return {cpu:fresh(),two:fresh()}}
     function saveScores(){try{localStorage.setItem('vladiTaTeTiScores',JSON.stringify(state.scores))}catch(_){}}
     function winner(board=state.board){for(const line of lines){const [a,b,c]=line;if(board[a]&&board[a]===board[b]&&board[a]===board[c])return {mark:board[a],line}}return null}
@@ -82,7 +82,7 @@
       if(result==='X'){scores.player++;$('status').className='status good';$('status').innerHTML='¡GANASTE!<small>¡Tres en línea! Muy buena jugada.</small>'; $('caption').textContent='¡Punto para vos! ¿Jugamos otra?';window.VladiSound?.play('goal');}
       else if(result==='O'){scores.vladi++;$('status').className='status bad';$('status').innerHTML=state.mode==='cpu'?'¡ESTA VEZ GANÓ VLADI!<small>¡La próxima podés ganar vos!</small>':'¡GANÓ EL JUGADOR O!<small>¡Muy buena partida!</small>'; $('caption').textContent='¡A no rendirse! Hay revancha.';window.VladiSound?.play('wrong');}
       else{scores.draw++;$('status').className='status';$('status').innerHTML='¡EMPATE!<small>¡Qué partida tan pareja!</small>'; $('caption').textContent='Nadie ganó esta vez. ¡Otra ronda!';window.VladiSound?.play('collect');}
-      saveScores();say('✓','PARTIDA TERMINADA');render();
+      state.levelMatch++;if(state.levelMatch>=10){$('status').className='status good';$('status').innerHTML='¡NIVEL '+state.level+' COMPLETADO!<small>¡Ganaste 10 partidas!</small>';$('caption').textContent='¡Muy bien! Continuá al nivel '+(state.level+1)+'.';$('newGame').textContent='CONTINUAR AL NIVEL '+(state.level+1)+' ➜'}else{$('caption').textContent='NIVEL '+state.level+' · PARTIDA '+(state.levelMatch+1)+' DE 10 · '+$('caption').textContent}$('newGame').textContent=state.levelMatch>=10?'CONTINUAR AL NIVEL '+(state.level+1)+' ➜':'NUEVA PARTIDA →';saveScores();say('✓','PARTIDA TERMINADA');render();
     }
     function cpuMove(){
       state.timer=null;
@@ -103,7 +103,7 @@
       if(state.mode==='cpu'){state.aiThinking=true;$('status').className='status';$('status').innerHTML='VLADI ESTÁ PENSANDO…<small>¿Qué jugará ahora?</small>';say('O','JUEGA VLADI');render();state.timer=window.setTimeout(cpuMove,430)}
       else{const next=currentMark();$('status').className='status';$('status').innerHTML=next==='X'?'¡TURNO DEL JUGADOR X!<small>Elegí un casillero vacío.</small>':'¡TURNO DEL JUGADOR O!<small>Elegí un casillero vacío.</small>';say(next,'ES EL TURNO');render()}
     }
-    function reset(playSound=true){window.clearTimeout(state.timer);state.timer=null;state.board=Array(9).fill('');state.over=false;state.aiThinking=false;state.round=0;$('status').className='status';$('status').innerHTML='¡TU TURNO!<small>Elegí un casillero vacío.</small>'; $('caption').textContent='¡Hacé tres en línea para ganar!';$('helper').textContent=state.mode==='cpu'?'Tocá un casillero para poner tu X. ¡Quien consiga tres en línea gana!':'Los jugadores alternan X y O. ¡Quien consiga tres en línea gana!';say('X','ES TU TURNO');render();if(playSound)window.VladiSound?.play('start')}
+    function reset(playSound=true){if(state.levelMatch>=10){state.level++;state.levelMatch=0}window.clearTimeout(state.timer);state.timer=null;state.board=Array(9).fill('');state.over=false;state.aiThinking=false;state.round=0;$('status').className='status';$('status').innerHTML='¡TU TURNO!<small>Elegí un casillero vacío.</small>'; $('caption').textContent='NIVEL '+state.level+' · PARTIDA '+(state.levelMatch+1)+' DE 10 · ¡Hacé tres en línea para ganar!';$('helper').textContent=state.mode==='cpu'?'Tocá un casillero para poner tu X. ¡Quien consiga tres en línea gana!':'Los jugadores alternan X y O. ¡Quien consiga tres en línea gana!';say('X','ES TU TURNO');render();if(playSound)window.VladiSound?.play('start')}
     for(let i=0;i<9;i++){const b=document.createElement('button');b.type='button';b.className='cell';b.addEventListener('click',()=>play(i));$('board').append(b);cells.push(b)}
     document.querySelectorAll('.mode').forEach(button=>button.addEventListener('click',()=>{if(button.getAttribute('aria-pressed')==='true')return;document.querySelectorAll('.mode').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));state.mode=button.dataset.mode;reset();$('status').innerHTML=state.mode==='cpu'?'¡TU TURNO!<small>Elegí un casillero vacío.</small>':'¡TURNO DEL JUGADOR X!<small>Elegí un casillero vacío.</small>'}));
     $('newGame').addEventListener('click',()=>reset(true));
