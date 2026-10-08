@@ -29,6 +29,32 @@
     @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
   </style>
   <link rel="stylesheet" href="../desafios-kids.css?v=20261008-2">
+  <style>
+    /* Compacta el desafío en móviles bajos sin ocultar controles ni cambiar la lógica. */
+    @media(max-width:760px) and (max-height:850px){
+      .top{height:42px}
+      main{padding:8px 0 8px}
+      .heading{margin-bottom:7px}
+      .heading h1{margin:3px 0;font-size:clamp(27px,8vw,36px)}
+      .heading p{font-size:11px;line-height:1.15}
+      .scene{min-height:126px;padding:8px 12px}
+      .layout{gap:7px}
+      .game{padding:9px}
+      .topline{margin-bottom:5px}
+      .progress{height:6px;margin-bottom:7px}
+      .clue{padding:7px 9px}
+      .clue small{font-size:9px}
+      .clue p{margin-top:3px;font-size:11px;line-height:1.2}
+      .section-label{margin:7px 0 4px;font-size:8px}
+      .tiles{min-height:42px;gap:4px}
+      .tile{width:34px;height:36px;border-radius:9px;font-size:19px}
+      .slots{min-height:40px;gap:3px}
+      .slot{width:27px;height:32px;font-size:17px}
+      .message{min-height:18px;margin:2px 0 4px;font-size:10px}
+      .btn{min-height:37px;padding:0 8px;font-size:10px}
+      .btn.main{font-size:12px}
+    }
+  </style>
 </head>
 <body class="kids-scramble">
   <header class="shell top"><a class="back" href="../">← VOLVER AL ARCADE</a><button class="sound-toggle" id="soundToggle" data-sound-toggle type="button" aria-label="Silenciar sonidos">🔊</button></header>
