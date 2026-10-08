@@ -88,7 +88,7 @@ main{padding:18px 0 30px}
 <div class="mascot" aria-hidden="true">🐾</div>
 <h2>¿QUIÉN SE ESCONDE?</h2>
 <p>Leé la pista o tocá <strong>ESCUCHAR PISTA</strong>. Hay 42 animales únicos en cada partida y las preguntas se vuelven más desafiantes.</p>
-<div class="feature-row"><span class="feature">🐮 42 ANIMALES</span><span class="feature">🔊 PISTAS HABLADAS</span><span class="feature">⭐ RÉCORD GUARDADO</span></div>
+<div class="feature-row"><span class="feature">🐮 100 ANIMALES</span><span class="feature">🔊 PISTAS HABLADAS</span><span class="feature">⭐ RÉCORD GUARDADO</span></div>
 <button class="action" id="startButton" type="button">EMPEZAR A JUGAR →</button>
 </div>
 <div class="play" id="play">
@@ -162,10 +162,69 @@ const ANIMALS=[
 {id:'camello',name:'CAMELLO',emoji:'🐫',area:'DESIERTO',hint:'PUEDE PASAR MUCHO TIEMPO SIN TOMAR AGUA.',level:3},
 {id:'lobo',name:'LOBO',emoji:'🐺',area:'BOSQUE',hint:'VIVE EN GRUPO Y SE PARECE A UN PERRO SALVAJE.',level:3},
 {id:'colibri',name:'COLIBRÍ',emoji:'🐦',area:'JARDÍN',hint:'ES UN AVE MUY PEQUEÑA QUE PUEDE QUEDARSE QUIETA EN EL AIRE.',level:3}
+,
+{id:"hamster",name:"HAMSTER",emoji:"🐹",area:"HOGAR",hint:"ES PEQUEÑO, TIENE BIGOTES Y PUEDE CORRER EN UNA RUEDA.",level:1},
+{id:"raton",name:"RATÓN",emoji:"🐭",area:"HOGAR",hint:"ES MUY PEQUEÑO Y TIENE UNA COLA LARGA.",level:1},
+{id:"rata",name:"RATA",emoji:"🐀",area:"CIUDAD",hint:"ES UN ROEDOR QUE SUELE VIVIR CERCA DE LAS PERSONAS.",level:1},
+{id:"ganso",name:"GANSO",emoji:"🪿",area:"LAGUNA",hint:"ES UN AVE QUE NADA Y TIENE UN PICO ANARANJADO.",level:1},
+{id:"gallo",name:"GALLO",emoji:"🐓",area:"GRANJA",hint:"CANTA MUY TEMPRANO CUANDO AMANECE.",level:1},
+{id:"pavo",name:"PAVO",emoji:"🦃",area:"GRANJA",hint:"ES UN AVE GRANDE QUE TIENE UNA COLA DE PLUMAS.",level:1},
+{id:"llama",name:"LLAMA",emoji:"🦙",area:"MONTAÑA",hint:"TIENE LANA Y VIVE EN ZONAS DE MONTAÑA.",level:1},
+{id:"burro",name:"BURRO",emoji:"🫏",area:"GRANJA",hint:"SE PARECE AL CABALLO Y TIENE OREJAS LARGAS.",level:1},
+{id:"caracol",name:"CARACOL",emoji:"🐌",area:"JARDÍN",hint:"LLEVA UNA CONCHA Y SE MUEVE MUY DESPACIO.",level:1},
+{id:"hormiga",name:"HORMIGA",emoji:"🐜",area:"JARDÍN",hint:"ES UN INSECTO PEQUEÑO QUE CAMINA EN FILA.",level:1},
+{id:"mariquita",name:"MARIQUITA",emoji:"🐞",area:"JARDÍN",hint:"ES UN INSECTO ROJO CON PUNTITOS NEGROS.",level:1},
+{id:"mosca",name:"MOSCA",emoji:"🪰",area:"HOGAR",hint:"ES UN INSECTO QUE VUELA Y HACE ZUMBIDOS.",level:1},
+{id:"mosquito",name:"MOSQUITO",emoji:"🦟",area:"LAGUNA",hint:"ES UN INSECTO VOLADOR QUE PICA.",level:1},
+{id:"gusano",name:"GUSANO",emoji:"🪱",area:"TIERRA",hint:"NO TIENE PATAS Y SE DESLIZA POR LA TIERRA.",level:1},
+{id:"pez",name:"PEZ",emoji:"🐟",area:"RÍO",hint:"VIVE BAJO EL AGUA Y RESPIRA CON BRANQUIAS.",level:1},
+{id:"pez_globo",name:"PEZ GLOBO",emoji:"🐡",area:"OCÉANO",hint:"ES UN PEZ QUE PUEDE INFLARSE CUANDO SE ASUSTA.",level:1},
+{id:"cangrejo",name:"CANGREJO",emoji:"🦀",area:"PLAYA",hint:"CAMINA DE COSTADO Y TIENE DOS PINZAS.",level:1},
+{id:"camaron",name:"CAMARÓN",emoji:"🦐",area:"OCÉANO",hint:"ES PEQUEÑO, VIVE EN EL AGUA Y TIENE CAPARAZÓN.",level:1},
+{id:"langosta",name:"LANGOSTA",emoji:"🦞",area:"OCÉANO",hint:"VIVE EN EL MAR Y TIENE GRANDES PINZAS.",level:1},
+{id:"medusa",name:"MEDUSA",emoji:"🪼",area:"OCÉANO",hint:"FLOTA EN EL MAR Y TIENE TENTÁCULOS.",level:1},
+{id:"gorila",name:"GORILA",emoji:"🦍",area:"SELVA",hint:"ES UN SIMIO MUY FUERTE QUE VIVE EN GRUPO.",level:2},
+{id:"orangutan",name:"ORANGUTÁN",emoji:"🦧",area:"SELVA",hint:"ES UN SIMIO DE PELO ANARANJADO QUE VIVE EN LOS ÁRBOLES.",level:2},
+{id:"hipopotamo",name:"HIPOPÓTAMO",emoji:"🦛",area:"RÍO",hint:"PASA MUCHO TIEMPO EN EL AGUA Y TIENE UNA BOCA ENORME.",level:2},
+{id:"rinoceronte",name:"RINOCERONTE",emoji:"🦏",area:"SABANA",hint:"TIENE UNO O DOS CUERNOS SOBRE LA NARIZ.",level:2},
+{id:"mapache",name:"MAPACHE",emoji:"🦝",area:"BOSQUE",hint:"TIENE UNA MANCHA OSCURA ALREDEDOR DE LOS OJOS.",level:2},
+{id:"castor",name:"CASTOR",emoji:"🦫",area:"RÍO",hint:"ROE TRONCOS Y CONSTRUYE REPRESAS EN EL AGUA.",level:2},
+{id:"aguila",name:"ÁGUILA",emoji:"🦅",area:"MONTAÑA",hint:"ES UN AVE RAPAZ QUE VUELA MUY ALTO.",level:2},
+{id:"loro",name:"LORO",emoji:"🦜",area:"SELVA",hint:"ES UN AVE COLORIDA QUE PUEDE IMITAR SONIDOS.",level:2},
+{id:"cisne",name:"CISNE",emoji:"🦢",area:"LAGUNA",hint:"ES UN AVE BLANCA QUE NADA CON ELEGANCIA.",level:2},
+{id:"pavo_real",name:"PAVO REAL",emoji:"🦚",area:"SELVA",hint:"ABRE SU GRAN COLA LLENA DE COLORES.",level:2},
+{id:"murcielago",name:"MURCIÉLAGO",emoji:"🦇",area:"CUEVA",hint:"ES UN MAMÍFERO QUE VUELA Y SALE DE NOCHE.",level:2},
+{id:"ardilla",name:"ARDILLA",emoji:"🐿️",area:"BOSQUE",hint:"SUBE A LOS ÁRBOLES Y GUARDA NUECES.",level:2},
+{id:"dromedario",name:"DROMEDARIO",emoji:"🐪",area:"DESIERTO",hint:"ES UN CAMELLO QUE TIENE UNA SOLA JOROBA.",level:2},
+{id:"oso_polar",name:"OSO POLAR",emoji:"🐻‍❄️",area:"HIELO",hint:"TIENE EL PELO BLANCO Y VIVE EN LUGARES MUY FRÍOS.",level:2},
+{id:"bisonte",name:"BISONTE",emoji:"🦬",area:"PRADERA",hint:"ES GRANDE, TIENE MUCHO PELO Y PARECE UN TORO SALVAJE.",level:2},
+{id:"bufalo",name:"BÚFALO",emoji:"🐃",area:"SABANA",hint:"ES UN ANIMAL GRANDE CON CUERNOS CURVOS.",level:2},
+{id:"leopardo",name:"LEOPARDO",emoji:"🐆",area:"SABANA",hint:"ES UN FELINO CON MANCHAS QUE TREPA A LOS ÁRBOLES.",level:2},
+{id:"jabali",name:"JABALÍ",emoji:"🐗",area:"BOSQUE",hint:"ES PARECIDO AL CERDO Y TIENE COLMILLOS.",level:2},
+{id:"nutria",name:"NUTRIA",emoji:"🦦",area:"RÍO",hint:"NADA MUY BIEN Y PUEDE FLOTAR BOCA ARRIBA.",level:2},
+{id:"alce",name:"ALCE",emoji:"🫎",area:"BOSQUE",hint:"TIENE ASTAS GRANDES Y VIVE EN LUGARES FRÍOS.",level:3},
+{id:"yak",name:"YAK",emoji:"🐂",area:"MONTAÑA",hint:"ES UN BOVINO PELUDO QUE VIVE EN MONTAÑAS ALTAS.",level:3},
+{id:"anaconda",name:"ANACONDA",emoji:"🐍",area:"SELVA",hint:"ES UNA SERPIENTE MUY GRANDE QUE VIVE CERCA DEL AGUA.",level:3},
+{id:"iguana",name:"IGUANA",emoji:"🦎",area:"SELVA",hint:"ES UN REPTIL CON ESCAMAS QUE TOMA SOL SOBRE LAS ROCAS.",level:3},
+{id:"salamandra",name:"SALAMANDRA",emoji:"🦎",area:"BOSQUE",hint:"ES UN ANFIBIO DE CUERPO LARGO Y PIEL HÚMEDA.",level:3},
+{id:"tarantula",name:"TARÁNTULA",emoji:"🕷️",area:"SELVA",hint:"ES UNA ARAÑA GRANDE Y PELUDA.",level:3},
+{id:"escorpion",name:"ESCORPIÓN",emoji:"🦂",area:"DESIERTO",hint:"TIENE PINZAS Y UNA COLA CURVADA CON AGUIJÓN.",level:3},
+{id:"tucan",name:"TUCÁN",emoji:"🦜",area:"SELVA",hint:"ES UN AVE TROPICAL CON UN PICO MUY GRANDE.",level:3},
+{id:"orca",name:"ORCA",emoji:"🐋",area:"OCÉANO",hint:"ES UN CETÁCEO BLANCO Y NEGRO QUE VIVE EN GRUPO.",level:3},
+{id:"ornitorrinco",name:"ORNITORRINCO",emoji:"🦆",area:"RÍO",hint:"ES UN MAMÍFERO QUE PONE HUEVOS Y TIENE PICO DE PATO.",level:3},
+{id:"tapir",name:"TAPIR",emoji:"🐘",area:"SELVA",hint:"ES UN MAMÍFERO CON UNA NARIZ CORTA Y FLEXIBLE.",level:3},
+{id:"lince",name:"LINCE",emoji:"🐈",area:"BOSQUE",hint:"ES UN FELINO SALVAJE CON OREJAS TERMINADAS EN PUNTAS.",level:3},
+{id:"puma",name:"PUMA",emoji:"🐈",area:"MONTAÑA",hint:"ES UN FELINO GRANDE QUE VIVE EN AMÉRICA.",level:3},
+{id:"buitre",name:"BUITRE",emoji:"🦅",area:"MONTAÑA",hint:"ES UN AVE QUE PLANEA Y BUSCA ANIMALES MUERTOS.",level:3},
+{id:"antilope",name:"ANTÍLOPE",emoji:"🦌",area:"SABANA",hint:"ES MUY VELOZ Y TIENE CUERNOS FINOS.",level:3},
+{id:"armadillo",name:"ARMADILLO",emoji:"🦔",area:"PRADERA",hint:"TIENE UNA CORAZA Y PUEDE ENROLLARSE PARA PROTEGERSE.",level:3},
+{id:"nandu",name:"ÑANDÚ",emoji:"🪶",area:"PRADERA",hint:"ES UN AVE GRANDE QUE CORRE RÁPIDO Y NO VUELA.",level:3},
+{id:"ciguena",name:"CIGÜEÑA",emoji:"🪽",area:"LAGUNA",hint:"ES UN AVE ALTA DE PATAS LARGAS Y PICO LARGO.",level:3},
+{id:"foca_leopardo",name:"FOCA LEOPARDO",emoji:"🦭",area:"HIELO",hint:"ES UNA FOCA GRANDE CON MANCHAS QUE NADA EN EL MAR FRÍO.",level:3}
 ];
 const $=id=>document.getElementById(id);
 const state={round:0,score:0,correct:0,deck:[],current:null,locked:false,best:0};
-try{state.best=Number(localStorage.getItem('vladiAnimalsBest')||0)||0}catch(_){}
+try{state.best=Number(localStorage.getItem('vladiAnimalsBest100')||0)||0}catch(_){}
 function shuffle(items){const list=[...items];for(let i=list.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[list[i],list[j]]=[list[j],list[i]]}return list}
 function playTone(name){try{if(window.VladiSound&&typeof window.VladiSound.play==='function')window.VladiSound.play(name)}catch(_){}}
 function updateStats(){
@@ -227,7 +286,7 @@ function answer(id,button){
 function finishGame(){
  $('play').classList.remove('active');
  const previous=state.best;
- if(state.correct>state.best){state.best=state.correct;try{localStorage.setItem('vladiAnimalsBest',String(state.best))}catch(_){}}
+ if(state.correct>state.best){state.best=state.correct;try{localStorage.setItem('vladiAnimalsBest100',String(state.best))}catch(_){}}
  $('resultTitle').textContent=state.correct>=state.deck.length*.8?'¡SOS UN EXPERTO!':state.correct>=state.deck.length*.5?'¡GRAN TRABAJO!':'¡A SEGUIR JUGANDO!';
  $('resultText').innerHTML='ACERTASTE <strong>'+state.correct+' DE '+state.deck.length+'</strong> Y SUMASTE <strong>'+state.score+' PUNTOS</strong>.';
  $('bestText').textContent=state.best?'TU RÉCORD: '+state.best+' / '+state.deck.length+(state.correct>previous?' · ¡NUEVO RÉCORD!':''):'';
