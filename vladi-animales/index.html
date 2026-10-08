@@ -87,13 +87,13 @@ main{padding:18px 0 30px}
 <div class="intro" id="intro">
 <div class="mascot" aria-hidden="true">🐾</div>
 <h2>¿QUIÉN SE ESCONDE?</h2>
-<p>Leé la pista o tocá <strong>ESCUCHAR PISTA</strong>. Hay 10 animales en cada partida y las preguntas se vuelven más desafiantes.</p>
+<p>Leé la pista o tocá <strong>ESCUCHAR PISTA</strong>. Hay 42 animales únicos en cada partida y las preguntas se vuelven más desafiantes.</p>
 <div class="feature-row"><span class="feature">🐮 42 ANIMALES</span><span class="feature">🔊 PISTAS HABLADAS</span><span class="feature">⭐ RÉCORD GUARDADO</span></div>
 <button class="action" id="startButton" type="button">EMPEZAR A JUGAR →</button>
 </div>
 <div class="play" id="play">
 <div class="stats" aria-label="Marcador">
-<div class="stat"><small>ANIMAL</small><strong id="round">1 / 10</strong></div>
+<div class="stat"><small>ANIMAL</small><strong id="round">1 / 42</strong></div>
 <div class="stat"><small>PUNTOS</small><strong id="score">0</strong></div>
 <div class="stat"><small>RÉCORD</small><strong id="best">—</strong></div>
 </div>
@@ -169,24 +169,24 @@ try{state.best=Number(localStorage.getItem('vladiAnimalsBest')||0)||0}catch(_){}
 function shuffle(items){const list=[...items];for(let i=list.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[list[i],list[j]]=[list[j],list[i]]}return list}
 function playTone(name){try{if(window.VladiSound&&typeof window.VladiSound.play==='function')window.VladiSound.play(name)}catch(_){}}
 function updateStats(){
- $('round').textContent=(state.round+1)+' / 10';
+ $('round').textContent=(state.round+1)+' / '+state.deck.length;
  $('score').textContent=state.score;
- $('best').textContent=state.best?state.best+' / 10':'—';
- $('progress').style.width=(state.round*10)+'%';
+ $('best').textContent=state.best?state.best+' / '+state.deck.length:'—';
+ $('progress').style.width=(state.round/state.deck.length*100)+'%';
 }
 function startGame(){
  state.round=0;state.score=0;state.correct=0;state.locked=false;
- state.deck=[...shuffle(ANIMALS.filter(a=>a.level===1)).slice(0,3),...shuffle(ANIMALS.filter(a=>a.level===2)).slice(0,4),...shuffle(ANIMALS.filter(a=>a.level===3)).slice(0,3)];
+ state.deck=[...shuffle(ANIMALS.filter(a=>a.level===1)),...shuffle(ANIMALS.filter(a=>a.level===2)),...shuffle(ANIMALS.filter(a=>a.level===3))];
  $('intro').style.display='none';$('result').classList.remove('active');$('play').classList.add('active');
  showQuestion();
 }
 function showQuestion(){
- if(state.round>=10){finishGame();return}
+ if(state.round>=state.deck.length){finishGame();return}
  state.current=state.deck[state.round];
- $('round').textContent=(state.round+1)+' / 10';
+ $('round').textContent=(state.round+1)+' / '+state.deck.length;
  $('score').textContent=state.score;
- $('best').textContent=state.best?state.best+' / 10':'—';
- $('progress').style.width=(state.round*10)+'%';
+ $('best').textContent=state.best?state.best+' / '+state.deck.length:'—';
+ $('progress').style.width=(state.round/state.deck.length*100)+'%';
  $('category').textContent='PISTA · '+state.current.area;
  $('hint').textContent=state.current.hint;
  $('feedback').textContent='';$('feedback').className='feedback';
@@ -220,7 +220,7 @@ function answer(id,button){
  if(ok){state.score+=100;state.correct++;button.classList.add('correct');$('feedback').textContent='¡MUY BIEN! '+state.current.emoji+' +100';$('feedback').className='feedback ok';playTone('correct')}
  else{$('feedback').textContent='CASI. ERA: '+state.current.emoji+' '+state.current.name;$('feedback').className='feedback no';button.classList.add('wrong');playTone('wrong')}
  $('score').textContent=state.score;
- $('progress').style.width=((state.round+1)*10)+'%';
+ $('progress').style.width=((state.round+1)/state.deck.length*100)+'%';
  if(window.speechSynthesis)window.speechSynthesis.cancel();
  window.setTimeout(()=>{state.round++;state.locked=false;showQuestion()},1150);
 }
@@ -228,9 +228,9 @@ function finishGame(){
  $('play').classList.remove('active');
  const previous=state.best;
  if(state.correct>state.best){state.best=state.correct;try{localStorage.setItem('vladiAnimalsBest',String(state.best))}catch(_){}}
- $('resultTitle').textContent=state.correct>=8?'¡SOS UN EXPERTO!':state.correct>=5?'¡GRAN TRABAJO!':'¡A SEGUIR JUGANDO!';
- $('resultText').innerHTML='ACERTASTE <strong>'+state.correct+' DE 10</strong> Y SUMASTE <strong>'+state.score+' PUNTOS</strong>.';
- $('bestText').textContent=state.best?'TU RÉCORD: '+state.best+' / 10'+(state.correct>previous?' · ¡NUEVO RÉCORD!':''):'';
+ $('resultTitle').textContent=state.correct>=state.deck.length*.8?'¡SOS UN EXPERTO!':state.correct>=state.deck.length*.5?'¡GRAN TRABAJO!':'¡A SEGUIR JUGANDO!';
+ $('resultText').innerHTML='ACERTASTE <strong>'+state.correct+' DE '+state.deck.length+'</strong> Y SUMASTE <strong>'+state.score+' PUNTOS</strong>.';
+ $('bestText').textContent=state.best?'TU RÉCORD: '+state.best+' / '+state.deck.length+(state.correct>previous?' · ¡NUEVO RÉCORD!':''):'';
  $('result').classList.add('active');playTone('save');
 }
 $('startButton').addEventListener('click',startGame);
