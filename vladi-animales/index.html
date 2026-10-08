@@ -87,13 +87,13 @@ main{padding:18px 0 30px}
 <div class="intro" id="intro">
 <div class="mascot" aria-hidden="true">🐾</div>
 <h2>¿QUIÉN SE ESCONDE?</h2>
-<p>Leé la pista o tocá <strong>ESCUCHAR PISTA</strong>. Hay 42 animales únicos en cada partida y las preguntas se vuelven más desafiantes.</p>
+<p>Leé la pista o tocá <strong>ESCUCHAR PISTA</strong>. Hay 100 animales únicos en cada partida y las preguntas se vuelven más desafiantes.</p>
 <div class="feature-row"><span class="feature">🐮 100 ANIMALES</span><span class="feature">🔊 PISTAS HABLADAS</span><span class="feature">⭐ RÉCORD GUARDADO</span></div>
 <button class="action" id="startButton" type="button">EMPEZAR A JUGAR →</button>
 </div>
 <div class="play" id="play">
 <div class="stats" aria-label="Marcador">
-<div class="stat"><small>ANIMAL</small><strong id="round">1 / 42</strong></div>
+<div class="stat"><small>ANIMAL</small><strong id="round">1 / 100</strong></div>
 <div class="stat"><small>PUNTOS</small><strong id="score">0</strong></div>
 <div class="stat"><small>RÉCORD</small><strong id="best">—</strong></div>
 </div>
@@ -204,9 +204,9 @@ const ANIMALS=[
 {id:"nutria",name:"NUTRIA",emoji:"🦦",area:"RÍO",hint:"NADA MUY BIEN Y PUEDE FLOTAR BOCA ARRIBA.",level:2},
 {id:"alce",name:"ALCE",emoji:"🫎",area:"BOSQUE",hint:"TIENE ASTAS GRANDES Y VIVE EN LUGARES FRÍOS.",level:3},
 {id:"yak",name:"YAK",emoji:"🐂",area:"MONTAÑA",hint:"ES UN BOVINO PELUDO QUE VIVE EN MONTAÑAS ALTAS.",level:3},
-{id:"anaconda",name:"ANACONDA",emoji:"🐍",area:"SELVA",hint:"ES UNA SERPIENTE MUY GRANDE QUE VIVE CERCA DEL AGUA.",level:3},
+{id:"anaconda",name:"ANACONDA",emoji:"🐍",area:"SELVA",hint:"ES UNA SERPIENTE MUY GRANDE QUE VIVE CERCA DEL AGUA.",level:2},
 {id:"iguana",name:"IGUANA",emoji:"🦎",area:"SELVA",hint:"ES UN REPTIL CON ESCAMAS QUE TOMA SOL SOBRE LAS ROCAS.",level:3},
-{id:"salamandra",name:"SALAMANDRA",emoji:"🦎",area:"BOSQUE",hint:"ES UN ANFIBIO DE CUERPO LARGO Y PIEL HÚMEDA.",level:3},
+{id:"salamandra",name:"SALAMANDRA",emoji:"🐸",area:"BOSQUE",hint:"ES UN ANFIBIO DE CUERPO LARGO Y PIEL HÚMEDA.",level:3},
 {id:"tarantula",name:"TARÁNTULA",emoji:"🕷️",area:"SELVA",hint:"ES UNA ARAÑA GRANDE Y PELUDA.",level:3},
 {id:"escorpion",name:"ESCORPIÓN",emoji:"🦂",area:"DESIERTO",hint:"TIENE PINZAS Y UNA COLA CURVADA CON AGUIJÓN.",level:3},
 {id:"tucan",name:"TUCÁN",emoji:"🦜",area:"SELVA",hint:"ES UN AVE TROPICAL CON UN PICO MUY GRANDE.",level:3},
@@ -214,17 +214,17 @@ const ANIMALS=[
 {id:"ornitorrinco",name:"ORNITORRINCO",emoji:"🦆",area:"RÍO",hint:"ES UN MAMÍFERO QUE PONE HUEVOS Y TIENE PICO DE PATO.",level:3},
 {id:"tapir",name:"TAPIR",emoji:"🐘",area:"SELVA",hint:"ES UN MAMÍFERO CON UNA NARIZ CORTA Y FLEXIBLE.",level:3},
 {id:"lince",name:"LINCE",emoji:"🐈",area:"BOSQUE",hint:"ES UN FELINO SALVAJE CON OREJAS TERMINADAS EN PUNTAS.",level:3},
-{id:"puma",name:"PUMA",emoji:"🐈",area:"MONTAÑA",hint:"ES UN FELINO GRANDE QUE VIVE EN AMÉRICA.",level:3},
+{id:"puma",name:"PUMA",emoji:"🐆",area:"MONTAÑA",hint:"ES UN FELINO GRANDE QUE VIVE EN AMÉRICA.",level:3},
 {id:"buitre",name:"BUITRE",emoji:"🦅",area:"MONTAÑA",hint:"ES UN AVE QUE PLANEA Y BUSCA ANIMALES MUERTOS.",level:3},
 {id:"antilope",name:"ANTÍLOPE",emoji:"🦌",area:"SABANA",hint:"ES MUY VELOZ Y TIENE CUERNOS FINOS.",level:3},
-{id:"armadillo",name:"ARMADILLO",emoji:"🦔",area:"PRADERA",hint:"TIENE UNA CORAZA Y PUEDE ENROLLARSE PARA PROTEGERSE.",level:3},
-{id:"nandu",name:"ÑANDÚ",emoji:"🪶",area:"PRADERA",hint:"ES UN AVE GRANDE QUE CORRE RÁPIDO Y NO VUELA.",level:3},
+{id:"armadillo",name:"ARMADILLO",emoji:"🛡️",area:"PRADERA",hint:"TIENE UNA CORAZA Y PUEDE ENROLLARSE PARA PROTEGERSE.",level:3},
+{id:"nandu",name:"ÑANDÚ",emoji:"🐦‍⬛",area:"PRADERA",hint:"ES UN AVE GRANDE QUE CORRE RÁPIDO Y NO VUELA.",level:3},
 {id:"ciguena",name:"CIGÜEÑA",emoji:"🪽",area:"LAGUNA",hint:"ES UN AVE ALTA DE PATAS LARGAS Y PICO LARGO.",level:3},
-{id:"foca_leopardo",name:"FOCA LEOPARDO",emoji:"🦭",area:"HIELO",hint:"ES UNA FOCA GRANDE CON MANCHAS QUE NADA EN EL MAR FRÍO.",level:3}
+{id:"foca_leopardo",name:"FOCA LEOPARDO",emoji:"🐬",area:"HIELO",hint:"ES UNA FOCA GRANDE CON MANCHAS QUE NADA EN EL MAR FRÍO.",level:3}
 ];
 const $=id=>document.getElementById(id);
 const state={round:0,score:0,correct:0,deck:[],current:null,locked:false,best:0};
-try{state.best=Number(localStorage.getItem('vladiAnimalsBest100')||0)||0}catch(_){}
+try{state.best=Number(localStorage.getItem('vladiAnimalsBest100Rounds')||0)||0}catch(_){}
 function shuffle(items){const list=[...items];for(let i=list.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[list[i],list[j]]=[list[j],list[i]]}return list}
 function playTone(name){try{if(window.VladiSound&&typeof window.VladiSound.play==='function')window.VladiSound.play(name)}catch(_){}}
 function updateStats(){
@@ -286,7 +286,7 @@ function answer(id,button){
 function finishGame(){
  $('play').classList.remove('active');
  const previous=state.best;
- if(state.correct>state.best){state.best=state.correct;try{localStorage.setItem('vladiAnimalsBest100',String(state.best))}catch(_){}}
+ if(state.correct>state.best){state.best=state.correct;try{localStorage.setItem('vladiAnimalsBest100Rounds',String(state.best))}catch(_){}}
  $('resultTitle').textContent=state.correct>=state.deck.length*.8?'¡SOS UN EXPERTO!':state.correct>=state.deck.length*.5?'¡GRAN TRABAJO!':'¡A SEGUIR JUGANDO!';
  $('resultText').innerHTML='ACERTASTE <strong>'+state.correct+' DE '+state.deck.length+'</strong> Y SUMASTE <strong>'+state.score+' PUNTOS</strong>.';
  $('bestText').textContent=state.best?'TU RÉCORD: '+state.best+' / '+state.deck.length+(state.correct>previous?' · ¡NUEVO RÉCORD!':''):'';
