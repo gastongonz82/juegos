@@ -70,80 +70,6 @@
 .arcadeAll:after{top:-20px!important;right:4px!important;font-size:32px!important;z-index:0!important;opacity:.9}
 .arcadeBtn{position:relative!important;z-index:2!important}
 }
-/* Transiciones visuales entre secciones: sin alterar contenido */
-@media(min-width:801px){
-.hero,.arcadeSection,.videos,#sobre,#taekwondo,#cosplay,.followSection{position:relative}
-.hero{z-index:7}.arcadeSection{z-index:6}.videos{z-index:5}#sobre{z-index:4}#taekwondo{z-index:3}#cosplay{z-index:2}.followSection{z-index:1}
-.hero{clip-path:polygon(0 0,100% 0,100% 96%,83% 98.5%,64% 96.5%,45% 99.5%,24% 96.5%,0 99%);margin-bottom:-18px;padding-bottom:18px}
-.arcadeSection{clip-path:polygon(0 0,100% 0,100% 97%,76% 99.5%,52% 96.8%,27% 99.2%,0 97%);margin-bottom:-16px;padding-bottom:80px}
-.videos{clip-path:polygon(0 0,100% 0,100% 96.5%,82% 99%,61% 97%,39% 99.4%,18% 96.8%,0 99%);margin-bottom:-18px;padding-bottom:108px!important}
-#sobre{clip-path:polygon(0 0,100% 1.8%,100% 98%,72% 100%,43% 97.5%,18% 99.5%,0 97.8%);margin-bottom:-12px;padding-top:18px!important;padding-bottom:48px!important}
-#taekwondo{clip-path:polygon(0 1.8%,26% 0,53% 2.2%,78% .4%,100% 2%,100% 98%,75% 100%,48% 97.8%,23% 99.6%,0 98%);margin-bottom:-12px;padding-top:18px!important;padding-bottom:48px!important}
-#cosplay{clip-path:polygon(0 1.5%,22% 0,48% 2%,73% .3%,100% 1.8%,100% 98.5%,78% 100%,54% 98%,28% 99.7%,0 98.2%);margin-bottom:-14px;padding-top:18px!important;padding-bottom:28px!important}
-.followSection{clip-path:polygon(0 0,24% 1.8%,50% .2%,75% 2%,100% .4%,100% 100%,0 100%);padding-top:88px!important;margin-top:-14px}
-}
-@media(max-width:800px){
-.hero,.arcadeSection,.videos,#sobre,#taekwondo,#cosplay,.followSection{position:relative}
-.arcadeSection{clip-path:polygon(0 0,100% 0,100% 99%,72% 100%,45% 98.8%,20% 100%,0 99.2%);padding-bottom:72px!important;margin-bottom:-9px}
-.videos{clip-path:polygon(0 0,100% 0,100% 99%,76% 100%,52% 99%,25% 100%,0 99.2%);padding-bottom:70px!important;margin-bottom:-8px}
-#sobre,#taekwondo,#cosplay{clip-path:polygon(0 .7%,28% 0,55% .8%,79% .1%,100% .7%,100% 99.3%,72% 100%,43% 99.1%,18% 100%,0 99.4%);padding-top:8px!important;padding-bottom:16px!important;margin-bottom:-5px}
-.followSection{clip-path:polygon(0 0,27% .8%,53% .1%,78% .9%,100% .2%,100% 100%,0 100%);padding-top:60px!important;margin-top:-5px}
-}
-/* Transiciones v2: formas más visibles y profundidad */
-@media(min-width:801px){
-.hero{clip-path:polygon(0 0,100% 0,100% 93%,88% 96%,74% 92.5%,59% 97%,43% 93%,27% 98%,13% 94%,0 97%);margin-bottom:-34px;padding-bottom:34px}
-.arcadeSection{clip-path:polygon(0 0,100% 0,100% 94%,88% 97.5%,73% 93%,57% 98%,40% 94%,23% 99%,10% 95%,0 97.5%);margin-bottom:-30px;padding-bottom:100px!important}
-.videos{clip-path:polygon(0 0,100% 0,100% 93.5%,87% 97%,71% 93%,55% 98.5%,38% 94%,21% 99%,8% 95%,0 97.5%);margin-bottom:-34px;padding-bottom:124px!important}
-#sobre{clip-path:polygon(0 0,14% 2.5%,30% .4%,47% 3%,64% .7%,81% 2.8%,100% .3%,100% 96%,83% 99%,66% 95.5%,48% 100%,30% 96%,14% 99%,0 96.5%);margin-bottom:-24px;padding-top:30px!important;padding-bottom:64px!important}
-#taekwondo{clip-path:polygon(0 2.8%,16% .3%,33% 3%,50% .4%,68% 2.7%,84% .2%,100% 2.5%,100% 96%,84% 99.3%,67% 95.5%,49% 100%,31% 96%,15% 99%,0 96.5%);margin-bottom:-24px;padding-top:30px!important;padding-bottom:64px!important}
-#cosplay{clip-path:polygon(0 2.5%,17% .2%,34% 2.8%,52% .4%,69% 2.6%,85% .2%,100% 2.4%,100% 96.5%,82% 100%,64% 96%,47% 99.5%,29% 96.2%,13% 99.2%,0 96.8%);margin-bottom:-25px;padding-top:30px!important;padding-bottom:48px!important}
-.followSection{clip-path:polygon(0 0,15% 2.8%,32% .3%,49% 3%,67% .5%,84% 2.7%,100% .2%,100% 100%,0 100%);padding-top:105px!important;margin-top:-25px}
-.arcadeSection:after,.videos:after,#sobre:after,#taekwondo:after,#cosplay:after{content:"";position:absolute;left:0;right:0;bottom:0;height:7px;background:linear-gradient(90deg,transparent 0%,#28e7ff 18%,#9b49ff 50%,#ff2e91 82%,transparent 100%);filter:blur(1px);opacity:.7;pointer-events:none;z-index:20}
-}
-/* Limpieza desktop banners: quitar recortes que ensuciaban Sobre/Taekwondo/Cosplay */
-@media(min-width:801px){
-#sobre,#taekwondo,#cosplay{clip-path:none!important;margin-top:0!important;margin-bottom:0!important;padding-top:0!important;padding-bottom:34px!important;overflow:visible!important}
-#cosplay{padding-bottom:0!important}
-#sobre:after,#taekwondo:after,#cosplay:after{display:none!important}
-#sobre img,#taekwondo img,#cosplay img{display:block!important;width:100%!important;height:auto!important}
-}
-/* Divisores orgánicos desktop inspirados en el boceto, sin recortar contenido */
-@media(min-width:801px){
-.arcadeSection,.videos,#sobre,#taekwondo,#cosplay,.followSection{clip-path:none!important}
-#sobre,#taekwondo,#cosplay{position:relative;isolation:isolate;background:#06164c!important}
-#sobre{padding-bottom:64px!important}
-#taekwondo{padding-top:34px!important;padding-bottom:64px!important}
-#cosplay{padding-top:34px!important;padding-bottom:46px!important}
-#sobre:after,#taekwondo:after,#cosplay:after{display:block!important;content:"";position:absolute;z-index:5;left:0;right:0;bottom:-1px;height:54px;pointer-events:none;opacity:1!important;filter:none!important;background:#06164c!important}
-#sobre:after{clip-path:path("M0 30 C150 2 300 5 430 26 C570 49 710 50 850 22 C1010 -8 1140 4 1280 30 L1280 54 L0 54 Z")}
-#taekwondo:after{clip-path:path("M0 18 C170 52 310 47 455 19 C610 -10 750 2 895 31 C1040 57 1160 45 1280 14 L1280 54 L0 54 Z")}
-#cosplay:after{clip-path:path("M0 32 C145 4 285 0 425 24 C580 51 715 52 865 20 C1015 -10 1145 4 1280 30 L1280 54 L0 54 Z")}
-#sobre:before,#taekwondo:before,#cosplay:before{content:"";position:absolute;z-index:6;left:0;right:0;bottom:7px;height:3px;pointer-events:none;background:linear-gradient(90deg,transparent,#27dcff 18%,#8750ff 52%,#ff3f9a 82%,transparent);opacity:.45;filter:blur(.4px)}
-}
-/* Boceto final desktop: separadores amplios, orgánicos y sin recortar contenido */
-@media(min-width:801px){
-.hero,.arcadeSection,.videos,#sobre,#taekwondo,#cosplay,.followSection{clip-path:none!important;margin-top:0!important;margin-bottom:0!important;overflow:visible!important}
-.hero,.arcadeSection,.videos,#sobre,#taekwondo,#cosplay,.followSection{position:relative;isolation:isolate}
-.hero{padding-bottom:0!important}
-.arcadeSection{padding-top:78px!important;padding-bottom:92px!important}
-.videos{padding-top:92px!important;padding-bottom:108px!important}
-#sobre{padding:42px 0 76px!important;background:#06164c!important}
-#taekwondo{padding:42px 0 76px!important;background:#06164c!important}
-#cosplay{padding:42px 0 72px!important;background:#06164c!important}
-.followSection{padding-top:96px!important}
-.hero:after,.arcadeSection:after,.videos:after,#sobre:after,#taekwondo:after,#cosplay:after{content:""!important;display:block!important;position:absolute!important;z-index:20!important;left:-2%!important;right:-2%!important;bottom:-38px!important;height:78px!important;pointer-events:none!important;opacity:1!important;filter:none!important;transform:none!important;border-radius:0!important}
-.hero:after{background:#06307d!important;clip-path:ellipse(58% 48% at 50% 0%)}
-.arcadeSection:after{background:#4b0018!important;clip-path:polygon(0 12%,12% 28%,27% 14%,43% 34%,58% 17%,74% 37%,88% 19%,100% 31%,100% 100%,0 100%)}
-.videos:after{background:#06164c!important;clip-path:ellipse(64% 52% at 50% 100%);bottom:-34px!important}
-#sobre:after{background:#06164c!important;clip-path:polygon(0 46%,10% 34%,20% 43%,31% 25%,42% 40%,54% 20%,66% 38%,78% 24%,89% 40%,100% 28%,100% 100%,0 100%);bottom:-42px!important}
-#taekwondo:after{background:#06164c!important;clip-path:ellipse(61% 50% at 50% 0%);bottom:-40px!important}
-#cosplay:after{background:#07113c!important;clip-path:polygon(0 20%,14% 38%,29% 18%,44% 34%,59% 15%,73% 32%,87% 17%,100% 31%,100% 100%,0 100%);bottom:-40px!important}
-.hero:before{display:none!important}
-.arcadeSection:before,.videos:before{z-index:-1!important}
-#sobre:before,#taekwondo:before,#cosplay:before{content:""!important;display:block!important;position:absolute!important;z-index:21!important;left:7%!important;right:7%!important;bottom:-4px!important;height:2px!important;background:linear-gradient(90deg,transparent,#29dcff 22%,#8b4cff 52%,#ff3f99 80%,transparent)!important;opacity:.38!important;filter:blur(.3px)!important;pointer-events:none!important}
-}
-/* Corrección quirúrgica de los cortes defectuosos mostrados en capturas */
-@media(min-width:801px){
 /* Hero -> Arcade: eliminar la forma ovalada que desbordaba por la izquierda */
 .hero:after{display:none!important}
 .hero{padding-bottom:0!important}
@@ -154,11 +80,14 @@
 #sobre:after,#taekwondo:after,#cosplay:after,#sobre:before,#taekwondo:before,#cosplay:before{display:none!important;content:none!important}
 #sobre img,#taekwondo img,#cosplay img{display:block!important;width:100%!important;height:auto!important}
 }
-/* Corrección YouTube -> Sobre Vladi: quitar banda azul residual */
+/* Separaciones finales estables: sin recortes ni pseudo-divisores */
 @media(min-width:801px){
-.videos:after{display:none!important;content:none!important}
-.videos{margin-bottom:0!important}
-#sobre{padding-top:0!important}
+.hero,.arcadeSection,.videos,#sobre,#taekwondo,#cosplay,.followSection{clip-path:none!important;margin-top:0!important;margin-bottom:0!important;overflow:hidden!important}
+.hero:after,.arcadeSection:after,.videos:after,#sobre:after,#taekwondo:after,#cosplay:after{content:none!important;display:none!important}
+#sobre:before,#taekwondo:before,#cosplay:before{content:none!important;display:none!important}
+#sobre,#taekwondo,#cosplay{background:#06164c!important;padding-top:0!important;padding-bottom:34px!important}
+#cosplay{padding-bottom:0!important}
+#sobre img,#taekwondo img,#cosplay img{display:block!important;width:100%!important;height:auto!important}
 }
 </style><meta property="og:title" content="VLADYERIK | Juegos, desafíos y aventuras"><meta property="og:description" content="Entrá al mundo de Vladi: juegos, videos, desafíos y aventuras."><meta property="og:type" content="website"><meta name="theme-color" content="#071450"></head><body>
 <nav class="nav"><div class="wrap"><a class="brand" href="#"><span class="vlad">VLAD</span><span class="yerik">YERIK</span></a><div class="links"><a href="#">🏠 INICIO</a><a href="#juegos">🎮 JUEGOS</a><a href="#videos">▶ VIDEOS</a><a href="#sobre">👤 SOBRE VLADI</a><a href="#taekwondo">🏆 TAEKWONDO</a><a href="#cosplay">🎭 COSPLAY</a><a href="#redes">❤ SEGUIME</a></div></div></nav>
