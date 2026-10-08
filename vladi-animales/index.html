@@ -223,18 +223,18 @@ const ANIMALS=[
 {id:"foca_leopardo",name:"FOCA LEOPARDO",emoji:"🐬",area:"HIELO",hint:"ES UNA FOCA GRANDE CON MANCHAS QUE NADA EN EL MAR FRÍO.",level:3}
 ];
 const $=id=>document.getElementById(id);
-const state={round:0,score:0,correct:0,deck:[],current:null,locked:false,best:0};
+const state={round:0,score:0,correct:0,level:1,levelStart:0,levelCorrect:0,deck:[],current:null,locked:false,best:0};
 try{state.best=Number(localStorage.getItem('vladiAnimalsBest100Rounds')||0)||0}catch(_){}
 function shuffle(items){const list=[...items];for(let i=list.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[list[i],list[j]]=[list[j],list[i]]}return list}
 function playTone(name){try{if(window.VladiSound&&typeof window.VladiSound.play==='function')window.VladiSound.play(name)}catch(_){}}
 function updateStats(){
- $('round').textContent=(state.round+1)+' / '+state.deck.length;
+ $('round').textContent=(state.round-state.levelStart+1)+' / '+Math.min(10,state.deck.length-state.levelStart);
  $('score').textContent=state.score;
  $('best').textContent=state.best?state.best+' / '+state.deck.length:'—';
  $('progress').style.width=(state.round/state.deck.length*100)+'%';
 }
 function startGame(){
- state.round=0;state.score=0;state.correct=0;state.locked=false;
+ state.round=0;state.score=0;state.correct=0;state.level=1;state.levelStart=0;state.levelCorrect=0;state.locked=false;
  state.deck=[...shuffle(ANIMALS.filter(a=>a.level===1)),...shuffle(ANIMALS.filter(a=>a.level===2)),...shuffle(ANIMALS.filter(a=>a.level===3))];
  $('intro').style.display='none';$('result').classList.remove('active');$('play').classList.add('active');
  showQuestion();
@@ -242,7 +242,7 @@ function startGame(){
 function showQuestion(){
  if(state.round>=state.deck.length){finishGame();return}
  state.current=state.deck[state.round];
- $('round').textContent=(state.round+1)+' / '+state.deck.length;
+ $('round').textContent=(state.round-state.levelStart+1)+' / '+Math.min(10,state.deck.length-state.levelStart);
  $('score').textContent=state.score;
  $('best').textContent=state.best?state.best+' / '+state.deck.length:'—';
  $('progress').style.width=(state.round/state.deck.length*100)+'%';
@@ -276,24 +276,26 @@ function answer(id,button){
  const all=[...document.querySelectorAll('.animal-option')];
  all.forEach(el=>{el.disabled=true;if(el.dataset.id===state.current.id)el.classList.add('correct')});
  const ok=id===state.current.id;
- if(ok){state.score+=100;state.correct++;button.classList.add('correct');$('feedback').textContent='¡MUY BIEN! '+state.current.emoji+' +100';$('feedback').className='feedback ok';playTone('correct')}
+ if(ok){state.score+=100;state.correct++;state.levelCorrect++;button.classList.add('correct');$('feedback').textContent='¡MUY BIEN! '+state.current.emoji+' +100';$('feedback').className='feedback ok';playTone('correct')}
  else{$('feedback').textContent='CASI. ERA: '+state.current.emoji+' '+state.current.name;$('feedback').className='feedback no';button.classList.add('wrong');playTone('wrong')}
  $('score').textContent=state.score;
  $('progress').style.width=((state.round+1)/state.deck.length*100)+'%';
  if(window.speechSynthesis)window.speechSynthesis.cancel();
- window.setTimeout(()=>{state.round++;state.locked=false;showQuestion()},1150);
+ window.setTimeout(()=>{state.round++;if(state.round>=state.deck.length||state.round-state.levelStart>=10){finishGame();return}state.locked=false;showQuestion()},1150);
 }
 function finishGame(){
  $('play').classList.remove('active');
- const previous=state.best;
- if(state.correct>state.best){state.best=state.correct;try{localStorage.setItem('vladiAnimalsBest100Rounds',String(state.best))}catch(_){}}
- $('resultTitle').textContent=state.correct>=state.deck.length*.8?'¡SOS UN EXPERTO!':state.correct>=state.deck.length*.5?'¡GRAN TRABAJO!':'¡A SEGUIR JUGANDO!';
- $('resultText').innerHTML='ACERTASTE <strong>'+state.correct+' DE '+state.deck.length+'</strong> Y SUMASTE <strong>'+state.score+' PUNTOS</strong>.';
- $('bestText').textContent=state.best?'TU RÉCORD: '+state.best+' / '+state.deck.length+(state.correct>previous?' · ¡NUEVO RÉCORD!':''):'';
+ const previous=state.best,total=Math.min(10,state.deck.length-state.levelStart);
+ if(state.levelCorrect>state.best){state.best=state.levelCorrect;try{localStorage.setItem('vladiAnimalsBest100Rounds',String(state.best))}catch(_){}}
+ $('resultTitle').textContent=state.levelCorrect>=total*.8?'¡NIVEL SUPERADO!':'¡A SEGUIR JUGANDO!';
+ $('resultText').innerHTML='NIVEL '+state.level+' COMPLETADO: <strong>'+state.levelCorrect+' DE '+total+'</strong> Y PUNTAJE ACUMULADO: <strong>'+state.score+'</strong>.';
+ $('bestText').textContent=state.best?'TU RÉCORD DE NIVEL: '+state.best+' / '+total+(state.levelCorrect>previous?' · ¡NUEVO RÉCORD!':''):'';
+ $('againButton').textContent='CONTINUAR AL NIVEL '+(state.level+1)+' ➜';
  $('result').classList.add('active');playTone('save');
 }
+function nextLevel(){state.level++;state.levelStart=state.round;state.levelCorrect=0;if(state.round>=state.deck.length){state.round=0;state.levelStart=0;state.deck=[...shuffle(ANIMALS.filter(a=>a.level===1)),...shuffle(ANIMALS.filter(a=>a.level===2)),...shuffle(ANIMALS.filter(a=>a.level===3))]}$('result').classList.remove('active');$('play').classList.add('active');showQuestion()}
 $('startButton').addEventListener('click',startGame);
-$('againButton').addEventListener('click',startGame);
+$('againButton').addEventListener('click',nextLevel);
 $('listenButton').addEventListener('click',speakHint);
 })();
 </script>
