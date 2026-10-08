@@ -221,7 +221,7 @@ function answer(id,button){
  else{$('feedback').textContent='CASI. ERA: '+state.current.emoji+' '+state.current.name;$('feedback').className='feedback no';button.classList.add('wrong');playTone('wrong')}
  $('score').textContent=state.score;
  $('progress').style.width=((state.round+1)*10)+'%';
- window.speechSynthesis?.cancel?.();
+ if(window.speechSynthesis)window.speechSynthesis.cancel();
  window.setTimeout(()=>{state.round++;state.locked=false;showQuestion()},1150);
 }
 function finishGame(){
