@@ -110,12 +110,12 @@ main{padding:18px 0 30px}
 <link rel="stylesheet" href="../desafios-kids.css?v=20261008-2">
 <style id="desktop-screen-fill">
 @media (min-width: 900px) {
-  body > .shell { min-height: 100svh; display: flex; flex-direction: column; }
-  body > .shell > main { flex: 1; min-height: 0; display: flex; flex-direction: column; }
-  body > .shell > main > .game { flex: 1; min-height: 0; display: flex; flex-direction: column; }
-  body > .shell > main > .game > .intro:not(.hide),
-  body > .shell > main > .game > .result.active { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-  body > .shell > main > .game > .play.active { flex: 1; align-content: stretch; }
+  body > header.shell.top { height: 58px; min-height: 58px; flex: 0 0 58px; }
+  body > main.shell { min-height: calc(100svh - 58px); display: flex; flex-direction: column; }
+  body > main.shell > .game { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+  body > main.shell > .game > .intro:not(.hide),
+  body > main.shell > .game > .result.active { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+  body > main.shell > .game > .play.active { flex: 1; align-content: stretch; }
 }
 </style>
 </head>
