@@ -142,6 +142,18 @@
 .arcadeSection:before,.videos:before{z-index:-1!important}
 #sobre:before,#taekwondo:before,#cosplay:before{content:""!important;display:block!important;position:absolute!important;z-index:21!important;left:7%!important;right:7%!important;bottom:-4px!important;height:2px!important;background:linear-gradient(90deg,transparent,#29dcff 22%,#8b4cff 52%,#ff3f99 80%,transparent)!important;opacity:.38!important;filter:blur(.3px)!important;pointer-events:none!important}
 }
+/* Corrección quirúrgica de los cortes defectuosos mostrados en capturas */
+@media(min-width:801px){
+/* Hero -> Arcade: eliminar la forma ovalada que desbordaba por la izquierda */
+.hero:after{display:none!important}
+.hero{padding-bottom:0!important}
+.arcadeSection{padding-top:78px!important}
+/* Banners editoriales: quitar las franjas/formas vacías entre imágenes */
+#sobre,#taekwondo,#cosplay{padding-top:0!important;padding-bottom:34px!important;margin:0!important}
+#cosplay{padding-bottom:0!important}
+#sobre:after,#taekwondo:after,#cosplay:after,#sobre:before,#taekwondo:before,#cosplay:before{display:none!important;content:none!important}
+#sobre img,#taekwondo img,#cosplay img{display:block!important;width:100%!important;height:auto!important}
+}
 </style><meta property="og:title" content="VLADYERIK | Juegos, desafíos y aventuras"><meta property="og:description" content="Entrá al mundo de Vladi: juegos, videos, desafíos y aventuras."><meta property="og:type" content="website"><meta name="theme-color" content="#071450"></head><body>
 <nav class="nav"><div class="wrap"><a class="brand" href="#"><span class="vlad">VLAD</span><span class="yerik">YERIK</span></a><div class="links"><a href="#">🏠 INICIO</a><a href="#juegos">🎮 JUEGOS</a><a href="#videos">▶ VIDEOS</a><a href="#sobre">👤 SOBRE VLADI</a><a href="#taekwondo">🏆 TAEKWONDO</a><a href="#cosplay">🎭 COSPLAY</a><a href="#redes">❤ SEGUIME</a></div></div></nav>
 <header class="hero"><img class="heroBanner" src="assets/vladi-hero.png" alt="VLADYERIK - Juegos, desafíos y aventuras"></header>
