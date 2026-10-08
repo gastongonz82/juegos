@@ -46,7 +46,7 @@
           <button class="mode" type="button" data-mode="cpu" aria-pressed="true">VS VLADI</button><button class="mode" type="button" data-mode="two" aria-pressed="false">DOS JUGADORES</button>
         </div>
         <button class="new-game" id="newGame" type="button">NUEVA PARTIDA&nbsp; →</button>
-        <p class="helper">Tocá un casillero para poner tu X. ¡Quien consiga tres en línea gana!</p>
+        <p class="helper" id="helper">Tocá un casillero para poner tu X. ¡Quien consiga tres en línea gana!</p>
       </aside>
     </section>
   </main>
@@ -82,6 +82,7 @@
       saveScores();say('✓','PARTIDA TERMINADA');render();
     }
     function cpuMove(){
+      state.timer=null;
       const available=empty();if(!available.length||state.over)return;
       const tryWin=(mark)=>{for(const i of available){const test=[...state.board];test[i]=mark;if(winner(test))return i}return -1};
       let choice=tryWin('O');if(choice<0)choice=tryWin('X');
@@ -96,15 +97,15 @@
       if(state.over||state.aiThinking||state.board[index])return;
       const mark=state.mode==='cpu'?'X':currentMark();state.board[index]=mark;state.round++;window.VladiSound?.play('move');
       const win=winner();if(win){endRound(win.mark);return}if(empty().length===0){endRound('draw');return}
-      if(state.mode==='cpu'){state.aiThinking=true;$('status').className='status';$('status').innerHTML='VLADI ESTÁ PENSANDO…<small>¿Qué jugará ahora?</small>';say('O','JUEGA VLADI');render();window.setTimeout(cpuMove,430)}
+      if(state.mode==='cpu'){state.aiThinking=true;$('status').className='status';$('status').innerHTML='VLADI ESTÁ PENSANDO…<small>¿Qué jugará ahora?</small>';say('O','JUEGA VLADI');render();state.timer=window.setTimeout(cpuMove,430)}
       else{const next=currentMark();$('status').className='status';$('status').innerHTML=next==='X'?'¡TURNO DEL JUGADOR X!<small>Elegí un casillero vacío.</small>':'¡TURNO DEL JUGADOR O!<small>Elegí un casillero vacío.</small>';say(next,'ES EL TURNO');render()}
     }
-    function reset(){window.clearTimeout(state.timer);state.board=Array(9).fill('');state.over=false;state.aiThinking=false;state.round=0;$('status').className='status';$('status').innerHTML='¡TU TURNO!<small>Elegí un casillero vacío.</small>'; $('caption').textContent='¡Hacé tres en línea para ganar!';say('X','ES TU TURNO');render();window.VladiSound?.play('start')}
-    for(let i=0;i<9;i++){const b=document.createElement('button');b.type='button';b.className='cell';b.setAttribute('role','gridcell');b.addEventListener('click',()=>play(i));$('board').append(b);cells.push(b)}
+    function reset(playSound=true){window.clearTimeout(state.timer);state.timer=null;state.board=Array(9).fill('');state.over=false;state.aiThinking=false;state.round=0;$('status').className='status';$('status').innerHTML='¡TU TURNO!<small>Elegí un casillero vacío.</small>'; $('caption').textContent='¡Hacé tres en línea para ganar!';$('helper').textContent=state.mode==='cpu'?'Tocá un casillero para poner tu X. ¡Quien consiga tres en línea gana!':'Los jugadores alternan X y O. ¡Quien consiga tres en línea gana!';say('X','ES TU TURNO');render();if(playSound)window.VladiSound?.play('start')}
+    for(let i=0;i<9;i++){const b=document.createElement('button');b.type='button';b.className='cell';b.addEventListener('click',()=>play(i));$('board').append(b);cells.push(b)}
     document.querySelectorAll('.mode').forEach(button=>button.addEventListener('click',()=>{if(button.getAttribute('aria-pressed')==='true')return;document.querySelectorAll('.mode').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));state.mode=button.dataset.mode;reset();$('status').innerHTML=state.mode==='cpu'?'¡TU TURNO!<small>Elegí un casillero vacío.</small>':'¡TURNO DEL JUGADOR X!<small>Elegí un casillero vacío.</small>'}));
-    $('newGame').addEventListener('click',reset);
+    $('newGame').addEventListener('click',()=>reset(true));
     document.addEventListener('keydown',event=>{if(event.key==='Escape')$('newGame').focus()});
-    reset();
+    reset(false);
   })();
   </script>
 </body>
