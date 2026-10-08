@@ -35,7 +35,18 @@
   main{padding:5px 0 7px}.heading{margin-bottom:4px}.heading h1{font-size:clamp(28px,3.5vw,36px);margin:3px 0 2px}.heading p{margin:2px 0}.badge{padding:4px 10px;font-size:9px}
   .panel{padding:8px 11px}.play.active .board{min-height:285px;gap:20px}.play.active .column{gap:5px}.play.active .items{gap:4px}.play.active .match-item{min-height:45px;padding:5px 7px;font-size:14px}
 }
-</style></head>
+</style><style id="desktop-screen-fill">
+@media (min-width: 900px) {
+  body > .shell { min-height: 100svh; display: flex; flex-direction: column; }
+  body > .shell > main { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+  body > .shell > main > .panel { flex: 1; min-height: 0; }
+  body > .shell > main > .panel.intro:not(.hide),
+  body > .shell > main > .panel.result.show { display: flex; flex-direction: column; justify-content: center; align-items: center; }
+  body > .shell > main > .panel.play.active { display: flex; flex-direction: column; min-height: 0; }
+  body > .shell > main > .panel.play.active > .board { flex: 1; }
+}
+</style>
+</head>
 <body><div class="shell"><header class="top"><a class="back" href="../arcade.html">← VOLVER AL ARCADE</a><button class="sound" type="button" data-sound-toggle aria-label="Silenciar sonidos">🔊</button></header><main>
 <div class="heading"><span class="badge">DESAFÍO DE OBSERVACIÓN</span><h1>UNÍ <span>LAS PAREJAS</span></h1><p>¡Encontrá qué palabra va con cada dibujo!</p></div>
 <section class="panel intro" id="intro"><div class="heroicon" aria-hidden="true">🧩➡️🐾</div><h2>¡Conectá y descubrí!</h2><p>Elegí un tema y uní cada palabra con su dibujo. ¡Las líneas te muestran las parejas que encontraste!</p><div class="categories" id="categories" role="group" aria-label="Elegí un tema"></div><button class="primary" id="start">¡EMPEZAR A UNIR! ➜</button><p>🏆 Récord: <strong id="introRecord">0</strong> parejas</p></section>
