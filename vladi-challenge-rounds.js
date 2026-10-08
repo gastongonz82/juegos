@@ -190,7 +190,7 @@
       ["JUGUETES","🧸","🧺","JUGUETES ORDENADOS"],["TAZA","☕","🧽","TAZA LIMPIA"],["VENTANA","🪟","✨","VENTANA LIMPIA"],["ROPA","👕","🧺","ROPA DOBLADA"],["ABRIGO","🧥","🧣","ABRIGO PUESTO"],
       ["MERIENDA","🍎","🥪","MERIENDA PREPARADA"],["MUÑECO DE NIEVE","☃️","❄️","MUÑECO TERMINADO"],["HOJAS","🍂","🧹","HOJAS JUNTAS"],["CUADRO","🖼️","🔨","CUADRO COLGADO"],["VALIJA","🧳","👕","VALIJA PREPARADA"]
     ];
-    const rounds = [...G.rounds];
+    const rounds = G.rounds.map(r => ({ steps: r.steps.map(([emoji,label]) => [emoji,upper(label)]) }));
     const seen = new Set(rounds.map(r => r.steps.map(s => s[1]).join("|")));
     const add = steps => {
       const key = steps.map(s => s[1]).join("|");
