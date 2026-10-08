@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#10162b">
+  <meta name="description" content="Jugá Piedra, papel o tijera con Vladi.">
+  <title>Piedra, papel o tijera con Vladi — Arcade de Vladi</title>
+  <link rel="stylesheet" href="../arcade-ui.css?v=1">
+  <script src="../arcade-ui.js" defer></script>
+  <script src="../game-audio.js?v=3" defer></script>
+  <script src="../music/vladi-palabras.js?v=1" defer></script>
+  <script src="../game-music.js?v=4" defer></script>
+  <style>
+    :root{color-scheme:dark;--line:#ffffff20;--text:#f8f7ff;--muted:#aab4cf;--gold:#ffd166;--cyan:#77e5dd;--green:#83edc0;--pink:#ff92b6;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    *{box-sizing:border-box}html{min-height:100%;background:#0b1020}body{margin:0;min-height:100svh;color:var(--text);background:radial-gradient(ellipse at 12% 0%,#47427c55,transparent 34rem),radial-gradient(ellipse at 92% 52%,#168e9650,transparent 31rem),linear-gradient(160deg,#10162b,#090e1b 74%)}
+    body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.25;background-image:radial-gradient(#dce7ff66 .7px,transparent .8px);background-size:32px 32px;mask-image:linear-gradient(#000,transparent 90%)}
+    button,a{font:inherit}a{color:inherit}.shell{position:relative;width:min(860px,calc(100% - 30px));margin:auto}.top{height:54px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--line)}.back{color:var(--muted);text-decoration:none;font-size:13px;font-weight:750}.back:hover{color:#fff}.sound-toggle{width:40px;height:36px;display:grid;place-items:center;margin-left:auto;border:1px solid #ffd16666;border-radius:12px;background:#ffffff0b;color:#ffe08a;font-size:18px;cursor:pointer;touch-action:manipulation}
+    main{padding:16px 0 22px}.heading{text-align:center;margin:0 auto 13px}.eyebrow{color:var(--cyan);font-size:11px;font-weight:900;letter-spacing:.16em;text-transform:uppercase}.heading h1{margin:7px 0 5px;font-size:clamp(29px,5.5vw,43px);line-height:1.04;letter-spacing:-.035em;text-transform:uppercase}.heading h1 span{color:var(--gold)}.heading p{margin:0;color:var(--muted);font-size:13px}
+    .game{display:grid;gap:11px}.match,.score-panel{border:1px solid var(--line);border-radius:23px;background:linear-gradient(155deg,#1b2540ed,#121a2eee);box-shadow:0 20px 50px #0005,inset 0 1px #ffffff09}.match{padding:17px;background:radial-gradient(ellipse at 50% 52%,#217a9240,transparent 55%),linear-gradient(155deg,#202d4d,#141d34);overflow:hidden}.match-head{display:flex;align-items:center;justify-content:space-between;gap:12px}.match-label{color:#d5dff3;font-size:11px;font-weight:900;letter-spacing:.13em}.round{color:var(--muted);font-size:11px;font-weight:800}.duel{display:grid;grid-template-columns:minmax(0,1fr) 54px minmax(0,1fr);align-items:center;gap:15px;margin:14px auto 10px;max-width:610px}.fighter{min-width:0;min-height:153px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:12px;border:1px solid #ffffff17;border-radius:19px;background:linear-gradient(145deg,#ffffff0c,#ffffff04);text-align:center}.fighter.player{border-color:#ffd16632;background:linear-gradient(145deg,#ffd16610,#ffffff04)}.fighter.vladi{border-color:#77e5dd32;background:linear-gradient(145deg,#77e5dd10,#ffffff04)}.fighter-icon{height:87px;display:grid;place-items:center;font-size:clamp(56px,10vw,78px);line-height:1;filter:drop-shadow(0 8px 13px #0006);transition:transform .25s ease}.fighter-icon.reveal{animation:reveal .3s ease both}.fighter-name{font-size:11px;font-weight:950;letter-spacing:.1em}.fighter.player .fighter-name{color:var(--gold)}.fighter.vladi .fighter-name{color:var(--cyan)}.vs{color:#c2cde3;font-size:13px;font-weight:1000;letter-spacing:.1em;text-align:center;text-shadow:0 0 16px #77e5dd55}.outcome{min-height:49px;display:grid;place-items:center;padding:9px 14px;border:1px solid #77e5dd2e;border-radius:14px;background:#77e5dd09;color:#cbd6ec;font-size:13px;font-weight:850;text-align:center;letter-spacing:.035em}.outcome.win{border-color:#83edc055;background:#83edc012;color:var(--green)}.outcome.loss{border-color:#ff92b644;background:#ff92b60c;color:#ffabc2}.outcome.tie{border-color:#ffd16650;background:#ffd1660c;color:#ffe08a}.score-panel{padding:14px 16px}.score-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}.score-head h2{margin:0;color:#d5dff3;font-size:11px;font-weight:900;letter-spacing:.13em}.record{color:#9ba8c2;font-size:10px;font-weight:800}.scores{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.score{min-width:0;padding:8px;border:1px solid #ffffff16;border-radius:13px;background:#ffffff07;text-align:center}.score span{display:block;color:var(--muted);font-size:9px;font-weight:850;letter-spacing:.09em;text-transform:uppercase}.score b{display:block;margin-top:2px;font-size:22px}.score.player b{color:var(--gold)}.score.vladi b{color:var(--cyan)}.score.draw b{color:#f4f5fb}.pick-label{margin:1px 0 -4px;color:#aab4cf;font-size:10px;font-weight:900;letter-spacing:.13em;text-align:center;text-transform:uppercase}.choices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}.choice{min-width:0;min-height:104px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;border:1px solid #ffffff20;border-radius:17px;background:linear-gradient(145deg,#263552,#1a2540);color:#f6f7ff;cursor:pointer;touch-action:manipulation;transition:transform .14s,border-color .14s,background .14s,box-shadow .14s}.choice:hover{transform:translateY(-3px);border-color:#77e5dd88;background:linear-gradient(145deg,#2b3d5f,#1d2b49);box-shadow:0 8px 20px #0003}.choice:active{transform:scale(.97)}.choice:focus-visible,.sound-toggle:focus-visible,.back:focus-visible{outline:3px solid var(--gold);outline-offset:3px}.choice-icon{font-size:32px;line-height:1}.choice-label{font-size:11px;font-weight:950;letter-spacing:.08em}.instructions{margin:0;color:#8794b2;font-size:10px;line-height:1.4;text-align:center}
+    @keyframes reveal{0%{transform:scale(.45) rotate(-12deg);opacity:.3}70%{transform:scale(1.12) rotate(4deg)}100%{transform:scale(1);opacity:1}}@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+    @media(max-width:620px){.shell{width:min(500px,calc(100% - 22px))}.top{height:48px}.back{font-size:12px}main{padding:9px 0 12px}.heading{margin-bottom:8px}.heading h1{font-size:clamp(24px,7.3vw,35px)}.heading p{font-size:11px}.game{gap:8px}.match{padding:10px;border-radius:18px}.match-label{font-size:9px}.round{font-size:9px}.duel{grid-template-columns:minmax(0,1fr) 30px minmax(0,1fr);gap:8px;margin:8px auto}.fighter{min-height:112px;padding:8px;border-radius:15px}.fighter-icon{height:63px;font-size:58px}.fighter-name{font-size:10px}.vs{font-size:10px}.outcome{min-height:40px;padding:7px 9px;font-size:11px}.score-panel{padding:10px;border-radius:18px}.score-head{margin-bottom:7px}.score-head h2{font-size:9px}.record{font-size:9px}.scores{gap:6px}.score{padding:6px 4px}.score span{font-size:8px}.score b{font-size:19px}.pick-label{font-size:9px}.choices{gap:7px}.choice{min-height:84px;border-radius:14px;gap:5px}.choice-icon{font-size:28px}.choice-label{font-size:9px}.instructions{display:none}}
+    @media(max-width:370px){.shell{width:calc(100% - 16px)}.duel{grid-template-columns:minmax(0,1fr) 24px minmax(0,1fr);gap:6px}.fighter{min-height:100px}.fighter-icon{height:54px;font-size:50px}.choice{min-height:76px}.choice-icon{font-size:25px}.score{padding:5px 2px}}
+    @media(max-height:680px) and (min-width:621px){main{padding-top:8px}.heading{margin-bottom:8px}.fighter{min-height:125px}.fighter-icon{height:72px}.match,.score-panel{padding:11px}.choice{min-height:88px}}
+  </style>
+</head>
+<body>
+  <header class="shell top"><a class="back" href="../">← VOLVER AL ARCADE</a><button class="sound-toggle" id="soundToggle" data-sound-toggle type="button" aria-label="Silenciar sonidos">🔊</button></header>
+  <main class="shell">
+    <header class="heading"><span class="eyebrow">Desafío de ingenio</span><h1>PIEDRA, PAPEL O <span>TIJERA</span></h1><p>¿Podrás ganarle a Vladi?</p></header>
+    <section class="game" aria-label="Piedra, papel o tijera">
+      <div class="match">
+        <div class="match-head"><span class="match-label">¡A JUGAR!</span><span class="round" id="round">RONDA 1</span></div>
+        <div class="duel">
+          <div class="fighter player"><div class="fighter-icon" id="playerChoice" aria-label="Todavía no elegiste">❔</div><span class="fighter-name">VOS</span></div>
+          <span class="vs" aria-hidden="true">VS</span>
+          <div class="fighter vladi"><div class="fighter-icon" id="vladiChoice" aria-label="Vladi todavía no eligió">❔</div><span class="fighter-name">VLADI</span></div>
+        </div>
+        <div class="outcome" id="outcome" aria-live="polite">ELEGÍ PIEDRA, PAPEL O TIJERA</div>
+      </div>
+      <section class="score-panel" aria-label="Marcador">
+        <div class="score-head"><h2>MARCADOR</h2><span class="record" id="record">RACHA RÉCORD: 0</span></div>
+        <div class="scores">
+          <div class="score player"><span>VOS</span><b id="playerScore">0</b></div>
+          <div class="score vladi"><span>VLADI</span><b id="vladiScore">0</b></div>
+          <div class="score draw"><span>EMPATES</span><b id="drawScore">0</b></div>
+        </div>
+      </section>
+      <p class="pick-label">¿QUÉ ELEGÍS?</p>
+      <div class="choices" role="group" aria-label="Elegir jugada">
+        <button class="choice" type="button" data-choice="piedra" aria-label="Piedra"><span class="choice-icon" aria-hidden="true">✊</span><span class="choice-label">PIEDRA</span></button>
+        <button class="choice" type="button" data-choice="papel" aria-label="Papel"><span class="choice-icon" aria-hidden="true">✋</span><span class="choice-label">PAPEL</span></button>
+        <button class="choice" type="button" data-choice="tijera" aria-label="Tijera"><span class="choice-icon" aria-hidden="true">✌️</span><span class="choice-label">TIJERA</span></button>
+      </div>
+      <p class="instructions">También podés elegir con las teclas 1, 2 y 3. Cada ronda suma al marcador.</p>
+    </section>
+  </main>
+  <script>
+  (() => {
+    'use strict';
+    const plays={piedra:{label:'PIEDRA',icon:'✊'},papel:{label:'PAPEL',icon:'✋'},tijera:{label:'TIJERA',icon:'✌️'}};
+    const names=Object.keys(plays);
+    const $=id=>document.getElementById(id);
+    const state={round:0,streak:0,best:0,score:{player:0,vladi:0,draw:0}};
+    try{const saved=JSON.parse(localStorage.getItem('vladiPiedraPapelTijera')||'{}');Object.assign(state.score,saved.score||{});state.best=Number(saved.best)||0}catch(_){}
+    function save(){try{localStorage.setItem('vladiPiedraPapelTijera',JSON.stringify({score:state.score,best:state.best}))}catch(_){}}
+    function render(){ $('playerScore').textContent=state.score.player;$('vladiScore').textContent=state.score.vladi;$('drawScore').textContent=state.score.draw;$('record').textContent='RACHA RÉCORD: '+state.best;$('round').textContent='RONDA '+Math.max(1,state.round); }
+    function play(user){
+      const computer=names[Math.floor(Math.random()*names.length)];
+      $('playerChoice').textContent=plays[user].icon;$('playerChoice').setAttribute('aria-label','Elegiste '+plays[user].label);
+      $('vladiChoice').textContent=plays[computer].icon;$('vladiChoice').setAttribute('aria-label','Vladi eligió '+plays[computer].label);
+      $('playerChoice').classList.remove('reveal');$('vladiChoice').classList.remove('reveal');void $('playerChoice').offsetWidth;$('playerChoice').classList.add('reveal');$('vladiChoice').classList.add('reveal');
+      $('outcome').className='outcome';
+      if(user===computer){state.score.draw++;state.streak=0;$('outcome').textContent='¡EMPATE! LOS DOS ELIGIERON '+plays[user].label;window.VladiSound?.play('collect');$('outcome').classList.add('tie')}
+      else if((user==='piedra'&&computer==='tijera')||(user==='papel'&&computer==='piedra')||(user==='tijera'&&computer==='papel')){state.score.player++;state.streak++;state.best=Math.max(state.best,state.streak);$('outcome').textContent='¡GANASTE ESTA RONDA!';window.VladiSound?.play('goal');$('outcome').classList.add('win')}
+      else{state.score.vladi++;state.streak=0;$('outcome').textContent='¡ESTA VEZ GANÓ VLADI!';window.VladiSound?.play('wrong');$('outcome').classList.add('loss')}
+      state.round++;save();render();
+    }
+    document.querySelectorAll('.choice').forEach(button=>button.addEventListener('click',()=>play(button.dataset.choice)));
+    document.addEventListener('keydown',event=>{if(event.altKey||event.ctrlKey||event.metaKey)return;const map={'1':'piedra','2':'papel','3':'tijera'};if(map[event.key])play(map[event.key])});
+    render();
+  })();
+  </script>
+</body>
+</html>
