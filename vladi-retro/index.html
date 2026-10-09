@@ -89,7 +89,7 @@ function music(){if(stage!=="playing"||muted||!audio)return;const i=Math.floor(m
 function fresh(){
  score=0;lives=key==="catapult"?6:3;level=1;held={};shotClock=0;dropClock=0;musicClock=0;
  const top=touch?170*S:106*S,bottom=touch?136*S:86*S;
- if(key==="space"){world={player:{x:W/2,y:H-bottom,r:17*S,inv:0},aliens:[],bullets:[],enemyShots:[],dir:1,formationY:top+(touch?40:20)*S};spawnInvaders()}
+ if(key==="space"){world={player:{x:W/2,y:H-bottom,r:17*S,inv:0},aliens:[],bullets:[],enemyShots:[],dir:1,formationY:touch?top+40*S:88};spawnInvaders()}
  if(key==="arkanoid"){world={paddle:{x:W/2,y:H-bottom,w:104*S,h:16*S},ball:{x:W/2,y:H-bottom-24*S,vx:0,vy:0,r:8*S,stuck:true},bricks:[]};buildBricks()}
  if(key==="joust")world={player:{x:W*.3,y:H*.48,vy:0,r:21*S},enemies:[],time:0};
  if(key==="asteroids"){world={ship:{x:W/2,y:H/2,a:-Math.PI/2,vx:0,vy:0,r:16*S,inv:0},rocks:[],shots:[]};for(let i=0;i<5;i++)spawnRock(2)}
@@ -97,8 +97,8 @@ function fresh(){
  if(key==="catapult"){world={sling:{x:W*.19,y:H*.63},projectile:null,targets:[],blocks:[],angle:-.55,power:440*S};buildTargets()}
  syncHud();
 }
-function spawnInvaders(){world.aliens=[];const cols=Math.min(8,Math.max(6,Math.floor(W/(42*S))));for(let r=0;r<4;r++)for(let c=0;c<cols;c++)world.aliens.push({x:(W-cols*42*S)/2+c*42*S+18*S,y:world.formationY+r*33*S,r:12*S,kind:r})}
-function buildBricks(){world.bricks=[];const cols=Math.min(10,Math.max(6,Math.floor((W-30*S)/(56*S)))),bw=Math.min(52*S,(W-36*S)/cols-5*S),top=touch?168*S:Math.max(96*S,H*.14);for(let r=0;r<5;r++)for(let c=0;c<cols;c++)world.bricks.push({x:(W-cols*(bw+5*S))/2+c*(bw+5*S),y:top+r*24*S,w:bw,h:18*S,hp:r<2?2:1,color:["#ff5c96","#ffb449","#55e1ff","#8d7cff","#57edbf"][r]})}
+function spawnInvaders(){world.aliens=[];const cols=Math.min(8,Math.max(6,Math.floor(W/(42*S))));for(let r=0;r<4;r++)for(let c=0;c<cols;c++)world.aliens.push({x:(W-cols*42*S)/2+c*42*S+18*S,y:world.formationY+r*(touch?33*S:Math.max(28,26*S)),r:12*S,kind:r})}
+function buildBricks(){world.bricks=[];const cols=Math.min(10,Math.max(6,Math.floor((W-30*S)/(56*S)))),bw=Math.min(52*S,(W-36*S)/cols-5*S),top=touch?168*S:76;for(let r=0;r<5;r++)for(let c=0;c<cols;c++)world.bricks.push({x:(W-cols*(bw+5*S))/2+c*(bw+5*S),y:top+r*(touch?24*S:20*S),w:bw,h:18*S,hp:r<2?2:1,color:["#ff5c96","#ffb449","#55e1ff","#8d7cff","#57edbf"][r]})}
 function spawnRock(size,x,y){world.rocks.push({x:x??rand(30*S,W-30*S),y:y??rand(180*S,H-140*S),a:rand(0,6),vx:rand(-38,38)*S,vy:rand(-38,38)*S,size,r:size*(13+Math.random()*4)*S,shape:Array.from({length:9},()=>rand(.72,1.25))})}
 const shapes=[[[1,1,1,1]],[[1,1],[1,1]],[[0,1,0],[1,1,1]],[[1,0,0],[1,1,1]],[[0,0,1],[1,1,1]],[[0,1,1],[1,1,0]],[[1,1,0],[0,1,1]]];
 function cell(){if(!touch){const cap=44*S,usableH=H-154*S;return Math.max(14*S,Math.min(cap,(W-50*S)/10,usableH/20))}const cap=W>700*S&&H>550*S?38*S:29*S,usableH=H-(W>700*S&&H>550*S?175*S:250*S);return Math.max(13*S,Math.min(cap,(W-40*S)/10,usableH/20))}
@@ -249,11 +249,11 @@ function updateSpace(dt){
  if(p.inv>0)p.inv=Math.max(0,p.inv-dt);
  if(held.left)p.x-=sp*dt;if(held.right)p.x+=sp*dt;p.x=clamp(p.x,22*S,W-22*S);
  shotClock-=dt;if(held.fire&&shotClock<=0){world.bullets.push({x:p.x,y:p.y-20*S,v:430*S});shotClock=.24;sfx.shot()}
- const a=world.aliens;if(!a.length){level++;world.formationY=90*S+level*3*S;spawnInvaders();addScore(100);return}
+ const a=world.aliens;if(!a.length){level++;world.formationY=touch?90*S+level*3*S:88+Math.min(level-1,8)*3;spawnInvaders();addScore(100);return}
  let edge=false;const speed=(24+level*5)*S;
  for(const e of a){e.x+=world.dir*speed*dt;if(e.x>W-22*S||e.x<22*S)edge=true}
  if(edge){world.dir*=-1;for(const e of a)e.y+=13*S}
- world.bullets.forEach(b=>{b.prevY=b.y;b.y-=b.v*dt});world.bullets=world.bullets.filter(b=>b.y>65*S);
+ world.bullets.forEach(b=>{b.prevY=b.y;b.y-=b.v*dt});world.bullets=world.bullets.filter(b=>b.y>(touch?65*S:60));
  for(const b of world.bullets){const i=a.findIndex(e=>Math.abs(e.x-b.x)<e.r+7*S&&b.prevY>=e.y-e.r&&b.y<=e.y+e.r);if(i>=0){a.splice(i,1);b.dead=true;addScore(10);sfx.hit()}}
  world.bullets=world.bullets.filter(b=>!b.dead);
  dropClock-=dt;if(dropClock<0&&a.length){const e=a[Math.floor(Math.random()*a.length)];world.enemyShots.push({x:e.x,y:e.y+10*S,v:210*S});dropClock=Math.max(.35,1.15-level*.05)}
@@ -434,7 +434,7 @@ function drawSpace(){
 }
 function drawArkanoid(){
  const p=world.paddle,b=world.ball;
- const top=92*S;ctx.fillStyle="#102b64";ctx.fillRect(12*S,top,W-24*S,2*S);
+ const top=touch?92*S:70;ctx.fillStyle="#102b64";ctx.fillRect(12*S,top,W-24*S,2*S);
  for(const br of (world.bricks||[])){if(!br.hp)continue;glow(br.color,8*S);roundRect(br.x,br.y,br.w,br.h,5*S,br.color,"#f4fbffcc");noGlow();roundRect(br.x+4*S,br.y+3*S,br.w-8*S,3*S,2*S,"#ffffff70")}
  const grad=ctx.createLinearGradient(p.x,p.y-p.h/2,p.x,p.y+p.h/2);grad.addColorStop(0,"#81f4ff");grad.addColorStop(1,"#0878c9");glow("#24dfff",12*S);roundRect(p.x-p.w/2,p.y-p.h/2,p.w,p.h,9*S,grad,"#d9ffff");noGlow();
  if(b){glow("#ffe46b",14*S);ctx.beginPath();ctx.arc(b.x,b.y,b.r,0,Math.PI*2);ctx.fillStyle="#fff6c5";ctx.fill();ctx.strokeStyle="#ffbd42";ctx.lineWidth=2*S;ctx.stroke();noGlow();if(b.stuck){ctx.fillStyle="#d7f5ff";ctx.textAlign="center";ctx.font="800 "+(12*S)+"px system-ui";ctx.fillText("TOCÁ LANZAR",W/2,p.y-42*S);ctx.textAlign="left"}}
