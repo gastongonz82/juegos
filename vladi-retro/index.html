@@ -264,11 +264,20 @@ function updateSpace(dt){
 function updateArkanoid(dt){
  const p=world.paddle,b=world.ball,speed=340*S;if(held.left)p.x-=speed*dt;if(held.right)p.x+=speed*dt;p.x=clamp(p.x,p.w/2+8,W-p.w/2-8);
  if(b.stuck){b.x=p.x;b.y=p.y-22*S;return}
+ const previousX=b.x,previousY=b.y;
  b.x+=b.vx*dt;b.y+=b.vy*dt;
  if(b.x<b.r||b.x>W-b.r){b.vx*=-1;b.x=clamp(b.x,b.r,W-b.r);sfx.bounce()}
  if(b.y<76*S){b.vy=Math.abs(b.vy);sfx.bounce()}
  if(b.vy>0&&b.y+b.r>=p.y-p.h/2&&b.y-b.r<=p.y+p.h&&Math.abs(b.x-p.x)<p.w/2+b.r){b.vy=-Math.abs(b.vy);b.vx=((b.x-p.x)/(p.w/2))*250*S;sfx.bounce()}
- for(const br of world.bricks){if(!br.hp)continue;if(b.x+b.r>br.x&&b.x-b.r<br.x+br.w&&b.y+b.r>br.y&&b.y-b.r<br.y+br.h){br.hp--;b.vy*=-1;addScore(20);sfx.hit();break}}
+ for(const br of world.bricks){if(!br.hp)continue;if(b.x+b.r>br.x&&b.x-b.r<br.x+br.w&&b.y+b.r>br.y&&b.y-b.r<br.y+br.h){br.hp--;
+ if(touch){
+  if(previousY+b.r<=br.y){b.y=br.y-b.r-.01;b.vy=-Math.abs(b.vy)}
+  else if(previousY-b.r>=br.y+br.h){b.y=br.y+br.h+b.r+.01;b.vy=Math.abs(b.vy)}
+  else if(previousX+b.r<=br.x){b.x=br.x-b.r-.01;b.vx=-Math.abs(b.vx)}
+  else if(previousX-b.r>=br.x+br.w){b.x=br.x+br.w+b.r+.01;b.vx=Math.abs(b.vx)}
+  else{b.vy*=-1;b.y=b.vy<0?br.y-b.r-.01:br.y+br.h+b.r+.01}
+ }else b.vy*=-1;
+ addScore(20);sfx.hit();break}}
  if(world.bricks.every(x=>x.hp<=0)){level++;buildBricks();b.vy=Math.abs(b.vy)+35*S}
  if(b.y>H-(touch?85:35)*S){loseLife()}
 }
