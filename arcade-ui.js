@@ -21,7 +21,7 @@
     if(!button)return;
     const id=(button.id||'').toLowerCase();
     const label=(button.textContent||'').trim().toLowerCase();
-    if(!/^(start|play|playbtn|again|retry|restart|main-action)$/.test(id)&&!(/^(▶|►|↻)?\\s*(jugar|volver a jugar|iniciar partida|nueva partida|reintentar)/i.test(label)))return;
+    if(!/^(start|play|playbtn|again|retry|restart|main-action)$/.test(id)&&!(/^(▶|►|↻)?\s*(jugar|volver a jugar|iniciar partida|nueva partida|reintentar)/i.test(label)))return;
     window.gtag('event','game_play_click',{game_id:gameId,game_name:name,button_id:id||'unnamed'});
   },{capture:true});
 
