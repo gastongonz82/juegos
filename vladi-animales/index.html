@@ -323,7 +323,7 @@ function answer(id,button){
  if(window.speechSynthesis)window.speechSynthesis.cancel();
  window.setTimeout(()=>{state.round++;if(state.round>=state.deck.length||state.round-state.levelStart>=10){finishGame();return}state.locked=false;showQuestion()},1150);
 }
-function finishGame(){
+function finishGame(){if(typeof window.gtag==='function')window.gtag('event','game_end',{game_id:'vladi-animales',game_name:'vladi animales'});
  $('play').classList.remove('active');
  const previous=state.best,total=Math.min(10,state.deck.length-state.levelStart);
  if(state.levelCorrect>state.best){state.best=state.levelCorrect;try{localStorage.setItem('vladiAnimalsBest100Rounds',String(state.best))}catch(_){}}
