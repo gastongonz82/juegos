@@ -524,6 +524,20 @@
     @media (max-width: 620px) {
       .topbar { padding-inline: 10px; }
     }
+
+    /* El joystick queda completo, centrado y sin texto sobrepuesto. */
+    .hero-art::after { display: none; }
+    .joystick-illustration {
+      width: 100%;
+      height: 100%;
+      max-width: 100%;
+      max-height: 100%;
+      padding: 7px 12px;
+      object-fit: contain;
+      overflow: visible;
+      filter: drop-shadow(0 0 23px #31dfff55);
+    }
+    .hero-showcase-label { display: none; }
     /* Ajustes de integración visual: fondo a todo el ancho, arte real y CTA visible. */
     html, body { overflow-x: clip; }
     .hero::before {
@@ -624,7 +638,7 @@
               <stop stop-color="#35e7ff"/><stop offset=".5" stop-color="#168ce9"/><stop offset="1" stop-color="#5444df"/>
             </linearGradient>
             <linearGradient id="joystick-side" x1="0" y1="0" x2="0" y2="1">
-              <stop stop-color="#172f86"/><stop offset="1" stop-color="#091648"/>
+              <stop stop-color="#2458ad"/><stop offset=".52" stop-color="#182d82"/><stop offset="1" stop-color="#101b58"/>
             </linearGradient>
             <linearGradient id="joystick-ball" x1=".15" y1=".05" x2=".82" y2=".95">
               <stop stop-color="#fff28b"/><stop offset=".35" stop-color="#ffca36"/><stop offset="1" stop-color="#ff6c35"/>
@@ -636,9 +650,9 @@
           <ellipse cx="240" cy="145" rx="180" ry="125" fill="url(#joystick-glow)"/>
           <circle cx="240" cy="132" r="92" fill="none" stroke="#52eaff" stroke-opacity=".18" stroke-width="2"/>
           <circle cx="240" cy="132" r="118" fill="none" stroke="#52eaff" stroke-opacity=".1" stroke-width="2"/>
-          <g filter="url(#joystick-shadow)">
+          <g filter="url(#joystick-shadow)" transform="translate(240 135) scale(1.24) translate(-240 -135)">
             <path d="M157 167 240 136 323 167v38l-83 33-83-33z" fill="url(#joystick-side)" stroke="#43ddff" stroke-width="3" stroke-linejoin="round"/>
-            <path d="m157 167 83-33 83 33-83 34z" fill="url(#joystick-deck)" stroke="#83f4ff" stroke-width="3" stroke-linejoin="round"/>
+            <path d="m157 167 83-33 83 33-83 34z" fill="url(#joystick-deck)" stroke="#b7f9ff" stroke-width="4" stroke-linejoin="round"/>
             <path d="m171 169 69-27 69 27-69 28z" fill="#101d58" fill-opacity=".6"/>
             <ellipse cx="193" cy="169" rx="10" ry="6" fill="#ffcb3d" stroke="#fff1a6" stroke-width="2"/>
             <ellipse cx="285" cy="169" rx="10" ry="6" fill="#ff578d" stroke="#ffb1c6" stroke-width="2"/>
@@ -652,7 +666,6 @@
           <circle cx="345" cy="66" r="3" fill="#fff"/>
           <circle cx="129" cy="203" r="3" fill="#8df6ff"/>
         </svg>
-        <span class="hero-showcase-label">EL ARCADE DE VLADI</span>
         <span class="spark one">✦</span><span class="spark two">✧</span><span class="spark three">✦</span>
       </div>
     </section>
