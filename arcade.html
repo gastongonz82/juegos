@@ -180,6 +180,16 @@
       .cover-icon-tateti{display:inline-flex;align-items:center;justify-content:center;gap:2px}
     .cover-icon-tateti i{font-size:.75em;font-style:normal;line-height:1}
     @media(max-width:620px){.cover-icon-tateti i{font-size:40px}}
+  
+    /* Portadas ilustradas del arcade */
+    .cover.cover-photo { height: 132px; min-height: 132px; isolation: isolate; }
+    .cover-photo::before { display: none; }
+    .cover-photo::after { inset: 54% 0 0; width: auto; height: auto; transform: none; background: linear-gradient(transparent, rgba(5,9,22,.46)); opacity: 1; z-index: 1; }
+    .cover-photo .cover-image { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; }
+    .cover-photo .tag { z-index: 2; }
+    .game-card:hover .cover-photo .cover-image { transform: scale(1.035); transition: transform .2s ease; }
+    @media (max-width: 620px) { .cover.cover-photo { height: 105px; min-height: 105px; } }
+    @media (max-width: 360px) { .cover.cover-photo { height: 100%; min-height: 100%; } }
   </style>
 </head>
 <body>
@@ -217,131 +227,131 @@
       </div>
       <div class="grid" id="game-grid">
         <a class="game-card" href="./flappy-vladi/" data-category="accion" data-search="flappy vladi vuelo isla arcade">
-          <div class="cover" style="--accent:#8de7c1;--wash:rgba(70,205,157,.2)"><span class="tag">Acción</span><span class="cover-icon" aria-hidden="true">🐦</span></div>
+          <div class="cover cover-photo" style="--accent:#8de7c1;--wash:rgba(70,205,157,.2)"><img class="cover-image" src="assets/flappy-vladi.png" alt="" aria-hidden="true" loading="lazy" decoding="async"><span class="tag">Acción</span></div>
           <div class="card-info"><h3>Flappy Vladi</h3><p>Volá entre los tubos y superá tu mejor marca.</p><span class="card-cta">Jugar ahora <span class="arrow" aria-hidden="true">↗</span></span></div>
         </a>
         <a class="game-card" href="./vladi-run/" data-category="aventura" data-search="vladi run correr isla saltar">
-          <div class="cover" style="--accent:#ffd166;--wash:rgba(244,177,69,.2)"><span class="tag">Aventura</span><span class="cover-icon" aria-hidden="true">🏃</span></div>
+          <div class="cover cover-photo" style="--accent:#ffd166;--wash:rgba(244,177,69,.2)"><img class="cover-image" src="assets/vladi-run.png" alt="" aria-hidden="true" loading="lazy" decoding="async"><span class="tag">Aventura</span></div>
           <div class="card-info"><h3>Vladi Run</h3><p>Corré por la isla, saltá obstáculos y juntá estrellas.</p><span class="card-cta">Jugar ahora <span class="arrow" aria-hidden="true">↗</span></span></div>
         </a>
         <a class="game-card" href="./vladi-kart/" data-category="carreras" data-search="vladi kart carrera derrape turbo">
-          <div class="cover" style="--accent:#ff9e73;--wash:rgba(244,113,83,.2)"><span class="tag">Carreras</span><span class="cover-icon" aria-hidden="true">🏎️</span></div>
+          <div class="cover cover-photo" style="--accent:#ff9e73;--wash:rgba(244,113,83,.2)"><img class="cover-image" src="assets/vladi-kart.png" alt="" aria-hidden="true" loading="lazy" decoding="async"><span class="tag">Carreras</span></div>
           <div class="card-info"><h3>Vladi Kart</h3><p>Derrapá, usá los turbos y ganá la carrera.</p><span class="card-cta">Jugar ahora <span class="arrow" aria-hidden="true">↗</span></span></div>
         </a>
         <a class="game-card" href="./vladi-crossy/" data-category="accion" data-search="vladi crossy cruzar camino trafico rio rana">
-          <div class="cover" style="--accent:#9de182;--wash:rgba(116,210,88,.2)"><span class="tag">Acción</span><span class="cover-icon" aria-hidden="true">🐸</span></div>
+          <div class="cover cover-photo" style="--accent:#9de182;--wash:rgba(116,210,88,.2)"><img class="cover-image" src="assets/vladi-crossy.webp" alt="" aria-hidden="true" loading="lazy" decoding="async"><span class="tag">Acción</span></div>
           <div class="card-info"><h3>Vladi Crossy</h3><p>Cruzá caminos, esquivá el tráfico y avanzá por el río.</p><span class="card-cta">Jugar ahora <span class="arrow" aria-hidden="true">↗</span></span></div>
         </a>
         <a class="game-card" href="./vladi-fruit-ninja/" data-category="accion" data-search="vladi fruit ninja frutas combos bombas">
-          <div class="cover" style="--accent:#ff99bb;--wash:rgba(242,101,166,.2)"><span class="tag">Acción</span><span class="cover-icon" aria-hidden="true">🍉</span></div>
+          <div class="cover cover-photo" style="--accent:#ff99bb;--wash:rgba(242,101,166,.2)"><img class="cover-image" src="assets/fruit-ninja.png" alt="" aria-hidden="true" loading="lazy" decoding="async"><span class="tag">Acción</span></div>
           <div class="card-info"><h3>Vladi Fruit Ninja</h3><p>Cortá frutas, encadená combos y esquivá las bombas.</p><span class="card-cta">Jugar ahora <span class="arrow" aria-hidden="true">↗</span></span></div>
         </a>
         <a class="game-card" href="./vladi-galaxia/" data-category="accion" data-search="vladi galaxia nave espacio meteoritos">
-          <div class="cover" style="--accent:#9eabff;--wash:rgba(104,112,255,.24)"><span class="tag">Acción</span><span class="cover-icon" aria-hidden="true">🚀</span></div>
+          <div class="cover cover-photo" style="--accent:#9eabff;--wash:rgba(104,112,255,.24)"><img class="cover-image" src="assets/vladi-galaxia.webp" alt="" aria-hidden="true" loading="lazy" decoding="async"><span class="tag">Acción</span></div>
           <div class="card-info"><h3>Vladi Galaxia</h3><p>Pilotá tu nave y defendé la galaxia de los meteoritos.</p><span class="card-cta">Jugar ahora <span class="arrow" aria-hidden="true">↗</span></span></div>
         </a>
         <a class="game-card" href="./vladi-taekwondo/" data-category="deportes" data-search="vladi taekwondo dojo combate">
-          <div class="cover" style="--accent:#ffbd8b;--wash:rgba(236,137,76,.2)"><span class="tag">Deportes</span><span class="cover-icon" aria-hidden="true">🥋</span></div>
+          <div class="cover cover-photo" style="--accent:#ffbd8b;--wash:rgba(236,137,76,.2)"><img class="cover-image" src="assets/vladi-taekwondo2.png" alt="" aria-hidden="true" loading="lazy" decoding="async"><span class="tag">Deportes</span></div>
           <div class="card-info"><h3>Vladi Taekwondo</h3><p>Bloqueá, esquivá y contraatacá en el dojo.</p><span class="card-cta">Jugar ahora <span class="arrow" aria-hidden="true">↗</span></span></div>
         </a>
         <a class="game-card" href="./vladi-futbol/" data-category="deportes" data-search="vladi futbol fútbol patear arquero">
-          <div class="cover" style="--accent:#8ee4b1;--wash:rgba(63,205,139,.2)"><span class="tag">Deportes</span><span class="cover-icon" aria-hidden="true">⚽</span></div>
+          <div class="cover cover-photo" style="--accent:#8ee4b1;--wash:rgba(63,205,139,.2)"><img class="cover-image" src="assets/vladi-futbol.png" alt="" aria-hidden="true" loading="lazy" decoding="async"><span class="tag">Deportes</span></div>
           <div class="card-info"><h3>Vladi Fútbol</h3><p>Elegí una esquina, pateá y vencé al arquero.</p><span class="card-cta">Jugar ahora <span class="arrow" aria-hidden="true">↗</span></span></div>
         </a>
         <a class="game-card" href="./vladi-basquet/" data-category="deportes" data-search="vladi basquet básquet baloncesto aro encestar">
-          <div class="cover" style="--accent:#ffba77;--wash:rgba(244,145,61,.2)"><span class="tag">Deportes</span><span class="cover-icon" aria-hidden="true">🏀</span></div>
+          <div class="cover cover-photo" style="--accent:#ffba77;--wash:rgba(244,145,61,.2)"><img class="cover-image" src="assets/vladi-basquet.png" alt="" aria-hidden="true" loading="lazy" decoding="async"><span class="tag">Deportes</span></div>
           <div class="card-info"><h3>Vladi Básquet</h3><p>Apuntá el tiro, medí la fuerza y encadená encestes.</p><span class="card-cta">Jugar ahora <span class="arrow" aria-hidden="true">↗</span></span></div>
         </a>
         <a class="game-card" href="./vladi-rescate/" data-category="aventura" data-search="vladi rescate animales laberinto salida">
-          <div class="cover" style="--accent:#85d7b4;--wash:rgba(54,193,148,.19)"><span class="tag">Aventura</span><span class="cover-icon" aria-hidden="true">🧭</span></div>
+          <div class="cover cover-photo" style="--accent:#85d7b4;--wash:rgba(54,193,148,.19)"><img class="cover-image" src="assets/vladi-rescate.webp" alt="" aria-hidden="true" loading="lazy" decoding="async"><span class="tag">Aventura</span></div>
           <div class="card-info"><h3>Vladi Rescate</h3><p>Rescatá animalitos y encontrá la salida del laberinto.</p><span class="card-cta">Jugar ahora <span class="arrow" aria-hidden="true">↗</span></span></div>
         </a>
         <a class="game-card" href="./vladi-halloween-maze/" data-category="aventura" data-search="vladi halloween maze terror caramelos monstruos calabazas">
-          <div class="cover" style="--accent:#c5a1ff;--wash:rgba(147,82,236,.24)"><span class="tag">Aventura</span><span class="cover-icon" aria-hidden="true">🎃</span></div>
+          <div class="cover cover-photo" style="--accent:#c5a1ff;--wash:rgba(147,82,236,.24)"><img class="cover-image" src="assets/halloween-maze.png" alt="" aria-hidden="true" loading="lazy" decoding="async"><span class="tag">Aventura</span></div>
           <div class="card-info"><h3>Vladi Halloween Maze</h3><p>Juntá caramelos, activá poderes y escapá de los monstruos.</p><span class="card-cta">Jugar ahora <span class="arrow" aria-hidden="true">↗</span></span></div>
         </a>
         <a class="game-card" href="./vladi-bowling/" data-category="deportes" data-search="vladi bowling boliche pinos strike deporte">
-          <div class="cover" style="--accent:#ffd28a;--wash:rgba(242,145,78,.22)"><span class="tag">Deportes</span><span class="cover-icon" aria-hidden="true">🎳</span></div>
+          <div class="cover cover-photo" style="--accent:#ffd28a;--wash:rgba(242,145,78,.22)"><img class="cover-image" src="assets/vladi-bowling.webp" alt="" aria-hidden="true" loading="lazy" decoding="async"><span class="tag">Deportes</span></div>
           <div class="card-info"><h3>Vladi Bowling Arcade</h3><p>Apuntá, elegí la fuerza y buscá el strike en diez frames.</p><span class="card-cta">Jugar ahora <span class="arrow" aria-hidden="true">↗</span></span></div>
         </a>
         <a class="game-card" href="./vladi-ahorcado/" data-category="desafios" data-search="rescate vladi ahorcado palabras letras juego educativo">
-          <div class="cover" style="--accent:#77e5dd;--wash:rgba(55,211,202,.2)"><span class="tag">Desafíos</span><span class="cover-icon" aria-hidden="true">🪢</span></div>
+          <div class="cover cover-photo" style="--accent:#77e5dd;--wash:rgba(55,211,202,.2)"><img class="cover-image" src="assets/vladi-ahorcado.webp" alt="" aria-hidden="true" loading="lazy" decoding="async"><span class="tag">Desafíos</span></div>
           <div class="card-info"><h3>Rescatá a Vladi</h3><p>Descubrí palabras antes de que se complete la figura del ahorcado.</p><span class="card-cta">Jugar ahora <span class="arrow" aria-hidden="true">↗</span></span></div>
         </a>
         <a class="game-card" href="./vladi-pelicula/" data-category="desafios" data-search="adivina adiviná película peliculas cine emojis quiz">
-          <div class="cover" style="--accent:#ffd166;--wash:rgba(255,209,102,.2)"><span class="tag">Desafíos</span><span class="cover-icon" aria-hidden="true">🎬</span></div>
+          <div class="cover cover-photo" style="--accent:#ffd166;--wash:rgba(255,209,102,.2)"><img class="cover-image" src="assets/vladi-pelicula.webp" alt="" aria-hidden="true" loading="lazy" decoding="async"><span class="tag">Desafíos</span></div>
           <div class="card-info"><h3>Adiviná la película</h3><p>Descifrá películas famosas con emojis antes de que termine el tiempo.</p><span class="card-cta">Jugar ahora <span class="arrow" aria-hidden="true">↗</span></span></div>
         </a>
         <a class="game-card" href="./vladi-palabras/" data-category="desafios" data-search="palabras desordenadas revueltas letras vocabulario juego educativo">
-          <div class="cover" style="--accent:#8ce7df;--wash:rgba(63,210,197,.2)"><span class="tag">Desafíos</span><span class="cover-icon" aria-hidden="true">🔀</span></div>
+          <div class="cover cover-photo" style="--accent:#8ce7df;--wash:rgba(63,210,197,.2)"><img class="cover-image" src="assets/vladi-palabras.webp" alt="" aria-hidden="true" loading="lazy" decoding="async"><span class="tag">Desafíos</span></div>
           <div class="card-info"><h3>Palabras desordenadas</h3><p>Ordená las letras y descubrí palabras nuevas en cada partida.</p><span class="card-cta">Jugar ahora <span class="arrow" aria-hidden="true">↗</span></span></div>
         </a>
               <a class="game-card" href="./vladi-tateti/" data-category="desafios" data-search="ta te ti tres en linea tres en raya tic tac toe ingenio estrategia">
-          <div class="cover" style="--accent:#c5a1ff;--wash:rgba(147,82,236,.22)"><span class="tag">Desafíos</span><span class="cover-icon cover-icon-tateti" aria-hidden="true"><i>❌</i><i>⭕</i></span></div>
+          <div class="cover cover-photo" style="--accent:#c5a1ff;--wash:rgba(147,82,236,.22)"><img class="cover-image" src="assets/vladi-tateti.webp" alt="" aria-hidden="true" loading="lazy" decoding="async"><span class="tag">Desafíos</span></div>
           <div class="card-info"><h3>Ta Te Ti con Vladi</h3><p>Armá tres en línea y jugá contra Vladi o con otra persona.</p><span class="card-cta">Jugar ahora <span class="arrow" aria-hidden="true">↗</span></span></div>
         </a>
               <a class="game-card" href="./vladi-piedra-papel-tijera/" data-category="desafios" data-search="piedra papel tijera rocanrol rock paper scissors ingenio">
-          <div class="cover" style="--accent:#8de7c1;--wash:rgba(70,205,157,.2)"><span class="tag">Desafíos</span><span class="cover-icon cover-icon-rps" aria-hidden="true"><i>✊</i><i>✋</i><i>✌️</i></span></div>
+          <div class="cover cover-photo" style="--accent:#8de7c1;--wash:rgba(70,205,157,.2)"><img class="cover-image" src="assets/vladi-piedra-papel-tijera.webp" alt="" aria-hidden="true" loading="lazy" decoding="async"><span class="tag">Desafíos</span></div>
           <div class="card-info"><h3>Piedra, papel o tijera</h3><p>Elegí tu jugada y enfrentate a Vladi en cada ronda.</p><span class="card-cta">Jugar ahora <span class="arrow" aria-hidden="true">↗</span></span></div>
         </a>
         <a class="game-card" href="./vladi-memory-card/" data-category="desafios" data-search="memory card memoria cartas pares personajes vladi">
-          <div class="cover" style="--accent:#c5a1ff;--wash:rgba(147,82,236,.22)"><span class="tag">Desafíos</span><span class="cover-icon cover-icon-memory" aria-hidden="true">🃏</span></div>
+          <div class="cover cover-photo" style="--accent:#c5a1ff;--wash:rgba(147,82,236,.22)"><img class="cover-image" src="assets/vladi-memory-card.webp" alt="" aria-hidden="true" loading="lazy" decoding="async"><span class="tag">Desafíos</span></div>
           <div class="card-info"><h3>Memory Card</h3><p>Encontrá los 8 pares de personajes de Vladi.</p><span class="card-cta">Jugar ahora <span class="arrow" aria-hidden="true">↗</span></span></div>
         </a>
         <a class="game-card" href="./vladi-quiz/" data-category="desafios" data-search="quiz relampago preguntas animales espacio naturaleza deportes ciencia ingenio">
-          <div class="cover" style="--accent:#ffe45b;--wash:rgba(255,226,84,.2)"><span class="tag">Desafíos</span><span class="cover-icon" aria-hidden="true">❓</span></div>
+          <div class="cover cover-photo" style="--accent:#ffe45b;--wash:rgba(255,226,84,.2)"><img class="cover-image" src="assets/vladi-quiz.webp" alt="" aria-hidden="true" loading="lazy" decoding="async"><span class="tag">Desafíos</span></div>
           <div class="card-info"><h3>Quiz relámpago</h3><p>Respondé preguntas de animales, espacio, naturaleza y más.</p><span class="card-cta">Jugar ahora <span class="arrow" aria-hidden="true">↗</span></span></div>
         </a>
         <a class="game-card" href="./vladi-matematicas/" data-category="desafios" data-search="mision matematica matematicas sumar restar sumas restas numeros">
-          <div class="cover" style="--accent:#ffe45b;--wash:rgba(255,226,84,.2)"><span class="tag">Desafíos</span><span class="cover-icon" aria-hidden="true">🧮</span></div>
+          <div class="cover cover-photo" style="--accent:#ffe45b;--wash:rgba(255,226,84,.2)"><img class="cover-image" src="assets/vladi-matematicas.webp" alt="" aria-hidden="true" loading="lazy" decoding="async"><span class="tag">Desafíos</span></div>
           <div class="card-info"><h3>Misión matemática</h3><p>Practicá sumas y restas con cuentas para resolver.</p><span class="card-cta">Jugar ahora <span class="arrow" aria-hidden="true">↗</span></span></div>
         </a>
         <a class="game-card" href="./vladi-unir-parejas/" data-category="desafios" data-search="unir parejas flechas palabras dibujos animales objetos comidas">
-          <div class="cover" style="--accent:#73f3ff;--wash:rgba(40,220,220,.2)"><span class="tag">Desafíos</span><span class="cover-icon" aria-hidden="true">🔗</span></div>
+          <div class="cover cover-photo" style="--accent:#73f3ff;--wash:rgba(40,220,220,.2)"><img class="cover-image" src="assets/vladi-unir-parejas.webp" alt="" aria-hidden="true" loading="lazy" decoding="async"><span class="tag">Desafíos</span></div>
           <div class="card-info"><h3>Uní las parejas</h3><p>Conectá palabras con animales, objetos y dibujos.</p><span class="card-cta">Jugar ahora <span class="arrow" aria-hidden="true">↗</span></span></div>
         </a>
         <a class="game-card" href="./vladi-colores/" data-category="desafios" data-search="aventura colores aprender nombres color escuchar">
-          <div class="cover" style="--accent:#ff79c6;--wash:rgba(255,80,184,.2)"><span class="tag">Desafíos</span><span class="cover-icon" aria-hidden="true">🌈</span></div>
+          <div class="cover cover-photo" style="--accent:#ff79c6;--wash:rgba(255,80,184,.2)"><img class="cover-image" src="assets/vladi-colores.webp" alt="" aria-hidden="true" loading="lazy" decoding="async"><span class="tag">Desafíos</span></div>
           <div class="card-info"><h3>Aventura de colores</h3><p>Descubrí y aprendé cómo se llama cada color.</p><span class="card-cta">Jugar ahora <span class="arrow" aria-hidden="true">↗</span></span></div>
         </a>
         <a class="game-card" href="./vladi-animales/" data-category="desafios" data-search="adivina animal animales sonidos pista granja selva mar oceano">
-          <div class="cover" style="--accent:#8ae86f;--wash:rgba(124,255,96,.2)"><span class="tag">Desafíos</span><span class="cover-icon" aria-hidden="true">🐾</span></div>
+          <div class="cover cover-photo" style="--accent:#8ae86f;--wash:rgba(124,255,96,.2)"><img class="cover-image" src="assets/vladi-animales.webp" alt="" aria-hidden="true" loading="lazy" decoding="async"><span class="tag">Desafíos</span></div>
           <div class="card-info"><h3>Adiviná el animal</h3><p>Escuchá una pista y descubrí qué animal se esconde.</p><span class="card-cta">Jugar ahora <span class="arrow" aria-hidden="true">↗</span></span></div>
         </a>
         <a class="game-card" href="./vladi-intruso/" data-category="desafios" data-search="encuentra encontrá el intruso observacion dibujos grupos animales frutas objetos">
-          <div class="cover" style="--accent:#68f2ff;--wash:rgba(82,230,255,.2)"><span class="tag">Desafíos</span><span class="cover-icon" aria-hidden="true">🔎</span></div>
+          <div class="cover cover-photo" style="--accent:#68f2ff;--wash:rgba(82,230,255,.2)"><img class="cover-image" src="assets/vladi-intruso.webp" alt="" aria-hidden="true" loading="lazy" decoding="async"><span class="tag">Desafíos</span></div>
           <div class="card-info"><h3>Encontrá el intruso</h3><p>Descubrí qué dibujo no pertenece al grupo.</p><span class="card-cta">Jugar ahora <span class="arrow" aria-hidden="true">↗</span></span></div>
         </a>
         <a class="game-card" href="./vladi-secuencias/" data-category="desafios" data-search="secuencias y patrones vladi juego desafio infantil vladi secuencias">
-          <div class="cover" style="--accent:#ffe45c;--wash:rgba(255,228,92,.2)"><span class="tag">Desafíos</span><span class="cover-icon" aria-hidden="true">🔁</span></div>
+          <div class="cover cover-photo" style="--accent:#ffe45c;--wash:rgba(255,228,92,.2)"><img class="cover-image" src="assets/vladi-secuencias.webp" alt="" aria-hidden="true" loading="lazy" decoding="async"><span class="tag">Desafíos</span></div>
           <div class="card-info"><h3>Secuencias y patrones</h3><p>Mirá la serie y elegí qué figura o color sigue.</p><span class="card-cta">Jugar ahora <span class="arrow" aria-hidden="true">↗</span></span></div>
         </a>
         <a class="game-card" href="./vladi-cambios/" data-category="desafios" data-search="¿qué cambió? vladi juego desafio infantil vladi cambios">
-          <div class="cover" style="--accent:#ffe45c;--wash:rgba(255,228,92,.2)"><span class="tag">Desafíos</span><span class="cover-icon" aria-hidden="true">👁️</span></div>
+          <div class="cover cover-photo" style="--accent:#ffe45c;--wash:rgba(255,228,92,.2)"><img class="cover-image" src="assets/vladi-cambios.webp" alt="" aria-hidden="true" loading="lazy" decoding="async"><span class="tag">Desafíos</span></div>
           <div class="card-info"><h3>¿Qué cambió?</h3><p>Observá la escena y descubrí qué dibujo cambió.</p><span class="card-cta">Jugar ahora <span class="arrow" aria-hidden="true">↗</span></span></div>
         </a>
         <a class="game-card" href="./vladi-historias/" data-category="desafios" data-search="ordená la historia vladi juego desafio infantil vladi historias">
-          <div class="cover" style="--accent:#ffe45c;--wash:rgba(255,228,92,.2)"><span class="tag">Desafíos</span><span class="cover-icon" aria-hidden="true">📖</span></div>
+          <div class="cover cover-photo" style="--accent:#ffe45c;--wash:rgba(255,228,92,.2)"><img class="cover-image" src="assets/vladi-historias.webp" alt="" aria-hidden="true" loading="lazy" decoding="async"><span class="tag">Desafíos</span></div>
           <div class="card-info"><h3>Ordená la historia</h3><p>Poné las imágenes en orden para contar qué pasó.</p><span class="card-cta">Jugar ahora <span class="arrow" aria-hidden="true">↗</span></span></div>
         </a>
         <a class="game-card" href="./vladi-caja-misteriosa/" data-category="desafios" data-search="la caja misteriosa vladi juego desafio infantil vladi caja misteriosa">
-          <div class="cover" style="--accent:#ffe45c;--wash:rgba(255,228,92,.2)"><span class="tag">Desafíos</span><span class="cover-icon" aria-hidden="true">🎁</span></div>
+          <div class="cover cover-photo" style="--accent:#ffe45c;--wash:rgba(255,228,92,.2)"><img class="cover-image" src="assets/vladi-caja-misteriosa.webp" alt="" aria-hidden="true" loading="lazy" decoding="async"><span class="tag">Desafíos</span></div>
           <div class="card-info"><h3>La caja misteriosa</h3><p>Leé las pistas y elegí qué se esconde en la caja.</p><span class="card-cta">Jugar ahora <span class="arrow" aria-hidden="true">↗</span></span></div>
         </a>
         <a class="game-card" href="./vladi-sopa-letras/" data-category="desafios" data-search="sopa de letras sopa buscar encontrar palabras escondidas grilla letras word search">
-          <div class="cover" style="--accent:#67f1e0;--wash:rgba(45,235,205,.2)"><span class="tag">Desafíos</span><span class="cover-icon" aria-hidden="true">🔠</span></div>
+          <div class="cover cover-photo" style="--accent:#67f1e0;--wash:rgba(45,235,205,.2)"><img class="cover-image" src="assets/vladi-sopa-letras.webp" alt="" aria-hidden="true" loading="lazy" decoding="async"><span class="tag">Desafíos</span></div>
           <div class="card-info"><h3>Sopa de letras</h3><p>Encontrá palabras escondidas en una grilla llena de letras.</p><span class="card-cta">Jugar ahora <span class="arrow" aria-hidden="true">↗</span></span></div>
         </a>
         <a class="game-card" href="./vladi-crucigramas/" data-category="desafios" data-search="crucigrama crucigramas pistas palabras completar letras casilleros crossword">
-          <div class="cover" style="--accent:#ff83d0;--wash:rgba(255,84,191,.2)"><span class="tag">Desafíos</span><span class="cover-icon" aria-hidden="true">📝</span></div>
+          <div class="cover cover-photo" style="--accent:#ff83d0;--wash:rgba(255,84,191,.2)"><img class="cover-image" src="assets/vladi-crucigramas.webp" alt="" aria-hidden="true" loading="lazy" decoding="async"><span class="tag">Desafíos</span></div>
           <div class="card-info"><h3>Crucigramas</h3><p>Leé pistas y completá las palabras que se cruzan.</p><span class="card-cta">Jugar ahora <span class="arrow" aria-hidden="true">↗</span></span></div>
         </a>
         <a class="game-card" href="./vladi-dibujo/" data-category="desafios" data-search="dibujo coloreo pintar vladi arte creativo">
-          <div class="cover" style="--accent:#ff78bb;--wash:rgba(255,120,187,.22)"><span class="tag">Desafíos</span><span class="cover-icon" aria-hidden="true">🎨</span></div>
+          <div class="cover cover-photo" style="--accent:#ff78bb;--wash:rgba(255,120,187,.22)"><img class="cover-image" src="assets/vladi-dibujo.webp" alt="" aria-hidden="true" loading="lazy" decoding="async"><span class="tag">Desafíos</span></div>
           <div class="card-info"><h3>Dibujo y coloreo</h3><p>Pintá, dibujá y completá retos creativos con Vladi.</p><span class="card-cta">Jugar ahora <span class="arrow" aria-hidden="true">↗</span></span></div>
         </a>
         <a class="game-card" href="./vladi-rompecabezas/" data-category="desafios" data-search="rompecabezas puzzle imagenes piezas armar jigsaw rompecabezas de vladi">
-          <div class="cover" style="--accent:#ffcd66;--wash:rgba(255,180,61,.2)"><span class="tag">Desafíos</span><span class="cover-icon" aria-hidden="true">🧩</span></div>
+          <div class="cover cover-photo" style="--accent:#ffcd66;--wash:rgba(255,180,61,.2)"><img class="cover-image" src="assets/vladi-rompecabezas.webp" alt="" aria-hidden="true" loading="lazy" decoding="async"><span class="tag">Desafíos</span></div>
           <div class="card-info"><h3>Rompecabezas de Vladi</h3><p>Intercambiá las piezas y descubrí divertidas escenas.</p><span class="card-cta">Jugar ahora <span class="arrow" aria-hidden="true">↗</span></span></div>
         </a>
       </div>
