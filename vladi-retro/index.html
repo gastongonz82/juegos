@@ -61,7 +61,7 @@ const GAMES={
  joust:{title:"Joust: Caballeros del Cielo",desc:"Vladi vuela en su dragón mecánico. Aleteá para ganar altura y vencé a los rivales desde arriba.",how:"PC: ← → para avanzar · ESPACIO o ↑ para aletear<br>Celular: izquierda, ALETEAR y derecha",accent:"#ff9e65",music:[294,370,440,370,262,330,392,330]},
  asteroids:{title:"Asteroids: Misión Vladi",desc:"Pilotá con Vladi entre meteoritos. Girá, acelerá y despejá el espacio sin perder la nave.",how:"PC: ← → girar · ↑ acelerar · ESPACIO disparar<br>Celular: girar, acelerar y disparar",accent:"#9a8cff",music:[220,277,330,277,247,311,370,311]},
  tetris:{title:"Tetris de Vladi",desc:"Acomodá las piezas con Vladi y completá líneas antes de que la torre llegue al techo.",how:"PC: ← → mover · ↑ girar · ↓ bajar · ESPACIO caída rápida<br>Celular: flechas, GIRAR y CAER",accent:"#7fffd4",music:[262,330,392,523,392,330,294,349]},
- catapult:{title:"Vladi Catapulta",desc:"Apuntá con Vladi, soltá la resortera y tirá las torres pieza por pieza en una aventura a todo color.",how:"PC: arrastrá a Vladi hacia atrás y soltá · ESPACIO lanza<br>Celular: ajustá el ángulo y tocá LANZAR",accent:"#ffb64d",music:[392,494,587,494,349,440,523,440]}
+ catapult:{title:"Vladi Catapulta",desc:"Apuntá con Vladi, soltá la resortera y tirá las torres pieza por pieza en una aventura a todo color.",how:"PC: arrastrá a Vladi hacia atrás y arriba, soltá · ESPACIO lanza<br>Celular: ajustá el ángulo y tocá LANZAR",accent:"#ffb64d",music:[392,494,587,494,349,440,523,440]}
 };
 const params=new URLSearchParams(location.search),key=params.get("game")||"space",cfg=GAMES[key]||GAMES.space;
 document.body.classList.toggle("is-tetris",key==="tetris");
@@ -393,7 +393,7 @@ function drawCatapult(){
   ctx.fillStyle="#8b6441";ctx.fillRect(tx-3*S,ty,6*S,35*S);for(let i=0;i<3;i++){ctx.fillStyle=variants.tree[i];ctx.beginPath();ctx.arc(tx+(i-1)*12*S,ty-i*12*S,15*S*sc,0,Math.PI*2);ctx.fill()}
  }
  const pull=drag&&world.aim?world.aim:null;let vX,vY;
- if(pull){vX=clamp((g.x-pull.x)*4.1,-40*S,700*S);vY=clamp((g.y-pull.y)*4.1,-610*S,100*S)}
+ if(pull){vX=clamp((g.x-pull.x)*4.1,-40*S,700*S);vY=clamp((pull.y-g.y)*4.1,-610*S,100*S)}
  else{const a=world.angle??-.48,power=world.power||500*S;vX=Math.cos(a)*power;vY=Math.sin(a)*power}
  if(!world.projectile){
   ctx.save();ctx.setLineDash([3*S,9*S]);ctx.lineWidth=2.5*S;ctx.strokeStyle="#fff9e2cc";ctx.beginPath();
@@ -432,7 +432,7 @@ function star(x,y,r,inner,n){ctx.beginPath();for(let i=0;i<n*2;i++){const a=-Mat
 
 function drawPrompt(title,sub){ctx.textAlign="center";ctx.fillStyle="#e9faff";ctx.font="1000 "+(24*S)+"px system-ui";ctx.fillText(title,W/2,H*.48);ctx.fillStyle="#92ddf4";ctx.font="800 "+(14*S)+"px system-ui";ctx.fillText(sub,W/2,H*.48+28*S);ctx.textAlign="left"}
 function ptr(e){const r=canvas.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top}}
-function fireCat(x,y){const g=world.sling;if(world.projectile)return;const dx=g.x-x,dy=g.y-y;world.projectile={x:g.x+20*S,y:g.y,vx:clamp(dx*4.1,-45*S,700*S),vy:clamp(dy*4.1,-610*S,110*S),r:22*S,a:0,cooldown:0,hitTarget:false};sfx.shot()}
+function fireCat(x,y){const g=world.sling;if(world.projectile)return;const dx=g.x-x,dy=y-g.y;world.projectile={x:g.x+20*S,y:g.y,vx:clamp(dx*4.1,-45*S,700*S),vy:clamp(dy*4.1,-610*S,110*S),r:22*S,a:0,cooldown:0,hitTarget:false};sfx.shot()}
 canvas.addEventListener("pointerdown",e=>{if(key!=="catapult"||stage!=="playing")return;const p=ptr(e),g=world.sling;if(Math.hypot(p.x-g.x,p.y-(g.y+20*S))<75*S&&!world.projectile){drag={start:p};canvas.setPointerCapture(e.pointerId)}});
 canvas.addEventListener("pointermove",e=>{if(drag){drag.current=ptr(e);world.aim=drag.current}});
 canvas.addEventListener("pointerup",e=>{if(drag){const p=drag.current||ptr(e);fireCat(p.x,p.y);drag=null;world.aim=null}});
