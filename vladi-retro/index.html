@@ -18,7 +18,7 @@ body{position:fixed;inset:0}#scene{position:absolute;inset:0;width:100%;height:1
 .pill small{display:block;color:#83edff;font-size:9px;font-weight:900;letter-spacing:.12em}.pill b{font-size:16px;font-weight:1000}
 #controls{position:absolute;z-index:3;left:50%;bottom:calc(var(--safe-b) + 14px);transform:translateX(-50%);display:none;align-items:center;justify-content:center;gap:10px;width:min(100% - 28px,520px);pointer-events:none}
 .control{pointer-events:auto;width:62px;height:62px;border:2px solid #72efff;border-radius:20px;background:linear-gradient(160deg,#0ca4d9eF,#093b8eeF);box-shadow:0 5px 0 #06245c,0 0 22px #18dfff44;color:white;font-size:22px;font-weight:1000;touch-action:none}
-.control.action{width:78px;height:68px;border-color:#ffdb72;background:linear-gradient(160deg,#ffbd37,#e96d1b);box-shadow:0 5px 0 #803617,0 0 22px #ffb02b55;color:#241224;font-size:14px}
+.control.aim-control{font-size:clamp(10px,2.5vw,14px);letter-spacing:.01em}.control.action{width:78px;height:68px;border-color:#ffdb72;background:linear-gradient(160deg,#ffbd37,#e96d1b);box-shadow:0 5px 0 #803617,0 0 22px #ffb02b55;color:#241224;font-size:14px}
 .control:active,.control.held{transform:translateY(3px);box-shadow:0 2px 0 #06245c,0 0 24px #18dfff88}
 #panel{position:absolute;z-index:5;inset:0;display:grid;place-items:center;padding:calc(var(--safe-t) + 16px) 16px calc(var(--safe-b) + 18px);background:radial-gradient(ellipse at 50% 40%,#0b3179a8,#020716dd 72%);backdrop-filter:blur(8px)}
 .panel-card{position:relative;width:min(500px,100%);max-height:100%;overflow:auto;border:2px solid #46e5ff;border-radius:28px;padding:clamp(20px,5vw,32px);background:linear-gradient(150deg,#0b2a72f5,#081642f7 65%,#170f46f5);box-shadow:0 0 0 5px #1ed9ff18,0 22px 75px #000b,inset 0 1px #ffffff24;text-align:center}
@@ -107,9 +107,9 @@ function buildTargets(){
  world.targets=[];world.blocks=[];
  const floor=H-(touch?102:78)*S,u=Math.max(26*S,Math.min(W*.083,H*.055,56*S));
  world.floor=floor;world.unit=u;world.sling={x:W*.16,y:floor-2.25*u};
- const wood=(x,bottom,w,h)=>world.blocks.push({x,y:bottom-h,w,h,hp:2,material:"wood",falling:false,vx:0,vy:0,rotation:0});
+ const wood=(x,bottom,w,h)=>world.blocks.push({x,y:bottom-h,w,h,hp:1,material:"wood",falling:false,vx:0,vy:0,rotation:0});
  const glass=(x,bottom,w,h)=>world.blocks.push({x,y:bottom-h,w,h,hp:1,material:"glass",falling:false,vx:0,vy:0,rotation:0});
- const stone=(x,bottom,w,h)=>world.blocks.push({x,y:bottom-h,w,h,hp:3,material:"stone",falling:false,vx:0,vy:0,rotation:0});
+ const stone=(x,bottom,w,h)=>world.blocks.push({x,y:bottom-h,w,h,hp:2,material:"stone",falling:false,vx:0,vy:0,rotation:0});
  const pig=(x,y,r)=>world.targets.push({x,y,r,hp:1,phase:rand(0,6.28),vy:0,falling:false});
  const base=floor-5*S,layout=(level-1)%3,x=W*.51;
  if(layout===0){
@@ -157,7 +157,7 @@ function buildTargets(){
   pig(cx-u*1.35,d2-.76*u-.30*u,.29*u);pig(cx+u*1.35,d2-.76*u-.30*u,.29*u);
   wood(cx-u*.46,d-.02*u,.92*u,.34*u);pig(cx,d-.36*u-.28*u,.28*u);
  }
- world.projectile=null;world.aim=null;world.angle=-.48;world.power=(470+Math.min(level,5)*18)*S;
+ world.projectile=null;world.aim=null;world.angle=-.48;world.power=(700+Math.min(level,5)*20)*S;
 }
 function init(){fresh();stage="playing";panel.classList.add("hidden");$("#pause").textContent="Ⅱ";$("#pause").setAttribute("aria-label","Pausar");}
 function start(){if(stage==="ready"||stage==="over"){init()}else if(stage==="paused"){stage="playing";panel.classList.add("hidden");$("#pause").textContent="Ⅱ"}}
@@ -258,7 +258,7 @@ function updateCatapult(dt){
  catapultSupports();
  const moving=blocks.filter(b=>b.hp>0&&b.falling).sort((a,b)=>b.y-a.y);
  for(const b of moving){
-  const oldBottom=b.y+b.h;b.vy=Math.min(720*S,b.vy+620*S*dt);
+  const oldBottom=b.y+b.h;b.vy=Math.min(1000*S,b.vy+920*S*dt);
   let nextY=b.y+b.vy*dt,landed=false;
   for(const q of blocks){
    if(q===b||q.hp<=0)continue;
@@ -274,7 +274,7 @@ function updateCatapult(dt){
  }
  for(const t of world.targets){
   if(!t.hp||!t.falling)continue;
-  const oldBottom=t.y+t.r;t.vy=(t.vy||0)+560*S*dt;let nextY=t.y+t.vy*dt,landed=false;
+  const oldBottom=t.y+t.r;t.vy=(t.vy||0)+840*S*dt;let nextY=t.y+t.vy*dt,landed=false;
   for(const b of blocks){if(b.hp<=0)continue;const overlap=Math.min(t.x+t.r*.72,b.x+b.w)-Math.max(t.x-t.r*.72,b.x);
    if(overlap>0&&oldBottom<=b.y+5*S&&nextY+t.r>=b.y&&b.y>=t.y){nextY=b.y-t.r;t.vy=0;landed=true}
   }
@@ -283,19 +283,17 @@ function updateCatapult(dt){
   else if(landed)t.falling=false;
  }
  if(!p){if(world.targets.length&&world.targets.every(t=>!t.hp)){level++;addScore(250);buildTargets()}return}
- p.vy+=560*S*dt;p.x+=p.vx*dt;p.y+=p.vy*dt;p.a=Math.atan2(p.vy,p.vx);
+ p.vy+=1250*S*dt;p.x+=p.vx*dt;p.y+=p.vy*dt;p.a=Math.atan2(p.vy,p.vx);
  if(p.cooldown>0)p.cooldown-=dt;
  if(p.cooldown<=0){
   const hitBlock=blocks.find(b=>b.hp>0&&p.x>b.x-12*S&&p.x<b.x+b.w+12*S&&p.y>b.y-10*S&&p.y<b.y+b.h+10*S);
   const hitTarget=world.targets.find(t=>t.hp&&Math.hypot(p.x-t.x,p.y-t.y)<p.r+t.r);
   if(hitTarget){
-   hitTarget.hp=0;p.cooldown=.14;p.vx*=.7;p.vy=-Math.abs(p.vy)*.25;addScore(100);sfx.coin();
+   hitTarget.hp=0;p.cooldown=.08;p.vx*=.92;p.vy*=.78;addScore(100);sfx.coin();
   }else if(hitBlock){
-   hitBlock.hp--;p.cooldown=.17;p.vx*=.68;p.vy=-Math.abs(p.vy)*.24;addScore(25);sfx.hit();
-   if(hitBlock.hp<=0){
-    hitBlock.falling=true;hitBlock.vx+=p.vx*.34;hitBlock.vy=-Math.max(35*S,Math.abs(p.vy)*.12);
-    catapultSupports();
-   }
+   const impactX=p.vx,impactY=p.vy;hitBlock.hp-=Math.hypot(impactX,impactY)>240*S?2:1;p.cooldown=.09;p.vx*=.84;p.vy*=.78;addScore(40);sfx.hit();
+   hitBlock.falling=true;hitBlock.vx+=impactX*.24;hitBlock.vy=-Math.max(100*S,Math.abs(impactY)*.15);
+   catapultSupports();
   }
  }
  if(p.x>W+55*S||p.y>floor-10*S||p.x<-55*S||p.y<-40*S){
@@ -408,12 +406,12 @@ function drawCatapult(){
   ctx.fillStyle="#8b6441";ctx.fillRect(tx-3*S,ty,6*S,35*S);for(let i=0;i<3;i++){ctx.fillStyle=variants.tree[i];ctx.beginPath();ctx.arc(tx+(i-1)*12*S,ty-i*12*S,15*S*sc,0,Math.PI*2);ctx.fill()}
  }
  const pull=drag&&world.aim?world.aim:null;let vX,vY;
- if(pull){vX=clamp((g.x-pull.x)*4.1,-40*S,700*S);vY=clamp((pull.y-g.y)*4.1,-610*S,100*S)}
+ if(pull){vX=clamp((g.x-pull.x)*6.1,-60*S,1050*S);vY=clamp((pull.y-g.y)*6.1,-920*S,150*S)}
  else{const a=world.angle??-.48,power=world.power||500*S;vX=Math.cos(a)*power;vY=Math.sin(a)*power}
  if(!world.projectile){
   ctx.save();ctx.setLineDash([3*S,9*S]);ctx.lineWidth=2.5*S;ctx.strokeStyle="#fff9e2cc";ctx.beginPath();
-  for(let i=0;i<=28;i++){const time=i*.055,x=g.x+20*S+vX*time,y=g.y+vY*time+.5*560*S*time*time;if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);if(y>floor)break}ctx.stroke();ctx.setLineDash([]);
-  for(let i=1;i<=7;i++){const time=i*.11,x=g.x+20*S+vX*time,y=g.y+vY*time+.5*560*S*time*time;if(y<floor-8*S){glow("#fff5c5",6*S);ctx.beginPath();ctx.arc(x,y,Math.max(2,4.5-i*.35)*S,0,Math.PI*2);ctx.fillStyle="#fffdf1";ctx.fill();noGlow()}}
+  for(let i=0;i<=28;i++){const time=i*.055,x=g.x+20*S+vX*time,y=g.y+vY*time+.5*1250*S*time*time;if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);if(y>floor)break}ctx.stroke();ctx.setLineDash([]);
+  for(let i=1;i<=7;i++){const time=i*.11,x=g.x+20*S+vX*time,y=g.y+vY*time+.5*1250*S*time*time;if(y<floor-8*S){glow("#fff5c5",6*S);ctx.beginPath();ctx.arc(x,y,Math.max(2,4.5-i*.35)*S,0,Math.PI*2);ctx.fillStyle="#fffdf1";ctx.fill();noGlow()}}
   ctx.restore()
  }
  const baseY=floor-11*S,anchorY=g.y;
@@ -447,11 +445,11 @@ function star(x,y,r,inner,n){ctx.beginPath();for(let i=0;i<n*2;i++){const a=-Mat
 
 function drawPrompt(title,sub){ctx.textAlign="center";ctx.fillStyle="#e9faff";ctx.font="1000 "+(24*S)+"px system-ui";ctx.fillText(title,W/2,H*.48);ctx.fillStyle="#92ddf4";ctx.font="800 "+(14*S)+"px system-ui";ctx.fillText(sub,W/2,H*.48+28*S);ctx.textAlign="left"}
 function ptr(e){const r=canvas.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top}}
-function fireCat(x,y){const g=world.sling;if(world.projectile)return;const dx=g.x-x,dy=y-g.y;world.projectile={x:g.x+20*S,y:g.y,vx:clamp(dx*4.1,-45*S,700*S),vy:clamp(dy*4.1,-610*S,110*S),r:22*S,a:0,cooldown:0,hitTarget:false};sfx.shot()}
+function fireCat(x,y){const g=world.sling;if(world.projectile)return;const dx=g.x-x,dy=y-g.y;world.projectile={x:g.x+20*S,y:g.y,vx:clamp(dx*6.1,-60*S,1050*S),vy:clamp(dy*6.1,-920*S,150*S),r:22*S,a:0,cooldown:0,hitTarget:false};sfx.shot()}
 canvas.addEventListener("pointerdown",e=>{if(key!=="catapult"||stage!=="playing")return;const p=ptr(e),g=world.sling;if(Math.hypot(p.x-g.x,p.y-(g.y+20*S))<75*S&&!world.projectile){drag={start:p};canvas.setPointerCapture(e.pointerId)}});
 canvas.addEventListener("pointermove",e=>{if(drag){drag.current=ptr(e);world.aim=drag.current}});
 canvas.addEventListener("pointerup",e=>{if(drag){const p=drag.current||ptr(e);fireCat(p.x,p.y);drag=null;world.aim=null}});
-function launchCat(){if(!world.projectile){const g=world.sling,power=world.power||500*S,angle=world.angle??-.48;world.projectile={x:g.x+20*S,y:g.y,vx:Math.cos(angle)*power,vy:Math.sin(angle)*power,r:22*S,a:0,cooldown:0,hitTarget:false};sfx.shot()}}
+function launchCat(){if(!world.projectile){const g=world.sling,power=world.power||700*S,angle=world.angle??-.48;world.projectile={x:g.x+20*S,y:g.y,vx:Math.cos(angle)*power,vy:Math.sin(angle)*power,r:22*S,a:0,cooldown:0,hitTarget:false};sfx.shot()}}
 function setAction(a,on){if(a==="launch"&&on){if(key==="arkanoid"&&world.ball.stuck){world.ball.stuck=false;world.ball.vx=120*S;world.ball.vy=-320*S;sfx.shot()}else if(key==="catapult")launchCat();else if(key==="tetris")dropPiece();else if(key==="joust"){held.fire=true}}else if(a==="rotate"&&on&&key==="tetris")rotatePiece();else if((a==="aimDown"||a==="aimUp")&&on&&key==="catapult"){world.angle=clamp((world.angle??-.48)+(a==="aimUp"?-.09:.09),-1.12,-.2);tone(420,.04,"triangle",.025)}else held[a]=on}
 const layouts={
  space:[["left","◀"],["right","▶"],["fire","DISPARAR"]],
@@ -459,9 +457,9 @@ const layouts={
  joust:[["left","◀"],["fire","ALETEAR"],["right","▶"]],
  asteroids:[["left","↶"],["up","▲"],["fire","FUEGO"],["right","↷"]],
  tetris:[["left","◀"],["rotate","GIRAR"],["launch","CAER"],["right","▶"]],
- catapult:[["aimDown","−"],["launch","LANZAR"],["aimUp","+"]]
+ catapult:[["aimDown","ÁNGULO −"],["launch","LANZAR"],["aimUp","ÁNGULO +"]]
 };
-function makeControls(){controlsEl.innerHTML="";for(const [action,label] of layouts[key]){const b=document.createElement("button");b.className="control"+(["fire","launch","rotate","up"].includes(action)?" action":"");b.type="button";b.textContent=label;b.setAttribute("aria-label",label);b.dataset.action=action;b.addEventListener("pointerdown",e=>{e.preventDefault();b.classList.add("held");setAction(action,true);if(key==="tetris"&&(action==="left"||action==="right")){const p=world.piece;if(p&&!collidePiece(p,action==="left"?-1:1,0)){p.x+=action==="left"?-1:1;world.move=0}}});for(const ev of ["pointerup","pointercancel","pointerleave"])b.addEventListener(ev,e=>{e.preventDefault();b.classList.remove("held");setAction(action,false)});controlsEl.appendChild(b)}}
+function makeControls(){controlsEl.innerHTML="";for(const [action,label] of layouts[key]){const b=document.createElement("button");b.className="control"+(["fire","launch","rotate","up"].includes(action)?" action":"");b.type="button";b.textContent=label;if(key==="catapult"&&(action==="aimDown"||action==="aimUp"))b.classList.add("aim-control");b.setAttribute("aria-label",label);b.dataset.action=action;b.addEventListener("pointerdown",e=>{e.preventDefault();b.classList.add("held");setAction(action,true);if(key==="tetris"&&(action==="left"||action==="right")){const p=world.piece;if(p&&!collidePiece(p,action==="left"?-1:1,0)){p.x+=action==="left"?-1:1;world.move=0}}});for(const ev of ["pointerup","pointercancel","pointerleave"])b.addEventListener(ev,e=>{e.preventDefault();b.classList.remove("held");setAction(action,false)});controlsEl.appendChild(b)}}
 makeControls();
 addEventListener("keydown",e=>{const k=e.key.toLowerCase();if(["arrowleft","arrowright","arrowup","arrowdown"," "].includes(k))e.preventDefault();if(k==="escape"||k==="p"){pause();return}if(stage!=="playing")return;if(k==="arrowleft"||k==="a")held.left=true;if(k==="arrowright"||k==="d")held.right=true;if(key==="tetris"&&(k==="arrowleft"||k==="arrowright")){const p=world.piece,dx=k==="arrowleft"?-1:1;if(p&&!collidePiece(p,dx,0))p.x+=dx;world.move=0}if(k==="arrowup"||k==="w")held.up=true;if(k==="arrowdown"||k==="s")held.down=true;if(k===" "||k==="z")held.fire=true;if(key==="tetris"&&k==="arrowup")rotatePiece();if(key==="tetris"&&k===" "){dropPiece();sfx.shot()}if(key==="arkanoid"&&k===" ")setAction("launch",true);if(key==="catapult"&&k===" ")launchCat();if(key==="catapult"&&(k==="arrowup"||k==="w"))setAction("aimUp",true);if(key==="catapult"&&(k==="arrowdown"||k==="s"))setAction("aimDown",true)},{passive:false});
 addEventListener("keyup",e=>{const k=e.key.toLowerCase();if(k==="arrowleft"||k==="a")held.left=false;if(k==="arrowright"||k==="d")held.right=false;if(k==="arrowup"||k==="w")held.up=false;if(k==="arrowdown"||k==="s")held.down=false;if(k===" "||k==="z")held.fire=false});
