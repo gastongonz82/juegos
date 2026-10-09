@@ -12,7 +12,7 @@ body{position:fixed;inset:0}#scene{position:absolute;inset:0;width:100%;height:1
 header{position:absolute;z-index:4;inset:var(--safe-t) 0 auto;height:62px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;background:linear-gradient(180deg,#071450f5,#071450d9);border-bottom:1px solid #35d9ff66;box-shadow:0 8px 25px #02081755}
 .brand{font-size:20px;font-weight:1000;letter-spacing:-1.4px;text-shadow:0 0 18px #36d9ff55}.brand i{font-style:normal;color:#35d9ff}.brand b{color:#ffb21a}
 .head-actions{display:flex;gap:8px;align-items:center}.iconbtn,.back{height:40px;min-width:40px;border:1px solid #4de2ff77;border-radius:13px;background:#091d58d9;color:#fff;font-size:18px;font-weight:900;display:grid;place-items:center;text-decoration:none;box-shadow:0 4px 14px #0004}
-.back{padding:0 12px;font-size:12px;letter-spacing:.04em}
+.back{padding:0 12px;font-size:12px;letter-spacing:.04em;background:linear-gradient(180deg,#ffe27f,#ffb521);border-color:#ffe9a7;color:#261637;box-shadow:0 3px 0 #996012,0 0 18px #ffbb3f55}
 #hud{position:absolute;z-index:2;top:calc(var(--safe-t) + 70px);left:50%;transform:translateX(-50%);display:flex;gap:7px;pointer-events:none;white-space:nowrap}
 .pill{min-width:72px;padding:6px 10px;border:1px solid #4ae1ff77;border-radius:13px;background:linear-gradient(#09265edb,#07143ddd);box-shadow:0 4px 14px #0005;text-align:center}
 .pill small{display:block;color:#83edff;font-size:9px;font-weight:900;letter-spacing:.12em}.pill b{font-size:16px;font-weight:1000}
@@ -31,8 +31,8 @@ h1{margin:0;font-size:clamp(34px,9vw,58px);line-height:.98;letter-spacing:-.06em
 .secondary{margin-left:8px;padding:12px 17px;border:1px solid #71dfff66;border-radius:14px;background:#071a4a;color:#eafaff;font-weight:900}
 #panel.hidden{display:none!important}.panel-buttons{display:flex;justify-content:center;flex-wrap:wrap;gap:8px}
 #notice{position:absolute;z-index:3;left:50%;top:calc(var(--safe-t) + 128px);transform:translateX(-50%);display:none;padding:8px 14px;border:1px solid #ffda73;border-radius:999px;background:#302050dd;color:#fff2bf;font-size:12px;font-weight:900;white-space:nowrap}
-@media (pointer:coarse),(max-width:760px){#controls{display:flex}header{padding-inline:10px}.brand{font-size:18px}.back{padding:0 9px;font-size:11px}.head-actions{gap:6px}.iconbtn{min-width:36px;height:36px}.pill{min-width:62px;padding:5px 8px}.pill b{font-size:14px}.control{width:58px;height:58px;border-radius:18px}.control.action{width:72px;height:62px}}
-@media (max-width:360px){#controls{gap:6px}.control{width:51px;height:54px}.control.action{width:65px;height:58px}.pill{min-width:55px}}
+@media (pointer:coarse),(max-width:760px){#controls{display:flex;left:0;right:0;transform:none;width:100%;max-width:760px;margin-inline:auto;padding:0 clamp(12px,4vw,24px);gap:clamp(8px,2.8vw,18px)}header{padding-inline:10px}.brand{font-size:18px}.back{padding:0 9px;font-size:11px}.head-actions{gap:6px}.iconbtn{min-width:36px;height:36px}.pill{min-width:62px;padding:5px 8px}.pill b{font-size:14px}.control{flex:1;width:auto;max-width:none;height:clamp(58px,8.2vh,76px);border-radius:18px}.control.action{flex:1.1;width:auto;max-width:none;height:clamp(64px,9vh,82px)}}
+@media (max-width:360px){#controls{padding-inline:10px;gap:6px}.control{height:56px}.control.action{height:60px;font-size:12px}.pill{min-width:55px}}
 </style>
 </head>
 <body>
