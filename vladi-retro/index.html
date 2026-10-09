@@ -71,7 +71,7 @@ document.querySelector("#description").textContent=cfg.desc;
 document.querySelector("#instructions").innerHTML=cfg.how;
 document.documentElement.style.setProperty("--accent",cfg.accent);
 const canvas=document.querySelector("#scene"),panel=document.querySelector("#panel"),controlsEl=document.querySelector("#controls");
-let ctx=canvas.getContext("2d"),arkanoidLayer=null,arkanoidLayerDirty=true,arkanoidBrickSprites=new Map(),bestSaveTimer=null,mobileMusicNote=-1;
+let ctx=canvas.getContext("2d"),arkanoidLayer=null,arkanoidLayerDirty=true,arkanoidBrickSprites=new Map(),bestPending=false,mobileMusicNote=-1,mobileRenderCap=2,mobileFrameSamples=0,mobileFrameTotal=0,mobileAudioBuffers=new Map();
 const scoreEl=document.querySelector("#score"),bestEl=document.querySelector("#best"),livesEl=document.querySelector("#lives");
 const face=new Image();face.src="/vladi-run/assets/vladi-runner.webp";
 const catapultSprite=new Image();catapultSprite.src="/assets/vladi-catapult-fly.webp?v=20261009d";
@@ -82,11 +82,32 @@ bestEl.textContent=best;
 const $=s=>document.querySelector(s);
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const rand=(a,b)=>a+Math.random()*(b-a);
-function resize(){arkanoidLayerDirty=true;arkanoidBrickSprites.clear();W=innerWidth;H=innerHeight;D=Math.min(key==="arkanoid"&&touch?1:2,devicePixelRatio||1);canvas.width=Math.round(W*D);canvas.height=Math.round(H*D);canvas.style.width=W+"px";canvas.style.height=H+"px";ctx.setTransform(D,0,0,D,0,0);S=Math.max(.62,Math.min(1.5,W/450,H/440));}
+function resize(){arkanoidLayerDirty=true;arkanoidBrickSprites.clear();W=innerWidth;H=innerHeight;D=Math.min(key==="arkanoid"&&touch?mobileRenderCap:2,devicePixelRatio||1);canvas.width=Math.round(W*D);canvas.height=Math.round(H*D);canvas.style.width=W+"px";canvas.style.height=H+"px";ctx.setTransform(D,0,0,D,0,0);S=Math.max(.62,Math.min(1.5,W/450,H/440));}
 addEventListener("resize",resize);resize();
-function tone(freq,dur=.09,wave="square",vol=.05,slide){if(muted)return;try{audio=audio||new(window.AudioContext||window.webkitAudioContext)();if(audio.state==="suspended")audio.resume();const o=audio.createOscillator(),g=audio.createGain(),t=audio.currentTime;o.type=wave;o.frequency.setValueAtTime(freq,t);if(slide)o.frequency.exponentialRampToValueAtTime(Math.max(40,slide),t+dur);g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(vol,t+.012);g.gain.exponentialRampToValueAtTime(.0001,t+dur);o.connect(g);g.connect(audio.destination);o.onended=()=>{o.disconnect();g.disconnect()};o.start(t);o.stop(t+dur+.02)}catch(e){}}
+function mobileSoundBuffer(freq,dur,wave,vol,slide){
+ const id=[freq,dur,wave,vol,slide].join(":");if(mobileAudioBuffers.has(id))return mobileAudioBuffers.get(id);
+ const rate=audio.sampleRate,buffer=audio.createBuffer(1,Math.ceil((dur+.02)*rate),rate),samples=buffer.getChannelData(0);let phase=0;
+ for(let i=0;i<samples.length;i++){const t=i/rate,f=slide?freq*Math.pow(Math.max(40,slide)/freq,Math.min(1,t/dur)):freq;phase+=f/rate;const cycle=phase%1;
+  const sample=wave==="triangle"?1-4*Math.abs(cycle-.5):wave==="sawtooth"?cycle*2-1:cycle<.5?1:-1;
+  const envelope=t<.012?vol*(t/.012):vol*Math.pow(.0001/vol,Math.min(1,(t-.012)/Math.max(.001,dur-.012)));samples[i]=sample*envelope;
+ }
+ mobileAudioBuffers.set(id,buffer);return buffer;
+}
+function prepareMobileAudio(){if(key!=="arkanoid"||!touch)return;try{audio=audio||new(window.AudioContext||window.webkitAudioContext)();audio.resume?.();
+ for(const spec of [[640,.075,"square",.035,300],[220,.13,"sawtooth",.055,75],[420,.055,"square",.035,630],[110,.24,"sawtooth",.06,45],[520,.12,"triangle",.04,780],[660,.08,"square",.04]])mobileSoundBuffer(...spec);
+ for(const freq of cfg.music)mobileSoundBuffer(freq,.12,"triangle",.018);
+ }catch(e){}}
+function flushMobileBest(){if(!bestPending)return;bestPending=false;try{localStorage.setItem("vladiRetroBest:"+key,String(best))}catch(e){}}
+function monitorMobileFrame(elapsed){
+ if(key!=="arkanoid"||!touch||elapsed<=0||elapsed>.15)return;
+ mobileFrameSamples++;mobileFrameTotal+=elapsed;
+ if(mobileFrameSamples>=90){const average=mobileFrameTotal/mobileFrameSamples;mobileFrameSamples=0;mobileFrameTotal=0;
+  if(average>1/45&&mobileRenderCap>.8){mobileRenderCap=mobileRenderCap>1.25?1.25:.8;resize()}
+ }
+}
+function tone(freq,dur=.09,wave="square",vol=.05,slide){if(muted)return;try{audio=audio||new(window.AudioContext||window.webkitAudioContext)();if(audio.state==="suspended")audio.resume();if(key==="arkanoid"&&touch){const source=audio.createBufferSource();source.buffer=mobileSoundBuffer(freq,dur,wave,vol,slide);source.connect(audio.destination);source.onended=()=>source.disconnect();source.start();return}const o=audio.createOscillator(),g=audio.createGain(),t=audio.currentTime;o.type=wave;o.frequency.setValueAtTime(freq,t);if(slide)o.frequency.exponentialRampToValueAtTime(Math.max(40,slide),t+dur);g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(vol,t+.012);g.gain.exponentialRampToValueAtTime(.0001,t+dur);o.connect(g);g.connect(audio.destination);o.onended=()=>{o.disconnect();g.disconnect()};o.start(t);o.stop(t+dur+.02)}catch(e){}}
 const sfx={shot(){tone(640,.075,"square",.035,300)},hit(){tone(220,.13,"sawtooth",.055,75)},coin(){tone(660,.08,"square",.05,990);setTimeout(()=>tone(990,.08,"square",.04,1320),65)},flap(){tone(180,.1,"triangle",.05,300)},bounce(){tone(420,.055,"square",.035,630)},boom(){tone(110,.24,"sawtooth",.06,45)}};
-function music(){if(stage!=="playing"||muted||!audio)return;if(key==="arkanoid"&&touch)return;const i=Math.floor(musicClock/0.19)%cfg.music.length;if(musicClock%0.19<.025)tone(cfg.music[i],.12,"triangle",.018);musicClock+=.016}
+function music(){if(stage!=="playing"||muted||!audio)return;if(key==="arkanoid"&&touch){if(mobileRenderCap<2)return;const note=Math.floor(audio.currentTime/.19);if(note!==mobileMusicNote){mobileMusicNote=note;tone(cfg.music[note%cfg.music.length],.12,"triangle",.018)}return}const i=Math.floor(musicClock/0.19)%cfg.music.length;if(musicClock%0.19<.025)tone(cfg.music[i],.12,"triangle",.018);musicClock+=.016}
 function fresh(){
  score=0;lives=key==="catapult"?6:3;level=1;held={};shotClock=0;dropClock=0;musicClock=0;
  const top=touch?170*S:106*S,bottom=touch?136*S:86*S;
@@ -228,11 +249,11 @@ function buildTargets(){
  }
  world.projectile=null;world.aim=null;world.angle=-.48;world.power=(700+Math.min(level,5)*20+Math.min(3,Math.floor((level-1)/15))*20)*S;
 }
-function init(){if(typeof window.gtag==='function')window.gtag('event','game_start',{game_id:'vladi-retro-'+(new URLSearchParams(location.search).get('game')||'unknown'),game_name:'vladi retro'});fresh();stage="playing";panel.classList.add("hidden");$("#pause").textContent="Ⅱ";$("#pause").setAttribute("aria-label","Pausar");}
+function init(){prepareMobileAudio();if(typeof window.gtag==='function')window.gtag('event','game_start',{game_id:'vladi-retro-'+(new URLSearchParams(location.search).get('game')||'unknown'),game_name:'vladi retro'});fresh();stage="playing";panel.classList.add("hidden");$("#pause").textContent="Ⅱ";$("#pause").setAttribute("aria-label","Pausar");}
 function start(){if(stage==="ready"||stage==="over"){init()}else if(stage==="paused"){stage="playing";panel.classList.add("hidden");$("#pause").textContent="Ⅱ"}}
-function pause(){if(stage==="playing"){stage="paused";panel.classList.remove("hidden");$("#title").textContent="Pausa";$("#description").textContent="Tu partida está guardada. Cuando quieras, seguí desde donde quedaste.";$("#instructions").innerHTML="PC: P o ESC · Celular: tocá continuar";$("#start").textContent="CONTINUAR";$("#again").hidden=false;$("#again").textContent="REINICIAR"}else if(stage==="paused"){document.title=cfg.title+" — VLADYERIK";$("#title").textContent=cfg.title;$("#description").textContent=cfg.desc;$("#instructions").innerHTML=cfg.how;$("#start").textContent="JUGAR";$("#again").hidden=true;start()}}
-function finish(){if(typeof window.gtag==='function')window.gtag('event','game_end',{game_id:'vladi-retro-'+(new URLSearchParams(location.search).get('game')||'unknown'),game_name:'vladi retro'});if(stage==="over")return;stage="over";panel.classList.remove("hidden");$("#title").textContent="¡Bien jugado, Vladi!";$("#description").textContent="Puntaje: "+score+" · Récord: "+best;$("#instructions").textContent="¿Probamos otra partida y superamos esa marca?";$("#start").textContent="JUGAR OTRA VEZ";$("#again").hidden=true;sfx.boom()}
-function addScore(n){score+=n;if(score>best){best=score;if(key==="arkanoid"&&touch){if(bestSaveTimer===null)bestSaveTimer=setTimeout(()=>{bestSaveTimer=null;try{localStorage.setItem("vladiRetroBest:"+key,String(best))}catch(e){}},750)}else{try{localStorage.setItem("vladiRetroBest:"+key,String(best))}catch(e){}}}syncHud()}
+function pause(){if(stage==="playing"){stage="paused";flushMobileBest();panel.classList.remove("hidden");$("#title").textContent="Pausa";$("#description").textContent="Tu partida está guardada. Cuando quieras, seguí desde donde quedaste.";$("#instructions").innerHTML="PC: P o ESC · Celular: tocá continuar";$("#start").textContent="CONTINUAR";$("#again").hidden=false;$("#again").textContent="REINICIAR"}else if(stage==="paused"){document.title=cfg.title+" — VLADYERIK";$("#title").textContent=cfg.title;$("#description").textContent=cfg.desc;$("#instructions").innerHTML=cfg.how;$("#start").textContent="JUGAR";$("#again").hidden=true;start()}}
+function finish(){if(typeof window.gtag==='function')window.gtag('event','game_end',{game_id:'vladi-retro-'+(new URLSearchParams(location.search).get('game')||'unknown'),game_name:'vladi retro'});if(stage==="over")return;stage="over";flushMobileBest();panel.classList.remove("hidden");$("#title").textContent="¡Bien jugado, Vladi!";$("#description").textContent="Puntaje: "+score+" · Récord: "+best;$("#instructions").textContent="¿Probamos otra partida y superamos esa marca?";$("#start").textContent="JUGAR OTRA VEZ";$("#again").hidden=true;sfx.boom()}
+function addScore(n){score+=n;if(score>best){best=score;if(key==="arkanoid"&&touch){bestPending=true}else{try{localStorage.setItem("vladiRetroBest:"+key,String(best))}catch(e){}}}syncHud()}
 function loseLife(){lives--;sfx.boom();syncHud();if(lives<=0){finish();return}if(key==="space"){world.player.x=W/2;world.player.inv=1.1}else if(key==="arkanoid"){world.ball.stuck=true;world.ball.vx=0;world.ball.vy=0}else if(key==="joust"){world.player.x=W*.25;world.player.y=H*.5;world.player.vy=0;world.player.inv=1}else if(key==="asteroids"){world.ship.x=W/2;world.ship.y=H/2;world.ship.vx=0;world.ship.vy=0;world.ship.inv=1.5}}
 function syncHud(){scoreEl.textContent=score;bestEl.textContent=best;$("#life-label").textContent=key==="tetris"?"NIVEL":key==="catapult"?"TIROS":"VIDAS";livesEl.textContent=key==="tetris"?level:key==="catapult"?String(lives):("♥".repeat(Math.max(0,lives))||"—") }
 function spawnRockAt(size,x,y){spawnRock(size,x,y)}
@@ -669,10 +690,11 @@ $("#again").addEventListener("click",()=>{document.title=cfg.title+" — VLADYER
 $("#pause").addEventListener("click",pause);
 $("#sound").addEventListener("click",()=>{muted=!muted;$("#sound").textContent=muted?"♪̸":"♫";if(!muted&&audio)audio.resume();if(!muted&&stage==="playing")tone(660,.08,"square",.04)});
 $("#fullscreen").addEventListener("click",()=>{if(!document.fullscreenElement)document.documentElement.requestFullscreen?.().catch(()=>{});else document.exitFullscreen?.()});
+addEventListener("pagehide",flushMobileBest);
 document.addEventListener("visibilitychange",()=>{if(document.hidden&&stage==="playing")pause()});
 fresh();syncHud();
 function frame(now){const elapsed=Math.max(0,(now-last)/1000||0),dt=Math.min(.033,elapsed);last=now;try{if(stage==="playing"){
- if(key==="arkanoid"&&touch){music();let remaining=Math.min(.1,elapsed);while(remaining>0){const step=Math.min(1/120,remaining);updateArkanoid(step);remaining-=step;if(stage!=="playing")break}}
+ if(key==="arkanoid"&&touch){monitorMobileFrame(elapsed);music();let remaining=Math.min(.1,elapsed);while(remaining>0){const step=Math.min(1/120,remaining);updateArkanoid(step);remaining-=step;if(stage!=="playing")break}}
  else update(dt);
  }draw()}catch(error){console.error("Error en el juego "+key,error);if(stage==="playing")pause()}requestAnimationFrame(frame)}
 requestAnimationFrame(frame);
