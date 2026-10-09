@@ -257,7 +257,7 @@ function drawAsteroids(){
  if(!p)return;ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.a+Math.PI/2);glow("#61eaff",13*S);ctx.beginPath();ctx.moveTo(0,-20*S);ctx.lineTo(15*S,15*S);ctx.lineTo(0,9*S);ctx.lineTo(-15*S,15*S);ctx.closePath();ctx.fillStyle="#0c8cdb";ctx.strokeStyle="#c9fbff";ctx.lineWidth=2*S;ctx.fill();ctx.stroke();ctx.fillStyle="#ffd15c";ctx.beginPath();ctx.arc(0,0,4*S,0,Math.PI*2);ctx.fill();if(held.up){ctx.fillStyle="#ff963c";ctx.beginPath();ctx.moveTo(-6*S,13*S);ctx.lineTo(0,29*S+Math.random()*6*S);ctx.lineTo(6*S,13*S);ctx.fill()}noGlow();ctx.restore()
 }
 function drawTetris(){
- const c=cell(),bw=10*c,bh=20*c,x=(W-bw)/2,y=Math.max(90*S,(H-bh-154*S)/2);
+ const c=cell(),bw=10*c,bh=20*c,x=(W-bw)/2,y=Math.max(135*S,Math.min((H-bh)/2,H-bh-80*S));
  roundRect(x-5*S,y-5*S,bw+10*S,bh+10*S,14*S,"#07173deb","#47ddff");
  for(let r=0;r<20;r++)for(let col=0;col<10;col++){const v=world.board?.[r]?.[col];roundRect(x+col*c+1,y+r*c+1,c-2,c-2,3*S,v||"#102858",v?"#ffffff99":"#2b4d84")}
  const p=world.piece;if(p?.shape)for(let r=0;r<p.shape.length;r++)for(let col=0;col<p.shape[r].length;col++)if(p.shape[r][col]){const py=p.y+r;if(py>=0)roundRect(x+(p.x+col)*c+1,y+py*c+1,c-2,c-2,3*S,p.color,"#ffffff")}
