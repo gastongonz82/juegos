@@ -4,3 +4,5 @@
 .arcade-return:active{transform:translateY(2px);box-shadow:0 2px 0 rgba(5,10,20,.8)}
 .top .arcade-return{position:static;top:auto;left:auto;min-height:34px}
 @media(max-width:420px){.arcade-return{min-height:32px;padding:0 11px;font-size:10px}}
+
+body.is-tetris .arcade-return{top:max(70px,calc(env(safe-area-inset-top) + 62px))}@media(max-width:760px){body.is-tetris .arcade-return{top:max(68px,calc(env(safe-area-inset-top) + 60px))}}
