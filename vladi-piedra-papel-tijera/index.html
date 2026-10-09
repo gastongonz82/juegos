@@ -101,7 +101,7 @@
     try{const saved=JSON.parse(localStorage.getItem('vladiPiedraPapelTijera')||'{}');Object.assign(state.score,saved.score||{});state.best=Number(saved.best)||0}catch(_){}
     function save(){try{localStorage.setItem('vladiPiedraPapelTijera',JSON.stringify({score:state.score,best:state.best}))}catch(_){}}
     function render(){ $('playerScore').textContent=state.score.player;$('vladiScore').textContent=state.score.vladi;$('drawScore').textContent=state.score.draw;$('record').textContent='RACHA RÉCORD: '+state.best;$('round').textContent='NIVEL '+state.level+' · '+Math.max(1,Math.min(10,state.levelRound))+' / 10'; }
-    function play(user){
+    function play(user){if(typeof window.gtag==='function')window.gtag('event','game_start',{game_id:'vladi-piedra-papel-tijera',game_name:'vladi piedra papel tijera'});
       if(state.levelRound>=10){state.level++;state.levelRound=0}
       const computer=names[Math.floor(Math.random()*names.length)];
       $('playerChoice').textContent=plays[user].icon;$('playerChoice').setAttribute('aria-label','Elegiste '+plays[user].label);
