@@ -183,8 +183,8 @@ function updateTetris(dt){
  const p=world.piece;world.fall+=dt;world.move+=dt;
  if(held.left&&world.move>.12){if(!collidePiece(p,-1,0))p.x--;world.move=0}
  if(held.right&&world.move>.12){if(!collidePiece(p,1,0))p.x++;world.move=0}
- const speed=Math.max(.09,.68-(level-1)*.055);
- if(world.fall>speed||held.down){world.fall=0;if(!collidePiece(p,0,1))p.y++;else lockPiece()}
+ let speed=Math.max(.09,.68-(level-1)*.055);if(held.down)speed=Math.min(speed,.075);
+ if(world.fall>speed){world.fall=0;if(!collidePiece(p,0,1))p.y++;else lockPiece()}
 }
 function updateCatapult(dt){
  const p=world.projectile;if(!p)return;
@@ -300,7 +300,7 @@ const layouts={
 };
 function makeControls(){controlsEl.innerHTML="";for(const [action,label] of layouts[key]){const b=document.createElement("button");b.className="control"+(["fire","launch","rotate","up"].includes(action)?" action":"");b.type="button";b.textContent=label;b.setAttribute("aria-label",label);b.dataset.action=action;b.addEventListener("pointerdown",e=>{e.preventDefault();b.classList.add("held");setAction(action,true);if(key==="tetris"&&(action==="left"||action==="right")){const p=world.piece;if(p&&!collidePiece(p,action==="left"?-1:1,0)){p.x+=action==="left"?-1:1;world.move=0}}});for(const ev of ["pointerup","pointercancel","pointerleave"])b.addEventListener(ev,e=>{e.preventDefault();b.classList.remove("held");setAction(action,false)});controlsEl.appendChild(b)}}
 makeControls();
-addEventListener("keydown",e=>{const k=e.key.toLowerCase();if(["arrowleft","arrowright","arrowup","arrowdown"," "].includes(k))e.preventDefault();if(k==="escape"||k==="p"){pause();return}if(stage!=="playing")return;if(k==="arrowleft"||k==="a")held.left=true;if(k==="arrowright"||k==="d")held.right=true;if(k==="arrowup"||k==="w")held.up=true;if(k==="arrowdown"||k==="s")held.down=true;if(k===" "||k==="z")held.fire=true;if(key==="tetris"&&k==="arrowup")rotatePiece();if(key==="tetris"&&k===" "){dropPiece();sfx.shot()}if(key==="arkanoid"&&k===" ")setAction("launch",true);if(key==="catapult"&&k===" ")launchCat()},{passive:false});
+addEventListener("keydown",e=>{const k=e.key.toLowerCase();if(["arrowleft","arrowright","arrowup","arrowdown"," "].includes(k))e.preventDefault();if(k==="escape"||k==="p"){pause();return}if(stage!=="playing")return;if(k==="arrowleft"||k==="a")held.left=true;if(k==="arrowright"||k==="d")held.right=true;if(key==="tetris"&&(k==="arrowleft"||k==="arrowright")){const p=world.piece,dx=k==="arrowleft"?-1:1;if(p&&!collidePiece(p,dx,0))p.x+=dx;world.move=0}if(k==="arrowup"||k==="w")held.up=true;if(k==="arrowdown"||k==="s")held.down=true;if(k===" "||k==="z")held.fire=true;if(key==="tetris"&&k==="arrowup")rotatePiece();if(key==="tetris"&&k===" "){dropPiece();sfx.shot()}if(key==="arkanoid"&&k===" ")setAction("launch",true);if(key==="catapult"&&k===" ")launchCat()},{passive:false});
 addEventListener("keyup",e=>{const k=e.key.toLowerCase();if(k==="arrowleft"||k==="a")held.left=false;if(k==="arrowright"||k==="d")held.right=false;if(k==="arrowup"||k==="w")held.up=false;if(k==="arrowdown"||k==="s")held.down=false;if(k===" "||k==="z")held.fire=false});
 $("#start").addEventListener("click",()=>{if(stage==="ready"||stage==="over"){document.title=cfg.title+" — VLADYERIK";init();tone(520,.12,"triangle",.04,780)}else start()});
 $("#again").addEventListener("click",()=>{document.title=cfg.title+" — VLADYERIK";init()});
