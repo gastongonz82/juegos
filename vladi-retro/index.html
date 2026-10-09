@@ -283,7 +283,7 @@ function updateSpace(dt){
  if(a.some(e=>e.y>H-(touch?180:100)*S))finish();
 }
 function updateArkanoid(dt){
- const p=world.paddle,b=world.ball,speed=340*S;if(held.left)p.x-=speed*dt;if(held.right)p.x+=speed*dt;p.x=clamp(p.x,p.w/2+8,W-p.w/2-8);
+ const p=world.paddle,b=world.ball,speed=touch?340*S:Math.max(400*S,W*.5);if(held.left)p.x-=speed*dt;if(held.right)p.x+=speed*dt;p.x=clamp(p.x,p.w/2+8,W-p.w/2-8);
  if(b.stuck){b.x=p.x;b.y=p.y-22*S;return}
  const previousX=b.x,previousY=b.y;
  b.x+=b.vx*dt;b.y+=b.vy*dt;
