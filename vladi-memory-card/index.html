@@ -116,7 +116,7 @@
       if(first.item.id===item.id){
         first.button.classList.add('matched');button.classList.add('matched');first.button.disabled=true;button.disabled=true;state.pairs++;state.first=null;
         $('message').textContent=state.pairs===8?'¡NIVEL '+state.level+' COMPLETADO! ¡ENCONTRASTE TODAS LAS PAREJAS!':'¡PAREJA ENCONTRADA!';$('message').className='message good';window.VladiSound?.play(state.pairs===8?'goal':'correct');
-        if(state.pairs===8){window.clearInterval(state.timer);state.timer=null;saveBest();$('reset').textContent='CONTINUAR AL NIVEL '+(state.level+1)+' ➜'}
+        if(state.pairs===8){if(typeof window.gtag==='function')window.gtag('event','level_complete',{game_id:'vladi-memory-card',game_name:'vladi memory card',level:state.level,moves:state.moves});window.clearInterval(state.timer);state.timer=null;saveBest();$('reset').textContent='CONTINUAR AL NIVEL '+(state.level+1)+' ➜'}
         updateStats();return
       }
       state.locked=true;$('message').textContent='NO SON IGUALES. ¡PROBÁ OTRA VEZ!';$('message').className='message bad';window.VladiSound?.play('wrong');
