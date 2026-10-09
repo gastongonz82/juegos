@@ -73,7 +73,7 @@ document.documentElement.style.setProperty("--accent",cfg.accent);
 const canvas=document.querySelector("#scene"),ctx=canvas.getContext("2d"),panel=document.querySelector("#panel"),controlsEl=document.querySelector("#controls");
 const scoreEl=document.querySelector("#score"),bestEl=document.querySelector("#best"),livesEl=document.querySelector("#lives");
 const face=new Image();face.src="/vladi-run/assets/vladi-runner.webp";
-const catapultSprite=new Image();catapultSprite.src="/assets/vladi-catapult-fly.png?v=20261009c";
+const catapultSprite=new Image();catapultSprite.src="/assets/vladi-catapult-fly.webp?v=20261009d";
 let W=innerWidth,H=innerHeight,D=1,S=1,stage="ready",score=0,lives=3,level=1,best=0,world={},held={},last=0,shotClock=0,dropClock=0,musicClock=0,audio=null,muted=false,drag=null;
 const touch=matchMedia("(pointer:coarse)").matches||innerWidth<760;
 try{best=Number(localStorage.getItem("vladiRetroBest:"+key)||0)}catch(e){}
