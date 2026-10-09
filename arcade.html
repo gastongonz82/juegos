@@ -1005,9 +1005,12 @@ document.addEventListener('click',function(e){
   var a=e.target.closest('a[href]');if(!a)return;
   var u;try{u=new URL(a.getAttribute('href'),location.href)}catch(_){return}
   if(u.origin!==location.origin)return;
-  var p=u.pathname.replace(/\/+$/,'').split('/').pop();
-  if(!p||p==='arcade.html'||p==='index.html'||!(/^(vladi-|flappy-vladi$)/.test(p)))return;
-  if(typeof window.gtag==='function')window.gtag('event','game_open_click',{game_id:p,game_name:(a.querySelector('h3')||a).textContent.trim().slice(0,90)});
+  var parts=u.pathname.replace(/\/+$/,'').split('/').filter(Boolean);
+  var p=parts[parts.length-1]==='index.html'?parts[parts.length-2]:parts[parts.length-1];
+  if(!p||!(/^(vladi-|flappy-vladi$)/.test(p)))return;
+  var retro=p==='vladi-retro'?u.searchParams.get('game'):null;
+  var gameId=retro?'vladi-retro-'+retro:p;
+  if(typeof window.gtag==='function')window.gtag('event','game_open_click',{game_id:gameId,game_name:(a.querySelector('h3')||a).textContent.trim().slice(0,90)});
 });
 </script>
 </body>
