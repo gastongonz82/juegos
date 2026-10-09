@@ -117,8 +117,21 @@
 .nav .links a:hover,.nav .links a:focus-visible{color:#57e4ff}
 @media(min-width:801px) and (max-width:1050px){.nav .wrap{gap:14px}.nav .brand{font-size:26px}.nav .links{font-size:12px;gap:12px}}
 @media(max-width:800px){.nav .wrap{min-height:0;flex-direction:column;gap:8px;padding:10px 16px}.nav .brand{font-size:26px}.nav .links{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));width:100%;margin:0;gap:2px 10px;font-size:12px;text-align:center}.nav .links a{padding:6px 0}.nav .links a:last-child{grid-column:2}}
+
+/* Compact mobile navigation, shared with the main page and Arcade. */
+.nav .menu-toggle{display:none}
+@media(max-width:800px){
+ .nav .wrap{min-height:62px;height:62px;flex-direction:row;justify-content:space-between;gap:16px;padding:0 22px}
+ .nav .brand{font-size:26px}
+ .nav .menu-toggle{display:flex;flex-direction:column;justify-content:center;align-items:center;gap:5px;width:44px;height:44px;padding:10px;flex:0 0 44px;border:1px solid #28c7ff66;border-radius:10px;background:#10235b;color:#fff;cursor:pointer}
+ .nav .menu-toggle span{display:block;width:22px;height:2px;border-radius:2px;background:currentColor}
+ .nav .links{display:none;position:absolute;top:100%;left:0;right:0;width:100%;margin:0;padding:10px 22px 16px;background:#071450;border-bottom:1px solid #28c7ff55;box-shadow:0 12px 24px #0006;grid-template-columns:1fr;gap:0;text-align:left;font-size:14px;max-height:calc(100dvh - 62px);overflow-y:auto}
+ .nav.menu-open .links{display:grid}
+ .nav .links a,.nav .links a:last-child{grid-column:auto;padding:12px 10px;border-radius:8px}
+ .nav .links a:hover,.nav .links a:focus-visible{background:#153071}
+}
 </style><meta property="og:title" content="VLADYERIK | Juegos, desafíos y aventuras"><meta property="og:description" content="Entrá a mi mundo: juegos, videos, desafíos y aventuras."><meta property="og:type" content="website"><meta name="theme-color" content="#071450"></head><body>
-<nav class="nav"><div class="wrap"><a class="brand" href="#"><span class="vlad">VLAD</span><span class="yerik">YERIK</span></a><div class="links"><a href="#">🏠 INICIO</a><a href="#juegos">🎮 MIS JUEGOS</a><a href="#videos">▶ MIS VIDEOS</a><a href="#sobre">👤 SOBRE MÍ</a><a href="#taekwondo">🏆 TAEKWONDO</a><a href="#cosplay">🎭 COSPLAY</a><a href="#redes">❤ SEGUIME</a></div></div></nav>
+<nav class="nav"><div class="wrap"><a class="brand" href="#"><span class="vlad">VLAD</span><span class="yerik">YERIK</span></a><button class="menu-toggle" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="mobile-navigation"><span></span><span></span><span></span></button><div class="links" id="mobile-navigation"><a href="#">🏠 INICIO</a><a href="#juegos">🎮 MIS JUEGOS</a><a href="#videos">▶ MIS VIDEOS</a><a href="#sobre">👤 SOBRE MÍ</a><a href="#taekwondo">🏆 TAEKWONDO</a><a href="#cosplay">🎭 COSPLAY</a><a href="#redes">❤ SEGUIME</a></div></div></nav>
 <header class="hero"><img class="heroBanner" src="assets/vladi-hero-1774w.webp" alt="VLADYERIK - Juegos, desafíos y aventuras" srcset="assets/vladi-hero-800w.webp 800w, assets/vladi-hero-1774w.webp 1774w" sizes="100vw" width="1774" height="887" fetchpriority="high" loading="eager" decoding="async"></header>
 <section class="section arcadeSection" id="juegos"><div class="wrap"><div class="arcadeHead"><div><div class="arcadeKicker">🎮 VLADYERIK ARCADE</div><h2>MI <span class="yerik">ARCADE</span></h2></div><div class="count"><b>38 JUEGOS</b><span>PARA DIVERTIRSE</span></div></div><div class="games premiumGames">
 <a class="card premiumCard" href="./vladi-kart/"><div class="scene"><img class="sceneBg" src="assets/vladi-kart-960w.webp" alt="Vladi Kart" srcset="assets/vladi-kart-480w.webp 480w, assets/vladi-kart-960w.webp 960w" sizes="(max-width: 800px) calc((100vw - 56px) / 2), (max-width: 1180px) calc((100vw - 98px) / 4), 268px" width="960" height="640" loading="lazy" decoding="async"><i class="shine"></i></div><div class="gamecopy"><h3>VLADI <em>KART</em></h3><span>🎮 JUGAR</span></div></a>
@@ -166,4 +179,13 @@ document.addEventListener('click',function(e){
   if(typeof window.gtag==='function')window.gtag('event','game_open_click',{game_id:p,game_name:(a.querySelector('h3')||a).textContent.trim().slice(0,90)});
 });
 </script>
-</body></html>
+<script>
+(()=>{const nav=document.querySelector('.nav'),button=nav.querySelector('.menu-toggle'),links=nav.querySelector('#mobile-navigation');
+const close=()=>{nav.classList.remove('menu-open');button.setAttribute('aria-expanded','false');button.setAttribute('aria-label','Abrir menú')};
+button.addEventListener('click',()=>{const open=nav.classList.toggle('menu-open');button.setAttribute('aria-expanded',String(open));button.setAttribute('aria-label',open?'Cerrar menú':'Abrir menú')});
+links.addEventListener('click',event=>{if(event.target.closest('a'))close()});
+document.addEventListener('click',event=>{if(!nav.contains(event.target))close()});
+document.addEventListener('keydown',event=>{if(event.key==='Escape'){const open=nav.classList.contains('menu-open');close();if(open)button.focus()}});
+window.matchMedia('(max-width:800px)').addEventListener('change',close);
+})();
+</script></body></html>
