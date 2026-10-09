@@ -474,6 +474,80 @@
       .card-info { padding: 12px 13px; }
       .card-info p { min-height: 0; margin-bottom: 10px; }
     }
+  
+    /* Ajustes de integración visual: fondo a todo el ancho, arte real y CTA visible. */
+    .hero::before {
+      inset: 18px auto 0 50%;
+      width: 100vw;
+      transform: translateX(-50%);
+    }
+    .hero-art {
+      isolation: isolate;
+      background: #09255f;
+      box-shadow: 0 0 0 3px #29cfff16, 0 18px 45px #0006, 0 0 34px #8b30ff3b;
+    }
+    .hero-art::before { display: none; }
+    .hero-art::after {
+      content: "";
+      inset: 45% 0 0;
+      width: auto;
+      height: auto;
+      transform: none;
+      border: 0;
+      border-radius: 0;
+      background: linear-gradient(transparent, #071644c9);
+      z-index: 1;
+    }
+    .hero-showcase {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 42%;
+    }
+    .hero-showcase-label {
+      position: absolute;
+      z-index: 2;
+      left: 18px;
+      bottom: 14px;
+      color: white;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: .13em;
+      text-shadow: 0 2px 8px #000;
+    }
+    .hero-art .spark { z-index: 2; }
+    .card-cta {
+      width: 100%;
+      min-height: 42px;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 5px 7px 5px 14px;
+      border: 2px solid #7ff3ff;
+      border-radius: 999px;
+      background: linear-gradient(180deg, #35dfff, #087dc4);
+      color: #04183d;
+      font-size: 13px;
+      text-shadow: none;
+      box-shadow: 0 4px 0 #064f8b, 0 0 16px #18d8ff44;
+    }
+    .card-cta:first-letter { color: inherit; }
+    .arrow {
+      width: 28px;
+      height: 28px;
+      flex: 0 0 28px;
+      border: 0;
+      border-radius: 50%;
+      background: #ffffff38;
+      color: #04183d;
+      box-shadow: inset 0 1px #ffffff77;
+    }
+    @media (max-width: 620px) {
+      .card-cta { min-height: 36px; padding: 4px 5px 4px 10px; font-size: 11px; }
+      .arrow { width: 24px; height: 24px; flex-basis: 24px; }
+    }
+
   </style>
 </head>
 <body>
@@ -490,8 +564,9 @@
         <p class="intro">Carreras, desafíos y aventuras con Vladi. Encontrá tu próximo juego y entrá directo a la acción.</p>
       </div>
       <div class="hero-art" aria-hidden="true">
+        <img class="hero-showcase" src="assets/vladi-galaxia.webp?v=20261009" alt="" loading="eager" decoding="async">
+        <span class="hero-showcase-label">UNA AVENTURA NUEVA</span>
         <span class="spark one">✦</span><span class="spark two">✧</span><span class="spark three">✦</span>
-        <span class="hero-emoji">🕹️</span>
       </div>
     </section>
     <section class="library" id="juegos" aria-labelledby="library-title">
