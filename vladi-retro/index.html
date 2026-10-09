@@ -89,7 +89,7 @@ function music(){if(stage!=="playing"||muted||!audio)return;const i=Math.floor(m
 function fresh(){
  score=0;lives=3;level=1;held={};shotClock=0;dropClock=0;musicClock=0;
  const top=170*S,bottom=touch?136*S:86*S;
- if(key==="space"){world={player:{x:W/2,y:H-bottom,r:17*S},aliens:[],bullets:[],enemyShots:[],dir:1,formationY:top+40*S};spawnInvaders()}
+ if(key==="space"){world={player:{x:W/2,y:H-bottom,r:17*S,inv:0},aliens:[],bullets:[],enemyShots:[],dir:1,formationY:top+40*S};spawnInvaders()}
  if(key==="arkanoid"){world={paddle:{x:W/2,y:H-bottom,w:104*S,h:16*S},ball:{x:W/2,y:H-bottom-24*S,vx:0,vy:0,r:8*S,stuck:true},bricks:[]};buildBricks()}
  if(key==="joust")world={player:{x:W*.3,y:H*.48,vy:0,r:21*S},enemies:[],time:0};
  if(key==="asteroids"){world={ship:{x:W/2,y:H/2,a:-Math.PI/2,vx:0,vy:0,r:16*S,inv:0},rocks:[],shots:[]};for(let i=0;i<5;i++)spawnRock(2)}
