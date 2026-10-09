@@ -499,27 +499,30 @@
       .top-note { padding: 8px 10px; font-size: 10px; }
     }
 
-    /* El wordmark usa una sola palabra para evitar el choque entre colores. */
-    .brand {
-      flex: 0 0 auto;
-      min-width: max-content;
-      white-space: nowrap;
-      letter-spacing: -.6px;
-      overflow: visible;
+
+    /* El fondo del menú debe extenderse a todo el viewport, no solo al shell centrado. */
+    .topbar {
+      isolation: isolate;
+      padding-inline: 18px;
+      background: transparent;
+      border-bottom: 0;
     }
-    .brand-word {
-      display: block;
-      white-space: nowrap;
-      background: linear-gradient(90deg, #35d9ff 0 47%, #ffb21a 47% 100%);
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
-      filter: drop-shadow(0 0 10px #36d9ff44);
+    .topbar::before {
+      content: "";
+      position: absolute;
+      z-index: -1;
+      inset: 0 auto 0 50%;
+      width: 100vw;
+      transform: translateX(-50%);
+      border-bottom: 1px solid #28c7ff55;
+      background:
+        radial-gradient(ellipse at 15% 50%, rgba(26, 95, 202, .25), transparent 38rem),
+        rgba(7, 20, 80, .94);
+      backdrop-filter: blur(14px);
+      pointer-events: none;
     }
-    .top-note { flex: 0 0 auto; white-space: nowrap; }
     @media (max-width: 620px) {
-      .brand { font-size: clamp(21px, 6.4vw, 26px); letter-spacing: -.45px; }
-      .top-note { padding: 8px 9px; font-size: 10px; }
+      .topbar { padding-inline: 10px; }
     }
     /* Ajustes de integración visual: fondo a todo el ancho, arte real y CTA visible. */
     html, body { overflow-x: clip; }
@@ -600,7 +603,7 @@
 <body>
   <a class="skip-link" href="#juegos">Saltar a los juegos</a>
   <header class="shell topbar">
-    <a class="brand" href="./" aria-label="Vladyerik, inicio"><span class="brand-word">VLADYERIK</span></a>
+    <a class="brand" href="./" aria-label="Vladyerik, inicio"><span class="brand-vlad">VLAD</span><span class="brand-yerik">YERIK</span></a>
     <a class="top-note" href="./">← INICIO</a>
   </header>
   <main class="shell">
