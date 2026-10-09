@@ -468,10 +468,67 @@ function drawAsteroids(){
 }
 function drawTetris(){
  const c=cell(),bw=10*c,bh=20*c,x=(W-bw)/2,y=Math.max(135*S,Math.min((H-bh)/2,H-bh-80*S));
- roundRect(x-5*S,y-5*S,bw+10*S,bh+10*S,14*S,"#07173deb","#47ddff");
- for(let r=0;r<20;r++)for(let col=0;col<10;col++){const v=world.board?.[r]?.[col];roundRect(x+col*c+1,y+r*c+1,c-2,c-2,3*S,v||"#102858",v?"#ffffff99":"#2b4d84")}
- const p=world.piece;if(p?.shape)for(let r=0;r<p.shape.length;r++)for(let col=0;col<p.shape[r].length;col++)if(p.shape[r][col]){const py=p.y+r;if(py>=0)roundRect(x+(p.x+col)*c+1,y+py*c+1,c-2,c-2,3*S,p.color,"#ffffff")}
- ctx.fillStyle="#c5f4ff";ctx.textAlign="center";ctx.font="900 "+(11*S)+"px system-ui";ctx.fillText("NIVEL "+level,W/2,y-16*S);ctx.textAlign="left"
+ const frameX=x-8*S,frameY=y-64*S,frameW=bw+16*S,frameH=bh+72*S;
+ const aura=ctx.createRadialGradient(W*.5,y+bh*.44,12*S,W*.5,y+bh*.44,Math.max(bw,bh)*.75);
+ aura.addColorStop(0,"rgba(43,214,255,.16)");aura.addColorStop(.58,"rgba(119,70,244,.10)");aura.addColorStop(1,"rgba(9,12,41,0)");
+ ctx.fillStyle=aura;ctx.fillRect(W*.5-Math.max(bw,bh)*.75,y+bh*.44-Math.max(bw,bh)*.75,Math.max(bw,bh)*1.5,Math.max(bw,bh)*1.5);
+ ctx.save();glow("#27dfff",14*S);roundRect(frameX,frameY,frameW,frameH,15*S,"#071635f5","#43dcff");noGlow();ctx.restore();
+ const inner=ctx.createLinearGradient(x,y,x+bw,y+bh);inner.addColorStop(0,"#0c2454");inner.addColorStop(.48,"#091a43");inner.addColorStop(1,"#151740");
+ roundRect(x,y,bw,bh,8*S,inner,"#b7f5ff88");
+ // Título arcade y placa de nivel; se mantienen fuera del área de juego.
+ ctx.save();ctx.textAlign="center";ctx.textBaseline="middle";
+ ctx.shadowColor="#00dfff";ctx.shadowBlur=12*S;ctx.fillStyle="#f7fcff";ctx.font="1000 "+(24*S)+"px system-ui, sans-serif";ctx.fillText("TETRIS",W*.5,y-49*S);
+ ctx.shadowBlur=0;ctx.fillStyle="#83eaff";ctx.font="900 "+(8*S)+"px system-ui, sans-serif";ctx.fillText("ARCADE DE VLADI  ·  ARMÁ LÍNEAS Y SUMÁ PUNTOS",W*.5,y-29*S);
+ const badgeW=82*S,badgeH=19*S,badgeX=W*.5-badgeW*.5,badgeY=y-22*S;
+ roundRect(badgeX,badgeY,badgeW,badgeH,9*S,"#0c2c5eeF","#ffd15c");
+ ctx.fillStyle="#ffe28a";ctx.font="900 "+(9*S)+"px system-ui, sans-serif";ctx.fillText("NIVEL "+level,W*.5,badgeY+badgeH*.52);
+ ctx.textAlign="left";ctx.restore();
+ const palette={
+  "#36d9ff":["#d4ffff","#42e8ff","#078bd2"],
+  "#ffcf57":["#fff8c7","#ffcf57","#df761d"],
+  "#9c84ff":["#e9ddff","#a58aff","#6045d7"],
+  "#63efba":["#d2fff0","#57eab6","#168d8e"],
+  "#ff73ad":["#ffe1ef","#ff6fa9","#d72f74"]
+ };
+ const drawTile=(px,py,color,active=false,ghost=false)=>{
+  const inset=Math.max(1.4*S,c*.065),size=c-inset*2,rad=Math.min(5*S,c*.19),tones=palette[color]||["#eefaff",color,"#385fa8"];
+  ctx.save();
+  if(ghost){ctx.globalAlpha=.30;ctx.setLineDash([4*S,3*S]);ctx.lineWidth=1.5*S;ctx.strokeStyle=tones[1];ctx.beginPath();ctx.roundRect(px+inset+2*S,py+inset+2*S,size-4*S,size-4*S,rad);ctx.stroke();ctx.setLineDash([]);ctx.restore();return}
+  if(active){glow(tones[1],9*S)}
+  const grad=ctx.createLinearGradient(px,py,px+c*.3,py+c);grad.addColorStop(0,tones[0]);grad.addColorStop(.36,tones[1]);grad.addColorStop(1,tones[2]);
+  ctx.beginPath();ctx.roundRect(px+inset,py+inset,size,size,rad);ctx.fillStyle=grad;ctx.fill();
+  noGlow();ctx.lineWidth=Math.max(1*S,c*.035);ctx.strokeStyle=active?"#f5ffff":"#e5ffffbb";ctx.stroke();
+  ctx.beginPath();ctx.roundRect(px+inset+2.5*S,py+inset+2.5*S,size-5*S,Math.max(2*S,c*.12),Math.max(1*S,rad*.5));ctx.fillStyle="#ffffff44";ctx.fill();
+  ctx.beginPath();ctx.moveTo(px+inset+3*S,py+c*.76);ctx.lineTo(px+c*.28,py+c*.76);ctx.strokeStyle="#06163766";ctx.lineWidth=Math.max(1*S,c*.035);ctx.stroke();
+  ctx.restore();
+ };
+ // Celdas vacías con relieve sutil para que el tablero se lea limpio en pantallas chicas.
+ for(let r=0;r<20;r++)for(let col=0;col<10;col++){
+  const px=x+col*c,py=y+r*c,v=world.board?.[r]?.[col];
+  if(v){drawTile(px,py,v);continue}
+  ctx.beginPath();ctx.roundRect(px+1.2*S,py+1.2*S,c-2.4*S,c-2.4*S,Math.max(2*S,c*.12));
+  ctx.fillStyle=(r+col)%2?"#102653":"#0d214b";ctx.fill();
+  ctx.lineWidth=Math.max(.7*S,c*.025);ctx.strokeStyle="#78baff24";ctx.stroke();
+  ctx.beginPath();ctx.moveTo(px+4*S,py+c-3*S);ctx.lineTo(px+c-4*S,py+c-3*S);ctx.strokeStyle="#9dcfff12";ctx.stroke();
+ }
+ const p=world.piece;
+ if(p?.shape){
+  let landing={...p};let guard=0;
+  while(guard++<20&&!collidePiece(landing,0,1))landing.y++;
+  if(landing.y>p.y)for(let r=0;r<p.shape.length;r++)for(let col=0;col<p.shape[r].length;col++)if(p.shape[r][col]){
+   const py=landing.y+r;if(py>=0&&py<20)drawTile(x+(p.x+col)*c,y+py*c,p.color,false,true)
+  }
+  for(let r=0;r<p.shape.length;r++)for(let col=0;col<p.shape[r].length;col++)if(p.shape[r][col]){
+   const py=p.y+r;if(py>=0)drawTile(x+(p.x+col)*c,y+py*c,p.color,true)
+  }
+ }
+ // Remates dorados pequeños para unir el tablero con los botones del resto del arcade.
+ ctx.save();ctx.strokeStyle="#ffd15c";ctx.lineWidth=2*S;ctx.globalAlpha=.92;
+ for(const side of [0,1])for(const top of [0,1]){
+  const cx=side?frameX+frameW-9*S:frameX+9*S,cy=top?frameY+frameH-9*S:frameY+9*S;
+  ctx.beginPath();ctx.moveTo(cx+(side?-5:5)*S,cy);ctx.lineTo(cx,cy);ctx.lineTo(cx,cy+(top?-5:5)*S);ctx.stroke();
+ }
+ ctx.restore();
 }
 function drawCatapult(){
  const floor=world.floor||H-(touch?102:78)*S,u=world.unit||42*S,g=world.sling||{x:W*.16,y:floor-2.25*u};
