@@ -112,7 +112,7 @@ function fresh(){
  score=0;lives=key==="catapult"?6:3;level=1;held={};shotClock=0;dropClock=0;musicClock=0;
  const top=touch?170*S:106*S,bottom=touch?136*S:86*S;
  if(key==="space"){world={player:{x:W/2,y:H-bottom,r:17*S,inv:0},aliens:[],bullets:[],enemyShots:[],dir:1,formationY:touch?top+40*S:88};spawnInvaders()}
- if(key==="arkanoid"){world={paddle:{x:W/2,y:H-bottom,w:104*S,h:16*S},ball:{x:W/2,y:H-bottom-24*S,vx:0,vy:0,r:8*S,stuck:true},bricks:[]};buildBricks()}
+ if(key==="arkanoid"){const paddleY=touch?H-bottom:H-38*S;world={paddle:{x:W/2,y:paddleY,w:104*S,h:16*S},ball:{x:W/2,y:paddleY-24*S,vx:0,vy:0,r:8*S,stuck:true},bricks:[]};buildBricks()}
  if(key==="joust")world={player:{x:W*.3,y:H*.48,vy:0,r:21*S},enemies:[],time:0};
  if(key==="asteroids"){world={ship:{x:W/2,y:H/2,a:-Math.PI/2,vx:0,vy:0,r:16*S,inv:0},rocks:[],shots:[]};for(let i=0;i<5;i++)spawnRock(2)}
  if(key==="tetris"){world={board:Array.from({length:20},()=>Array(10).fill(0)),piece:null,next:0,fall:0,move:0};spawnPiece()}
@@ -288,16 +288,16 @@ function updateArkanoid(dt){
  const previousX=b.x,previousY=b.y;
  b.x+=b.vx*dt;b.y+=b.vy*dt;
  if(b.x<b.r||b.x>W-b.r){b.vx*=-1;b.x=clamp(b.x,b.r,W-b.r);sfx.bounce()}
- if(b.y<76*S){b.vy=Math.abs(b.vy);sfx.bounce()}
+ if(touch?b.y<76*S:b.y<b.r){if(!touch)b.y=b.r;b.vy=Math.abs(b.vy);sfx.bounce()}
  if(b.vy>0&&b.y+b.r>=p.y-p.h/2&&b.y-b.r<=p.y+p.h&&Math.abs(b.x-p.x)<p.w/2+b.r){b.vy=-Math.abs(b.vy);b.vx=((b.x-p.x)/(p.w/2))*250*S;sfx.bounce()}
  for(const br of world.bricks){if(!br.hp)continue;if(b.x+b.r>br.x&&b.x-b.r<br.x+br.w&&b.y+b.r>br.y&&b.y-b.r<br.y+br.h){br.hp--;
- if(touch){
+ {
   if(previousY+b.r<=br.y){b.y=br.y-b.r-.01;b.vy=-Math.abs(b.vy)}
   else if(previousY-b.r>=br.y+br.h){b.y=br.y+br.h+b.r+.01;b.vy=Math.abs(b.vy)}
   else if(previousX+b.r<=br.x){b.x=br.x-b.r-.01;b.vx=-Math.abs(b.vx)}
   else if(previousX-b.r>=br.x+br.w){b.x=br.x+br.w+b.r+.01;b.vx=Math.abs(b.vx)}
   else{b.vy*=-1;b.y=b.vy<0?br.y-b.r-.01:br.y+br.h+b.r+.01}
- }else b.vy*=-1;
+ }
  addScore(20);sfx.hit();break}}
  if(world.bricks.every(x=>x.hp<=0)){level++;buildBricks();b.vy=Math.abs(b.vy)+35*S}
  if(b.y>H-(touch?85:35)*S){loseLife()}
@@ -472,7 +472,7 @@ function drawSpace(){
  ctx.save();ctx.translate(p.x,p.y);glow("#35ddff",15*S);ctx.beginPath();ctx.moveTo(0,-22*S);ctx.lineTo(18*S,12*S);ctx.lineTo(8*S,9*S);ctx.lineTo(0,16*S);ctx.lineTo(-8*S,9*S);ctx.lineTo(-18*S,12*S);ctx.closePath();ctx.fillStyle="#087bc9";ctx.strokeStyle="#b9f8ff";ctx.lineWidth=2*S;ctx.fill();ctx.stroke();ctx.fillStyle="#ffd15c";ctx.beginPath();ctx.ellipse(0,1*S,5*S,8*S,0,0,Math.PI*2);ctx.fill();noGlow();ctx.restore()
 }
 function drawArkanoidBricks(){
- const top=touch?92*S:70;ctx.fillStyle="#102b64";ctx.fillRect(12*S,top,W-24*S,2*S);
+ if(touch){const top=92*S;ctx.fillStyle="#102b64";ctx.fillRect(12*S,top,W-24*S,2*S);}
  for(const br of (world.bricks||[])){
   if(!br.hp)continue;
   if(touch){
@@ -694,7 +694,7 @@ addEventListener("pagehide",flushMobileBest);
 document.addEventListener("visibilitychange",()=>{if(document.hidden&&stage==="playing")pause()});
 fresh();syncHud();
 function frame(now){const elapsed=Math.max(0,(now-last)/1000||0),dt=Math.min(.033,elapsed);last=now;try{if(stage==="playing"){
- if(key==="arkanoid"&&touch){monitorMobileFrame(elapsed);music();let remaining=Math.min(.1,elapsed);while(remaining>0){const step=Math.min(1/120,remaining);updateArkanoid(step);remaining-=step;if(stage!=="playing")break}}
+ if(key==="arkanoid"){monitorMobileFrame(elapsed);music();let remaining=Math.min(.1,elapsed);while(remaining>0){const step=Math.min(1/120,remaining);updateArkanoid(step);remaining-=step;if(stage!=="playing")break}}
  else update(dt);
  }draw()}catch(error){console.error("Error en el juego "+key,error);if(stage==="playing")pause()}requestAnimationFrame(frame)}
 requestAnimationFrame(frame);
