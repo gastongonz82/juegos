@@ -88,8 +88,8 @@ const sfx={shot(){tone(640,.075,"square",.035,300)},hit(){tone(220,.13,"sawtooth
 function music(){if(stage!=="playing"||muted||!audio)return;const i=Math.floor(musicClock/0.19)%cfg.music.length;if(musicClock%0.19<.025)tone(cfg.music[i],.12,"triangle",.018);musicClock+=.016}
 function fresh(){
  score=0;lives=key==="catapult"?6:3;level=1;held={};shotClock=0;dropClock=0;musicClock=0;
- const top=touch?170*S:148*S,bottom=touch?136*S:86*S;
- if(key==="space"){world={player:{x:W/2,y:H-bottom,r:17*S,inv:0},aliens:[],bullets:[],enemyShots:[],dir:1,formationY:top+(touch?40:34)*S};spawnInvaders()}
+ const top=touch?170*S:106*S,bottom=touch?136*S:86*S;
+ if(key==="space"){world={player:{x:W/2,y:H-bottom,r:17*S,inv:0},aliens:[],bullets:[],enemyShots:[],dir:1,formationY:top+(touch?40:20)*S};spawnInvaders()}
  if(key==="arkanoid"){world={paddle:{x:W/2,y:H-bottom,w:104*S,h:16*S},ball:{x:W/2,y:H-bottom-24*S,vx:0,vy:0,r:8*S,stuck:true},bricks:[]};buildBricks()}
  if(key==="joust")world={player:{x:W*.3,y:H*.48,vy:0,r:21*S},enemies:[],time:0};
  if(key==="asteroids"){world={ship:{x:W/2,y:H/2,a:-Math.PI/2,vx:0,vy:0,r:16*S,inv:0},rocks:[],shots:[]};for(let i=0;i<5;i++)spawnRock(2)}
@@ -98,7 +98,7 @@ function fresh(){
  syncHud();
 }
 function spawnInvaders(){world.aliens=[];const cols=Math.min(8,Math.max(6,Math.floor(W/(42*S))));for(let r=0;r<4;r++)for(let c=0;c<cols;c++)world.aliens.push({x:(W-cols*42*S)/2+c*42*S+18*S,y:world.formationY+r*33*S,r:12*S,kind:r})}
-function buildBricks(){world.bricks=[];const cols=Math.min(10,Math.max(6,Math.floor((W-30*S)/(56*S)))),bw=Math.min(52*S,(W-36*S)/cols-5*S),top=touch?168*S:Math.max(140*S,H*.22);for(let r=0;r<5;r++)for(let c=0;c<cols;c++)world.bricks.push({x:(W-cols*(bw+5*S))/2+c*(bw+5*S),y:top+r*24*S,w:bw,h:18*S,hp:r<2?2:1,color:["#ff5c96","#ffb449","#55e1ff","#8d7cff","#57edbf"][r]})}
+function buildBricks(){world.bricks=[];const cols=Math.min(10,Math.max(6,Math.floor((W-30*S)/(56*S)))),bw=Math.min(52*S,(W-36*S)/cols-5*S),top=touch?168*S:Math.max(96*S,H*.14);for(let r=0;r<5;r++)for(let c=0;c<cols;c++)world.bricks.push({x:(W-cols*(bw+5*S))/2+c*(bw+5*S),y:top+r*24*S,w:bw,h:18*S,hp:r<2?2:1,color:["#ff5c96","#ffb449","#55e1ff","#8d7cff","#57edbf"][r]})}
 function spawnRock(size,x,y){world.rocks.push({x:x??rand(30*S,W-30*S),y:y??rand(180*S,H-140*S),a:rand(0,6),vx:rand(-38,38)*S,vy:rand(-38,38)*S,size,r:size*(13+Math.random()*4)*S,shape:Array.from({length:9},()=>rand(.72,1.25))})}
 const shapes=[[[1,1,1,1]],[[1,1],[1,1]],[[0,1,0],[1,1,1]],[[1,0,0],[1,1,1]],[[0,0,1],[1,1,1]],[[0,1,1],[1,1,0]],[[1,1,0],[0,1,1]]];
 function cell(){if(!touch){const cap=44*S,usableH=H-154*S;return Math.max(14*S,Math.min(cap,(W-50*S)/10,usableH/20))}const cap=W>700*S&&H>550*S?38*S:29*S,usableH=H-(W>700*S&&H>550*S?175*S:250*S);return Math.max(13*S,Math.min(cap,(W-40*S)/10,usableH/20))}
