@@ -110,7 +110,7 @@ function buildTargets(){
  const wood=(x,bottom,w,h)=>world.blocks.push({x,y:bottom-h,w,h,hp:2,material:"wood",falling:false,vx:0,vy:0,rotation:0});
  const glass=(x,bottom,w,h)=>world.blocks.push({x,y:bottom-h,w,h,hp:1,material:"glass",falling:false,vx:0,vy:0,rotation:0});
  const stone=(x,bottom,w,h)=>world.blocks.push({x,y:bottom-h,w,h,hp:3,material:"stone",falling:false,vx:0,vy:0,rotation:0});
- const pig=(x,y,r)=>world.targets.push({x,y,r,hp:1,phase:rand(0,6.28)});
+ const pig=(x,y,r)=>world.targets.push({x,y,r,hp:1,phase:rand(0,6.28),vy:0,falling:false});
  const base=floor-5*S,layout=(level-1)%3,x=W*.51;
  if(layout===0){
   wood(x,base,u*2.05,u*.42);
@@ -247,6 +247,11 @@ function catapultSupports(){
   }
  }
  for(const b of blocks)if(!supported.has(b))b.falling=true;
+ for(const t of world.targets){if(!t.hp||t.falling)continue;
+  const onGround=t.y+t.r>=floor-9*S;
+  const onBlock=blocks.some(b=>!b.falling&&t.x+t.r*.72>b.x&&t.x-t.r*.72<b.x+b.w&&Math.abs((t.y+t.r)-b.y)<=eps);
+  if(!onGround&&!onBlock)t.falling=true;
+ }
 }
 function updateCatapult(dt){
  const p=world.projectile,floor=world.floor,blocks=world.blocks;
@@ -267,7 +272,17 @@ function updateCatapult(dt){
   if(b.y+b.h>=floor){b.y=floor-b.h;b.vy=0;b.vx*=.75;b.rotation*=.75;landed=true}
   if(landed&&Math.abs(b.vx)<18*S){b.vx=0;b.rotation=0;b.falling=false}
  }
- if(!p)return;
+ for(const t of world.targets){
+  if(!t.hp||!t.falling)continue;
+  const oldBottom=t.y+t.r;t.vy=(t.vy||0)+560*S*dt;let nextY=t.y+t.vy*dt,landed=false;
+  for(const b of blocks){if(b.hp<=0)continue;const overlap=Math.min(t.x+t.r*.72,b.x+b.w)-Math.max(t.x-t.r*.72,b.x);
+   if(overlap>0&&oldBottom<=b.y+5*S&&nextY+t.r>=b.y&&b.y>=t.y){nextY=b.y-t.r;t.vy=0;landed=true}
+  }
+  t.y=nextY;
+  if(t.y+t.r>=floor){t.y=floor-t.r;t.hp=0;t.falling=false;addScore(75);sfx.coin()}
+  else if(landed)t.falling=false;
+ }
+ if(!p){if(world.targets.length&&world.targets.every(t=>!t.hp)){level++;addScore(250);buildTargets()}return}
  p.vy+=560*S*dt;p.x+=p.vx*dt;p.y+=p.vy*dt;p.a=Math.atan2(p.vy,p.vx);
  if(p.cooldown>0)p.cooldown-=dt;
  if(p.cooldown<=0){
