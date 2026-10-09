@@ -105,13 +105,14 @@ function cell(){return Math.max(13*S,Math.min(29*S,(W-40*S)/10,(H-250*S)/20))}
 function spawnPiece(){const sh=shapes[Math.floor(Math.random()*shapes.length)];world.piece={shape:sh.map(r=>r.slice()),x:3,y:0,color:["#36d9ff","#ffcf57","#9c84ff","#63efba","#ff73ad"][Math.floor(Math.random()*5)]};if(collidePiece(world.piece,0,0)){finish()}}
 function buildTargets(){
  world.targets=[];world.blocks=[];
- const floor=H-(touch?102:78)*S,u=Math.max(26*S,Math.min(W*.083,H*.055,56*S));
+ const cycle=Math.min(3,Math.floor((level-1)/15)),floor=H-(touch?102:78)*S,u=Math.max(26*S,Math.min(W*.083,H*.055,56*S));
  world.floor=floor;world.unit=u;world.sling={x:W*.16,y:floor-2.25*u};
- const wood=(x,bottom,w,h)=>world.blocks.push({x,y:bottom-h,w,h,hp:1,material:"wood",falling:false,vx:0,vy:0,rotation:0});
+ const wood=(x,bottom,w,h)=>world.blocks.push({x,y:bottom-h,w,h,hp:1+Math.min(1,cycle),material:"wood",falling:false,vx:0,vy:0,rotation:0});
  const glass=(x,bottom,w,h)=>world.blocks.push({x,y:bottom-h,w,h,hp:1,material:"glass",falling:false,vx:0,vy:0,rotation:0});
- const stone=(x,bottom,w,h)=>world.blocks.push({x,y:bottom-h,w,h,hp:2,material:"stone",falling:false,vx:0,vy:0,rotation:0});
+ const stone=(x,bottom,w,h)=>world.blocks.push({x,y:bottom-h,w,h,hp:2+Math.min(1,cycle),material:"stone",falling:false,vx:0,vy:0,rotation:0});
  const pig=(x,y,r)=>world.targets.push({x,y,r,hp:1,phase:rand(0,6.28),vy:0,falling:false});
- const base=floor-5*S,layout=(level-1)%3,x=W*.51;
+ const beam=(cx,bottom,w,h,material="wood")=>(material==="glass"?glass:material==="stone"?stone:wood)(cx-w/2,bottom,w,h);
+ const base=floor-5*S,layout=(level-1)%15,x=W*.51;
  if(layout===0){
   wood(x,base,u*2.05,u*.42);
   const deck=base-u*.42;
@@ -143,7 +144,7 @@ function buildTargets(){
   const top=deck2-.82*u-.03*u-.30*u;
   stone(cx-u*.72,top-.02*u,u*1.44,.28*u);
   pig(cx,top-.29*u,u*.3);pig(cx-u*1.2,deck2-.8*u,u*.27);
- }else{
+ }else if(layout===2){
   const cx=W*.70;
   // Dos torres gemelas unidas por un puente central.
   stone(cx-u*2.15,base,u*1.65,.4*u);stone(cx+u*.50,base,u*1.65,.4*u);
@@ -156,8 +157,75 @@ function buildTargets(){
   stone(cx-u*.98,d2-.76*u-.03*u,u*1.96,.28*u);
   pig(cx-u*1.35,d2-.76*u-.30*u,.29*u);pig(cx+u*1.35,d2-.76*u-.30*u,.29*u);
   wood(cx-u*.46,d-.02*u,.92*u,.34*u);pig(cx,d-.36*u-.28*u,.28*u);
+ }else if(layout===3){
+  const cx=W*.68,d=base-.38*u;stone(cx-1.7*u,base,3.4*u,.38*u);
+  wood(cx-1.42*u,d,.38*u,.92*u);glass(cx-.19*u,d,.38*u,.92*u);wood(cx+1.04*u,d,.38*u,.92*u);
+  beam(cx,d-.95*u,3*u,.30*u);glass(cx-.82*u,d-1.27*u,.38*u,.72*u);glass(cx+.44*u,d-1.27*u,.38*u,.72*u);
+  beam(cx,d-2.02*u,2.25*u,.28*u,"stone");pig(cx,d-2.30*u-.29*u,.29*u);pig(cx-1.18*u,d-.30*u,.27*u);
+ }else if(layout===4){
+  const cx=W*.72,d=base-.34*u;stone(cx-.95*u,base,1.9*u,.34*u);
+  wood(cx-.62*u,d,.38*u,.92*u);glass(cx+.24*u,d,.38*u,.92*u);beam(cx,d-.95*u,1.75*u,.28*u);
+  glass(cx-.20*u,d-1.25*u,.40*u,.78*u);beam(cx,d-2.06*u,1.35*u,.27*u,"stone");
+  pig(cx,d-2.33*u-.29*u,.29*u);pig(cx,d-.30*u,.27*u);
+ }else if(layout===5){
+  for(const cx of [W*.58,W*.80]){
+   const d=base-.34*u;wood(cx-.68*u,base,1.36*u,.34*u);
+   glass(cx-.48*u,d,.34*u,.72*u);wood(cx+.14*u,d,.34*u,.72*u);
+   beam(cx,d-.75*u,1.18*u,.25*u);wood(cx-.18*u,d-1.03*u,.36*u,.52*u);
+   pig(cx,d-1.30*u-.25*u,.25*u);
+  }
+ }else if(layout===6){
+  const cx=W*.68,d=base-.36*u;stone(cx-2*u,base,4*u,.36*u);
+  for(const off of [-1.55,-.55,.55,1.55])wood(cx+off*u-.18*u,d,.36*u,.76*u);
+  beam(cx,d-.79*u,3.55*u,.28*u,"glass");
+  glass(cx-.82*u,d-1.08*u,.36*u,.74*u);glass(cx+.46*u,d-1.08*u,.36*u,.74*u);
+  beam(cx,d-1.86*u,2.15*u,.28*u);pig(cx,d-2.14*u-.28*u,.28*u);pig(cx-1.45*u,d-.28*u,.26*u);
+ }else if(layout===7){
+  const cx=W*.68,d=base-.34*u;wood(cx-1.85*u,base,3.7*u,.34*u);
+  const heights=[.62,.92,1.22,.92];
+  for(let i=0;i<4;i++){const off=-1.42+i*.94,h=heights[i]*u;glass(cx+off*u-.17*u,d,.34*u,h);beam(cx+off*u,d-h-.03*u,.82*u,.22*u,i%2?"wood":"stone")}
+  pig(cx-.48*u,d-.95*u-.28*u,.27*u);pig(cx+.46*u,d-1.25*u-.28*u,.27*u);
+ }else if(layout===8){
+  const cx=W*.70,d=base-.38*u;stone(cx-1.8*u,base,3.6*u,.38*u);
+  for(const off of [-1.42,-.50,.50,1.42])wood(cx+off*u-.18*u,d,.36*u,.82*u);
+  beam(cx,d-.85*u,3.25*u,.28*u);glass(cx-.94*u,d-1.15*u,.36*u,.70*u);glass(cx+.58*u,d-1.15*u,.36*u,.70*u);
+  beam(cx,d-1.89*u,2.25*u,.28*u,"stone");pig(cx,d-2.17*u-.28*u,.28*u);pig(cx-1.16*u,d-.28*u,.26*u);
+ }else if(layout===9){
+  for(const cx of [W*.59,W*.79]){
+   const d=base-.34*u;stone(cx-.78*u,base,1.56*u,.34*u);
+   wood(cx-.54*u,d,.34*u,.82*u);glass(cx+.20*u,d,.34*u,.82*u);
+   beam(cx,d-.85*u,1.35*u,.26*u,"glass");wood(cx-.18*u,d-1.13*u,.36*u,.60*u);
+   pig(cx,d-1.43*u-.25*u,.25*u);pig(cx-.78*u,d-.28*u,.26*u);
+  }
+ }else if(layout===10){
+  const cx=W*.68,d=base-.36*u;stone(cx-1.9*u,base,3.8*u,.36*u);
+  wood(cx-1.55*u,d,.38*u,1.02*u);glass(cx-.20*u,d,.40*u,.72*u);wood(cx+1.18*u,d,.38*u,1.02*u);
+  beam(cx,d-1.05*u,3.45*u,.28*u,"glass");
+  wood(cx-.95*u,d-1.35*u,.36*u,.72*u);wood(cx+.59*u,d-1.35*u,.36*u,.72*u);
+  beam(cx,d-2.10*u,2.4*u,.26*u,"stone");pig(cx,d-2.36*u-.28*u,.28*u);pig(cx,d-.28*u,.27*u);
+ }else if(layout===11){
+  const cx=W*.68,d=base-.34*u;wood(cx-1.65*u,base,3.3*u,.34*u);
+  glass(cx-1.32*u,d,.36*u,.72*u);wood(cx-.42*u,d,.36*u,1.04*u);glass(cx+.50*u,d,.36*u,.72*u);wood(cx+1.34*u,d,.36*u,.92*u);
+  beam(cx-.85*u,d-.75*u,1.48*u,.25*u);beam(cx+.90*u,d-.95*u,1.48*u,.25*u,"glass");
+  stone(cx,d-1.35*u,1.10*u,.27*u);pig(cx,d-1.62*u-.27*u,.27*u);pig(cx-1.05*u,d-.28*u,.26*u);
+ }else if(layout===12){
+  const cx=W*.70,d=base-.36*u;stone(cx-1.9*u,base,3.8*u,.36*u);
+  wood(cx-1.55*u,d,.38*u,.92*u);glass(cx-1.0*u,d,.38*u,.92*u);glass(cx+.62*u,d,.38*u,.92*u);wood(cx+1.17*u,d,.38*u,.92*u);
+  beam(cx,d-.95*u,3.45*u,.28*u);glass(cx-.78*u,d-1.25*u,.36*u,.68*u);glass(cx+.42*u,d-1.25*u,.36*u,.68*u);
+  beam(cx,d-1.96*u,2*u,.27*u,"stone");pig(cx,d-2.23*u-.28*u,.28*u);pig(cx,d-.28*u,.26*u);
+ }else if(layout===13){
+  const cx=W*.68,d=base-.34*u;glass(cx-1.7*u,base,3.4*u,.34*u);
+  for(const off of [-1.30,-.43,.43,1.30])wood(cx+off*u-.17*u,d,.34*u,(off===-.43||off===.43?1.15:.78)*u);
+  beam(cx,d-1.18*u,2.75*u,.27*u);glass(cx-.62*u,d-1.48*u,.34*u,.68*u);glass(cx+.28*u,d-1.48*u,.34*u,.68*u);
+  beam(cx,d-2.19*u,1.85*u,.26*u,"stone");pig(cx,d-2.45*u-.27*u,.27*u);pig(cx,d-.28*u,.25*u);
+ }else{
+  const cx=W*.70,d=base-.38*u;stone(cx-1.85*u,base,3.7*u,.38*u);
+  wood(cx-1.48*u,d,.38*u,.86*u);glass(cx-.56*u,d,.38*u,1.16*u);glass(cx+.40*u,d,.38*u,1.16*u);wood(cx+1.30*u,d,.38*u,.86*u);
+  beam(cx,d-1.19*u,3.35*u,.28*u);
+  wood(cx-.95*u,d-1.49*u,.36*u,.70*u);wood(cx+.59*u,d-1.49*u,.36*u,.70*u);
+  beam(cx,d-2.22*u,2.35*u,.28*u,"stone");pig(cx,d-2.50*u-.28*u,.28*u);pig(cx-1.08*u,d-.28*u,.26*u);pig(cx+1.08*u,d-.28*u,.26*u);
  }
- world.projectile=null;world.aim=null;world.angle=-.48;world.power=(700+Math.min(level,5)*20)*S;
+ world.projectile=null;world.aim=null;world.angle=-.48;world.power=(700+Math.min(level,5)*20+Math.min(3,Math.floor((level-1)/15))*20)*S;
 }
 function init(){fresh();stage="playing";panel.classList.add("hidden");$("#pause").textContent="Ⅱ";$("#pause").setAttribute("aria-label","Pausar");}
 function start(){if(stage==="ready"||stage==="over"){init()}else if(stage==="paused"){stage="playing";panel.classList.add("hidden");$("#pause").textContent="Ⅱ"}}
@@ -265,6 +333,7 @@ function segmentCircleEntry(x1,y1,x2,y2,cx,cy,r){
  const b=2*(fx*dx+fy*dy),disc=b*b-4*a*c;if(disc<0)return null;
  const t=(-b-Math.sqrt(disc))/(2*a);return t>=0&&t<=1?t:null;
 }
+function advanceCatapultLevel(){level++;lives=6;addScore(250);buildTargets();syncHud()}
 function updateCatapult(dt){
  const p=world.projectile,floor=world.floor,blocks=world.blocks;
  catapultSupports();
@@ -299,7 +368,7 @@ function updateCatapult(dt){
   if(t.y+t.r>=floor){t.y=floor-t.r;t.hp=0;t.falling=false;addScore(75);sfx.coin()}
   else if(landed)t.falling=false;
  }
- if(!p){if(world.targets.length&&world.targets.every(t=>!t.hp)){level++;addScore(250);buildTargets()}return}
+ if(!p){if(world.targets.length&&world.targets.every(t=>!t.hp)){advanceCatapultLevel()}return}
  const prevX=p.x,prevY=p.y,gravity=1250*S;p.x+=p.vx*dt;p.y+=p.vy*dt+.5*gravity*dt*dt;p.vy+=gravity*dt;p.a=Math.atan2(p.vy,p.vx);
  if(p.cooldown>0)p.cooldown-=dt;
  if(p.cooldown<=0){
@@ -319,7 +388,7 @@ function updateCatapult(dt){
  }
  if(p.x>W+55*S||p.y>floor-10*S||p.x<-55*S||p.y<-40*S){
   world.projectile=null;
-  if(world.targets.every(t=>!t.hp)){level++;addScore(250);buildTargets()}
+  if(world.targets.every(t=>!t.hp)){advanceCatapultLevel()}
   else loseLife()
  }
 }
@@ -409,8 +478,11 @@ function drawCatapult(){
  const variants=[
   {sky:["#62d8ff","#a7edff","#e5fbff","#9ce8ed"],sun:["#fffde0","#ffe277","#ffb84e"],hill:"#75c8aa",water:"#42afd0",soil:"#7b4d6f",grass:"#21b785",trim:"#8af18f",tree:["#37b879","#26a96f","#61d184"],cloud:"#fff"},
   {sky:["#ffb16d","#ffda9d","#ffe8bc","#9bc8d0"],sun:["#fff4cc","#ffc657","#ff8745"],hill:"#d49a75",water:"#629fc0",soil:"#80536f",grass:"#67ae79",trim:"#d5e58d",tree:["#568c68","#3e785f","#8fb978"],cloud:"#fff5df"},
-  {sky:["#142a62","#405d9b","#8678b1","#275e75"],sun:["#f4f8ff","#c8e8ff","#8ec9ef"],hill:"#6278a3",water:"#285f8e",soil:"#594874",grass:"#267b79",trim:"#71d7b5",tree:["#327f7e","#276c78","#50aa91"],cloud:"#d7edff"}
- ][(level-1)%3];
+  {sky:["#142a62","#405d9b","#8678b1","#275e75"],sun:["#f4f8ff","#c8e8ff","#8ec9ef"],hill:"#6278a3",water:"#285f8e",soil:"#594874",grass:"#267b79",trim:"#71d7b5",tree:["#327f7e","#276c78","#50aa91"],cloud:"#d7edff"},
+  {sky:["#92ddff","#c4ecff","#ffe4ba","#97d2d2"],sun:["#fff8cc","#ffc66e","#fa8f5c"],hill:"#8eb5a0",water:"#549abd",soil:"#927071",grass:"#58aa85",trim:"#b0e8a5",tree:["#428e78","#347c70","#72bf91"],cloud:"#fff4e9"},
+  {sky:["#21396e","#5c6fa2","#e1a28c","#374d72"],sun:["#fff5dd","#ffbb89","#df7185"],hill:"#8c718d",water:"#315f85",soil:"#654c79",grass:"#3d877b",trim:"#efb293",tree:["#507d79","#3d686e","#7ca38b"],cloud:"#e4e8ff"},
+  {sky:["#ffcf9a","#ffe9c8","#d8f5ee","#84c5c2"],sun:["#fffde5","#ffd468","#ff9a64"],hill:"#a5c193",water:"#4babc0",soil:"#886b79",grass:"#4cb586",trim:"#d5ed9e",tree:["#529b72","#3f805f","#84bd83"]}
+ ][(level-1)%6];
  const sky=ctx.createLinearGradient(0,0,0,H);variants.sky.forEach((c,i)=>sky.addColorStop([0,.42,.76,1][i],c));ctx.fillStyle=sky;ctx.fillRect(0,0,W,H);
  const sunX=W*.84,sunY=Math.max(132*S,H*.16),sunR=35*S;
  const halo=ctx.createRadialGradient(sunX,sunY,4*S,sunX,sunY,150*S);halo.addColorStop(0,variants.sun[0]+"aa");halo.addColorStop(1,"#fff9d000");ctx.fillStyle=halo;ctx.fillRect(sunX-150*S,sunY-150*S,300*S,300*S);
