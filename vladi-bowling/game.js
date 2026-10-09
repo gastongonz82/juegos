@@ -81,6 +81,7 @@
   }
   function sound(name) { if (window.VladiSound) window.VladiSound.play(name); }
   function showOverlay(which) {
+    if(which==='finished'&&typeof window.gtag==='function')window.gtag('event','game_end',{game_id:'vladi-bowling',game_name:'vladi bowling',score:totalScore});
     state = which; overlay.hidden = false; drag = null; syncControls();
     if (which === 'title') {
       badge.textContent = 'La pista es tuya'; title.textContent = '¡A buscar el strike!';
