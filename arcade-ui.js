@@ -15,6 +15,8 @@
     tag.src='https://www.googletagmanager.com/gtag/js?id=G-QWN2XREXY7';
     document.head.appendChild(tag);
   }
+  // Keep game identity consistent for events emitted by individual games.
+  window.vladyAnalyticsGame={game_id:gameId,game_name:name};
   window.gtag('event','game_page_open',{game_id:gameId,game_name:name});
   document.addEventListener('click',function(event){
     const button=event.target.closest('button');
