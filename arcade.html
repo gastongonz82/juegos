@@ -703,6 +703,19 @@
 @media(max-width:800px){.topbar-inner{min-height:0;flex-direction:column;gap:8px;padding:10px 16px}.topbar .brand{font-size:26px}.topbar-links{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));width:100%;margin:0;gap:2px 10px;font-size:12px;text-align:center}.topbar-links a{padding:6px 0}.topbar-links a:last-child{grid-column:2}}
 
 .topbar{font-family:Arial,sans-serif;color:#fff}.topbar-links{font-weight:800}
+
+/* Compact mobile navigation, shared with the main page and Arcade. */
+.topbar .menu-toggle{display:none}
+@media(max-width:800px){
+ .topbar-inner{min-height:62px;height:62px;flex-direction:row;justify-content:space-between;gap:16px;padding:0 22px}
+ .topbar .brand{font-size:26px}
+ .topbar .menu-toggle{display:flex;flex-direction:column;justify-content:center;align-items:center;gap:5px;width:44px;height:44px;padding:10px;flex:0 0 44px;border:1px solid #28c7ff66;border-radius:10px;background:#10235b;color:#fff;cursor:pointer}
+ .topbar .menu-toggle span{display:block;width:22px;height:2px;border-radius:2px;background:currentColor}
+ .topbar-links{display:none;position:absolute;top:100%;left:0;right:0;width:100%;margin:0;padding:10px 22px 16px;background:#071450;border-bottom:1px solid #28c7ff55;box-shadow:0 12px 24px #0006;grid-template-columns:1fr;gap:0;text-align:left;font-size:14px;max-height:calc(100dvh - 62px);overflow-y:auto}
+ .topbar.menu-open .topbar-links{display:grid}
+ .topbar-links a,.topbar-links a:last-child{grid-column:auto;padding:12px 10px;border-radius:8px}
+ .topbar-links a:hover,.topbar-links a:focus-visible{background:#153071}
+}
 </style>
 </head>
 <body>
@@ -710,7 +723,7 @@
   <nav class="topbar" aria-label="Navegación principal">
     <div class="topbar-inner">
       <a class="brand" href="./" aria-label="Vladyerik, inicio"><span class="brand-vlad">VLAD</span><span class="brand-yerik">YERIK</span></a>
-      <div class="topbar-links">
+      <button class="menu-toggle" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="mobile-navigation"><span></span><span></span><span></span></button><div class="topbar-links" id="mobile-navigation">
         <a href="./">🏠 INICIO</a>
         <a href="./#juegos">🎮 MIS JUEGOS</a>
         <a href="./#videos">▶ MIS VIDEOS</a>
@@ -1016,5 +1029,14 @@ document.addEventListener('click',function(e){
   if(typeof window.gtag==='function')window.gtag('event','game_open_click',{game_id:gameId,game_name:(a.querySelector('h3')||a).textContent.trim().slice(0,90)});
 });
 </script>
-</body>
+<script>
+(()=>{const nav=document.querySelector('.topbar'),button=nav.querySelector('.menu-toggle'),links=nav.querySelector('#mobile-navigation');
+const close=()=>{nav.classList.remove('menu-open');button.setAttribute('aria-expanded','false');button.setAttribute('aria-label','Abrir menú')};
+button.addEventListener('click',()=>{const open=nav.classList.toggle('menu-open');button.setAttribute('aria-expanded',String(open));button.setAttribute('aria-label',open?'Cerrar menú':'Abrir menú')});
+links.addEventListener('click',event=>{if(event.target.closest('a'))close()});
+document.addEventListener('click',event=>{if(!nav.contains(event.target))close()});
+document.addEventListener('keydown',event=>{if(event.key==='Escape'){const open=nav.classList.contains('menu-open');close();if(open)button.focus()}});
+window.matchMedia('(max-width:800px)').addEventListener('change',close);
+})();
+</script></body>
 </html>
