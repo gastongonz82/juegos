@@ -153,4 +153,15 @@
 </svg>
   <span class="whatsapp-copy"><strong>Hablemos</strong><small>Por WhatsApp</small></span>
 </a>
+<script>
+/* VLADYERIK: clicks to game pages (not gameplay starts). */
+document.addEventListener('click',function(e){
+  var a=e.target.closest('a[href]');if(!a)return;
+  var u;try{u=new URL(a.getAttribute('href'),location.href)}catch(_){return}
+  if(u.origin!==location.origin)return;
+  var p=u.pathname.replace(/\/+$/,'').split('/').pop();
+  if(!p||p==='arcade.html'||p==='index.html'||!(/^(vladi-|flappy-vladi$)/.test(p)))return;
+  if(typeof window.gtag==='function')window.gtag('event','game_open_click',{game_id:p,game_name:(a.querySelector('h3')||a).textContent.trim().slice(0,90)});
+});
+</script>
 </body></html>
