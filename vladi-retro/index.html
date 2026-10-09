@@ -123,6 +123,7 @@ function update(dt){
 }
 function updateSpace(dt){
  const p=world.player,sp=270*S;
+ if(p.inv>0)p.inv=Math.max(0,p.inv-dt);
  if(held.left)p.x-=sp*dt;if(held.right)p.x+=sp*dt;p.x=clamp(p.x,22*S,W-22*S);
  shotClock-=dt;if(held.fire&&shotClock<=0){world.bullets.push({x:p.x,y:p.y-20*S,v:430*S});shotClock=.24;sfx.shot()}
  const a=world.aliens;if(!a.length){level++;world.formationY=90*S+level*3*S;spawnInvaders();addScore(100);return}
@@ -133,7 +134,7 @@ function updateSpace(dt){
  for(const b of world.bullets){const i=a.findIndex(e=>Math.hypot(e.x-b.x,e.y-b.y)<e.r+4*S);if(i>=0){a.splice(i,1);b.dead=true;addScore(10);sfx.hit()}}
  world.bullets=world.bullets.filter(b=>!b.dead);
  dropClock-=dt;if(dropClock<0&&a.length){const e=a[Math.floor(Math.random()*a.length)];world.enemyShots.push({x:e.x,y:e.y+10*S,v:210*S});dropClock=Math.max(.35,1.15-level*.05)}
- world.enemyShots.forEach(b=>b.y+=b.v*dt);world.enemyShots=world.enemyShots.filter(b=>{if(Math.hypot(b.x-p.x,b.y-p.y)<p.r+7*S){loseLife();return false}return b.y<H});
+ world.enemyShots.forEach(b=>b.y+=b.v*dt);world.enemyShots=world.enemyShots.filter(b=>{if(p.inv<=0&&Math.hypot(b.x-p.x,b.y-p.y)<p.r+7*S){loseLife();return false}return b.y<H});
  if(a.some(e=>e.y>H-(touch?180:100)*S))finish();
 }
 function updateArkanoid(dt){
@@ -149,7 +150,7 @@ function updateArkanoid(dt){
 }
 function updateJoust(dt){
  const p=world.player;p.x+=(held.left?-1:0)*250*S*dt;p.x+=(held.right?1:0)*250*S*dt;p.x=clamp(p.x,25*S,W-25*S);
- p.vy+=400*S*dt;if(held.fire||held.up){p.vy=-290*S;p.flap=.16;sfx.flap();held.fire=false;held.up=false}
+ p.flap=Math.max(0,(p.flap||0)-dt);p.vy+=400*S*dt;if((held.fire||held.up)&&p.flap<=0){p.vy=-290*S;p.flap=.2;sfx.flap();held.fire=false;held.up=false}
  p.y+=p.vy*dt;if(p.y<90*S){p.y=90*S;p.vy=30*S}if(p.y>H-(touch?160:80)*S){p.y=H-(touch?160:80)*S;p.vy=-80*S}
  world.time+=dt;
  if(!world.enemies.length||world.time>7){world.enemies.push({x:W*.72+rand(-W*.1,W*.1),y:H*.35+rand(0,H*.25),r:19*S,vx:-rand(55,100)*S,phase:rand(0,6)});world.time=0}
@@ -241,8 +242,9 @@ function drawCatapult(){
  for(const t of world.targets||[]){if(!t.hp)continue;glow("#ff78cc",8*S);ctx.beginPath();ctx.arc(t.x,t.y,t.r,0,7);ctx.fillStyle="#be58b2";ctx.fill();ctx.strokeStyle="#ffc7ff";ctx.stroke();noGlow();ctx.fillStyle="#161742";ctx.fillRect(t.x-7*S,t.y-4*S,4*S,4*S);ctx.fillRect(t.x+4*S,t.y-4*S,4*S,4*S)}
  ctx.strokeStyle="#a35737";ctx.lineWidth=8*S;ctx.beginPath();ctx.moveTo(g.x-14*S,g.y+56*S);ctx.lineTo(g.x,g.y-7*S);ctx.lineTo(g.x+16*S,g.y+56*S);ctx.stroke();ctx.lineWidth=3*S;ctx.strokeStyle="#f7d884";ctx.beginPath();ctx.moveTo(g.x-1*S,g.y-4*S);ctx.lineTo(g.x+1*S,g.y+26*S);ctx.stroke();
  drawPilot(g.x-39*S,g.y+20*S,1.25);
+ if(drag&&world.aim){ctx.setLineDash([6*S,6*S]);ctx.strokeStyle="#ffe58a99";ctx.lineWidth=3*S;ctx.beginPath();ctx.moveTo(g.x,g.y+20*S);ctx.lineTo(world.aim.x,world.aim.y);ctx.stroke();ctx.setLineDash([]);glow("#ffe266",12*S);star(world.aim.x,world.aim.y,13*S,6*S,5);ctx.fillStyle="#fff09b";ctx.fill();noGlow()}
  const p=world.projectile;if(p){glow("#ffe266",16*S);ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.a);star(0,0,13*S,6*S,5);ctx.fillStyle="#fff09b";ctx.fill();ctx.strokeStyle="#fff";ctx.stroke();ctx.restore();noGlow()}
- else{glow("#ffe266",14*S);star(g.x,g.y+20*S,13*S,6*S,5);ctx.fillStyle="#ffe66d";ctx.fill();noGlow()}
+ else if(!drag){glow("#ffe266",14*S);star(g.x,g.y+20*S,13*S,6*S,5);ctx.fillStyle="#ffe66d";ctx.fill();noGlow()}
  roundRect(18*S,H-(touch?198:100)*S,126*S,42*S,12*S,"#09255add","#53ddff66");drawFace(25*S,H-(touch?192:94)*S,30*S,30*S);ctx.fillStyle="#e7faff";ctx.font="900 "+(10*S)+"px system-ui";ctx.fillText("APUNTÁ",61*S,H-(touch?174:82)*S)
 }
 function star(x,y,r,inner,n){ctx.beginPath();for(let i=0;i<n*2;i++){const a=-Math.PI/2+i*Math.PI/n,rr=i%2?r*inner/r:r;i?ctx.lineTo(x+Math.cos(a)*rr,y+Math.sin(a)*rr):ctx.moveTo(x+Math.cos(a)*rr,y+Math.sin(a)*rr)}ctx.closePath()}
