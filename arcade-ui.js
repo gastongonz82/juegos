@@ -28,4 +28,4 @@
   },{capture:true});
 
 })();
-(()=>{"use strict";const headerLink=document.querySelector(".top a.back");const link=headerLink||document.createElement("a");link.classList.add("arcade-return");link.href="../arcade.html";link.textContent="← VOLVER AL ARCADE";link.setAttribute("aria-label","Volver al arcade de Vladi");link.title="Volver al arcade";if(!headerLink){document.body.append(link)}link.addEventListener("click",event=>event.stopPropagation(),true)})();
+(()=>{"use strict";const headerLink=document.querySelector(".top a.back");const link=headerLink||document.createElement("a");link.classList.add("arcade-return");link.href="../arcade.html";link.textContent="← VOLVER AL ARCADE";link.setAttribute("aria-label","Volver al mi arcade");link.title="Volver al arcade";if(!headerLink){document.body.append(link)}link.addEventListener("click",event=>event.stopPropagation(),true)})();
