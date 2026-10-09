@@ -663,6 +663,22 @@
       .topbar .brand { font-size: 26px; }
       .topbar-links { display: none; }
     }
+
+    /* Igualar la barra móvil a la navegación de la portada */
+    .topbar {
+      padding: 0;
+      background: #071450ee;
+      border-bottom: 1px solid #28c7ff55;
+      backdrop-filter: none;
+    }
+    .topbar-inner { padding: 0 22px; }
+    .topbar .brand { font-size: 30px; letter-spacing: -2px; }
+    @media (max-width: 800px) {
+      .topbar { padding: 0; }
+      .topbar-inner { height: 62px; padding: 0 22px; }
+      .topbar .brand { font-size: 26px; letter-spacing: -2px; }
+      .topbar-links { display: none; }
+    }
   </style>
 </head>
 <body>
