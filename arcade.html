@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#0b1020">
+  <meta name="theme-color" content="#06164c">
   <meta name="description" content="Entrá al arcade de Vladi y elegí entre aventuras, deportes, carreras y juegos de acción.">
   <title>Arcade de Vladi</title>
   <style>
@@ -190,13 +190,297 @@
     .game-card:hover .cover-photo .cover-image { transform: scale(1.035); transition: transform .2s ease; }
     @media (max-width: 620px) { .cover.cover-photo { height: 105px; min-height: 105px; } }
     @media (max-width: 360px) { .cover.cover-photo { height: 100%; min-height: 100%; } }
+
+    /* Identidad visual coordinada con la portada de VLADYERIK */
+    :root {
+      --bg: #06164c;
+      --panel: #0b1d5b;
+      --panel-light: #12328d;
+      --line: rgba(53, 217, 255, .3);
+      --text: #f8fbff;
+      --muted: #c1cce8;
+      --gold: #ffbd22;
+      --cyan: #35d9ff;
+      --radius: 22px;
+      font-family: Arial, sans-serif;
+    }
+    body {
+      background:
+        radial-gradient(ellipse at 8% 16%, rgba(14, 105, 215, .32), transparent 31rem),
+        radial-gradient(ellipse at 92% 42%, rgba(127, 35, 224, .2), transparent 32rem),
+        linear-gradient(180deg, #06164c 0%, #04123e 100%);
+    }
+    body::before {
+      z-index: 0;
+      opacity: .34;
+      background-image: radial-gradient(#46dcff55 1px, transparent 1px);
+      background-size: 42px 42px;
+      mask-image: linear-gradient(to bottom, #000, transparent 80%);
+    }
+    .topbar, main, footer { position: relative; z-index: 1; }
+    .shell { width: min(1200px, calc(100% - 36px)); }
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 9;
+      height: 70px;
+      border-bottom: 1px solid #28c7ff55;
+      background: rgba(7, 20, 80, .94);
+      backdrop-filter: blur(14px);
+    }
+    .brand {
+      gap: 0;
+      font-size: 29px;
+      font-weight: 1000;
+      letter-spacing: -1.8px;
+      text-shadow: 0 0 20px #36d9ff55;
+    }
+    .brand-vlad { color: #35d9ff; }
+    .brand-yerik { color: #ffb21a; }
+    .top-note {
+      color: #b7f4ff;
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: .08em;
+      padding: 9px 14px;
+      border: 1px solid #35d9ff77;
+      border-radius: 999px;
+      background: linear-gradient(180deg, #12328d, #07184e);
+      box-shadow: 0 0 18px #18cfff22;
+      text-decoration: none;
+    }
+    .top-note:hover { border-color: #ffbd22; color: #ffdf82; }
+    .hero {
+      position: relative;
+      isolation: isolate;
+      grid-template-columns: 1.35fr .65fr;
+      gap: 30px;
+      padding: 48px 0 34px;
+    }
+    .hero::before {
+      content: "";
+      position: absolute;
+      z-index: -1;
+      inset: 18px -5vw 0;
+      pointer-events: none;
+      background:
+        radial-gradient(ellipse at 20% 55%, #0a6fca33, transparent 42%),
+        radial-gradient(ellipse at 88% 38%, #811bff26, transparent 32%);
+    }
+    .eyebrow {
+      color: #73e9ff;
+      border-color: #35d9ff55;
+      background: linear-gradient(90deg, #0b62a633, #5c21a033);
+      box-shadow: 0 0 24px #22cfff20;
+    }
+    h1 {
+      color: #fff;
+      text-shadow: 0 4px 0 #03133e, 0 0 28px #35d9ff3d;
+    }
+    h1 span {
+      color: #ffbd22;
+      text-shadow: 0 4px 0 #9b4b00, 0 0 22px #ffbd1955;
+    }
+    .intro { color: #d0dcf5; }
+    .hero-art {
+      min-height: 205px;
+      border: 2px solid #35d9ff77;
+      border-radius: 26px;
+      background:
+        radial-gradient(circle at 50% 48%, #1757a9 0%, #101f69 46%, #170d53 100%);
+      box-shadow: 0 0 0 3px #29cfff16, 0 18px 45px #0006, 0 0 34px #8b30ff3b;
+    }
+    .hero-art::before, .hero-art::after {
+      border-color: #46dcff42;
+      box-shadow: 0 0 24px #35d9ff1c;
+    }
+    .hero-emoji { filter: drop-shadow(0 10px 22px #31dfff66); }
+    .spark { color: #ffcf31; }
+    .library {
+      position: relative;
+      isolation: isolate;
+      overflow: hidden;
+      margin: 8px 0 48px;
+      padding: 30px 24px 38px;
+      border: 2px solid #27dfff;
+      border-bottom-color: #ef36c2;
+      border-radius: 30px;
+      background:
+        radial-gradient(ellipse at 50% 110%, #561087 0%, transparent 42%),
+        radial-gradient(circle at 8% 20%, #0a58c766 0%, transparent 30%),
+        linear-gradient(180deg, #06307d 0%, #061f66 48%, #04123f 100%);
+      box-shadow: inset 0 16px 50px #1ccfff20, inset 0 -20px 60px #b620ff20, 0 22px 55px #0004;
+    }
+    .library::before {
+      content: "";
+      position: absolute;
+      z-index: -1;
+      inset: 0;
+      pointer-events: none;
+      opacity: .7;
+      background:
+        radial-gradient(circle, #55dfff25 1px, transparent 1.5px),
+        linear-gradient(115deg, transparent 0 22%, #1d8fff10 22.2% 22.7%, transparent 22.9% 70%, #a524ff0d 70.2% 70.7%, transparent 70.9%);
+      background-size: 38px 38px, auto;
+    }
+    .section-head h2 {
+      font-size: clamp(28px, 4vw, 42px);
+      color: #fff;
+      text-shadow: 0 4px 0 #03133e, 0 0 20px #35d9ff44;
+    }
+    .result-count { color: #ffdc73; font-weight: 800; }
+    .toolbar { margin-bottom: 24px; }
+    .filter {
+      border-color: #35d9ff55;
+      background: linear-gradient(180deg, #12328d, #081849);
+      color: #e5f5ff;
+      box-shadow: 0 4px 12px #0003;
+    }
+    .filter:hover { border-color: #ffbd22; color: #fff; }
+    .filter[aria-pressed="true"] {
+      border-color: #7ff3ff;
+      background: linear-gradient(180deg, #23dfff, #087dc4);
+      color: #04183d;
+      box-shadow: 0 0 0 2px #35d9ff2c, 0 0 20px #18d8ff55;
+    }
+    .search input {
+      border-color: #35d9ff55;
+      background: #071747e8;
+      box-shadow: inset 0 1px #ffffff10;
+    }
+    .search input:focus {
+      border-color: #67eaff;
+      box-shadow: 0 0 0 3px #35d9ff22, 0 0 18px #35d9ff22;
+    }
+    .grid {
+      position: relative;
+      z-index: 1;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 20px;
+    }
+    .game-card {
+      padding: 0;
+      border: 2px solid #22cbff;
+      border-radius: 22px;
+      background: linear-gradient(180deg, #12328d, #071644 76%);
+      box-shadow: 0 8px 0 #03103a, 0 0 18px #13d8ff33, 0 14px 28px #0004;
+    }
+    .game-card:hover {
+      transform: translateY(-6px);
+      border-color: #8af4ff;
+      box-shadow: 0 10px 0 #03103a, 0 0 26px #13d8ff66, 0 20px 36px #0006;
+    }
+    .cover.cover-photo {
+      height: clamp(190px, 21vw, 250px);
+      min-height: 0;
+      border: 0;
+      border-radius: 19px 19px 0 0;
+      background: #09255f;
+    }
+    .cover-photo::after {
+      inset: 48% 0 0;
+      background: linear-gradient(transparent, #071644 96%);
+    }
+    .cover-photo .cover-image { object-position: center 42%; }
+    .tag {
+      top: 12px;
+      left: 12px;
+      padding: 7px 11px;
+      border-color: #69eaff88;
+      background: #061747dd;
+      color: #eafaff;
+      font-size: 10px;
+      box-shadow: 0 4px 12px #0005;
+    }
+    .card-info { padding: 15px 18px 17px; }
+    .card-info h3 {
+      margin: 0 0 7px;
+      font-size: 21px;
+      text-shadow: 0 3px 0 #03113e;
+    }
+    .card-info p {
+      min-height: 42px;
+      margin: 0 0 15px;
+      color: #c1cce8;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    .card-cta {
+      color: #fff;
+      font-size: 12px;
+      text-shadow: 0 1px 5px #0008;
+    }
+    .card-cta:first-letter { color: #7cf4ff; }
+    .arrow {
+      width: 34px;
+      height: 34px;
+      border: 2px solid #72eaff88;
+      border-radius: 12px;
+      background: linear-gradient(180deg, #138cc4, #0b397c);
+      color: #fff;
+      box-shadow: 0 4px 0 #041439, 0 0 14px #18d8ff33;
+    }
+    .empty {
+      position: relative;
+      z-index: 1;
+      color: #d3def4;
+      border-color: #49dcff77;
+      background: #07174799;
+    }
+    footer {
+      border-top-color: #35d9ff55;
+      color: #b5c5e6;
+    }
+    @media (max-width: 900px) {
+      .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+      .cover.cover-photo { height: clamp(165px, 29vw, 220px); }
+    }
+    @media (max-width: 620px) {
+      .shell { width: min(100% - 24px, 520px); }
+      .topbar { height: 60px; }
+      .brand { font-size: 25px; }
+      .top-note { padding: 8px 11px; font-size: 10px; }
+      .hero { padding: 30px 0 24px; }
+      h1 { font-size: clamp(39px, 11vw, 54px); }
+      .hero-art { min-height: 155px; margin-top: 20px; }
+      .library {
+        margin: 8px 0 34px;
+        padding: 21px 12px 26px;
+        border-radius: 22px;
+      }
+      .section-head { margin-bottom: 17px; }
+      .section-head h2 { font-size: 27px; }
+      .toolbar { gap: 12px; margin-bottom: 18px; }
+      .filters { gap: 7px; }
+      .filter { padding: 9px 10px; font-size: 10px; }
+      .grid { gap: 12px; }
+      .game-card { border-radius: 16px; }
+      .cover.cover-photo {
+        height: clamp(135px, 39vw, 178px);
+        border-radius: 14px 14px 0 0;
+      }
+      .tag { top: 8px; left: 8px; padding: 6px 8px; font-size: 8px; }
+      .card-info { padding: 11px 11px 13px; }
+      .card-info h3 { font-size: clamp(14px, 3.7vw, 17px); }
+      .card-info p { min-height: 48px; font-size: 11px; line-height: 1.45; }
+      .card-cta { font-size: 11px; }
+      .arrow { width: 29px; height: 29px; border-radius: 10px; }
+      footer .footer-inner { gap: 7px; }
+    }
+    @media (max-width: 360px) {
+      .grid { grid-template-columns: 1fr; }
+      .game-card { display: grid; grid-template-columns: 130px minmax(0, 1fr); gap: 0; }
+      .cover.cover-photo { height: 100%; min-height: 130px; border-radius: 14px 0 0 14px; }
+      .card-info { padding: 12px 13px; }
+      .card-info p { min-height: 0; margin-bottom: 10px; }
+    }
   </style>
 </head>
 <body>
   <a class="skip-link" href="#juegos">Saltar a los juegos</a>
   <header class="shell topbar">
-    <a class="brand" href="./" aria-label="Arcade de Vladi, inicio"><span class="brand-mark" aria-hidden="true">V</span><span>ARCADE DE VLADI</span></a>
-    <span class="top-note">Un mundo nuevo en cada partida</span>
+    <a class="brand" href="./" aria-label="Vladyerik, inicio"><span class="brand-vlad">VLAD</span><span class="brand-yerik">YERIK</span></a>
+    <a class="top-note" href="./">← INICIO</a>
   </header>
   <main class="shell">
     <section class="hero" aria-labelledby="hero-title">
