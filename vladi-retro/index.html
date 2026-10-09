@@ -88,8 +88,8 @@ const sfx={shot(){tone(640,.075,"square",.035,300)},hit(){tone(220,.13,"sawtooth
 function music(){if(stage!=="playing"||muted||!audio)return;const i=Math.floor(musicClock/0.19)%cfg.music.length;if(musicClock%0.19<.025)tone(cfg.music[i],.12,"triangle",.018);musicClock+=.016}
 function fresh(){
  score=0;lives=3;level=1;held={};shotClock=0;dropClock=0;musicClock=0;
- const top=86*S,bottom=touch?136*S:86*S;
- if(key==="space"){world={player:{x:W/2,y:H-bottom,r:17*S},aliens:[],bullets:[],enemyShots:[],dir:1,formationY:top+52*S};spawnInvaders()}
+ const top=170*S,bottom=touch?136*S:86*S;
+ if(key==="space"){world={player:{x:W/2,y:H-bottom,r:17*S},aliens:[],bullets:[],enemyShots:[],dir:1,formationY:top+40*S};spawnInvaders()}
  if(key==="arkanoid"){world={paddle:{x:W/2,y:H-bottom,w:104*S,h:16*S},ball:{x:W/2,y:H-bottom-24*S,vx:0,vy:0,r:8*S,stuck:true},bricks:[]};buildBricks()}
  if(key==="joust")world={player:{x:W*.3,y:H*.48,vy:0,r:21*S},enemies:[],time:0};
  if(key==="asteroids"){world={ship:{x:W/2,y:H/2,a:-Math.PI/2,vx:0,vy:0,r:16*S,inv:0},rocks:[],shots:[]};for(let i=0;i<5;i++)spawnRock(2)}
@@ -98,8 +98,8 @@ function fresh(){
  syncHud();
 }
 function spawnInvaders(){world.aliens=[];const cols=Math.min(8,Math.max(6,Math.floor(W/(42*S))));for(let r=0;r<4;r++)for(let c=0;c<cols;c++)world.aliens.push({x:(W-cols*42*S)/2+c*42*S+18*S,y:world.formationY+r*33*S,r:12*S,kind:r})}
-function buildBricks(){world.bricks=[];const cols=Math.min(10,Math.max(6,Math.floor((W-30*S)/(56*S)))),bw=Math.min(52*S,(W-36*S)/cols-5*S);for(let r=0;r<5;r++)for(let c=0;c<cols;c++)world.bricks.push({x:(W-cols*(bw+5*S))/2+c*(bw+5*S),y:100*S+r*27*S,w:bw,h:18*S,hp:r<2?2:1,color:["#ff5c96","#ffb449","#55e1ff","#8d7cff","#57edbf"][r]})}
-function spawnRock(size,x,y){world.rocks.push({x:x??rand(30*S,W-30*S),y:y??rand(120*S,H-120*S),a:rand(0,6),vx:rand(-38,38)*S,vy:rand(-38,38)*S,size,r:size*(13+Math.random()*4)*S,shape:Array.from({length:9},()=>rand(.72,1.25))})}
+function buildBricks(){world.bricks=[];const cols=Math.min(10,Math.max(6,Math.floor((W-30*S)/(56*S)))),bw=Math.min(52*S,(W-36*S)/cols-5*S);for(let r=0;r<5;r++)for(let c=0;c<cols;c++)world.bricks.push({x:(W-cols*(bw+5*S))/2+c*(bw+5*S),y:168*S+r*24*S,w:bw,h:18*S,hp:r<2?2:1,color:["#ff5c96","#ffb449","#55e1ff","#8d7cff","#57edbf"][r]})}
+function spawnRock(size,x,y){world.rocks.push({x:x??rand(30*S,W-30*S),y:y??rand(180*S,H-140*S),a:rand(0,6),vx:rand(-38,38)*S,vy:rand(-38,38)*S,size,r:size*(13+Math.random()*4)*S,shape:Array.from({length:9},()=>rand(.72,1.25))})}
 const shapes=[[[1,1,1,1]],[[1,1],[1,1]],[[0,1,0],[1,1,1]],[[1,0,0],[1,1,1]],[[0,0,1],[1,1,1]],[[0,1,1],[1,1,0]],[[1,1,0],[0,1,1]]];
 function cell(){return Math.max(13*S,Math.min(29*S,(W-40*S)/10,(H-250*S)/20))}
 function spawnPiece(){const sh=shapes[Math.floor(Math.random()*shapes.length)];world.piece={shape:sh.map(r=>r.slice()),x:3,y:0,color:["#36d9ff","#ffcf57","#9c84ff","#63efba","#ff73ad"][Math.floor(Math.random()*5)]};if(collidePiece(world.piece,0,0)){finish()}}
@@ -110,7 +110,7 @@ function buildTargets(){
  for(let i=0;i<2;i++)world.blocks.push({x:baseX+8*S+i*(bw+5*S),y:floor-3*32*S-30*S,w:bw+8*S,h:28*S,hp:1});
  for(let i=0;i<2;i++)world.targets.push({x:baseX+bw/2+i*(bw+8*S),y:floor-3*32*S-42*S,r:12*S,hp:1});
  world.sling.x=W*.18;world.sling.y=floor-92*S;
- world.angle=-.55;world.power=440*S;
+ world.angle=-.66;world.power=520*S;
 }
 
 function init(){fresh();stage="playing";panel.classList.add("hidden");$("#pause").textContent="Ⅱ";$("#pause").setAttribute("aria-label","Pausar");}
@@ -278,7 +278,7 @@ function drawCatapult(){
  else if(!world.projectile){ctx.strokeStyle="#f5dd9c";ctx.lineWidth=3*S;ctx.beginPath();ctx.moveTo(g.x-8*S,g.y+12*S);ctx.lineTo(g.x,bandY);ctx.lineTo(g.x+8*S,g.y+12*S);ctx.stroke();glow("#ffe266",10*S);star(g.x,bandY,12*S,6*S,5);ctx.fillStyle="#ffe66d";ctx.fill();noGlow()}
  for(const b of(world.blocks||[])){if(!b.hp)continue;ctx.fillStyle="#74492655";ctx.fillRect(b.x+b.w*.35,b.y+b.h*.4,3*S,3*S)}
  const p=world.projectile;if(p){glow("#ffe266",14*S);ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.a);star(0,0,12*S,5*S,5);ctx.fillStyle="#fff09b";ctx.fill();ctx.restore();noGlow()}
- roundRect(14*S,84*S,104*S,34*S,11*S,"#082153c9","#82dfff77");ctx.fillStyle="#f4fbff";ctx.font="900 "+(10*S)+"px system-ui";ctx.fillText("VLADI · APUNTÁ",24*S,105*S)
+ roundRect(14*S,floor-53*S,112*S,34*S,11*S,"#082153db","#82dfff99");ctx.fillStyle="#f4fbff";ctx.font="900 "+(10*S)+"px system-ui";ctx.fillText("VLADI · APUNTÁ",24*S,floor-32*S)
 }
 function star(x,y,r,inner,n){ctx.beginPath();for(let i=0;i<n*2;i++){const a=-Math.PI/2+i*Math.PI/n,rr=i%2?inner:r;i?ctx.lineTo(x+Math.cos(a)*rr,y+Math.sin(a)*rr):ctx.moveTo(x+Math.cos(a)*rr,y+Math.sin(a)*rr)}ctx.closePath()}
 
@@ -288,7 +288,7 @@ function fireCat(x,y){const g=world.sling;if(world.projectile)return;const dx=g.
 canvas.addEventListener("pointerdown",e=>{if(key!=="catapult"||stage!=="playing")return;const p=ptr(e),g=world.sling;if(Math.hypot(p.x-g.x,p.y-(g.y+20*S))<75*S&&!world.projectile){drag={start:p};canvas.setPointerCapture(e.pointerId)}});
 canvas.addEventListener("pointermove",e=>{if(drag){drag.current=ptr(e);world.aim=drag.current}});
 canvas.addEventListener("pointerup",e=>{if(drag){const p=drag.current||ptr(e);fireCat(p.x,p.y);drag=null;world.aim=null}});
-function launchCat(){if(!world.projectile){const g=world.sling,power=world.power||440*S,angle=world.angle??-.55;world.projectile={x:g.x,y:g.y+15*S,vx:Math.cos(angle)*power,vy:Math.sin(angle)*power,r:12*S,a:0};sfx.shot()}}
+function launchCat(){if(!world.projectile){const g=world.sling,power=world.power||440*S,angle=world.angle??-.66;world.projectile={x:g.x,y:g.y+15*S,vx:Math.cos(angle)*power,vy:Math.sin(angle)*power,r:12*S,a:0};sfx.shot()}}
 function setAction(a,on){if(a==="launch"&&on){if(key==="arkanoid"&&world.ball.stuck){world.ball.stuck=false;world.ball.vx=120*S;world.ball.vy=-320*S;sfx.shot()}else if(key==="catapult")launchCat();else if(key==="tetris")dropPiece();else if(key==="joust"){held.fire=true}}else if(a==="rotate"&&on&&key==="tetris")rotatePiece();else if((a==="aimDown"||a==="aimUp")&&on&&key==="catapult"){world.angle=clamp((world.angle||-.55)+(a==="aimUp"?-.08:.08),-1.05,-.18);tone(420,.04,"triangle",.025)}else held[a]=on}
 const layouts={
  space:[["left","◀"],["right","▶"],["fire","DISPARAR"]],
