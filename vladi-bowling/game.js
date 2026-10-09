@@ -95,7 +95,7 @@
       action.textContent = 'JUGAR OTRA VEZ'; $('back-link').hidden = false;
     }
   }
-  function startGame() {
+  function startGame() {if(typeof window.gtag==='function')window.gtag('event','game_start',{game_id:'vladi-bowling',game_name:'vladi bowling'});
     rolls = []; frames = Array.from({ length: 10 }, () => []); frame = 0; simulation = null; accumulator = 0;
     totalScore = 0; aim = 0; spin = 0; position = 0; power = .72; flash = 0; lastResult = '';
     pins = newRack(); ball = null; state = 'aim'; overlay.hidden = true;
