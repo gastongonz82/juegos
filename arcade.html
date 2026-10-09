@@ -475,6 +475,29 @@
       .card-info p { min-height: 0; margin-bottom: 10px; }
     }
   
+
+    /* El logotipo no debe encogerse ni partirse en el menú. */
+    .topbar { overflow: visible; }
+    .brand, .brand-vlad, .brand-yerik {
+      flex: 0 0 auto;
+      min-width: max-content;
+      white-space: nowrap;
+    }
+    .brand { line-height: 1; }
+    .top-note { flex: 0 0 auto; white-space: nowrap; }
+    .joystick-illustration {
+      position: relative;
+      z-index: 1;
+      display: block;
+      width: min(94%, 430px);
+      height: auto;
+      overflow: visible;
+      filter: drop-shadow(0 0 20px #31dfff38);
+    }
+    @media (max-width: 620px) {
+      .brand { font-size: clamp(22px, 6.8vw, 27px); letter-spacing: -1.6px; }
+      .top-note { padding: 8px 10px; font-size: 10px; }
+    }
     /* Ajustes de integración visual: fondo a todo el ancho, arte real y CTA visible. */
     html, body { overflow-x: clip; }
     .hero::before {
@@ -565,8 +588,45 @@
         <p class="intro">Carreras, desafíos y aventuras con Vladi. Encontrá tu próximo juego y entrá directo a la acción.</p>
       </div>
       <div class="hero-art" aria-hidden="true">
-        <img class="hero-showcase" src="assets/vladi-galaxia.webp?v=20261009" alt="" loading="eager" decoding="async">
-        <span class="hero-showcase-label">UNA AVENTURA NUEVA</span>
+        <svg class="joystick-illustration" viewBox="0 0 480 270" role="presentation">
+          <defs>
+            <radialGradient id="joystick-glow" cx="50%" cy="48%" r="56%">
+              <stop offset="0" stop-color="#27dfff" stop-opacity=".34"/>
+              <stop offset="1" stop-color="#27dfff" stop-opacity="0"/>
+            </radialGradient>
+            <linearGradient id="joystick-deck" x1="0" y1="0" x2="1" y2="1">
+              <stop stop-color="#35e7ff"/><stop offset=".5" stop-color="#168ce9"/><stop offset="1" stop-color="#5444df"/>
+            </linearGradient>
+            <linearGradient id="joystick-side" x1="0" y1="0" x2="0" y2="1">
+              <stop stop-color="#172f86"/><stop offset="1" stop-color="#091648"/>
+            </linearGradient>
+            <linearGradient id="joystick-ball" x1=".15" y1=".05" x2=".82" y2=".95">
+              <stop stop-color="#fff28b"/><stop offset=".35" stop-color="#ffca36"/><stop offset="1" stop-color="#ff6c35"/>
+            </linearGradient>
+            <filter id="joystick-shadow" x="-30%" y="-30%" width="160%" height="180%">
+              <feDropShadow dx="0" dy="14" stdDeviation="10" flood-color="#020923" flood-opacity=".65"/>
+            </filter>
+          </defs>
+          <ellipse cx="240" cy="145" rx="180" ry="125" fill="url(#joystick-glow)"/>
+          <circle cx="240" cy="132" r="92" fill="none" stroke="#52eaff" stroke-opacity=".18" stroke-width="2"/>
+          <circle cx="240" cy="132" r="118" fill="none" stroke="#52eaff" stroke-opacity=".1" stroke-width="2"/>
+          <g filter="url(#joystick-shadow)">
+            <path d="M157 167 240 136 323 167v38l-83 33-83-33z" fill="url(#joystick-side)" stroke="#43ddff" stroke-width="3" stroke-linejoin="round"/>
+            <path d="m157 167 83-33 83 33-83 34z" fill="url(#joystick-deck)" stroke="#83f4ff" stroke-width="3" stroke-linejoin="round"/>
+            <path d="m171 169 69-27 69 27-69 28z" fill="#101d58" fill-opacity=".6"/>
+            <ellipse cx="193" cy="169" rx="10" ry="6" fill="#ffcb3d" stroke="#fff1a6" stroke-width="2"/>
+            <ellipse cx="285" cy="169" rx="10" ry="6" fill="#ff578d" stroke="#ffb1c6" stroke-width="2"/>
+            <path d="M240 145V83" stroke="#b5eaff" stroke-width="14" stroke-linecap="round"/>
+            <path d="M240 145V83" stroke="#f5fbff" stroke-opacity=".55" stroke-width="4" stroke-linecap="round"/>
+            <circle cx="240" cy="68" r="30" fill="url(#joystick-ball)" stroke="#fff0a8" stroke-width="3"/>
+            <ellipse cx="230" cy="57" rx="8" ry="5" transform="rotate(-35 230 57)" fill="#fff" fill-opacity=".86"/>
+          </g>
+          <path d="m98 80 5 12 12 5-12 5-5 12-5-12-12-5 12-5z" fill="#ffd64e"/>
+          <path d="m369 106 4 9 9 4-9 4-4 9-4-9-9-4 9-4z" fill="#42e7ff"/>
+          <circle cx="345" cy="66" r="3" fill="#fff"/>
+          <circle cx="129" cy="203" r="3" fill="#8df6ff"/>
+        </svg>
+        <span class="hero-showcase-label">EL ARCADE DE VLADI</span>
         <span class="spark one">✦</span><span class="spark two">✧</span><span class="spark three">✦</span>
       </div>
     </section>
