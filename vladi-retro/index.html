@@ -101,7 +101,7 @@ function spawnInvaders(){world.aliens=[];const cols=Math.min(8,Math.max(6,Math.f
 function buildBricks(){world.bricks=[];const cols=Math.min(10,Math.max(6,Math.floor((W-30*S)/(56*S)))),bw=Math.min(52*S,(W-36*S)/cols-5*S);for(let r=0;r<5;r++)for(let c=0;c<cols;c++)world.bricks.push({x:(W-cols*(bw+5*S))/2+c*(bw+5*S),y:168*S+r*24*S,w:bw,h:18*S,hp:r<2?2:1,color:["#ff5c96","#ffb449","#55e1ff","#8d7cff","#57edbf"][r]})}
 function spawnRock(size,x,y){world.rocks.push({x:x??rand(30*S,W-30*S),y:y??rand(180*S,H-140*S),a:rand(0,6),vx:rand(-38,38)*S,vy:rand(-38,38)*S,size,r:size*(13+Math.random()*4)*S,shape:Array.from({length:9},()=>rand(.72,1.25))})}
 const shapes=[[[1,1,1,1]],[[1,1],[1,1]],[[0,1,0],[1,1,1]],[[1,0,0],[1,1,1]],[[0,0,1],[1,1,1]],[[0,1,1],[1,1,0]],[[1,1,0],[0,1,1]]];
-function cell(){return Math.max(13*S,Math.min(29*S,(W-40*S)/10,(H-250*S)/20))}
+function cell(){const cap=W>700*S&&H>550*S?38*S:29*S,usableH=H-(W>700*S&&H>550*S?175*S:250*S);return Math.max(13*S,Math.min(cap,(W-40*S)/10,usableH/20))}
 function spawnPiece(){const sh=shapes[Math.floor(Math.random()*shapes.length)];world.piece={shape:sh.map(r=>r.slice()),x:3,y:0,color:["#36d9ff","#ffcf57","#9c84ff","#63efba","#ff73ad"][Math.floor(Math.random()*5)]};if(collidePiece(world.piece,0,0)){finish()}}
 function buildTargets(){
  world.targets=[];world.blocks=[];
@@ -478,7 +478,7 @@ function drawTetris(){
  // Título arcade y placa de nivel; se mantienen fuera del área de juego.
  ctx.save();ctx.textAlign="center";ctx.textBaseline="middle";
  ctx.shadowColor="#00dfff";ctx.shadowBlur=12*S;ctx.fillStyle="#f7fcff";ctx.font="1000 "+(24*S)+"px system-ui, sans-serif";ctx.fillText("TETRIS",W*.5,y-49*S);
- ctx.shadowBlur=0;ctx.fillStyle="#83eaff";ctx.font="900 "+(8*S)+"px system-ui, sans-serif";ctx.fillText("ARCADE DE VLADI  ·  ARMÁ LÍNEAS Y SUMÁ PUNTOS",W*.5,y-29*S);
+ ctx.shadowBlur=0;ctx.fillStyle="#83eaff";ctx.font="900 "+(8*S)+"px system-ui, sans-serif";ctx.fillText("COMPLETÁ LÍNEAS  ·  SUMÁ PUNTOS",W*.5,y-29*S);
  const badgeW=82*S,badgeH=19*S,badgeX=W*.5-badgeW*.5,badgeY=y-22*S;
  roundRect(badgeX,badgeY,badgeW,badgeH,9*S,"#0c2c5eeF","#ffd15c");
  ctx.fillStyle="#ffe28a";ctx.font="900 "+(9*S)+"px system-ui, sans-serif";ctx.fillText("NIVEL "+level,W*.5,badgeY+badgeH*.52);
