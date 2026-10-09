@@ -70,7 +70,8 @@ document.querySelector("#title").textContent=cfg.title;
 document.querySelector("#description").textContent=cfg.desc;
 document.querySelector("#instructions").innerHTML=cfg.how;
 document.documentElement.style.setProperty("--accent",cfg.accent);
-const canvas=document.querySelector("#scene"),ctx=canvas.getContext("2d"),panel=document.querySelector("#panel"),controlsEl=document.querySelector("#controls");
+const canvas=document.querySelector("#scene"),panel=document.querySelector("#panel"),controlsEl=document.querySelector("#controls");
+let ctx=canvas.getContext("2d"),arkanoidLayer=null,arkanoidLayerDirty=true;
 const scoreEl=document.querySelector("#score"),bestEl=document.querySelector("#best"),livesEl=document.querySelector("#lives");
 const face=new Image();face.src="/vladi-run/assets/vladi-runner.webp";
 const catapultSprite=new Image();catapultSprite.src="/assets/vladi-catapult-fly.webp?v=20261009d";
@@ -81,7 +82,7 @@ bestEl.textContent=best;
 const $=s=>document.querySelector(s);
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const rand=(a,b)=>a+Math.random()*(b-a);
-function resize(){W=innerWidth;H=innerHeight;D=Math.min(2,devicePixelRatio||1);canvas.width=Math.round(W*D);canvas.height=Math.round(H*D);canvas.style.width=W+"px";canvas.style.height=H+"px";ctx.setTransform(D,0,0,D,0,0);S=Math.max(.62,Math.min(1.5,W/450,H/440));}
+function resize(){arkanoidLayerDirty=true;W=innerWidth;H=innerHeight;D=Math.min(2,devicePixelRatio||1);canvas.width=Math.round(W*D);canvas.height=Math.round(H*D);canvas.style.width=W+"px";canvas.style.height=H+"px";ctx.setTransform(D,0,0,D,0,0);S=Math.max(.62,Math.min(1.5,W/450,H/440));}
 addEventListener("resize",resize);resize();
 function tone(freq,dur=.09,wave="square",vol=.05,slide){if(muted)return;try{audio=audio||new(window.AudioContext||window.webkitAudioContext)();if(audio.state==="suspended")audio.resume();const o=audio.createOscillator(),g=audio.createGain(),t=audio.currentTime;o.type=wave;o.frequency.setValueAtTime(freq,t);if(slide)o.frequency.exponentialRampToValueAtTime(Math.max(40,slide),t+dur);g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(vol,t+.012);g.gain.exponentialRampToValueAtTime(.0001,t+dur);o.connect(g);g.connect(audio.destination);o.start(t);o.stop(t+dur+.02)}catch(e){}}
 const sfx={shot(){tone(640,.075,"square",.035,300)},hit(){tone(220,.13,"sawtooth",.055,75)},coin(){tone(660,.08,"square",.05,990);setTimeout(()=>tone(990,.08,"square",.04,1320),65)},flap(){tone(180,.1,"triangle",.05,300)},bounce(){tone(420,.055,"square",.035,630)},boom(){tone(110,.24,"sawtooth",.06,45)}};
@@ -98,7 +99,7 @@ function fresh(){
  syncHud();
 }
 function spawnInvaders(){world.aliens=[];const cols=Math.min(8,Math.max(6,Math.floor(W/(42*S))));for(let r=0;r<4;r++)for(let c=0;c<cols;c++)world.aliens.push({x:(W-cols*42*S)/2+c*42*S+18*S,y:world.formationY+r*(touch?33*S:Math.max(28,26*S)),r:12*S,kind:r})}
-function buildBricks(){world.bricks=[];const cols=Math.min(10,Math.max(6,Math.floor((W-30*S)/(56*S)))),bw=Math.min(52*S,(W-36*S)/cols-5*S),top=touch?168*S:76;for(let r=0;r<5;r++)for(let c=0;c<cols;c++)world.bricks.push({x:(W-cols*(bw+5*S))/2+c*(bw+5*S),y:top+r*(touch?24*S:20*S),w:bw,h:18*S,hp:r<2?2:1,color:["#ff5c96","#ffb449","#55e1ff","#8d7cff","#57edbf"][r]})}
+function buildBricks(){arkanoidLayerDirty=true;world.bricks=[];const cols=Math.min(10,Math.max(6,Math.floor((W-30*S)/(56*S)))),bw=Math.min(52*S,(W-36*S)/cols-5*S),top=touch?168*S:76;for(let r=0;r<5;r++)for(let c=0;c<cols;c++)world.bricks.push({x:(W-cols*(bw+5*S))/2+c*(bw+5*S),y:top+r*(touch?24*S:20*S),w:bw,h:18*S,hp:r<2?2:1,color:["#ff5c96","#ffb449","#55e1ff","#8d7cff","#57edbf"][r]})}
 function spawnRock(size,x,y){world.rocks.push({x:x??rand(30*S,W-30*S),y:y??rand(180*S,H-140*S),a:rand(0,6),vx:rand(-38,38)*S,vy:rand(-38,38)*S,size,r:size*(13+Math.random()*4)*S,shape:Array.from({length:9},()=>rand(.72,1.25))})}
 const shapes=[[[1,1,1,1]],[[1,1],[1,1]],[[0,1,0],[1,1,1]],[[1,0,0],[1,1,1]],[[0,0,1],[1,1,1]],[[0,1,1],[1,1,0]],[[1,1,0],[0,1,1]]];
 function cell(){if(!touch){const cap=44*S,usableH=H-154*S;return Math.max(14*S,Math.min(cap,(W-50*S)/10,usableH/20))}const cap=W>700*S&&H>550*S?38*S:29*S,usableH=H-(W>700*S&&H>550*S?175*S:250*S);return Math.max(13*S,Math.min(cap,(W-40*S)/10,usableH/20))}
@@ -267,7 +268,7 @@ function updateArkanoid(dt){
  if(b.x<b.r||b.x>W-b.r){b.vx*=-1;b.x=clamp(b.x,b.r,W-b.r);sfx.bounce()}
  if(b.y<76*S){b.vy=Math.abs(b.vy);sfx.bounce()}
  if(b.vy>0&&b.y+b.r>=p.y-p.h/2&&b.y-b.r<=p.y+p.h&&Math.abs(b.x-p.x)<p.w/2+b.r){b.vy=-Math.abs(b.vy);b.vx=((b.x-p.x)/(p.w/2))*250*S;sfx.bounce()}
- for(const br of world.bricks){if(!br.hp)continue;if(b.x+b.r>br.x&&b.x-b.r<br.x+br.w&&b.y+b.r>br.y&&b.y-b.r<br.y+br.h){br.hp--;b.vy*=-1;addScore(20);sfx.hit();break}}
+ for(const br of world.bricks){if(!br.hp)continue;if(b.x+b.r>br.x&&b.x-b.r<br.x+br.w&&b.y+b.r>br.y&&b.y-b.r<br.y+br.h){br.hp--;arkanoidLayerDirty=true;b.vy*=-1;addScore(20);sfx.hit();break}}
  if(world.bricks.every(x=>x.hp<=0)){level++;buildBricks();b.vy=Math.abs(b.vy)+35*S}
  if(b.y>H-(touch?85:35)*S){loseLife()}
 }
@@ -406,7 +407,15 @@ function drawBackdrop(t){
  if(key==="arkanoid"){for(let i=0;i<24;i++){const x=(i*173+40)%W,y=(i*97+t*(3+i%3))%H;ctx.globalAlpha=.18;ctx.fillStyle=i%2?"#b4f4ff":"#ffd575";ctx.beginPath();ctx.arc(x,y,(i%2+1)*S,0,Math.PI*2);ctx.fill()}ctx.globalAlpha=1}
 }
 function draw(){
- ctx.clearRect(0,0,W,H);const t=performance.now()/1000;drawBackdrop(t);
+ ctx.clearRect(0,0,W,H);const t=performance.now()/1000;
+ if(key==="arkanoid"&&touch){
+  if(arkanoidLayerDirty||!arkanoidLayer){
+   arkanoidLayer=arkanoidLayer||document.createElement("canvas");arkanoidLayer.width=canvas.width;arkanoidLayer.height=canvas.height;
+   const screenContext=ctx;ctx=arkanoidLayer.getContext("2d");ctx.setTransform(D,0,0,D,0,0);
+   drawBackdrop(0);drawArkanoidBricks();ctx=screenContext;arkanoidLayerDirty=false;
+  }
+  ctx.drawImage(arkanoidLayer,0,0,W,H);
+ }else drawBackdrop(t);
  if(key==="space")drawSpace();else if(key==="arkanoid")drawArkanoid();else if(key==="joust")drawJoust();else if(key==="asteroids")drawAsteroids();else if(key==="tetris")drawTetris();else if(key==="catapult")drawCatapult();
  if(stage==="ready")drawPrompt("¡Vladi está listo!","Tocá JUGAR y arrancá la misión");
 }
@@ -432,10 +441,13 @@ function drawSpace(){
  for(const b of world.enemyShots||[]){glow("#ff678c",11*S);roundRect(b.x-3*S,b.y-6*S,6*S,12*S,3*S,"#ff6384");noGlow()}
  ctx.save();ctx.translate(p.x,p.y);glow("#35ddff",15*S);ctx.beginPath();ctx.moveTo(0,-22*S);ctx.lineTo(18*S,12*S);ctx.lineTo(8*S,9*S);ctx.lineTo(0,16*S);ctx.lineTo(-8*S,9*S);ctx.lineTo(-18*S,12*S);ctx.closePath();ctx.fillStyle="#087bc9";ctx.strokeStyle="#b9f8ff";ctx.lineWidth=2*S;ctx.fill();ctx.stroke();ctx.fillStyle="#ffd15c";ctx.beginPath();ctx.ellipse(0,1*S,5*S,8*S,0,0,Math.PI*2);ctx.fill();noGlow();ctx.restore()
 }
-function drawArkanoid(){
- const p=world.paddle,b=world.ball;
+function drawArkanoidBricks(){
  const top=touch?92*S:70;ctx.fillStyle="#102b64";ctx.fillRect(12*S,top,W-24*S,2*S);
  for(const br of (world.bricks||[])){if(!br.hp)continue;glow(br.color,8*S);roundRect(br.x,br.y,br.w,br.h,5*S,br.color,"#f4fbffcc");noGlow();roundRect(br.x+4*S,br.y+3*S,br.w-8*S,3*S,2*S,"#ffffff70")}
+ }
+function drawArkanoid(){
+ const p=world.paddle,b=world.ball;
+ if(!touch)drawArkanoidBricks();
  const grad=ctx.createLinearGradient(p.x,p.y-p.h/2,p.x,p.y+p.h/2);grad.addColorStop(0,"#81f4ff");grad.addColorStop(1,"#0878c9");glow("#24dfff",12*S);roundRect(p.x-p.w/2,p.y-p.h/2,p.w,p.h,9*S,grad,"#d9ffff");noGlow();
  if(b){glow("#ffe46b",14*S);ctx.beginPath();ctx.arc(b.x,b.y,b.r,0,Math.PI*2);ctx.fillStyle="#fff6c5";ctx.fill();ctx.strokeStyle="#ffbd42";ctx.lineWidth=2*S;ctx.stroke();noGlow();if(b.stuck){ctx.fillStyle="#d7f5ff";ctx.textAlign="center";ctx.font="800 "+(12*S)+"px system-ui";ctx.fillText("TOCÁ LANZAR",W/2,p.y-42*S);ctx.textAlign="left"}}
  ctx.fillStyle="#aeefff";ctx.font="800 "+(12*S)+"px system-ui";ctx.fillText("NIVEL "+level,18*S,H-(touch?158:78)*S)
@@ -620,7 +632,10 @@ $("#sound").addEventListener("click",()=>{muted=!muted;$("#sound").textContent=m
 $("#fullscreen").addEventListener("click",()=>{if(!document.fullscreenElement)document.documentElement.requestFullscreen?.().catch(()=>{});else document.exitFullscreen?.()});
 document.addEventListener("visibilitychange",()=>{if(document.hidden&&stage==="playing")pause()});
 fresh();syncHud();
-function frame(now){const dt=Math.min(.033,(now-last)/1000||0);last=now;try{if(stage==="playing")update(dt);draw()}catch(error){console.error("Error en el juego "+key,error);if(stage==="playing")pause()}requestAnimationFrame(frame)}
+function frame(now){const elapsed=Math.max(0,(now-last)/1000||0),dt=Math.min(.033,elapsed);last=now;try{if(stage==="playing"){
+ if(key==="arkanoid"&&touch){music();let remaining=Math.min(.1,elapsed);while(remaining>0){const step=Math.min(1/120,remaining);updateArkanoid(step);remaining-=step;if(stage!=="playing")break}}
+ else update(dt);
+ }draw()}catch(error){console.error("Error en el juego "+key,error);if(stage==="playing")pause()}requestAnimationFrame(frame)}
 requestAnimationFrame(frame);
 function drawPrompt(title,sub){ctx.textAlign="center";ctx.fillStyle="#e9faff";ctx.font="1000 "+(24*S)+"px system-ui";ctx.fillText(title,W/2,H*.48);ctx.fillStyle="#92ddf4";ctx.font="800 "+(14*S)+"px system-ui";ctx.fillText(sub,W/2,H*.48+28*S);ctx.textAlign="left"}
 })();
