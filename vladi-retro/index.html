@@ -61,7 +61,7 @@ const GAMES={
  joust:{title:"Joust: Caballeros del Cielo",desc:"Vladi vuela en su dragón mecánico. Aleteá para ganar altura y vencé a los rivales desde arriba.",how:"PC: ← → para avanzar · ESPACIO o ↑ para aletear<br>Celular: izquierda, ALETEAR y derecha",accent:"#ff9e65",music:[294,370,440,370,262,330,392,330]},
  asteroids:{title:"Asteroids: Misión Vladi",desc:"Pilotá con Vladi entre meteoritos. Girá, acelerá y despejá el espacio sin perder la nave.",how:"PC: ← → girar · ↑ acelerar · ESPACIO disparar<br>Celular: girar, acelerar y disparar",accent:"#9a8cff",music:[220,277,330,277,247,311,370,311]},
  tetris:{title:"Tetris de Vladi",desc:"Acomodá las piezas con Vladi y completá líneas antes de que la torre llegue al techo.",how:"PC: ← → mover · ↑ girar · ↓ bajar · ESPACIO caída rápida<br>Celular: flechas, GIRAR y CAER",accent:"#7fffd4",music:[262,330,392,523,392,330,294,349]},
- catapult:{title:"Vladi Catapulta",desc:"Apuntá con Vladi, soltá la resortera y tirá las torres pieza por pieza en una aventura a todo color.",how:"PC: arrastrá a Vladi hacia atrás y arriba, soltá · ESPACIO lanza<br>Celular: ajustá el ángulo y tocá LANZAR",accent:"#ffb64d",music:[392,494,587,494,349,440,523,440]}
+ catapult:{title:"Vladi Catapulta",desc:"Apuntá con Vladi, soltá la resortera y tirá las torres pieza por pieza en una aventura a todo color.",how:"PC: tirá de Vladi hacia atrás y abajo para apuntar hacia arriba; soltá<br>Celular: ajustá con ↗/↘ y tocá LANZAR",accent:"#ffb64d",music:[392,494,587,494,349,440,523,440]}
 };
 const params=new URLSearchParams(location.search),key=params.get("game")||"space",cfg=GAMES[key]||GAMES.space;
 document.body.classList.toggle("is-tetris",key==="tetris");
@@ -129,7 +129,7 @@ function buildTargets(){
   const top=mid-.86*u-.03*u-.29*u;
   glass(bx+.62*u,top-.02*u,.38*u,.66*u);glass(bx+1.40*u,top-.02*u,.38*u,.66*u);
   stone(bx+.44*u,top-.68*u-.03*u,1.52*u,.27*u);
-  pig(bx+1.20*u,top-.68*u-.30*u,u*.30);pig(W*.47,base-.27*u,u*.29);
+  pig(bx+1.20*u,top-.68*u-.30*u,u*.30);pig(x+u*1.02,base-u*.30,u*.29);
  }else if(layout===1){
   const cx=W*.69;
   // Pirámide reforzada: las piezas de arriba dependen de columnas visibles.
@@ -253,22 +253,39 @@ function catapultSupports(){
   if(!onGround&&!onBlock)t.falling=true;
  }
 }
+function segmentRectEntry(x1,y1,x2,y2,left,top,right,bottom){
+ let low=0,high=1;const dx=x2-x1,dy=y2-y1;
+ const clip=(p,q)=>{if(Math.abs(p)<1e-9)return q>=0;const r=q/p;if(p<0){if(r>high)return false;if(r>low)low=r}else{if(r<low)return false;if(r<high)high=r}return true};
+ if(!clip(-dx,x1-left)||!clip(dx,right-x1)||!clip(-dy,y1-top)||!clip(dy,bottom-y1))return null;
+ return low;
+}
+function segmentCircleEntry(x1,y1,x2,y2,cx,cy,r){
+ const dx=x2-x1,dy=y2-y1,fx=x1-cx,fy=y1-cy,a=dx*dx+dy*dy;
+ const c=fx*fx+fy*fy-r*r;if(c<=0)return 0;if(a===0)return null;
+ const b=2*(fx*dx+fy*dy),disc=b*b-4*a*c;if(disc<0)return null;
+ const t=(-b-Math.sqrt(disc))/(2*a);return t>=0&&t<=1?t:null;
+}
 function updateCatapult(dt){
  const p=world.projectile,floor=world.floor,blocks=world.blocks;
  catapultSupports();
  const moving=blocks.filter(b=>b.hp>0&&b.falling).sort((a,b)=>b.y-a.y);
  for(const b of moving){
-  const oldBottom=b.y+b.h;b.vy=Math.min(1000*S,b.vy+920*S*dt);
-  let nextY=b.y+b.vy*dt,landed=false;
+  const oldBottom=b.y+b.h,oldRight=b.x+b.w;b.vy=Math.min(1000*S,b.vy+920*S*dt);
+  let nextY=b.y+b.vy*dt,nextX=b.x+b.vx*dt,landed=false;
   for(const q of blocks){
-   if(q===b||q.hp<=0)continue;
-   const overlap=Math.min(b.x+b.w,q.x+q.w)-Math.max(b.x,q.x);
+   if(q===b||q.hp<=0||q.falling)continue;
+   const overlapY=Math.min(nextY+b.h,q.y+q.h)-Math.max(nextY,q.y);
+   if(overlapY>Math.min(b.h,q.h)*.2){
+    if(b.vx>0&&oldRight<=q.x+5*S&&nextX+b.w>=q.x){nextX=q.x-b.w;b.vx*=-.18;b.rotation-=.08}
+    else if(b.vx<0&&b.x>=q.x+q.w-5*S&&nextX<=q.x+q.w){nextX=q.x+q.w;b.vx*=-.18;b.rotation+=.08}
+   }
+   const overlap=Math.min(nextX+b.w,q.x+q.w)-Math.max(nextX,q.x);
    if(overlap<Math.min(b.w,q.w)*.16)continue;
    if(oldBottom<=q.y+5*S&&nextY+b.h>=q.y&&q.y>=b.y){
     nextY=q.y-b.h;b.vy=0;b.vx*=.72;b.rotation*=.75;landed=true;
    }
   }
-  b.vy=landed?0:b.vy;b.y=nextY;b.x+=b.vx*dt;b.rotation+=b.vx*.001*dt;
+  b.vy=landed?0:b.vy;b.y=nextY;b.x=nextX;b.rotation+=b.vx*.001*dt;
   if(b.y+b.h>=floor){b.y=floor-b.h;b.vy=0;b.vx*=.75;b.rotation*=.75;landed=true}
   if(landed&&Math.abs(b.vx)<18*S){b.vx=0;b.rotation=0;b.falling=false}
  }
@@ -283,17 +300,21 @@ function updateCatapult(dt){
   else if(landed)t.falling=false;
  }
  if(!p){if(world.targets.length&&world.targets.every(t=>!t.hp)){level++;addScore(250);buildTargets()}return}
- p.vy+=1250*S*dt;p.x+=p.vx*dt;p.y+=p.vy*dt;p.a=Math.atan2(p.vy,p.vx);
+ const prevX=p.x,prevY=p.y,gravity=1250*S;p.x+=p.vx*dt;p.y+=p.vy*dt+.5*gravity*dt*dt;p.vy+=gravity*dt;p.a=Math.atan2(p.vy,p.vx);
  if(p.cooldown>0)p.cooldown-=dt;
  if(p.cooldown<=0){
-  const hitBlock=blocks.find(b=>b.hp>0&&p.x>b.x-12*S&&p.x<b.x+b.w+12*S&&p.y>b.y-10*S&&p.y<b.y+b.h+10*S);
-  const hitTarget=world.targets.find(t=>t.hp&&Math.hypot(p.x-t.x,p.y-t.y)<p.r+t.r);
-  if(hitTarget){
-   hitTarget.hp=0;p.cooldown=.08;p.vx*=.92;p.vy*=.78;addScore(100);sfx.coin();
-  }else if(hitBlock){
-   const impactX=p.vx,impactY=p.vy;hitBlock.hp-=Math.hypot(impactX,impactY)>240*S?2:1;p.cooldown=.09;p.vx*=.84;p.vy*=.78;addScore(40);sfx.hit();
-   hitBlock.falling=true;hitBlock.vx+=impactX*.24;hitBlock.vy=-Math.max(100*S,Math.abs(impactY)*.15);
-   catapultSupports();
+  let collision=null;
+  for(const b of blocks)if(b.hp>0){const t=segmentRectEntry(prevX,prevY,p.x,p.y,b.x-p.r,b.y-p.r,b.x+b.w+p.r,b.y+b.h+p.r);if(t!==null&&(!collision||t<collision.t))collision={kind:"block",item:b,t}}
+  for(const target of world.targets)if(target.hp){const t=segmentCircleEntry(prevX,prevY,p.x,p.y,target.x,target.y,p.r+target.r);if(t!==null&&(!collision||t<collision.t))collision={kind:"target",item:target,t}}
+  if(collision){
+   p.x=prevX+(p.x-prevX)*collision.t;p.y=prevY+(p.y-prevY)*collision.t;
+   if(collision.kind==="target"){
+    collision.item.hp=0;p.cooldown=.08;p.vx*=.92;p.vy*=.78;addScore(100);sfx.coin();
+   }else{
+    const block=collision.item,impactX=p.vx,impactY=p.vy;block.hp-=Math.hypot(impactX,impactY)>240*S?2:1;p.cooldown=.09;p.vx*=.84;p.vy*=.78;addScore(40);sfx.hit();
+    block.falling=true;block.vx+=impactX*.24;block.vy=-Math.max(100*S,Math.abs(impactY)*.15);
+    catapultSupports();
+   }
   }
  }
  if(p.x>W+55*S||p.y>floor-10*S||p.x<-55*S||p.y<-40*S){
@@ -406,7 +427,7 @@ function drawCatapult(){
   ctx.fillStyle="#8b6441";ctx.fillRect(tx-3*S,ty,6*S,35*S);for(let i=0;i<3;i++){ctx.fillStyle=variants.tree[i];ctx.beginPath();ctx.arc(tx+(i-1)*12*S,ty-i*12*S,15*S*sc,0,Math.PI*2);ctx.fill()}
  }
  const pull=drag&&world.aim?world.aim:null;let vX,vY;
- if(pull){vX=clamp((g.x-pull.x)*6.1,-60*S,1050*S);vY=clamp((pull.y-g.y)*6.1,-920*S,150*S)}
+ if(pull){vX=clamp((g.x-pull.x)*6.1,-60*S,1050*S);vY=clamp((g.y-pull.y)*6.1,-920*S,150*S)}
  else{const a=world.angle??-.48,power=world.power||500*S;vX=Math.cos(a)*power;vY=Math.sin(a)*power}
  if(!world.projectile){
   ctx.save();ctx.setLineDash([3*S,9*S]);ctx.lineWidth=2.5*S;ctx.strokeStyle="#fff9e2cc";ctx.beginPath();
@@ -445,7 +466,7 @@ function star(x,y,r,inner,n){ctx.beginPath();for(let i=0;i<n*2;i++){const a=-Mat
 
 function drawPrompt(title,sub){ctx.textAlign="center";ctx.fillStyle="#e9faff";ctx.font="1000 "+(24*S)+"px system-ui";ctx.fillText(title,W/2,H*.48);ctx.fillStyle="#92ddf4";ctx.font="800 "+(14*S)+"px system-ui";ctx.fillText(sub,W/2,H*.48+28*S);ctx.textAlign="left"}
 function ptr(e){const r=canvas.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top}}
-function fireCat(x,y){const g=world.sling;if(world.projectile)return;const dx=g.x-x,dy=y-g.y;world.projectile={x:g.x+20*S,y:g.y,vx:clamp(dx*6.1,-60*S,1050*S),vy:clamp(dy*6.1,-920*S,150*S),r:22*S,a:0,cooldown:0,hitTarget:false};sfx.shot()}
+function fireCat(x,y){const g=world.sling;if(world.projectile)return;const dx=g.x-x,dy=g.y-y;world.projectile={x:g.x+20*S,y:g.y,vx:clamp(dx*6.1,-60*S,1050*S),vy:clamp(dy*6.1,-920*S,150*S),r:22*S,a:0,cooldown:0,hitTarget:false};sfx.shot()}
 canvas.addEventListener("pointerdown",e=>{if(key!=="catapult"||stage!=="playing")return;const p=ptr(e),g=world.sling;if(Math.hypot(p.x-g.x,p.y-(g.y+20*S))<75*S&&!world.projectile){drag={start:p};canvas.setPointerCapture(e.pointerId)}});
 canvas.addEventListener("pointermove",e=>{if(drag){drag.current=ptr(e);world.aim=drag.current}});
 canvas.addEventListener("pointerup",e=>{if(drag){const p=drag.current||ptr(e);fireCat(p.x,p.y);drag=null;world.aim=null}});
@@ -457,7 +478,7 @@ const layouts={
  joust:[["left","◀"],["fire","ALETEAR"],["right","▶"]],
  asteroids:[["left","↶"],["up","▲"],["fire","FUEGO"],["right","↷"]],
  tetris:[["left","◀"],["rotate","GIRAR"],["launch","CAER"],["right","▶"]],
- catapult:[["aimDown","ÁNGULO −"],["launch","LANZAR"],["aimUp","ÁNGULO +"]]
+ catapult:[["aimUp","↗ SUBIR"],["launch","LANZAR"],["aimDown","BAJAR ↘"]]
 };
 function makeControls(){controlsEl.innerHTML="";for(const [action,label] of layouts[key]){const b=document.createElement("button");b.className="control"+(["fire","launch","rotate","up"].includes(action)?" action":"");b.type="button";b.textContent=label;if(key==="catapult"&&(action==="aimDown"||action==="aimUp"))b.classList.add("aim-control");b.setAttribute("aria-label",label);b.dataset.action=action;b.addEventListener("pointerdown",e=>{e.preventDefault();b.classList.add("held");setAction(action,true);if(key==="tetris"&&(action==="left"||action==="right")){const p=world.piece;if(p&&!collidePiece(p,action==="left"?-1:1,0)){p.x+=action==="left"?-1:1;world.move=0}}});for(const ev of ["pointerup","pointercancel","pointerleave"])b.addEventListener(ev,e=>{e.preventDefault();b.classList.remove("held");setAction(action,false)});controlsEl.appendChild(b)}}
 makeControls();
