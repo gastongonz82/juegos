@@ -273,7 +273,7 @@ function updateStats(){
  $('best').textContent=state.best?state.best+' / '+Math.min(10,state.deck.length-state.levelStart):'—';
  $('progress').style.width=(state.round/state.deck.length*100)+'%';
 }
-function startGame(){
+function startGame(){if(typeof window.gtag==='function')window.gtag('event','game_start',{game_id:'vladi-animales',game_name:'vladi animales'});
  state.round=0;state.score=0;state.correct=0;state.level=1;state.levelStart=0;state.levelCorrect=0;state.locked=false;
  state.deck=[...shuffle(ANIMALS.filter(a=>a.level===1)),...shuffle(ANIMALS.filter(a=>a.level===2)),...shuffle(ANIMALS.filter(a=>a.level===3))];
  $('intro').style.display='none';$('result').classList.remove('active');$('play').classList.add('active');
