@@ -803,6 +803,7 @@
         <div class="filters" role="group" aria-label="Filtrar juegos por categoría">
           <button class="filter" type="button" data-filter="todos" aria-pressed="true">Todos</button>
           <button class="filter" type="button" data-filter="favoritos" aria-pressed="false">★ Mis favoritos <span id="favorite-count">(0)</span></button>
+          <button class="filter" type="button" data-filter="recientes" aria-pressed="false">◷ Últimos jugados</button>
           <button class="filter" type="button" data-filter="aventura" aria-pressed="false">Aventura</button>
           <button class="filter" type="button" data-filter="deportes" aria-pressed="false">Deportes</button>
           <button class="filter" type="button" data-filter="accion" aria-pressed="false">Acción</button>
@@ -993,11 +994,26 @@
         } catch (_) { return new Set(); }
       }
       let favorites = readFavorites();
+      const recentKey = "vladyerik-recent-games-v1";
+      function readRecent() {
+        try {
+          const saved = JSON.parse(localStorage.getItem(recentKey) || "[]");
+          return Array.isArray(saved) ? [...new Set(saved.filter(id => validIds.has(id)))].slice(0,12) : [];
+        } catch (_) { return []; }
+      }
+      let recent = readRecent();
+      function remember(card) {
+        const id = card.getAttribute("href");
+        recent = [id, ...recent.filter(item => item !== id)].slice(0,12);
+        try { localStorage.setItem(recentKey, JSON.stringify(recent)); } catch (_) {}
+      }
       cards.forEach(card => {
         const entry = document.createElement("div");
         entry.className = "game-entry";
         card.before(entry);
         entry.append(card);
+        card.addEventListener("click", () => remember(card));
+        card.addEventListener("auxclick", event => { if (event.button === 1) remember(card); });
         const button = document.createElement("button");
         button.type = "button";
         button.className = "favorite-button";
@@ -1017,17 +1033,20 @@
         });
       });
       window.addEventListener("storage", event => {
-        if (event.key === favoriteKey || event.key === null) { favorites = readFavorites(); update(); }
+        if (event.key === favoriteKey || event.key === recentKey || event.key === null) { favorites = readFavorites(); recent = readRecent(); update(); }
       });
+
+      window.addEventListener("pageshow", () => { favorites = readFavorites(); recent = readRecent(); update(); });
 
       function update() {
         const query = search.value.trim().toLocaleLowerCase("es");
         let shown = 0;
         cards.forEach((card) => {
-          const matchesCategory = selected === "favoritos" ? favorites.has(card.getAttribute("href")) : selected === "todos" || card.dataset.category === selected || (card.dataset.extraCategories || "").split(/\s+/).includes(selected);
+          const matchesCategory = selected === "recientes" ? recent.includes(card.getAttribute("href")) : selected === "favoritos" ? favorites.has(card.getAttribute("href")) : selected === "todos" || card.dataset.category === selected || (card.dataset.extraCategories || "").split(/\s+/).includes(selected);
           const matchesQuery = !query || card.dataset.search.includes(query) || card.querySelector("h3").textContent.toLocaleLowerCase("es").includes(query);
           const visible = matchesCategory && matchesQuery;
           card.parentElement.hidden = !visible;
+          card.parentElement.style.order = selected === "recientes" ? String(recent.indexOf(card.getAttribute("href"))) : "";
           const saved = favorites.has(card.getAttribute("href"));
           const button = card.parentElement.querySelector(".favorite-button");
 
@@ -1037,7 +1056,9 @@
         });
         count.textContent = shown === 1 ? "1 juego" : shown + " juegos";
         favoriteCount.textContent = "(" + favorites.size + ")";
-        empty.textContent = selected === "favoritos" && favorites.size === 0
+        empty.textContent = selected === "recientes" && recent.length === 0
+          ? "Todavía no abriste ningún juego. Elegí uno y aparecerá acá para volver a jugar."
+          : selected === "favoritos" && favorites.size === 0
           ? "Todavía no tenés favoritos. Tocá la estrella de un juego para agregarlo."
           : "No encontramos juegos con esa búsqueda. Probá otro nombre o categoría.";
         empty.classList.toggle("visible", shown === 0);
