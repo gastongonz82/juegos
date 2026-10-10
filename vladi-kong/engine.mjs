@@ -15,8 +15,8 @@ export class Game {
  else{p.x=Math.max(72,Math.min(828,p.x+move*230*dt));if(p.grounded)p.y=this.surface(p.row,p.x);else{p.vy+=1250*dt;p.y+=p.vy*dt;const floor=this.surface(p.row,p.x);if(p.vy>0&&p.y>=floor){p.y=floor;p.vy=0;p.grounded=true}}}
  for(const s of this.stars)if(!s.taken&&p.row===s.row&&Math.abs(p.x-s.x)<32&&Math.abs(p.y-this.surface(s.row,s.x))<70){s.taken=true;this.score+=100;this.event='star'}
  if(!this.hammer.taken&&p.row===2&&Math.abs(p.x-520)<30){this.hammer.taken=true;this.power=7;this.event='power'}
- this.spawnTimer-=dt;if(this.spawnTimer<=0){this.spawnTimer=Math.max(1.65,3.6-this.level*.16);this.barrels.push({x:245,y:this.surface(5,245)-17,row:5,dir:1,falling:false,vy:0,spin:0})}
- const speed=Math.min(200,100+this.level*9);for(const b of this.barrels){b.spin+=b.dir*speed*dt/17;if(b.falling){b.vy+=900*dt;b.y+=b.vy*dt;if(b.y>=this.surface(b.row,b.x)-17){b.falling=false;b.y=this.surface(b.row,b.x)-17;b.dir=b.row%2?1:-1}}else{b.x+=b.dir*speed*dt;b.y=this.surface(b.row,b.x)-17;if(b.x>830||b.x<70){if(b.row===0){b.dead=true;continue}b.x=Math.max(70,Math.min(830,b.x));b.row--;b.falling=true;b.vy=0}}
+ this.spawnTimer-=dt;if(this.spawnTimer<=0){this.spawnTimer=Math.max(1.65,3.6-this.level*.16);this.barrels.push({x:245,y:this.surface(5,245)-17,row:5,dir:1,falling:false,vy:0,spin:0,age:0});this.event='roll'}
+ const speed=Math.min(200,100+this.level*9);for(const b of this.barrels){b.age+=dt;b.spin+=b.dir*speed*dt/17;if(b.falling){b.vy+=900*dt;b.y+=b.vy*dt;if(b.y>=this.surface(b.row,b.x)-17){b.falling=false;this.event='drop';b.y=this.surface(b.row,b.x)-17;b.dir=b.row%2?1:-1}}else{b.x+=b.dir*speed*dt;b.y=this.surface(b.row,b.x)-17;if(b.x>830||b.x<70){if(b.row===0){b.dead=true;continue}b.x=Math.max(70,Math.min(830,b.x));b.row--;b.falling=true;b.vy=0}}
  if(Math.abs(b.x-p.x)<32&&Math.abs(b.y-(p.y-26))<34){if(this.power>0){b.dead=true;this.score+=150;this.event='smash'}else this.damage()}}
  this.barrels=this.barrels.filter(b=>!b.dead);if(p.row===5&&p.x>780&&p.grounded){this.score+=500+Math.floor(this.remaining)*5;this.state='won';this.event='win'}
  }
