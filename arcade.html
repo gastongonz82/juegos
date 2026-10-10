@@ -741,7 +741,19 @@
     .filters .filter-icon { display:grid; width:36px; height:36px; padding:0; }
     .filters .filter-icon svg { width:21px; height:21px; }
     @media(max-width:620px){.filters .filter{padding:0 11px}.filters .filter-icon{padding:0}}
-  </style>
+  
+.share-entry{position:relative;min-width:0;display:flex}.share-entry>.premiumCard{width:100%}
+.share-game{position:absolute;z-index:5;right:16px;bottom:19px;display:grid;place-items:center;width:38px;height:38px;padding:0;border:1px solid #83eaff99;border-radius:10px;background:linear-gradient(145deg,#153d78,#071747);color:#e3f8ff;cursor:pointer;box-shadow:inset 0 1px #fff3,0 3px 8px #0005}
+.share-game svg{width:20px;height:20px;fill:currentColor;stroke:currentColor;stroke-width:1.7}
+.share-game:hover{border-color:#ffcf31;color:#ffcf31}.share-game:focus-visible{outline:3px solid #ffcf31;outline-offset:3px}
+.game-entry .card-cta{margin-right:52px}
+.share-entry .premiumCard .gamecopy span{min-width:0!important;width:calc(100% - 50px);margin-right:50px;font-size:11px!important;padding-inline:5px!important}
+.share-dialog{width:min(380px,calc(100% - 32px));padding:24px;border:2px solid #35d9ff;border-radius:18px;background:#081b51;color:white;font-family:Arial,sans-serif;box-shadow:0 20px 80px #0009}
+.share-dialog::backdrop{background:#020919bb}.share-dialog h2{font-size:19px;margin:0 0 18px}
+.share-dialog a,.share-dialog button{display:block;width:100%;margin:10px 0;padding:12px;border:1px solid #35d9ff66;border-radius:10px;background:#12328d;color:white;text-align:center;text-decoration:none;font:700 14px Arial;cursor:pointer}
+.share-dialog input{width:100%;padding:10px;background:#071747;color:white;border:1px solid #35d9ff}
+.share-notice{position:fixed;z-index:100;bottom:24px;left:50%;transform:translateX(-50%);padding:12px 20px;border:1px solid #35d9ff;border-radius:10px;background:#071747;color:white;font:700 14px Arial;box-shadow:0 5px 20px #0008}
+</style>
 </head>
 <body>
   <a class="skip-link" href="#juegos">Saltar a los juegos</a>
@@ -1135,6 +1147,34 @@ links.addEventListener('click',event=>{if(event.target.closest('a'))close()});
 document.addEventListener('click',event=>{if(!nav.contains(event.target))close()});
 document.addEventListener('keydown',event=>{if(event.key==='Escape'){const open=nav.classList.contains('menu-open');close();if(open)button.focus()}});
 window.matchMedia('(max-width:800px)').addEventListener('change',close);
+})();
+</script><script>
+(()=>{
+ const icon='<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m8 11 8-5M8 13l8 5" /><circle cx="5" cy="12" r="3"/><circle cx="19" cy="4" r="3"/><circle cx="19" cy="20" r="3"/></svg>';
+ const notice=document.createElement('div');notice.className='share-notice';notice.setAttribute('role','status');notice.hidden=true;document.body.append(notice);
+ let timer;
+ const show=text=>{notice.textContent=text;notice.hidden=false;clearTimeout(timer);timer=setTimeout(()=>notice.hidden=true,3500)};
+ document.querySelectorAll('a.game-card,a.premiumCard').forEach(link=>{
+   let wrapper=link.parentElement;
+   if(!wrapper.classList.contains('game-entry')){wrapper=document.createElement('div');wrapper.className='share-entry';link.before(wrapper);wrapper.append(link)}
+   const button=document.createElement('button');button.type='button';button.className='share-game';button.innerHTML=icon;
+   const name=()=>link.querySelector('h3').textContent.trim().replace(/\s+/g,' ');
+   button.setAttribute('aria-label','Compartir '+name());button.title='Compartir '+name();wrapper.append(button);
+   button.addEventListener('click',async()=>{
+     const url=new URL(link.getAttribute('href'),location.href).href;
+     const title=name(),text='🎮 ¡Probá '+title+'!';
+     if(navigator.share){try{await navigator.share({title,text,url});return}catch(error){if(error.name==='AbortError')return}}
+     document.querySelector('.share-dialog')?.remove();
+     const dialog=document.createElement('dialog');dialog.className='share-dialog';
+     const heading=document.createElement('h2');heading.textContent='Compartir '+title;dialog.append(heading);
+     const whatsapp=document.createElement('a');whatsapp.textContent='Compartir por WhatsApp';whatsapp.href='https://wa.me/?text='+encodeURIComponent(text+'\n'+url);whatsapp.target='_blank';whatsapp.rel='noopener noreferrer';dialog.append(whatsapp);
+     const copy=document.createElement('button');copy.type='button';copy.textContent='Copiar enlace';dialog.append(copy);
+     copy.onclick=async()=>{try{await navigator.clipboard.writeText(url);dialog.close();show('Enlace copiado')}catch(_){const input=document.createElement('input');input.value=url;input.readOnly=true;input.setAttribute('aria-label','Enlace del juego');dialog.append(input);input.select();show('Seleccioná y copiá el enlace')}};
+     const close=document.createElement('button');close.type='button';close.textContent='Cerrar';close.onclick=()=>dialog.close();dialog.append(close);
+     dialog.addEventListener('close',()=>{dialog.remove();button.focus()});
+     document.body.append(dialog);dialog.showModal();
+   });
+ });
 })();
 </script></body>
 </html>
