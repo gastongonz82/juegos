@@ -1099,7 +1099,7 @@
         const query = search.value.trim().toLocaleLowerCase("es");
         let shown = 0;
         cards.forEach((card) => {
-          const matchesCategory = selected === "recientes" ? recent.includes(card.getAttribute("href")) : selected === "favoritos" ? favorites.has(card.getAttribute("href")) : selected === "todos" || card.dataset.category === selected || (card.dataset.extraCategories || "").split(/\s+/).includes(selected);
+          const matchesCategory = selected === "recientes" ? recent.includes(card.getAttribute("href")) : selected === "favoritos" ? favorites.has(card.getAttribute("href")) : selected === "todos" || (card.dataset.category || "").split(/\s+/).includes(selected) || (card.dataset.extraCategories || "").split(/\s+/).includes(selected);
           const matchesQuery = !query || card.dataset.search.includes(query) || card.querySelector("h3").textContent.toLocaleLowerCase("es").includes(query);
           const visible = matchesCategory && matchesQuery;
           card.parentElement.hidden = !visible;
