@@ -24,6 +24,8 @@ const runnerImage=new Image();runnerImage.src='assets/vladi-runner.webp';
 const sceneImage=new Image();sceneImage.src='assets/tropical-premium.png';
 const storeKey='vladiRunBestV2', storeStars='vladiRunStarsV2';
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v)), rand=(a,b)=>a+Math.random()*(b-a);
+let jumpQueuedUntil=0;
+function jumpVelocity(){return Math.sqrt(2*H*.51*930*scale)*1.08}
 let W=0,H=0,DPR=1,groundY=0,scale=1,lastTime=0,raf=0,state='menu',paused=false;
 let player,platforms=[],hazards=[],stars=[],particles=[],distance=0,collected=0,totalStars=0,best=0,speed=0,spawnX=0,worldTick=0,runStart=0,segmentsSpawned=0,lastHazardWorld=-Infinity;
 try{best=+(localStorage.getItem(storeKey)||localStorage.getItem('vladiRunBest')||0);totalStars=+(localStorage.getItem(storeStars)||0)}catch(_){}
@@ -121,12 +123,12 @@ function drawRunner(t){if(!player)return;const p=player,run=state==='running'&&!
 function seedWorld(){platforms=[];hazards=[];stars=[];particles=[];distance=0;collected=0;worldTick=0;lastHazardWorld=-Infinity;speed=300*scale;spawnX=W*.52;const ph=runnerHeight();player={x:W*.19,y:groundY-ph,h:ph,w:ph*.82,vy:0,airborne:false,grounded:true};
  const starter={x:-30,w:Math.max(W*1.15+30,player.x+player.w+speed*3.8),y:groundY,depth:H-groundY+90};platforms.push(starter);spawnX=starter.x+starter.w+rand(speed*.45,speed*.72);segmentsSpawned=0;for(let i=0;i<4;i++)stars.push({x:player.x+player.h*1.9+i*player.h*.55,y:groundY-player.h*.23,r:player.h*.092,phase:i*.8,got:false});
 }
-function newRun(){if(typeof window.gtag==='function')window.gtag('event','game_start',{game_id:'vladi-run',game_name:'vladi run'});window.VladiSound?.play('start');seedWorld();state='running';paused=false;lastTime=performance.now();runStart=lastTime;}
-function createSegment(){const unit=Math.max(W,H*.8,speed*2.4),jumpTime=2*Math.sqrt(2*H*.51*930*scale)/(1750*scale),gap=Math.min(rand(unit*.055,unit*.09),speed*jumpTime*.75),width=rand(unit*.48,unit*.68),x=spawnX;platforms.push({x,w:width,y:groundY,depth:H-groundY+90});const segmentIndex=segmentsSpawned++;const hazardX=x+rand(width*.68,width*.82),hazardWorld=distance+hazardX;if(segmentIndex>0&&segmentIndex%2===0&&hazardWorld-lastHazardWorld>speed*1.8){const type=Math.random()<.58?'crate':'spikes';hazards.push({x:hazardX,type,w:type==='crate'?player.h*.63:player.h*.92,h:type==='crate'?player.h*.63:player.h*.39,passed:false});lastHazardWorld=hazardWorld}
+function newRun(){if(typeof window.gtag==='function')window.gtag('event','game_start',{game_id:'vladi-run',game_name:'vladi run'});window.VladiSound?.play('start');seedWorld();jumpQueuedUntil=0;state='running';paused=false;lastTime=performance.now();runStart=lastTime;}
+function createSegment(){const unit=Math.max(W,H*.8,speed*2.4),jumpTime=2*jumpVelocity()/(1750*scale),gap=Math.min(rand(unit*.055,unit*.09),speed*jumpTime*.65),width=rand(unit*.48,unit*.68),x=spawnX;platforms.push({x,w:width,y:groundY,depth:H-groundY+90});const segmentIndex=segmentsSpawned++;const hazardX=x+rand(width*.68,width*.82),hazardWorld=distance+hazardX;if(segmentIndex>0&&segmentIndex%2===0&&hazardWorld-lastHazardWorld>speed*1.8){const type=Math.random()<.58?'crate':'spikes';hazards.push({x:hazardX,type,w:type==='crate'?player.h*.63:player.h*.92,h:type==='crate'?player.h*.63:player.h*.39,passed:false});lastHazardWorld=hazardWorld}
  const count=3+Math.floor(Math.random()*2),startX=x+rand(width*.12,width*.27),arc=rand(.17,.31);for(let i=0;i<count;i++)stars.push({x:startX+i*player.h*.5,y:groundY-player.h*(arc+(i%2)*.04),r:player.h*.092,phase:Math.random()*6.2,got:false});
  spawnX=x+width+gap;
 }
-function jump(){if(state==='menu'||state==='over'){newRun();return}if(state!=='running'||paused)return;if(player.grounded||player.airborne&&player.vy>0&&player.y+player.h>=groundY-player.h*.13){player.vy=-Math.sqrt(2*H*.51*930*scale);player.grounded=false;player.airborne=true;player.jumpCount=(player.jumpCount||0)+1;window.VladiSound?.play('jump')}}
+function jump(){if(state==='menu'||state==='over'){newRun();return}if(state!=='running'||paused)return;if(player.grounded||player.airborne&&player.vy>0&&player.y+player.h>=groundY-player.h*.13){jumpQueuedUntil=0;player.vy=-jumpVelocity();player.grounded=false;player.airborne=true;player.jumpCount=(player.jumpCount||0)+1;window.VladiSound?.play('jump')}else jumpQueuedUntil=performance.now()+120}
 function togglePause(){if(state!=='running')return;paused=!paused;window.VladiSound?.play(paused?'pause':'resume');if(!paused)lastTime=performance.now()}
 function restart(){newRun()}
 function gameOver(){if(typeof window.gtag==='function')window.gtag('event','game_end',{game_id:'vladi-run',game_name:'vladi run',score:Math.floor(distance/26)});window.VladiSound?.play('gameover');state='over';paused=false;best=Math.max(best,Math.floor(distance/26));try{localStorage.setItem(storeKey,String(best));localStorage.setItem(storeStars,String(totalStars));starsPending=false}catch(_){} }
@@ -137,6 +139,7 @@ function update(dt,t){worldTick=t;if(state!=='running'||paused)return;const mete
  platforms=platforms.filter(p=>p.x+p.w>-80);hazards=hazards.filter(o=>o.x+o.w>-100);stars=stars.filter(s=>!s.got&&s.x>-50);
  const oldBottom=player.y+player.h;player.vy+=1750*scale*dt;player.y+=player.vy*dt;player.grounded=false;
  const footX=player.x+player.w*.45,support=platformAt(footX);if(support&&player.vy>=0&&oldBottom<=groundY+3&&player.y+player.h>=groundY-1){player.y=groundY-player.h;player.vy=0;player.grounded=true;player.airborne=false}
+ if(jumpQueuedUntil&&t<=jumpQueuedUntil&&player.grounded)jump();else if(t>jumpQueuedUntil)jumpQueuedUntil=0;
  for(const s of stars){const cx=player.x+player.w*.53,cy=player.y+player.h*.44;if(Math.hypot(s.x-cx,s.y-cy)<s.r+player.h*.25){s.got=true;collected++;window.VladiSound?.play('collect');totalStars++;starsPending=true;for(let i=0;i<7;i++)particles.push({x:s.x,y:s.y,vx:rand(-90,90),vy:rand(-130,20),life:.4,color:'#ffda38'})}}
  for(const o of hazards)if(o.x+o.w<player.x&&!o.passed)o.passed=true;
  if(collision()||player.y>H+player.h)gameOver();
