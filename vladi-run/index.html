@@ -41,7 +41,7 @@ const STAGES=[
 let lives=3,invincibleTime=0;
 let stageNumber=1,campaignDistance=0,campaignCoins=0,magnetTime=0,shieldCharges=0,pickups=[];
 function stageTheme(){return STAGES[(stageNumber-1)%STAGES.length]}
-function stageGoal(){return (160+Math.min(stageNumber-1,4)*20)*26}
+function stageGoal(){return (300+Math.min(stageNumber-1,4)*50)*26}
 function runMeters(){return Math.floor((campaignDistance+distance)/26)}
 let jumpQueuedUntil=0;
 function jumpVelocity(){return Math.sqrt(2*H*.51*930*scale)*1.08}
