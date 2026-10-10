@@ -7,7 +7,7 @@
 <title>Vladi Run</title>
 <style>
 :root{color-scheme:only light}*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;overscroll-behavior:none;background:#0b83d3}body{position:fixed;inset:0;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}canvas{display:block;width:100%;height:100%;touch-action:none}
-#soundToggle{position:fixed;z-index:60;top:auto;bottom:max(18px,env(safe-area-inset-bottom));left:max(14px,env(safe-area-inset-left));width:46px;height:46px;padding:0;display:grid;place-items:center;border:3px solid #4b220d;border-radius:14px;background:linear-gradient(#aa6435,#633214);box-shadow:0 4px #351809;color:#fff;font-size:19px;line-height:1;touch-action:manipulation;cursor:pointer}#soundToggle:active{transform:translateY(2px);box-shadow:0 2px #351809}@media(max-width:600px){#soundToggle{width:42px;height:42px;border-width:2px;border-radius:12px;font-size:17px}}</style>
+#soundToggle{position:fixed;z-index:60;top:auto;bottom:max(18px,env(safe-area-inset-bottom));left:max(14px,env(safe-area-inset-left));width:46px;height:46px;padding:0;display:grid;place-items:center;border:3px solid #4b220d;border-radius:14px;background:linear-gradient(#aa6435,#633214);box-shadow:0 4px #351809;color:#fff;font-size:19px;line-height:1;touch-action:manipulation;cursor:pointer}#soundToggle:active{transform:translateY(2px);box-shadow:0 2px #351809}@media(max-width:600px){#soundToggle{width:42px;height:42px;border-width:2px;border-radius:12px;font-size:17px}}@media(max-width:999px){.arcade-return{top:max(150px,calc(env(safe-area-inset-top) + 150px))}}</style>
   <link rel="stylesheet" href="../arcade-ui.css?v=3caf1eaf">
   <script src="../arcade-ui.js?v=ga4-20261009" defer></script>
 </head>
@@ -308,12 +308,18 @@ function drawHUD(){const portrait=H>W*1.1,top=Math.max(10,H*.025),margin=Math.ma
  }else{const w1=Math.min(176,W*.16),w2=Math.min(190,W*.17),w3=Math.min(258,W*.24);let x=Math.max(start,(W-(w1+w2+w3+gap*2))/2);pill(x,top,w1,'⭐',String(campaignCoins+collected));x+=w1+gap;pill(x,top,w2,'🏃',Math.floor(distance/26)+'m');x+=w2+gap;pill(x,top,w3,'🏆',best+'m',true)}
  rounded(ui.pause.x,ui.pause.y,pauseSize,pauseSize,14,gradient(0,ui.pause.y,pauseSize,pauseSize,[[0,'#ac6437'],[1,'#693316']]),'#401d0e',4);rounded(ui.pause.x+5,ui.pause.y+5,pauseSize-10,pauseSize-10,10,'#925027','#c8874d',2);ctx.fillStyle='#fff';ctx.textAlign='center';ctx.textBaseline='middle';ctx.font=`1000 ${pauseSize*.48}px Arial`;ctx.fillText(paused?'▶':'Ⅱ',ui.pause.x+pauseSize/2,ui.pause.y+pauseSize/2+1);
  if(!portrait&&W>=1000)return;
- const barW=Math.min(W*.72,500),barX=(W-barW)/2,barY=top+pillH+12;
- rounded(barX,barY,barW,51,10,'#143a49dd','#ffffff55',1);ctx.fillStyle='#fff';ctx.font='800 '+(portrait?11:14)+'px system-ui';ctx.textAlign='center';ctx.fillText('ETAPA '+stageNumber+' · '+stageTheme().name+' · '+Math.min(Math.floor(distance/26),Math.floor(stageGoal()/26))+'/'+Math.floor(stageGoal()/26)+'m',W/2,barY+11);
- rounded(barX+8,barY+23,barW-16,4,2,'#0b1f29');const progress=Math.min(1,distance/stageGoal());if(progress>0)rounded(barX+8,barY+23,(barW-16)*progress,4,2,'#8aef58');
- ctx.fillStyle='#ffb2b2';ctx.font='900 14px system-ui';ctx.fillText('♥ '.repeat(lives)+' · '+lives+' VIDAS',W/2,barY+41);
- if(magnetTime>0||shieldCharges){ctx.font='800 13px system-ui';ctx.fillStyle='#fff';ctx.fillText((magnetTime>0?'🧲 '+Math.ceil(magnetTime)+'s ':'')+(shieldCharges?'🛡 ESCUDO':''),W/2,barY+68)}
+ const barW=Math.min(W-margin*2,500),barX=(W-barW)/2,barY=top+pillH+10,barH=64;
+ rounded(barX,barY,barW,barH,14,'#492317','#2b120e',4);
+ rounded(barX+3,barY+3,barW-6,barH-6,11,gradient(barX,barY,barW,barH,[[0,'#68402b'],[1,'#3e2018']]));
+ ctx.fillStyle='#fff';ctx.textAlign='center';ctx.font='900 '+(portrait?12:14)+'px system-ui,Arial';
+ ctx.fillText(stageNumber+' · '+stageTheme().name,W/2,barY+13);
+ ctx.font='900 12px system-ui,Arial';
+ ctx.fillText(Math.min(Math.floor(distance/26),Math.floor(stageGoal()/26))+'/'+Math.floor(stageGoal()/26)+'m · ♥ '+lives,W/2,barY+29);
+ ctx.font='800 11px system-ui,Arial';
+ ctx.fillText((magnetTime>0?'IMÁN '+Math.ceil(magnetTime)+'s':'')+(magnetTime>0&&shieldCharges?' · ':'')+(shieldCharges?'ESCUDO ACTIVO':''),W/2,barY+44);
+ rounded(barX+12,barY+54,barW-24,4,2,'#2b120e');const progress=Math.min(1,distance/stageGoal());if(progress>0)rounded(barX+12,barY+54,(barW-24)*progress,4,2,'#ffd16a');
 }
+
 function drawOverlay(){ctx.fillStyle='#001e376f';ctx.fillRect(0,0,W,H);const portrait=H>W*1.05,cx=W/2,cy=H*.49,bw=Math.min(W*.88,portrait?460:850),bh=Math.min(H*.76,portrait?520:430),x=cx-bw/2,y=cy-bh/2;
  rounded(x,y,bw,bh,28,gradient(x,y,bw,bh,[[0,'#fff7dd'],[.72,'#ffe4a9'],[1,'#eab864']]),'#78431b',7);
  // tropical foliage corners
