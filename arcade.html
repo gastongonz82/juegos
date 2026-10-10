@@ -728,6 +728,12 @@
     .favorite-button:focus-visible { outline:3px solid white; outline-offset:3px; }
     .game-entry .tag-retro { top:62px; right:12px; }
     .favorite-note { color:var(--muted); font-size:13px; line-height:1.5; margin:0 0 18px; }
+  
+    .filters .filter-icon { position:relative; display:grid; place-items:center; flex:none; width:44px; height:44px; padding:0; border-radius:14px; }
+    .filter-icon svg { display:block; width:23px; height:23px; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; pointer-events:none; }
+    .filter-icon[data-filter="favoritos"] svg { fill:#ffcf31; stroke:#ffdf86; }
+    .favorite-badge { position:absolute; top:-5px; right:-5px; min-width:18px; height:18px; padding:0 4px; display:grid; place-items:center; border:1px solid #ffe394; border-radius:9px; background:#ffcf31; color:#071747; font-size:10px; font-weight:900; line-height:1; box-shadow:0 2px 5px #0005; }
+    .favorite-badge[hidden] { display:none; }
   </style>
 </head>
 <body>
@@ -802,8 +808,8 @@
       <div class="toolbar">
         <div class="filters" role="group" aria-label="Filtrar juegos por categoría">
           <button class="filter" type="button" data-filter="todos" aria-pressed="true">Todos</button>
-          <button class="filter" type="button" data-filter="favoritos" aria-pressed="false">★ Mis favoritos <span id="favorite-count">(0)</span></button>
-          <button class="filter" type="button" data-filter="recientes" aria-pressed="false">◷ Últimos jugados</button>
+          <button class="filter filter-icon" type="button" data-filter="favoritos" aria-pressed="false" aria-label="Mis favoritos" title="Mis favoritos"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m12 2.8 2.84 5.76 6.36.92-4.6 4.49 1.09 6.33L12 17.31l-5.69 2.99 1.09-6.33-4.6-4.49 6.36-.92Z"/></svg><span id="favorite-count" class="favorite-badge" aria-hidden="true" hidden>0</span></button>
+          <button class="filter filter-icon" type="button" data-filter="recientes" aria-pressed="false" aria-label="Últimos jugados" title="Últimos jugados"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="8.5"/><path d="M12 7v5l3.5 2"/></svg></button>
           <button class="filter" type="button" data-filter="aventura" aria-pressed="false">Aventura</button>
           <button class="filter" type="button" data-filter="deportes" aria-pressed="false">Deportes</button>
           <button class="filter" type="button" data-filter="accion" aria-pressed="false">Acción</button>
@@ -1055,7 +1061,9 @@
           if (visible) shown++;
         });
         count.textContent = shown === 1 ? "1 juego" : shown + " juegos";
-        favoriteCount.textContent = "(" + favorites.size + ")";
+        favoriteCount.textContent = String(favorites.size);
+        favoriteCount.hidden = favorites.size === 0;
+        favoriteCount.parentElement.setAttribute("aria-label", "Mis favoritos: " + favorites.size + " juegos");
         empty.textContent = selected === "recientes" && recent.length === 0
           ? "Todavía no abriste ningún juego. Elegí uno y aparecerá acá para volver a jugar."
           : selected === "favoritos" && favorites.size === 0
