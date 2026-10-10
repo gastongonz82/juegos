@@ -43,3 +43,10 @@ body:has(.title-screen:not([hidden])) .hud,body:has(.title-screen:not([hidden]))
 .title-screen .tips span{background:none;border:0;font-size:11px;padding:4px 7px;color:#f1d6b2;text-shadow:1px 2px #1b1126}
 @media(max-height:500px){.title-screen .dialog{display:grid;grid-template-columns:35% 65%;max-width:820px}.title-screen .splash{height:65vh}.title-screen h1{font-size:48px;margin-bottom:12px}.title-screen .dialog-copy{padding:8px}.title-screen #start{height:42px;font-size:20px}.title-screen .tips{margin-top:4px}}
 @media(prefers-reduced-motion:no-preference){.title-screen #start{animation:arcade-start-glow 1.5s ease-in-out infinite}@keyframes arcade-start-glow{50%{color:#fff7c0;text-shadow:2px 3px #6d2a27,0 0 14px #ffc44388}}}
+
+/* Acción principal de inicio: botón arcade con relieve. */
+.title-screen #start{padding:0 24px;border:3px solid #ffe5a1;border-radius:12px;background:linear-gradient(#ffd46c 0%,#ffad3d 48%,#ed772b 100%);color:#4b1e1b;box-shadow:0 6px 0 #943923,0 9px 0 #241321,inset 0 2px 0 #fff2be;animation:none;text-shadow:0 1px #ffdf8c;min-height:54px}
+.title-screen #start:hover{color:#4b1e1b;filter:brightness(1.08);transform:translateY(-1px)}
+.title-screen #start:active{transform:translateY(4px);box-shadow:0 2px 0 #943923,0 5px 0 #241321,inset 0 2px 0 #fff2be}
+.title-screen .tips{margin-top:22px}
+@media(max-height:500px){.title-screen #start{min-height:42px;padding:0 18px}.title-screen .tips{margin-top:14px}}
