@@ -753,6 +753,25 @@
 .share-dialog a,.share-dialog button{display:block;width:100%;margin:10px 0;padding:12px;border:1px solid #35d9ff66;border-radius:10px;background:#12328d;color:white;text-align:center;text-decoration:none;font:700 14px Arial;cursor:pointer}
 .share-dialog input{width:100%;padding:10px;background:#071747;color:white;border:1px solid #35d9ff}
 .share-notice{position:fixed;z-index:100;bottom:24px;left:50%;transform:translateX(-50%);padding:12px 20px;border:1px solid #35d9ff;border-radius:10px;background:#071747;color:white;font:700 14px Arial;box-shadow:0 5px 20px #0008}
+
+/* Acciones de juego con una única geometría y acabado. */
+.game-actions{position:absolute;z-index:5;left:12px;right:12px;bottom:18px;display:flex;align-items:center;gap:10px;height:40px}
+.game-actions .game-play-action,.game-actions .share-game,.featured-actions .featured-play,.featured-actions .share-game{display:flex;align-items:center;justify-content:center;height:40px;min-height:40px;padding:0;border:2px solid #7ff3ff;border-radius:12px;background:linear-gradient(180deg,#37e6ff,#0c9ce7);color:#041b43;box-shadow:0 4px 0 #066aa4,0 0 12px #18d8ff33;font:900 12px Arial,sans-serif;text-decoration:none;line-height:1;box-sizing:border-box}
+.game-actions .game-play-action{flex:1;min-width:0}
+.game-actions .share-game{position:static;flex:none;width:40px}
+.game-actions .share-game svg,.featured-actions .share-game svg{width:20px;height:20px}
+.share-entry .premiumCard .gamecopy{height:130px!important;min-height:130px;padding:12px 10px 70px!important;justify-content:flex-start!important}
+.share-entry .premiumCard .gamecopy h3{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;column-gap:4px;width:100%;height:44px;min-height:44px;line-height:1.15!important;margin:0!important}
+.share-entry .premiumCard .gamecopy span{display:none!important}
+.game-entry .card-cta{visibility:hidden}
+.game-entry .game-actions{left:16px;right:16px;bottom:20px}
+.featured-cover img{height:auto!important;aspect-ratio:3/2!important;object-fit:contain!important;background:#071644}
+.featured-panel{align-items:center;border-radius:22px;box-shadow:0 8px 0 #03103a,0 0 18px #13d8ff33}
+.featured-copy h3{font-weight:900;text-shadow:0 3px 0 #03113e}
+.featured-actions{width:100%;height:44px;gap:12px}
+.featured-actions .featured-play,.featured-actions .share-game{height:44px;min-height:44px}
+.featured-actions .share-game{width:44px;flex:none}
+@media(max-width:600px){.featured-cover img{aspect-ratio:3/2!important}.featured-copy{padding:20px}.featured-copy h3{text-transform:uppercase;font-size:25px}.featured-actions .featured-play{font-size:13px}}
 </style>
 </head>
 <body>
@@ -1160,6 +1179,11 @@ window.matchMedia('(max-width:800px)').addEventListener('change',close);
    const button=document.createElement('button');button.type='button';button.className='share-game';button.innerHTML=icon;
    const name=()=>link.querySelector('h3').textContent.trim().replace(/\s+/g,' ');
    button.setAttribute('aria-label','Compartir '+name());button.title='Compartir '+name();wrapper.append(button);
+   if(!link.classList.contains('featured-play')){
+     const row=document.createElement('div');row.className='game-actions';
+     const play=document.createElement('a');play.className='game-play-action';play.href=link.getAttribute('href');play.textContent='JUGAR';play.setAttribute('aria-label','Jugar '+name());
+     row.append(play,button);wrapper.append(row);
+   }
    button.addEventListener('click',async()=>{
      const url=new URL(link.getAttribute('href'),location.href).href;
      const title=name(),text='🎮 ¡Probá '+title+'!';
