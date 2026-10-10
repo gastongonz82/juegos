@@ -716,7 +716,16 @@
  .topbar-links a,.topbar-links a:last-child{grid-column:auto;padding:12px 10px;border-radius:8px}
  .topbar-links a:hover,.topbar-links a:focus-visible{background:#153071}
 }
-</style>
+
+    .game-entry { position:relative; min-width:0; display:flex; }
+    .game-entry[hidden] { display:none; }
+    .game-entry > .game-card { width:100%; }
+    .favorite-button { position:absolute; z-index:4; top:10px; right:10px; width:44px; height:44px; border:2px solid #35d9ff; border-radius:50%; background:#071747ee; color:#fff; font:28px Arial,sans-serif; cursor:pointer; box-shadow:0 3px 12px #0007; }
+    .favorite-button[aria-pressed="true"] { color:#ffcf31; border-color:#ffcf31; }
+    .favorite-button:focus-visible { outline:3px solid white; outline-offset:3px; }
+    .game-entry .tag-retro { top:62px; right:12px; }
+    .favorite-note { color:var(--muted); font-size:13px; line-height:1.5; margin:0 0 18px; }
+  </style>
 </head>
 <body>
   <a class="skip-link" href="#juegos">Saltar a los juegos</a>
@@ -790,6 +799,7 @@
       <div class="toolbar">
         <div class="filters" role="group" aria-label="Filtrar juegos por categoría">
           <button class="filter" type="button" data-filter="todos" aria-pressed="true">Todos</button>
+          <button class="filter" type="button" data-filter="favoritos" aria-pressed="false">★ Mis favoritos <span id="favorite-count">(0)</span></button>
           <button class="filter" type="button" data-filter="aventura" aria-pressed="false">Aventura</button>
           <button class="filter" type="button" data-filter="deportes" aria-pressed="false">Deportes</button>
           <button class="filter" type="button" data-filter="accion" aria-pressed="false">Acción</button>
@@ -800,6 +810,8 @@
         </div>
         <label class="search"><span aria-hidden="true">⌕</span><input id="search" type="search" placeholder="Buscar un juego…" autocomplete="off" aria-label="Buscar un juego"></label>
       </div>
+      <p class="favorite-note">Tocá la estrella para guardar tus juegos favoritos en este navegador.</p>
+      <p id="favorite-status" role="status" class="favorite-note" hidden></p>
       <div class="grid" id="game-grid">
         <a class="game-card" href="./flappy-vladi/" data-category="accion" data-search="flappy vladi vuelo isla arcade">
           <div class="cover cover-photo" style="--accent:#8de7c1;--wash:rgba(70,205,157,.2)"><img class="cover-image" src="assets/flappy-vladi-960w.webp" alt="" aria-hidden="true" loading="lazy" decoding="async" srcset="assets/flappy-vladi-480w.webp 480w, assets/flappy-vladi-960w.webp 960w" sizes="(max-width: 360px) 130px, (max-width: 900px) calc((100vw - 56px) / 2), (max-width: 1180px) calc((100vw - 80px) / 3), 367px" width="960" height="640"><span class="tag">Acción</span></div>
@@ -967,18 +979,63 @@
       const count = document.querySelector("#result-count");
       const empty = document.querySelector("#empty-state");
       let selected = "todos";
+      const favoriteKey = "vladyerik-favorites-v1";
+      const favoriteCount = document.querySelector("#favorite-count");
+      const status = document.querySelector("#favorite-status");
+      const validIds = new Set(cards.map(card => card.getAttribute("href")));
+      function readFavorites() {
+        try {
+          const saved = JSON.parse(localStorage.getItem(favoriteKey) || "[]");
+          return new Set(Array.isArray(saved) ? saved.filter(id => validIds.has(id)) : []);
+        } catch (_) { return new Set(); }
+      }
+      let favorites = readFavorites();
+      cards.forEach(card => {
+        const entry = document.createElement("div");
+        entry.className = "game-entry";
+        card.before(entry);
+        entry.append(card);
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "favorite-button";
+        entry.append(button);
+        button.addEventListener("click", () => {
+          const id = card.getAttribute("href");
+          if (favorites.has(id)) favorites.delete(id); else favorites.add(id);
+          try {
+            localStorage.setItem(favoriteKey, JSON.stringify([...favorites]));
+            status.hidden = true;
+          } catch (_) {
+            status.hidden = false;
+            status.textContent = "Este navegador no permite guardar favoritos. Podés usarlos mientras esta página esté abierta.";
+          }
+          update();
+        });
+      });
+      window.addEventListener("storage", event => {
+        if (event.key === favoriteKey || event.key === null) { favorites = readFavorites(); update(); }
+      });
 
       function update() {
         const query = search.value.trim().toLocaleLowerCase("es");
         let shown = 0;
         cards.forEach((card) => {
-          const matchesCategory = selected === "todos" || card.dataset.category === selected || (card.dataset.extraCategories || "").split(/\s+/).includes(selected);
+          const matchesCategory = selected === "favoritos" ? favorites.has(card.getAttribute("href")) : selected === "todos" || card.dataset.category === selected || (card.dataset.extraCategories || "").split(/\s+/).includes(selected);
           const matchesQuery = !query || card.dataset.search.includes(query) || card.querySelector("h3").textContent.toLocaleLowerCase("es").includes(query);
           const visible = matchesCategory && matchesQuery;
-          card.hidden = !visible;
+          card.parentElement.hidden = !visible;
+          const saved = favorites.has(card.getAttribute("href"));
+          const button = card.parentElement.querySelector(".favorite-button");
+          button.textContent = saved ? "★" : "☆";
+          button.setAttribute("aria-pressed", String(saved));
+          button.setAttribute("aria-label", (saved ? "Quitar de favoritos: " : "Agregar a favoritos: ") + card.querySelector("h3").textContent);
           if (visible) shown++;
         });
         count.textContent = shown === 1 ? "1 juego" : shown + " juegos";
+        favoriteCount.textContent = "(" + favorites.size + ")";
+        empty.textContent = selected === "favoritos" && favorites.size === 0
+          ? "Todavía no tenés favoritos. Tocá la estrella de un juego para agregarlo."
+          : "No encontramos juegos con esa búsqueda. Probá otro nombre o categoría.";
         empty.classList.toggle("visible", shown === 0);
       }
 
@@ -990,6 +1047,7 @@
         });
       });
       search.addEventListener("input", update);
+      update();
     })();
   </script>
 <a class="whatsapp-float" href="https://wa.me/5493704600368?text=Hola%2C%20quiero%20hacer%20una%20consulta%20sobre%20los%20juegos%20de%20Vladi." target="_blank" rel="noopener noreferrer" aria-label="Escribinos por WhatsApp">
