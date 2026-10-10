@@ -720,8 +720,11 @@
     .game-entry { position:relative; min-width:0; display:flex; }
     .game-entry[hidden] { display:none; }
     .game-entry > .game-card { width:100%; }
-    .favorite-button { position:absolute; z-index:4; top:10px; right:10px; width:44px; height:44px; border:2px solid #35d9ff; border-radius:50%; background:#071747ee; color:#fff; font:28px Arial,sans-serif; cursor:pointer; box-shadow:0 3px 12px #0007; }
-    .favorite-button[aria-pressed="true"] { color:#ffcf31; border-color:#ffcf31; }
+    .favorite-button { position:absolute; z-index:4; top:10px; right:10px; display:grid; place-items:center; width:44px; height:44px; padding:0; border:1px solid #83eaff99; border-radius:14px; background:linear-gradient(145deg,#153d78f5,#071747f5); color:#d3f5ff; cursor:pointer; box-shadow:inset 0 1px 0 #ffffff30,0 3px 8px #0005; transition:border-color .18s,background .18s,color .18s; }
+    .favorite-button svg { display:block; width:23px; height:23px; fill:transparent; stroke:currentColor; stroke-width:1.8; stroke-linejoin:round; pointer-events:none; }
+    .favorite-button:hover { border-color:#ffdc73; color:#ffdc73; }
+    .favorite-button[aria-pressed="true"] { color:#ffcf31; border-color:#ffdf86; background:linear-gradient(145deg,#54401a,#18244a); box-shadow:inset 0 1px 0 #fff3,0 0 10px #ffbd2225,0 3px 8px #0005; }
+    .favorite-button[aria-pressed="true"] svg { fill:currentColor; }
     .favorite-button:focus-visible { outline:3px solid white; outline-offset:3px; }
     .game-entry .tag-retro { top:62px; right:12px; }
     .favorite-note { color:var(--muted); font-size:13px; line-height:1.5; margin:0 0 18px; }
@@ -998,6 +1001,7 @@
         const button = document.createElement("button");
         button.type = "button";
         button.className = "favorite-button";
+        button.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m12 2.8 2.84 5.76 6.36.92-4.6 4.49 1.09 6.33L12 17.31l-5.69 2.99 1.09-6.33-4.6-4.49 6.36-.92Z"/></svg>';
         entry.append(button);
         button.addEventListener("click", () => {
           const id = card.getAttribute("href");
@@ -1026,7 +1030,7 @@
           card.parentElement.hidden = !visible;
           const saved = favorites.has(card.getAttribute("href"));
           const button = card.parentElement.querySelector(".favorite-button");
-          button.textContent = saved ? "★" : "☆";
+
           button.setAttribute("aria-pressed", String(saved));
           button.setAttribute("aria-label", (saved ? "Quitar de favoritos: " : "Agregar a favoritos: ") + card.querySelector("h3").textContent);
           if (visible) shown++;
