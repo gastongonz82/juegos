@@ -290,8 +290,24 @@ function drawHUD(){const portrait=H>W*1.1,top=Math.max(10,H*.025),margin=Math.ma
   pill(x,top,w1,'🏃',Math.floor(distance/26)+'m');x+=w1+gap;
   pill(x,top,w2,'⭐',String(campaignCoins+collected));x+=w2+gap;
   pill(x,top,w3,'🏆',best+'m',true);
+ }else if(W>=1000){
+  const total=Math.min(W-start-margin,1220),inner=total-gap*4,widths=[.12,.14,.20,.40,.14].map(r=>inner*r);
+  let x=Math.max(start,(W-total)/2);
+  pill(x,top,widths[0],'⭐',String(campaignCoins+collected));x+=widths[0]+gap;
+  pill(x,top,widths[1],'🏃',Math.floor(distance/26)+'m');x+=widths[1]+gap;
+  pill(x,top,widths[2],'🏆',best+'m',true);x+=widths[2]+gap;
+  const sw=widths[3];
+  rounded(x,top,sw,pillH,14,'#492317','#2b120e',4);
+  rounded(x+3,top+3,sw-6,pillH-6,11,gradient(x,top,sw,pillH,[[0,'#68402b'],[1,'#3e2018']]));
+  ctx.fillStyle='#fff';ctx.textAlign='center';ctx.font='900 '+clamp(sw*.041,12,17)+'px system-ui,Arial';
+  ctx.fillText('ETAPA '+stageNumber+' · '+stageTheme().name,x+sw/2,top+15);
+  const effect=(magnetTime>0?' · 🧲 '+Math.ceil(magnetTime)+'s':'')+(shieldCharges?' · 🛡':'');
+  ctx.font='800 12px system-ui,Arial';ctx.fillText(Math.min(Math.floor(distance/26),Math.floor(stageGoal()/26))+'/'+Math.floor(stageGoal()/26)+'m'+effect,x+sw/2,top+29);
+  rounded(x+12,top+39,sw-24,4,2,'#2b120e');const progress=Math.min(1,distance/stageGoal());if(progress>0)rounded(x+12,top+39,(sw-24)*progress,4,2,'#ffd16a');
+  x+=sw+gap;pill(x,top,widths[4],'♥',String(lives));
  }else{const w1=Math.min(176,W*.16),w2=Math.min(190,W*.17),w3=Math.min(258,W*.24);let x=Math.max(start,(W-(w1+w2+w3+gap*2))/2);pill(x,top,w1,'⭐',String(campaignCoins+collected));x+=w1+gap;pill(x,top,w2,'🏃',Math.floor(distance/26)+'m');x+=w2+gap;pill(x,top,w3,'🏆',best+'m',true)}
  rounded(ui.pause.x,ui.pause.y,pauseSize,pauseSize,14,gradient(0,ui.pause.y,pauseSize,pauseSize,[[0,'#ac6437'],[1,'#693316']]),'#401d0e',4);rounded(ui.pause.x+5,ui.pause.y+5,pauseSize-10,pauseSize-10,10,'#925027','#c8874d',2);ctx.fillStyle='#fff';ctx.textAlign='center';ctx.textBaseline='middle';ctx.font=`1000 ${pauseSize*.48}px Arial`;ctx.fillText(paused?'▶':'Ⅱ',ui.pause.x+pauseSize/2,ui.pause.y+pauseSize/2+1);
+ if(!portrait&&W>=1000)return;
  const barW=Math.min(W*.72,500),barX=(W-barW)/2,barY=top+pillH+12;
  rounded(barX,barY,barW,51,10,'#143a49dd','#ffffff55',1);ctx.fillStyle='#fff';ctx.font='800 '+(portrait?11:14)+'px system-ui';ctx.textAlign='center';ctx.fillText('ETAPA '+stageNumber+' · '+stageTheme().name+' · '+Math.min(Math.floor(distance/26),Math.floor(stageGoal()/26))+'/'+Math.floor(stageGoal()/26)+'m',W/2,barY+11);
  rounded(barX+8,barY+23,barW-16,4,2,'#0b1f29');const progress=Math.min(1,distance/stageGoal());if(progress>0)rounded(barX+8,barY+23,(barW-16)*progress,4,2,'#8aef58');
