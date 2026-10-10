@@ -50,3 +50,17 @@ body:has(.title-screen:not([hidden])) .hud,body:has(.title-screen:not([hidden]))
 .title-screen #start:active{transform:translateY(4px);box-shadow:0 2px 0 #943923,0 5px 0 #241321,inset 0 2px 0 #fff2be}
 .title-screen .tips{margin-top:22px}
 @media(max-height:500px){.title-screen #start{min-height:42px;padding:0 18px}.title-screen .tips{margin-top:14px}}
+
+/* Pausa, victoria y fin de partida integrados al escenario. */
+.overlay.arcade-state{background:#171020bb;backdrop-filter:none}
+.arcade-state .dialog{display:flex;flex-direction:column;align-items:center;width:min(650px,100%);background:none;border:0;box-shadow:none;overflow:visible}
+.arcade-state .splash{height:clamp(90px,20vh,180px);width:100%;padding:0;background:none}
+.arcade-state .splash img{height:100%;width:auto;max-height:none}
+.arcade-state .dialog-copy{text-align:center;width:100%;padding:18px 10px}
+.arcade-state h1{font-family:"Arial Black",Arial,sans-serif;font-size:clamp(32px,6vw,56px);line-height:1.05;transform:rotate(-2deg);-webkit-text-stroke:1px #68282c;text-shadow:3px 4px #6c2930,5px 6px #140d20}
+.arcade-state h1 span{display:block;color:#ffbd4a}
+.arcade-state #message{font-size:15px;color:#ffe3ba;text-shadow:1px 2px #160f20;max-width:440px;margin:0 auto 22px}
+.arcade-state #start{width:auto;min-width:220px;max-width:100%;padding:0 22px;border:3px solid #ffe5a1;border-radius:12px;background:linear-gradient(#ffd46c,#ffad3d 48%,#ed772b);color:#4b1e1b;box-shadow:0 6px #943923,0 9px #241321,inset 0 2px #fff2be;font-size:18px}
+.arcade-state #start:active{transform:translateY(4px)}
+.arcade-state .tips{display:none}.arcade-state #note{margin-top:24px;color:#f0cb9e}.arcade-state .eyebrow{font-size:11px}
+@media(max-height:500px){.arcade-state .dialog{display:grid;grid-template-columns:30% 70%}.arcade-state .splash{height:55vh}.arcade-state .dialog-copy{padding:6px}.arcade-state h1{font-size:30px;margin-bottom:12px}.arcade-state #message{font-size:12px;margin-bottom:12px}.arcade-state #start{height:42px;font-size:15px}.arcade-state #note{margin-top:16px}}
