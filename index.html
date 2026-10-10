@@ -154,6 +154,7 @@
 .featured-copy{padding:26px;display:flex;flex-direction:column;justify-content:center}.featured-copy h3{font-size:30px;margin:0 0 12px;color:white}.featured-kicker{font-size:11px;font-weight:900;color:#ffcf31;letter-spacing:1px;margin:0 0 10px}.featured-description{font-size:16px;line-height:1.5;margin:0 0 20px;color:#d0dcf5}
 .featured-play{align-self:flex-start;padding:13px 22px;border:1px solid #8cf1ff;border-radius:10px;background:linear-gradient(#37e6ff,#0c9ce7);color:#031b43;text-decoration:none;font-size:14px;font-weight:900}
 @media(max-width:600px){.featured-panel{grid-template-columns:1fr}.featured-cover img{height:auto;aspect-ratio:16/9}.featured-copy{padding:18px}.featured-copy h3{font-size:25px}.featured-description{font-size:14px}.featured-play{align-self:stretch;text-align:center}.featured-game #featured-heading{font-size:18px}}
+.featured-actions{position:relative;display:flex;align-items:center;gap:12px}.featured-actions .share-game{position:static;width:44px;height:44px;flex:none}.featured-actions .featured-play{align-self:auto;flex:1;text-align:center}
 </style><meta property="og:title" content="VLADYERIK | Juegos, desafíos y aventuras"><meta property="og:description" content="Entrá a mi mundo: juegos, videos, desafíos y aventuras."><meta property="og:type" content="website"><meta name="theme-color" content="#071450"></head><body>
 <nav class="nav"><div class="wrap"><a class="brand" href="#"><span class="vlad">VLAD</span><span class="yerik">YERIK</span></a><button class="menu-toggle" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="mobile-navigation"><span></span><span></span><span></span></button><div class="links" id="mobile-navigation"><a href="#">🏠 INICIO</a><a href="#juegos">🎮 MIS JUEGOS</a><a href="#videos">▶ MIS VIDEOS</a><a href="#sobre">👤 SOBRE MÍ</a><a href="#taekwondo">🏆 TAEKWONDO</a><a href="#cosplay">🎭 COSPLAY</a><a href="#redes">❤ SEGUIME</a></div></div></nav>
 <header class="hero"><img class="heroBanner" src="assets/vladi-hero-1774w.webp" alt="VLADYERIK - Juegos, desafíos y aventuras" srcset="assets/vladi-hero-800w.webp 800w, assets/vladi-hero-1774w.webp 1774w" sizes="100vw" width="1774" height="887" fetchpriority="high" loading="eager" decoding="async"></header>
@@ -218,11 +219,11 @@ window.matchMedia('(max-width:800px)').addEventListener('change',close);
  const notice=document.createElement('div');notice.className='share-notice';notice.setAttribute('role','status');notice.hidden=true;document.body.append(notice);
  let timer;
  const show=text=>{notice.textContent=text;notice.hidden=false;clearTimeout(timer);timer=setTimeout(()=>notice.hidden=true,3500)};
- document.querySelectorAll('a.game-card,a.premiumCard').forEach(link=>{
+ document.querySelectorAll('a.game-card,a.premiumCard,a.featured-play').forEach(link=>{
    let wrapper=link.parentElement;
-   if(!wrapper.classList.contains('game-entry')){wrapper=document.createElement('div');wrapper.className='share-entry';link.before(wrapper);wrapper.append(link)}
+   if(!wrapper.classList.contains('game-entry')){wrapper=document.createElement('div');wrapper.className=link.classList.contains('featured-play')?'featured-actions':'share-entry';link.before(wrapper);wrapper.append(link)}
    const button=document.createElement('button');button.type='button';button.className='share-game';button.innerHTML=icon;
-   const name=()=>link.querySelector('h3').textContent.trim().replace(/\s+/g,' ');
+   const name=()=>(link.querySelector('h3')||link.closest('.featured-game').querySelector('h3')).textContent.trim().replace(/\s+/g,' ');
    button.setAttribute('aria-label','Compartir '+name());button.title='Compartir '+name();wrapper.append(button);
    button.addEventListener('click',async()=>{
      const url=new URL(link.getAttribute('href'),location.href).href;
