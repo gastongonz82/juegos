@@ -5,6 +5,16 @@
   const slug=gamePath[1];
   const retro=new URLSearchParams(location.search).get('game');
   const gameId=slug==='vladi-retro'&&retro?'vladi-retro-'+retro:slug;
+  // Recent games stay on this device; no gameplay state is changed.
+  try {
+    const key='vladyerik-recent-games-v1';
+    const href=slug==='vladi-retro'&&retro
+      ? './vladi-retro/index.html?game='+encodeURIComponent(retro)
+      : './'+slug+'/';
+    const saved=JSON.parse(localStorage.getItem(key)||'[]');
+    const history=Array.isArray(saved)?saved.filter(item=>typeof item==='string'&&item!==href):[];
+    localStorage.setItem(key,JSON.stringify([href,...history].slice(0,12)));
+  } catch (_) {}
   const name=slug==='vladi-retro'&&retro?retro.replace(/-/g,' '):document.title.split(/[—|]/)[0].trim();
   if(typeof window.gtag!=='function'){
     window.dataLayer=window.dataLayer||[];
