@@ -162,8 +162,8 @@
 .game-actions .game-play-action{flex:1;min-width:0}
 .game-actions .share-game{position:static;flex:none;width:40px}
 .game-actions .share-game svg,.featured-actions .share-game svg{width:20px;height:20px}
-.share-entry .premiumCard .gamecopy{height:130px!important;min-height:130px;padding:12px 10px 70px!important;justify-content:flex-start!important}
-.share-entry .premiumCard .gamecopy h3{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;column-gap:4px;width:100%;height:44px;min-height:44px;line-height:1.15!important;margin:0!important}
+.share-entry .premiumCard .gamecopy{height:105px!important;min-height:0;padding:8px 10px 58px!important;justify-content:flex-start!important}
+.share-entry .premiumCard .gamecopy h3{line-height:1.05!important;margin:0!important}
 .share-entry .premiumCard .gamecopy span{display:none!important}
 .game-entry .card-cta{visibility:hidden}
 .game-entry .game-actions{left:16px;right:16px;bottom:20px}
@@ -175,10 +175,9 @@
 .featured-actions .share-game{width:44px;flex:none}
 @media(max-width:600px){.featured-cover img{aspect-ratio:3/2!important}.featured-copy{padding:20px}.featured-copy h3{text-transform:uppercase;font-size:25px}.featured-actions .featured-play{font-size:13px}}
 
-/* Portadas completas: la escena conserva la proporción de cada imagen. */
-.share-entry .premiumCard .scene{height:auto!important;min-height:0!important;aspect-ratio:3/2;background:#071644}
-.share-entry .premiumCard .sceneBg{object-fit:contain!important;object-position:center!important}
-.share-entry .premiumCard{min-height:0!important;justify-content:flex-start!important}
+/* Tarjetas originales: conservar alturas y encuadre previos; ajustar solo las acciones. */
+.share-entry .game-actions{bottom:12px}
+@media(max-width:800px){.share-entry .premiumCard .gamecopy{height:95px!important;padding-top:8px!important}}
 </style><meta property="og:title" content="VLADYERIK | Juegos, desafíos y aventuras"><meta property="og:description" content="Entrá a mi mundo: juegos, videos, desafíos y aventuras."><meta property="og:type" content="website"><meta name="theme-color" content="#071450"></head><body>
 <nav class="nav"><div class="wrap"><a class="brand" href="#"><span class="vlad">VLAD</span><span class="yerik">YERIK</span></a><button class="menu-toggle" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="mobile-navigation"><span></span><span></span><span></span></button><div class="links" id="mobile-navigation"><a href="#">🏠 INICIO</a><a href="#juegos">🎮 MIS JUEGOS</a><a href="#videos">▶ MIS VIDEOS</a><a href="#sobre">👤 SOBRE MÍ</a><a href="#taekwondo">🏆 TAEKWONDO</a><a href="#cosplay">🎭 COSPLAY</a><a href="#redes">❤ SEGUIME</a></div></div></nav>
 <header class="hero"><img class="heroBanner" src="assets/vladi-hero-1774w.webp" alt="VLADYERIK - Juegos, desafíos y aventuras" srcset="assets/vladi-hero-800w.webp 800w, assets/vladi-hero-1774w.webp 1774w" sizes="100vw" width="1774" height="887" fetchpriority="high" loading="eager" decoding="async"></header>
