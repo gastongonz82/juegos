@@ -8,3 +8,18 @@ html,body{background:#211725}.hud{background:linear-gradient(#463044,#241b2f);bo
 
 /* Vladi Kong: reducción visual del 10 %, sin alterar la partida. */
 .splash img{transform:scale(.9);transform-origin:center bottom}
+
+/* Controles de consola: cruceta integrada y botón de acción circular. */
+.direction{display:grid;grid-template-columns:48px 48px 48px;grid-template-rows:44px 44px;gap:0;position:relative;filter:drop-shadow(0 5px 0 #100c16)}
+.direction>div{display:contents}
+.direction button{font-size:0!important;width:48px!important;height:44px!important;border:2px solid #63576d;background:linear-gradient(#423b4d,#211e2c);box-shadow:inset 0 2px 0 #ffffff22!important;border-radius:6px;color:transparent;position:relative}
+.direction button:after{content:"";position:absolute;inset:12px 18px;border-radius:2px;background:#a99bac;box-shadow:0 1px #080711}
+.direction>button[data-key="left"]{grid-column:1;grid-row:1 / 3;align-self:center;border-radius:12px 0 0 12px;border-right:0}
+.direction>button[data-key="right"]{grid-column:3;grid-row:1 / 3;align-self:center;border-radius:0 12px 12px 0;border-left:0}
+.direction button[data-key="up"]{grid-column:2;grid-row:1;border-radius:12px 12px 0 0;border-bottom:0}
+.direction button[data-key="down"]{grid-column:2;grid-row:2;border-radius:0 0 12px 12px;border-top:0}
+.direction>button:after{inset:18px 12px}
+.direction:after{content:"";position:absolute;width:26px;height:26px;left:59px;top:31px;border-radius:50%;background:radial-gradient(circle at 35% 25%,#504759,#272230);box-shadow:inset 0 1px 2px #ffffff22;pointer-events:none}
+.jump{width:86px!important;height:86px!important;border-radius:50%;border:4px solid #fbd2a0;background:radial-gradient(circle at 35% 25%,#ffb967,#ef7836 65%,#bd4824);color:#491e19;font-size:12px!important;box-shadow:0 6px 0 #762b24,0 0 0 5px #302135,inset 0 3px 0 #ffedb580;text-shadow:0 1px #ffd39a}
+.controls button.held{transform:translateY(3px);filter:brightness(1.12)}
+@media(max-height:500px){.direction{transform:scale(.65);transform-origin:center bottom;height:58px}.jump{width:48px!important;height:48px!important;font-size:9px!important}}
