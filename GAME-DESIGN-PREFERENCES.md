@@ -8,6 +8,7 @@ Aplicar a nuevos juegos y cambios autorizados. No rediseñar juegos existentes q
 - Conservar los personajes de Vladi y su parecido; no cara en círculo, no alas en juegos de correr. Personajes proporcionados; tamaños distintos en PC y móvil sólo cuando lo necesite el encuadre.
 - PC y celular, vertical y horizontal: juego entero visible, sin scroll, respetando barras del navegador y áreas seguras. Pantalla completa sólo cuando el jugador la elige.
 - Nunca comenzar movimiento automáticamente: esperar la acción de inicio/lanzamiento del jugador.
+- Los controles táctiles no deben seleccionar texto ni abrir menús del navegador al mantenerlos presionados; bloquear selección, callouts y menú contextual en los controles.
 - Controles de teclado y táctiles; mantener botones debe mover continuamente. Cruceta/joystick y acciones reconocibles como controles de juegos. Pausa, audio y volver al arcade sin superposición.
 - Música y efectos desde interacción del usuario, botón para silenciar, mezcla donde se distingan los efectos. Fluidez también en dispositivos viejos: tiempo de simulación independiente de los FPS, pasos físicos cortos y fondos estáticos cacheados.
 - Dificultad progresiva y razonable, obstáculos alcanzables, colisiones justas. Varios niveles con escenarios y distribuciones distintas cuando corresponde al género.
