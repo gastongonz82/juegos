@@ -1213,5 +1213,19 @@ window.matchMedia('(max-width:800px)').addEventListener('change',close);
    });
  });
 })();
-</script></body>
+</script>
+<style>.featured-panel{position:relative}.featured-panel>.favorite-button{top:12px;right:12px}</style>
+<script>
+/* Reuse the gallery control so featured favorites share storage, count and state. */
+(()=>{
+ const panel=document.querySelector('.featured-panel'),cover=panel?.querySelector('.featured-cover');if(!cover)return;
+ const card=[...document.querySelectorAll('a.game-card')].find(card=>card.href===cover.href);
+ const original=card?.parentElement.querySelector('.favorite-button');if(!original)return;
+ const button=original.cloneNode(true);button.classList.add('featured-favorite');panel.append(button);
+ const sync=()=>{for(const name of ['aria-label','aria-pressed'])button.setAttribute(name,original.getAttribute(name));};
+ button.addEventListener('click',event=>{event.preventDefault();event.stopPropagation();original.click();sync();});
+ new MutationObserver(sync).observe(original,{attributes:true,attributeFilter:['aria-label','aria-pressed']});sync();
+})();
+</script>
+</body>
 </html>
