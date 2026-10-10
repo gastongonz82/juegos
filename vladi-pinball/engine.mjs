@@ -1,6 +1,6 @@
 export const W=600,H=1000;
 export const RAMPS=[[[130,490],[90,350],[110,105],[260,100],[410,145],[485,420],[440,775]],[[425,490],[470,330],[455,205],[365,145],[205,165],[115,420],[155,775]]];
-export const FLIPPERS=[{x:170,y:852,len:116,side:0},{x:430,y:852,len:116,side:1},{x:125,y:445,len:65,side:0,upper:true}];
+export const FLIPPERS=[{x:170,y:852,len:110,side:0},{x:430,y:852,len:110,side:1},{x:125,y:445,len:65,side:0,upper:true}];
 export const BUMPERS=[[170,275],[255,285],[215,350],[145,365],[285,390]];
 export const ROOMS=[['BIBLIOTECA','ramp0',1,'Subí por la rampa izquierda'],['RELOJ','ramp1',1,'Subí por la rampa derecha'],['INVERNADERO','bumper',6,'Golpeá 6 bumpers'],['SÓTANO','scoop',1,'Entrá al escondite'],['SALÓN','rollover',4,'Encendé las cuatro ventanas'],['ÁTICO','ramp',2,'Completá dos rampas'],['LABORATORIO','target',3,'Golpeá tres dianas'],['BÓVEDA','hit',10,'Sumá diez golpes de mesa']];
 export function rampPoint(kind,t){const pts=RAMPS[kind],n=(pts.length-1)*Math.min(.99999,Math.max(0,t)),i=Math.floor(n),u=n-i,a=pts[Math.max(0,i-1)],b=pts[i],c=pts[i+1],d=pts[Math.min(pts.length-1,i+2)];return {x:.5*((2*b[0])+(-a[0]+c[0])*u+(2*a[0]-5*b[0]+4*c[0]-d[0])*u*u+(-a[0]+3*b[0]-3*c[0]+d[0])*u*u*u),y:.5*((2*b[1])+(-a[1]+c[1])*u+(2*a[1]-5*b[1]+4*c[1]-d[1])*u*u+(-a[1]+3*b[1]-3*c[1]+d[1])*u*u*u)} }

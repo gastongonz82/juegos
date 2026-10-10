@@ -1,4 +1,4 @@
-import {Pinball,W,H,RAMPS,FLIPPERS,BUMPERS,ROOMS,rampPoint} from './engine.mjs?v=6';
+import {Pinball,W,H,RAMPS,FLIPPERS,BUMPERS,ROOMS,rampPoint} from './engine.mjs?v=7';
 let g=new Pinball(),best=0;try{best=Number(localStorage.getItem('vladi-pinball-best')||0)}catch{}const c=document.querySelector('#table'),screen=c.getContext('2d'),surface=document.createElement('canvas'),ctx=surface.getContext('2d'),arena=document.querySelector('#arena'),overlay=document.querySelector('#overlay');let view={},background,prev=0,acc=0,muted=false,audio,flash=0,notice='',noticeUntil=0,lastLevel=0,lastHUD=0,staticKey="",staticBoard;
 surface.width=W;surface.height=H;
 const playfield=new Image();playfield.src='assets/playfield-v3.webp';playfield.onload=()=>{background=null;staticKey=""};
