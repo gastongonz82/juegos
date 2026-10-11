@@ -11,7 +11,9 @@ Arte original: **Basquetteur**, Wikimedia Commons. Vectorización: **gjenkins20*
 - Texto de la licencia: https://creativecommons.org/licenses/by-sa/3.0/legalcode
 - Commit del recurso utilizado: 907391d14b2b2d2fe41ec61207186ed64a838886
 
-Se incluyen 1–7, 10–12 de espadas, bastos, oros y copas; los ochos y nueves se excluyen. Se rasterizaron los SVG a 360 × 555 y se convirtieron a WebP. La transparencia se compuso sobre papel blanco y se aplicó un tono marfil uniforme. Las ilustraciones no se redibujaron. Los recursos de `assets/cards/` y estas adaptaciones se distribuyen bajo la misma licencia CC BY-SA 3.0. La licencia de estos naipes no se extiende automáticamente al motor ni a los demás recursos del juego.
+Los 28 naipes del 1 al 7 y el reverso provienen de esta colección. Se rasterizaron a 360 × 555 WebP sobre papel marfil; estas adaptaciones conservan CC BY-SA 3.0. Los ochos y nueves se excluyen.
+
+Las 12 figuras (sota 10, caballo 11 y rey 12 de cada palo) son ilustraciones originales generadas específicamente para el proyecto, con grabado y gouache de tradición española, y se distribuyen a 720 × 1110. No derivan de la colección anterior. La licencia de los naipes externos no se extiende al motor ni a los demás recursos del juego.
 
 Los créditos y enlace a licencia están disponibles dentro de «Ver reglas».
 

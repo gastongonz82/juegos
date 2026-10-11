@@ -11,3 +11,9 @@
 /* Keep physical card proportions within the table at every desktop aspect ratio. */
 @media(min-width:701px) and (min-height:501px){:root{--card-w:clamp(76px,min(8.3vw,12.8dvh),156px)}.mine{top:58.3%}.opponent{--card-w:clamp(58px,min(6.6vw,10.8dvh),115px)}.played{top:39%}.trick-pair .card{--card-w:clamp(55px,min(6.25vw,9dvh),114px)}.hand-hint{top:77.9%}.notice{left:22%;top:54%;max-width:23%;font-size:clamp(12px,1.1vw,18px);padding:7px 10px}.trick-pair .card.human{top:22px;left:14px}}
 @media(max-height:640px) and (orientation:portrait){.hand-hint{top:79%}}
+.brand strong{text-shadow:none;filter:drop-shadow(0 3px 2px #170900)}
+@media(max-width:700px) and (orientation:portrait){.rival{left:19%;width:46%;top:65%;height:28%}.tools{bottom:9%}}
+/* Engraved corner flourishes are real vector details over the active buttons. */
+.calls button,.play-button,.fold-button,.utility{position:relative}
+.calls button:after,.play-button:after,.fold-button:after,.utility:after{content:'';position:absolute;inset:5px;pointer-events:none;border-radius:5px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='70' viewBox='0 0 240 70'%3E%3Cg stroke='%23d7b16b' fill='none' stroke-width='1.1' opacity='.75'%3E%3Cpath d='M3 16V3H18M3 10Q12 16 12 6Q12 2 17 7M237 16V3H222M237 10Q228 16 228 6Q228 2 223 7M3 54V67H18M3 60Q12 54 12 64Q12 68 17 63M237 54V67H222M237 60Q228 54 228 64Q228 68 223 63'/%3E%3C/g%3E%3C/svg%3E") center/100% 100% no-repeat}
+@media(max-width:700px){.calls button:after,.utility:after{opacity:.6;inset:4px}.calls button{padding-left:6px;padding-right:6px}}
