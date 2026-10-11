@@ -37,3 +37,22 @@ html,body{min-height:100%;overflow-x:hidden}
 /* Show each finished reel immediately; avoid dark/blank columns during staggered stops */
 .reels.rolling .cell.reel-stopped{visibility:visible}
 .reels.rolling .cell:not(.reel-stopped){visibility:hidden}
+
+/* Mobile cabinet uses available viewport height instead of floating in a small centered card. */
+@media (max-width:600px) and (orientation:portrait){
+ html,body{min-height:100%;margin:0}
+ .shell{min-height:100dvh;padding:2px 4px;justify-content:stretch;align-items:stretch}
+ .machine{width:100%;max-width:none;min-height:calc(100dvh - 4px);display:flex;flex-direction:column;justify-content:space-between;padding:clamp(7px,1.2dvh,13px) 7px;border-radius:22px}
+ .top{flex-shrink:0}
+ .stats{flex-shrink:0}
+ .stage{display:flex;flex-direction:column;flex:1 1 auto;min-height:230px;margin:8px 0 5px}
+ .reels{flex:1 1 auto;height:auto;min-height:190px;max-height:none}
+ .banner{flex:0 0 auto;min-height:28px}
+ .controls{flex-shrink:0;margin-top:7px}
+ .bottom{flex-shrink:0;margin-top:5px}
+ .footnote{flex-shrink:0;margin:2px}
+}
+@media (max-width:600px) and (orientation:portrait) and (max-height:660px){
+ .top{padding:4px 2px}.stats{margin:4px 0}.stage{margin:4px 0}.reels{min-height:150px}
+ .controls button{min-height:35px;padding:5px}.bottom button{padding:4px}.footnote{font-size:8px}
+}
