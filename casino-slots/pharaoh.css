@@ -72,3 +72,41 @@ body[data-game="pharaoh"] .spin-symbol{
 }
 body[data-game="pharaoh"] .spin-symbol .slot-art{width:90%;height:90%}
 body[data-game="pharaoh"] .cell.win{box-shadow:inset 0 0 18px #ffe09b99;animation:slotVictory .5s ease-in-out infinite alternate}
+
+/* Pharaoh V2 — genuine uninterrupted reel bands, curved light lenses, no tiles */
+body[data-game="pharaoh"] .reels{
+ display:grid;grid-template-columns:repeat(5,minmax(0,1fr));grid-template-rows:repeat(3,minmax(0,1fr));
+ gap:0;position:relative;isolation:isolate;overflow:hidden;
+ border-radius:18px;border:5px solid #b98b40;
+ background:#d4bd91;
+ box-shadow:0 0 0 3px #382313,inset 0 0 26px #000;
+}
+body[data-game="pharaoh"] .cell,
+body[data-game="pharaoh"] .cell:nth-child(n){
+ background:linear-gradient(90deg,#58442c 0%,#ae9165 9%,#f5e6c1 29%,#fff5d8 49%,#e5cfa6 72%,#9b7c53 92%,#4d3828 100%);
+ border:0!important;border-radius:0!important;box-shadow:none!important;
+ margin:0;outline:0;overflow:hidden;
+}
+body[data-game="pharaoh"] .cell .slot-art{width:82%;height:85%;margin:auto;filter:drop-shadow(0 5px 3px #32210d55)}
+body[data-game="pharaoh"] .reel-cylinder-lens{
+ position:absolute;top:0;bottom:0;width:20%;z-index:8;pointer-events:none;
+ background:
+ linear-gradient(to bottom,#090707c9 0%,#3e281966 8%,transparent 24%,#fffdf018 46%,transparent 63%,#42291866 90%,#090707c9 100%),
+ linear-gradient(to right,#100c0d7a 0%,transparent 14%,#fffdf021 48%,transparent 85%,#100c0d7a 100%);
+ box-shadow:inset 5px 0 8px #160d0866,inset -5px 0 8px #160d0866;
+ border-right:3px solid #604321;
+}
+body[data-game="pharaoh"] .reel-cylinder-lens:first-of-type{border-left:0}
+body[data-game="pharaoh"] .reels:after{display:none!important}
+body[data-game="pharaoh"] .spin-column{
+ border:0!important;
+ background:linear-gradient(90deg,#58442c 0%,#ae9165 9%,#f5e6c1 29%,#fff5d8 49%,#e5cfa6 72%,#9b7c53 92%,#4d3828 100%);
+ z-index:6;
+}
+body[data-game="pharaoh"] .spin-symbol{
+ border:0!important;
+ background:transparent!important;
+}
+body[data-game="pharaoh"] .spin-symbol .slot-art{width:82%;height:85%;filter:drop-shadow(0 5px 3px #32210d55)}
+body[data-game="pharaoh"] .stage{background:linear-gradient(135deg,#6c461f,#e2bc70 5%,#24180e 12%,#24180e 88%,#e2bc70 95%,#6c461f)}
+@media(max-width:600px){body[data-game="pharaoh"] .reels{border-width:3px;border-radius:11px}body[data-game="pharaoh"] .reel-cylinder-lens{border-right-width:2px}}
