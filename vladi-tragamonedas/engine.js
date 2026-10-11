@@ -1,0 +1,5 @@
+export const SYMBOLS=['cherry','lemon','orange','plum','bell','bar','seven'];
+export const WEIGHTS=[18,15,12,9,6,3,1],PAYS=[8,12,18,30,60,150,1200],BETS=[20,40,100,200,500];
+export function symbol(rng){let n=Math.floor(rng()*64);if(n<0||n>=64)throw Error('Azar inválido');for(let i=0;i<WEIGHTS.length;i++){n-=WEIGHTS[i];if(n<0)return SYMBOLS[i];}}
+export function evaluate(line){if(line.length!==3||line.some(s=>!SYMBOLS.includes(s)))throw Error('Línea inválida');if(line.every(s=>s===line[0]))return {multiplier:PAYS[SYMBOLS.indexOf(line[0])],kind:line[0]==='seven'?'jackpot':'triple'};const cherries=line.filter(s=>s==='cherry').length;return {multiplier:cherries===2?1:cherries===1?.25:0,kind:cherries===2?'pair':cherries===1?'cherry':'none'};}
+export function spin(bank,bet,rng){if(!Number.isInteger(bank)||!BETS.includes(bet)||bet>bank)throw Error('No hay suficientes fichas para esa apuesta');const line=Array.from({length:3},()=>symbol(rng)),result=evaluate(line),payout=bet*result.multiplier;return {line,...result,payout,bank:bank-bet+payout,bet};}
