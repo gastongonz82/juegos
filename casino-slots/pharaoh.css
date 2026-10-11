@@ -123,3 +123,16 @@ body[data-game="pharaoh"] .stage{background:linear-gradient(135deg,#6c461f,#e2bc
   object-fit:contain;
  }
 }
+
+/* Desktop Pharaoh: use identical true-centered artwork sizing as the other six. */
+@media(min-width:601px) and (min-height:451px){
+ body[data-game="pharaoh"] .reels .cell > img.slot-art,
+ body[data-game="pharaoh"] .reels .spin-symbol > img.slot-art{
+  position:absolute!important;
+  top:50%!important;left:50%!important;
+  width:60%!important;height:64%!important;
+  max-width:60%!important;max-height:64%!important;
+  margin:0!important;object-fit:contain!important;
+  transform:translate(-50%,-50%)!important;
+ }
+}
