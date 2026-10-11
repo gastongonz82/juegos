@@ -20,3 +20,51 @@
 @media(max-width:350px) and (orientation:portrait){.brand strong{font-size:34px}.brand>span{font-size:19px}.rival{width:43%}.scores span{font-size:7px;white-space:nowrap}}
 @media(max-height:500px) and (orientation:landscape){.mine{top:55%}.hand-hint{top:79%}}
 @media(max-height:500px) and (orientation:landscape){.notice{left:10%;top:57%;max-width:25%}}
+/* PC: a compact header and one centered axis for speech, cards and controls. */
+@media(min-width:701px) and (min-height:501px){
+ .hud{height:18.5%}
+ .brand{left:8.5%;top:12%;width:24%;text-align:center}
+ .brand>span{font-size:clamp(20px,min(2.2vw,3.5dvh),36px)}
+ .brand strong{font-size:clamp(34px,min(3.8vw,6dvh),66px);color:#f2d18d;-webkit-text-fill-color:#f2d18d;background:none;text-shadow:0 2px 2px #231000,0 -1px 0 #fff1b8;filter:none}
+ .brand small{font-size:clamp(8px,min(.8vw,1.1dvh),13px);margin-top:6px;letter-spacing:.02em}
+ .brand .flourish{font-size:clamp(12px,1.4dvh,18px);margin-top:5px}
+ .rival{left:50%;top:12%;width:23%;height:60%;overflow:visible}
+ .gaucho{position:absolute;right:calc(100% - 14px);bottom:5%;width:34%;height:135%;margin:0;align-self:auto}
+ .rival-name{width:100%;padding:6px 12px;border-radius:12px}
+ .rival-name strong{font-size:clamp(18px,min(1.8vw,3dvh),30px)}
+ .rival-name span{font-size:clamp(9px,min(.8vw,1.3dvh),13px);margin-top:5px}
+ .scorebook{top:8%;right:17%;width:15%;height:84%;padding:8px 9px 4px;border-width:5px;transform:rotate(1deg)}
+ .scores strong{font-size:clamp(28px,4.2dvh,48px)}
+ .scores span{font-size:clamp(8px,.7vw,12px);white-space:nowrap}
+ .scorebook small{font-size:clamp(8px,1.1dvh,12px)}
+ .tools{top:12%;gap:8px}
+ .tools .icon,.menu-button{width:clamp(40px,5.5dvh,59px);height:clamp(40px,5.5dvh,59px);font-size:clamp(24px,3.1dvh,34px)}
+ .menu-button{top:12%}
+ .speech{top:15.6%;left:50%;max-width:48%;font-size:clamp(13px,1.8dvh,20px);padding:7px 16px;overflow:visible;text-align:center}
+ .speech:after{left:50%;margin-left:-6px;bottom:calc(100% - 1px);transform:rotate(45deg);background:#fcf1d4}
+ .table-status{top:20.3%;left:50%;transform:translateX(-50%);flex-direction:row;gap:16px;font-size:clamp(9px,1.25dvh,14px);white-space:nowrap}
+ .trick-marks{gap:6px}.trick-mark{width:19px;height:19px;font-size:10px}
+ .opponent{top:23.5%;--card-w:clamp(58px,min(6vw,10dvh),108px);gap:10px}
+ .opponent .card:nth-child(1){transform:rotate(-2deg)}.opponent .card:nth-child(3){transform:rotate(2deg)}
+ .played{top:40%;gap:18px}
+ .mine{top:59%;gap:13px}
+ .mine .card:nth-child(1){transform:rotate(-3deg)}.mine .card:nth-child(3){transform:rotate(3deg)}
+ .notice{top:56%;left:50%;max-width:65%;padding:4px 10px;font-size:clamp(11px,1.35dvh,15px);background:#04241b88}
+ .notice.is-quiet{visibility:hidden}
+ .hand-hint{top:79%;font-size:clamp(10px,1.25dvh,14px);white-space:nowrap}
+ .deck{right:7%;top:32%;width:clamp(66px,10.8dvh,122px);transform:perspective(800px) rotateX(24deg) rotateZ(-19deg);transform-origin:50% 50%;box-shadow:0 2px 0 #ddd0ac,1px 4px 0 #897756,1px 6px 0 #ddd0ac,2px 8px 0 #897756,2px 10px 0 #ddd0ac,3px 12px 0 #897756,3px 14px 0 #ddd0ac,8px 20px 15px #0009}
+ .command-bar{bottom:1.7%;height:calc(14.5dvh + 22px);left:2%;right:2%;grid-template-columns:14.5% 1fr 14.5%;grid-template-rows:51% 1fr;column-gap:2.5%;row-gap:10px}
+ .player-plaque,.don-plaque{padding:6px 12px;gap:2px;min-height:0}
+ .player-plaque>span,.don-plaque>span{font-size:clamp(9px,1.15dvh,12px);line-height:1.1}
+ .player-plaque strong{font-size:clamp(16px,2.4dvh,25px);line-height:1}
+ .player-plaque b{font-size:clamp(23px,3.25dvh,33px);line-height:1;margin-left:10px}
+ .don-plaque strong{font-size:clamp(23px,3.25dvh,33px);line-height:1}
+ .player-plaque small,.don-plaque small{font-size:clamp(8px,1.05dvh,11px);line-height:1.1}
+ .calls{gap:8px}.calls button{font-size:clamp(11px,min(1.05vw,1.7dvh),18px);padding:7px 8px;border-radius:9px}
+ .bottom-actions{grid-template-columns:17% 1fr 1fr 17%;gap:2%}
+ .bottom-actions .play-button{width:100%;justify-self:stretch;font-size:clamp(17px,2.3dvh,26px);padding:7px 12px}
+ .fold-button{width:100%;justify-self:stretch;font-size:clamp(14px,1.8dvh,20px);padding:7px 12px}
+ .utility{width:100%;min-width:0;font-size:clamp(10px,1.35dvh,15px);padding:6px}
+}
+/* Let the deck lie on the table rather than stand vertically in portrait. */
+@media(max-width:700px) and (orientation:portrait){.deck{transform:perspective(600px) rotateX(20deg) rotateZ(-18deg)}}
