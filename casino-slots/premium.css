@@ -28,3 +28,44 @@
 @media(max-width:600px){.machine{border-width:3px;border-radius:20px}.brand h1{letter-spacing:.5px}.stage{border-width:2px}.controls{gap:6px}.controls button{font-size:12px}.controls .spinbtn{font-size:17px}}
 @media(max-height:680px) and (min-width:650px){.machine{max-width:800px}.controls{margin-top:5px}.cell{height:clamp(40px,10vh,65px)}}
 @media(prefers-reduced-motion:reduce){.cell.win,.celebrate{animation:none}}
+
+/* Seven distinct themed cabinet identities rather than palette swaps. */
+body[data-game="pharaoh"] .machine{background:radial-gradient(ellipse at 50% 0%,#715021 0%,#271709 48%,#100c0b 100%) padding-box,linear-gradient(135deg,#f8e3a0,#805018,#e9b956,#4a270e,#ffdf8a) border-box}
+body[data-game="pharaoh"] .top{background:linear-gradient(100deg,#24140b,#6a411b,#24140b);border-radius:4px 4px 25px 25px}
+body[data-game="pharaoh"] .stage{background:linear-gradient(135deg,#d8b667,#4e3217 12%,#140e0b 30%,#140e0b 80%,#bd9545);border-radius:3px}
+body[data-game="pharaoh"] .cell{background:linear-gradient(90deg,#b99b63,#fff1c4 18%,#fff9df 50%,#e2c88c 82%,#a88448)}
+body[data-game="dragon"] .machine{background:radial-gradient(ellipse at 50% 10%,#6a1c21,#20090f 55%,#080609) padding-box,linear-gradient(135deg,#ffb66a,#762024,#f74b31,#451016,#ffd18c) border-box}
+body[data-game="dragon"] .top{background:linear-gradient(120deg,#130b0c,#571a20,#170a10);border-radius:28px 28px 8px 8px}
+body[data-game="dragon"] .stage{background:linear-gradient(120deg,#5c1416,#ee6c2e 5%,#1b080c 13%,#160b0d 87%,#b82f25 96%);border-radius:22px}
+body[data-game="dragon"] .cell{background:linear-gradient(90deg,#3e1825,#fff2e5 20%,#fff9ee 50%,#efcfc5 80%,#451623)}
+body[data-game="atlantis"] .shell{background:radial-gradient(ellipse at 50% 100%,#0c7394aa,transparent 65%),linear-gradient(#020d20,#061d35 50%,#031421)}
+body[data-game="atlantis"] .machine{background:radial-gradient(ellipse at 50% 0%,#176a84,#073449 40%,#04131f) padding-box,linear-gradient(135deg,#b9faff,#08768c,#7be7e9,#05526f,#c5f8ff) border-box;box-shadow:0 0 0 4px #022b42,0 0 45px #00c9ff55,inset 0 0 50px #01111e}
+body[data-game="atlantis"] .top{background:linear-gradient(115deg,#06354b,#168ca2,#06354b);border:2px solid #85ecf0;border-radius:40px 40px 8px 8px}
+body[data-game="atlantis"] .brand h1{background:linear-gradient(#e4ffff,#70efff 55%,#1992c2);background-clip:text;-webkit-background-clip:text}
+body[data-game="atlantis"] .stage{background:linear-gradient(135deg,#85f4f0,#0d7d9a 7%,#021d37 16%,#021b36 85%,#0e7f9a 94%,#b0ffff);border:2px solid #a4f8fa;border-radius:28px}
+body[data-game="atlantis"] .cell{background:radial-gradient(ellipse,#d8fbff,#83d8e5 55%,#17607e);border:1px solid #137c9c;border-radius:8px;box-shadow:inset 0 0 18px #2a96a1}
+body[data-game="atlantis"] .controls .spinbtn{background:linear-gradient(#e4ffff,#48e1eb,#0874a3);border-color:#b5ffff;color:#04394a;box-shadow:0 0 24px #20e5ef66}
+body[data-game="aztec"] .shell{background:radial-gradient(ellipse at 50% 50%,#1b5e2a,#06150e 70%)}
+body[data-game="aztec"] .machine{background:radial-gradient(ellipse at 50% 0%,#4d5a20,#1d2e17 42%,#0b1c12) padding-box,linear-gradient(135deg,#c7e37a,#47612d,#b7a45c,#3a6032,#f6e4a0) border-box}
+body[data-game="aztec"] .top{background:linear-gradient(90deg,#1b2c16,#4e6634,#1b2c16);border-radius:3px}
+body[data-game="aztec"] .stage{background:linear-gradient(125deg,#a3ab64,#40582d 9%,#101e13 18%,#101e13 82%,#779d55 95%);border-radius:3px}
+body[data-game="aztec"] .cell{background:radial-gradient(ellipse,#e9edc0,#c1c99a 62%,#52684d);border:1px solid #60794d;border-radius:3px}
+body[data-game="diamonds"] .shell{background:radial-gradient(ellipse at 50% 0%,#45216d,#090817 65%)}
+body[data-game="diamonds"] .machine{background:linear-gradient(140deg,#241146,#4d2470 40%,#160e35) padding-box,linear-gradient(135deg,#fff,#a4a8ff,#f2d9ff,#7660c2,#fff) border-box}
+body[data-game="diamonds"] .top{background:linear-gradient(115deg,#24124c,#6c35a5,#24124c);border:1px solid #d4b8ff;border-radius:13px}
+body[data-game="diamonds"] .brand h1{background:linear-gradient(#fff,#f0c9ff,#ad99ff);background-clip:text;-webkit-background-clip:text}
+body[data-game="diamonds"] .stage{background:linear-gradient(135deg,#d6d3ff,#7053b7 7%,#140e30 17%,#140e30 84%,#a08cde 95%);border-color:#e3d7ff;border-radius:13px}
+body[data-game="diamonds"] .cell{background:linear-gradient(135deg,#d8eaff,#fff 48%,#b8a9e8);border:1px solid #afa1f1;border-radius:4px}
+body[data-game="west"] .shell{background:radial-gradient(ellipse at 50% 0%,#78502a,#1b1010 70%)}
+body[data-game="west"] .machine{background:repeating-linear-gradient(0deg,#392113 0 22px,#442716 23px 25px) padding-box,linear-gradient(135deg,#f6d69b,#75411f,#c17d3d,#613517,#ffe1aa) border-box}
+body[data-game="west"] .top{background:linear-gradient(90deg,#30190e,#8a4f23,#30190e);border-radius:4px;border:3px double #e6b66b}
+body[data-game="west"] .brand h1{font-family:Georgia,serif;letter-spacing:2px}
+body[data-game="west"] .stage{background:linear-gradient(120deg,#b67d3d,#513018 9%,#1b100b 20%,#1b100b 80%,#ac6b33 94%);border-radius:5px}
+body[data-game="west"] .cell{background:linear-gradient(90deg,#b18d5e,#f8e8c4 24%,#f9efdb 50%,#dec79d 80%,#916d45);border:1px solid #84582b}
+body[data-game="fortune"] .shell{background:radial-gradient(ellipse at 50% 0%,#9b802e88,#090b0d 65%)}
+body[data-game="fortune"] .machine{background:radial-gradient(ellipse at 50% 0%,#645a21,#1a1915 60%,#080b0c) padding-box,linear-gradient(135deg,#fff5b0,#d49c19,#fff7c8,#a87910,#fff4a1) border-box;box-shadow:0 0 0 4px #28220b,0 0 60px #e8bc4066,inset 0 0 50px #000}
+body[data-game="fortune"] .top{background:linear-gradient(90deg,#1b1c19,#6a5c20,#1b1c19);border-radius:28px;border:2px solid #fff1a0}
+body[data-game="fortune"] .stage{background:linear-gradient(130deg,#fff4ac,#c6a12e 8%,#18190e 17%,#18190e 83%,#d5ac2d 95%);border:2px solid #fff0a2}
+body[data-game="fortune"] .cell{background:radial-gradient(ellipse,#fffdec,#f4e7af 65%,#ae8e36);border:1px solid #d4b04d;border-radius:6px}
+body[data-game="fortune"] .jackpot{color:#fff3a0;text-shadow:0 0 12px #ffe56c,0 0 28px #d49e27;animation:fortuneGlow 1.6s ease-in-out infinite alternate}
+@keyframes fortuneGlow{to{filter:brightness(1.45)}}
