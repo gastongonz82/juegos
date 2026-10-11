@@ -64,3 +64,16 @@ body:has(.title-screen:not([hidden])) .hud,body:has(.title-screen:not([hidden]))
 .arcade-state #start:active{transform:translateY(4px)}
 .arcade-state .tips{display:none}.arcade-state #note{margin-top:24px;color:#f0cb9e}.arcade-state .eyebrow{font-size:11px}
 @media(max-height:500px){.arcade-state .dialog{display:grid;grid-template-columns:30% 70%}.arcade-state .splash{height:55vh}.arcade-state .dialog-copy{padding:6px}.arcade-state h1{font-size:30px;margin-bottom:12px}.arcade-state #message{font-size:12px;margin-bottom:12px}.arcade-state #start{height:42px;font-size:15px}.arcade-state #note{margin-top:16px}}
+
+/* PC: tablero a altura completa y controles en los laterales. */
+@media(min-width:1100px) and (min-height:600px) and (hover:hover) and (pointer:fine){
+#arena{top:8px;bottom:8px;left:260px;right:260px;border-radius:12px}
+.hud{top:86px;left:16px;right:auto;width:228px;height:auto;padding:18px 12px;display:flex;flex-wrap:wrap;gap:12px;border:2px solid #8a6548;border-radius:14px;justify-content:center}
+.logo{width:100%;text-align:center;font-size:22px}
+.logo b{font-size:30px}
+.stat{width:100%;min-width:0;padding:10px 12px}
+.stat small{font-size:10px}.stat strong{font-size:24px}
+.arcade-return{top:18px!important;left:16px!important}
+.controls{left:auto;right:24px;bottom:36px;transform:none;width:212px;flex-direction:column;gap:28px}
+#sound{left:20px;bottom:20px;width:44px;height:44px}
+}
