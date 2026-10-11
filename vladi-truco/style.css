@@ -19,3 +19,4 @@
 @media(max-width:700px){.calls button:after,.utility:after{opacity:.6;inset:4px}.calls button{padding-left:6px;padding-right:6px}}
 @media(max-width:350px) and (orientation:portrait){.brand strong{font-size:34px}.brand>span{font-size:19px}.rival{width:43%}.scores span{font-size:7px;white-space:nowrap}}
 @media(max-height:500px) and (orientation:landscape){.mine{top:55%}.hand-hint{top:79%}}
+@media(max-height:500px) and (orientation:landscape){.notice{left:10%;top:57%;max-width:25%}}

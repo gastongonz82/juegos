@@ -51,7 +51,7 @@ function tally(node,total,target){const count=total>=target?Math.min(15,total):t
 function cardElement(c,p,back=false,hand=false,index=0){const el=document.createElement(hand&&p===0?'button':'div');el.className='card';el.dataset.key=key(c);el.dataset.owner=p;
  const name=`${c.n} de ${c.s==='espada'?'espadas':c.s==='basto'?'bastos':c.s==='oro'?'oros':'copas'}`;
  if(hand&&p===0){el.type='button';el.setAttribute('aria-label',`Elegir ${name}`);el.setAttribute('aria-pressed',String(selected===key(c)));el.title=`${index+1} · ${name}`;el.onclick=()=>choose(key(c));el.disabled=busy||paused()||!game.actions(0).includes('Jugar carta');if(selected===key(c))el.classList.add('selected');}
- const img=document.createElement('img');img.src=`assets/cards/${back?'back':key(c)}.webp?v=20261011-premium`;img.alt=back?'Carta oculta de Don Truco':name;img.draggable=false;el.append(img);return el;}
+ const img=document.createElement('img');img.src=`assets/cards/${back?'back':key(c)}.webp?v=20261011-final`;img.alt=back?'Carta oculta de Don Truco':name;img.draggable=false;el.append(img);return el;}
 function choose(k){if(busy||paused()||!game?.actions(0).includes('Jugar carta'))return;selected=selected===k?null:k;render();}
 function positions(){const m=new Map();document.querySelectorAll('.playfield .card').forEach(el=>m.set(el.dataset.key,el.getBoundingClientRect()));return m;}
 function render({old=null,deal=false}={}){if(!game)return [];const s=game.state,acts=game.actions(0),animations=[];
@@ -89,5 +89,5 @@ document.addEventListener('visibilitychange',()=>{if(document.hidden){clearTimeo
 window.addEventListener('pagehide',()=>{clearTimeout(aiTimer);sound.music.pause();stopVoice();});
 document.querySelector('.command-bar').addEventListener('contextmenu',e=>e.preventDefault());$('mine').addEventListener('contextmenu',e=>e.preventDefault());
 // Images are independent assets; prewarm all 40 small card files during idle time.
-const warm=()=>{for(const c of fullDeck()){const im=new Image();im.src=`assets/cards/${key(c)}.webp?v=20261011-premium`;}};if('requestIdleCallback'in window)requestIdleCallback(warm,{timeout:2000});else setTimeout(warm,1000);
+const warm=()=>{for(const c of fullDeck()){const im=new Image();im.src=`assets/cards/${key(c)}.webp?v=20261011-final`;}};if('requestIdleCallback'in window)requestIdleCallback(warm,{timeout:2000});else setTimeout(warm,1000);
 openDialog('welcome');
