@@ -1,0 +1,9 @@
+{
+  "name": "vladi-truco-argentina",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/engine.test.js",
+    "test:syntax": "node --check engine.js && node --check app.js"
+  }
+}
