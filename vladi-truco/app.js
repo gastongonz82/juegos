@@ -7,7 +7,7 @@ let game=null,selected=null,busy=false,aiTimer=null,generation=0,shownEvent=0,re
 const reduced=matchMedia('(prefers-reduced-motion:reduce)').matches;
 const savePrefs=()=>{try{localStorage.setItem('vladi-truco-settings-v2',JSON.stringify(prefs));}catch{}};
 const paused=()=>dialogs.some(d=>d.open)||document.hidden;
-const sound={music:new Audio('assets/audio/tango-pulperia.mp3'),fx:{},unlocked:false,lastMusic:prefs.music||25,lastVoice:prefs.voice||85};
+const sound={music:$('tangoAudio'),fx:{},unlocked:false,lastMusic:prefs.music||25,lastVoice:prefs.voice||85};
 sound.music.loop=true;sound.music.preload='none';
 for(const name of ['card','shuffle','win'])sound.fx[name]=new Audio(`assets/audio/${name}.wav`);
 function audioUnlock(){sound.unlocked=true;updateAudio();}

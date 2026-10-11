@@ -7,6 +7,7 @@
  <link rel="preload" as="image" href="assets/pulperia.webp"><link rel="stylesheet" href="style.css?v=20261011-pc2">
 </head>
 <body>
+<audio id="tangoAudio" src="assets/audio/por-una-cabeza.mp3" preload="none" loop hidden></audio>
 <main id="game" class="scene" aria-label="VLADI TRUCO — Mesa argentina">
  <header class="hud">
   <button id="menu" class="icon menu-button" aria-label="Abrir menú" title="Menú">☰</button>
@@ -41,7 +42,7 @@
  <noscript>Este juego necesita JavaScript habilitado para funcionar.</noscript>
 </div></dialog>
 <dialog id="settings" class="modal" aria-labelledby="settingsTitle"><div class="dialog-frame compact"><button class="close" data-close="settings" aria-label="Cerrar ajustes">×</button><h2 id="settingsTitle">La pulpería</h2><p>Tu mesa, a tu gusto.</p>
- <label class="volume-label">Música · tango instrumental <output id="musicOutput"></output><input id="musicVolume" type="range" min="0" max="100" value="25"></label>
+ <label class="volume-label">Música · Por una cabeza <output id="musicOutput"></output><input id="musicVolume" type="range" min="0" max="100" value="25"></label>
  <label class="volume-label">Voces · cantos <output id="voiceOutput"></output><input id="voiceVolume" type="range" min="0" max="100" value="85"></label>
  <label class="volume-label">Efectos · naipes <output id="fxOutput"></output><input id="fxVolume" type="range" min="0" max="100" value="75"></label>
  <p id="voiceStatus" class="fine"></p><div class="menu-actions"><button id="fullScreen">PANTALLA COMPLETA</button><button id="newGame">NUEVA PARTIDA</button><button id="resume">SEGUIR JUGANDO</button><a href="../arcade.html">VOLVER AL ARCADE</a></div><small>La partida se pausa mientras este menú está abierto.</small>
@@ -54,7 +55,7 @@
  <h3>Falta envido · regla de esta mesa</h3><p id="faltaRule">A 30: si ambos están en malas, vale el partido; si uno llegó a buenas, lo que le falta al puntero para 30. A 15: lo que le falta al puntero para 15. También podés elegir la variante «siempre lo que falta al puntero» antes de jugar.</p>
  <h3>Flor opcional</h3><p>Tres del mismo palo: flor obligatoria antes de jugar o de otro canto. Bloquea el envido. Una flor sola vale 3. Si ambos tienen flor, se comparan las tres cartas + 20 (máximo 38): 3 por cada flor, total 6. Contraflor vale 6; contraflor al resto, lo que le falta al puntero + 6. «Con flor me achico» entrega 4. El empate favorece a mano. Los tantos se anotan antes del truco; si completan el partido, no se juega el resto de la mano.</p>
  <h3>Controles</h3><p>Tocá una carta para elegirla y «Jugar carta» para bajarla. En PC: 1, 2 y 3 seleccionan; Enter juega; Escape pausa. Los controles se habilitan sólo cuando el canto es legal. Usá ajustes para cambiar los tres volúmenes por separado.</p>
- <h3>Arte y derechos</h3><p>Naipes 1–7 y reverso: Basquetteur / Wikimedia Commons, vectorización de gjenkins20. Conversión a WebP. Figuras 10–12: ilustraciones originales generadas para este proyecto. <a href="https://github.com/gjenkins20/spanish-playing-cards-svg" target="_blank" rel="noopener">Fuente</a> · <a href="https://creativecommons.org/licenses/by-sa/3.0/" target="_blank" rel="noopener">CC BY-SA 3.0</a>. Ambientación y Don Truco: recursos generados para este proyecto. Tango y efectos: composición y síntesis originales. <a href="ATTRIBUTIONS.md" target="_blank">Créditos completos</a>.</p><p>Reglas contrastadas con <a href="https://www.pagat.com/put/truco_ar.html" target="_blank" rel="noopener">Pagat</a> y reglamentos argentinos; las variantes elegidas se explican arriba.</p></div><button id="closeRules">VOLVER A LA MESA</button>
+ <h3>Arte y derechos</h3><p>Naipes 1–7 y reverso: Basquetteur / Wikimedia Commons, vectorización de gjenkins20. Conversión a WebP. Figuras 10–12: ilustraciones originales generadas para este proyecto. <a href="https://github.com/gjenkins20/spanish-playing-cards-svg" target="_blank" rel="noopener">Fuente</a> · <a href="https://creativecommons.org/licenses/by-sa/3.0/" target="_blank" rel="noopener">CC BY-SA 3.0</a>. Ambientación y Don Truco: recursos generados para este proyecto. Música: «Por una cabeza», arreglo para cuerdas de Gregor Quendel / <a href="https://www.classicals.de/gardel-por-una-cabeza" target="_blank" rel="noopener">Classicals.de</a>, <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC BY-NC 4.0</a>. Efectos originales. <a href="ATTRIBUTIONS.md" target="_blank">Créditos completos</a>.</p><p>Reglas contrastadas con <a href="https://www.pagat.com/put/truco_ar.html" target="_blank" rel="noopener">Pagat</a> y reglamentos argentinos; las variantes elegidas se explican arriba.</p></div><button id="closeRules">VOLVER A LA MESA</button>
 </div></dialog>
-<script type="module" src="app.js?v=20261011-pc2"></script>
+<script type="module" src="app.js?v=20261011-tango2"></script>
 </body></html>

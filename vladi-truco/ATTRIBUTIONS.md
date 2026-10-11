@@ -23,7 +23,9 @@ Los créditos y enlace a licencia están disponibles dentro de «Ver reglas».
 
 ## Música y efectos
 
-`tango-pulperia.mp3`: composición instrumental original para este juego, en re menor, 2/4, 112 BPM; melodía, armonía y síntesis de lengüetas, piano y contrabajo propias. No es una grabación ni una adaptación de un tango comercial. Código reproducible: `tools/compose-audio.py` (Python, NumPy y FFmpeg).
+`por-una-cabeza.mp3`: **Por una cabeza**, Carlos Gardel; arreglo instrumental para cuerdas, grabación, producción y publicación de **Gregor Quendel / Classicals.de**. Fuente: https://www.classicals.de/gardel-por-una-cabeza . Grabación bajo **CC BY-NC 4.0**: https://creativecommons.org/licenses/by-nc/4.0/ . Archivo original sin editar; reproducción a volumen ajustable y en bucle. Uso en esta web personal de juegos, sin anuncios ni pagos. Esta licencia no autoriza su explotación comercial; si se monetiza el sitio se debe obtener licencia comercial o reemplazar la grabación. No implica respaldo del intérprete al juego.
+
+La composición sintética anterior `tango-pulperia.mp3` se conserva como recurso histórico, pero ya no se reproduce. Su código está en `tools/compose-audio.py`.
 
 `card.wav`, `shuffle.wav`, `win.wav`: efectos sintetizados específicamente para este juego mediante ruido filtrado, envolventes y notas originales; semilla reproducible. Sin samples externos.
 
