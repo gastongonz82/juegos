@@ -1,17 +1,17 @@
 <!doctype html>
-<html lang="en">
+<html lang="es">
   <head>
-    <title>HexGL by BKcore</title>
+    <title>Vladi Racing 3D | VLADYERIK</title>
     <meta charset="utf-8">
-    <meta name="description" content="HexGL is a futuristic racing game built by Thibaut Despoulain (BKcore) using HTML5, Javascript and WebGL. Come challenge your friends on this fast-paced 3D game!">
-    <meta property="og:title" content="HexGL, the HTML5 futuristic racing game." />
+    <meta name="description" content="Vladi Racing 3D: carreras futuristas en el arcade de VLADYERIK.">
+    <meta property="og:title" content="Vladi Racing 3D | VLADYERIK">
     <meta property="og:type" content="game" />
-    <meta property="og:url" content="http://hexgl.bkcore.com/" />
-    <meta property="og:image" content="http://hexgl.bkcore.com/image.png" />
-    <meta property="og:site_name" content="HexGL by BKcore" />
-    <meta property="fb:admins" content="1482017639" />
-    <link rel="icon" href="http://hexgl.bkcore.com/favicon.png" type="image/png">
-    <link rel="shortcut icon" href="http://hexgl.bkcore.com/favicon.png" type="image/png">
+    <meta property="og:url" content="https://vladyerik.com/vladi-racing-3d/">
+    
+    <meta property="og:site_name" content="VLADYERIK">
+    
+    
+    
     <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
     <link rel="stylesheet" href="css/multi.css" type="text/css" charset="utf-8">
     <link rel="stylesheet" href="css/fonts.css" type="text/css" charset="utf-8">
@@ -28,38 +28,34 @@
         left: 0;
         width: 100%;
       }
+      #title {background:none!important;pointer-events:none;display:flex;align-items:flex-start;justify-content:center;padding-top:min(7vh,55px);box-sizing:border-box;}
+      .vladi-title{font:900 clamp(34px,6vw,76px)/.98 system-ui,Arial,sans-serif;letter-spacing:-.045em;color:#fff;text-shadow:0 4px 22px #000,0 0 30px #0cf;display:block;text-align:center;}
+      .vladi-title strong{color:#57eaff;display:block;letter-spacing:.035em;}
+      .vladi-title small{display:block;margin-top:12px;font-size:clamp(10px,1.2vw,15px);letter-spacing:.32em;color:#ffda76;}
+      .back-arcade{display:block;padding:12px 18px;margin-top:12px;color:#fff;text-decoration:none;font:700 14px system-ui,Arial,sans-serif;background:linear-gradient(100deg,#123267,#145a84);border:1px solid #50d9f3;border-radius:12px;text-align:center;}
+      .back-arcade:hover{background:#176b9d;}
+      @media(max-width:600px){#title{padding-top:3vh}.vladi-title{font-size:clamp(29px,8vw,48px)}.vladi-title small{font-size:10px}}
     </style>
-    <script type="text/javascript">
-    //analytics
-    var _gaq = _gaq || [];
-    _gaq.push(['_setAccount', 'UA-26274524-4']);
-    _gaq.push(['_trackPageview']);
-    (function() {
-      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-    })();
-    </script>
+
   </head>
 
   <body>
     <div id="step-1">
       <div id="global"></div>
-      <div id="title">
-      </div>
+      <div id="title"><span class="vladi-title">VLADI <strong>RACING 3D</strong><small>VLADYERIK ARCADE</small></span></div>
       <div id="menucontainer">
         <div id="menu">
-          <div id="start">Start</div>
+          <div id="start">Jugar</div>
           <div id="s-controlType">Controls: Keyboard</div>
           <div id="s-quality">Quality: High</div>
           <div id="s-hud">HUD: On</div>
           <div id="s-godmode" style="display: none">Godmode: Off</div>
-          <div id="s-credits">Credits</div>
+          <a class="back-arcade" href="../arcade.html">← Volver al Arcade</a>
         </div>
       </div>
     </div>
     <div id="step-2" style="display: none">
-      <div id="ctrl-help">Click/Touch to continue.</div>
+      <div id="ctrl-help">Hacé clic o tocá para continuar.</div>
     </div>
     <div id="step-3" style="display: none">
       <div id="progressbar"></div>
@@ -70,18 +66,9 @@
     </div>
     <div id="step-5" style="display: none">
       <div id="time"></div>
-      <div id="ctrl-help">Click/Touch to continue.</div>
+      <div id="ctrl-help">Hacé clic o tocá para continuar.</div>
     </div>
-    <div id="credits" style="display: none">
-      <h3>Code</h3>
-      <p><b>Concept and Development</b><br>Thibaut Despoulain (BKcore)</p>
-      <p><b>Contributors</b><br>townxelliot<br>mahesh.kk</p>
-      <p><b>Technologies</b><br>WebGL<br>JavaScript<br>CoffeeScript<br>Three.js<br>LeapMotion</p>
-      <h3>Graphics</h3>
-      <p><b>HexMKI base model</b><br>Charnel</p>
-      <p><b>Track texture</b><br>Nobiax</p>
-      <h4>Click anywhere to continue.</h4>
-    </div>
+    <div id="credits" style="display: none"></div>
 
     <div id="leapinfo" style="display: none"></div>
 
