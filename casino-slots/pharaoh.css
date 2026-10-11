@@ -110,3 +110,16 @@ body[data-game="pharaoh"] .spin-symbol{
 body[data-game="pharaoh"] .spin-symbol .slot-art{width:82%;height:85%;filter:drop-shadow(0 5px 3px #32210d55)}
 body[data-game="pharaoh"] .stage{background:linear-gradient(135deg,#6c461f,#e2bc70 5%,#24180e 12%,#24180e 88%,#e2bc70 95%,#6c461f)}
 @media(max-width:600px){body[data-game="pharaoh"] .reels{border-width:3px;border-radius:11px}body[data-game="pharaoh"] .reel-cylinder-lens{border-right-width:2px}}
+
+/* Match the desktop symbol scale of the other casino machines. */
+@media(min-width:601px) and (min-height:451px){
+ body[data-game="pharaoh"] .cell .slot-art,
+ body[data-game="pharaoh"] .spin-symbol .slot-art{
+  width:74%;
+  height:74%;
+  max-width:74%;
+  max-height:74%;
+  margin:auto;
+  object-fit:contain;
+ }
+}
