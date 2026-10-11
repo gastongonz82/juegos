@@ -17,3 +17,5 @@
 .calls button,.play-button,.fold-button,.utility{position:relative}
 .calls button:after,.play-button:after,.fold-button:after,.utility:after{content:'';position:absolute;inset:5px;pointer-events:none;border-radius:5px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='70' viewBox='0 0 240 70'%3E%3Cg stroke='%23d7b16b' fill='none' stroke-width='1.1' opacity='.75'%3E%3Cpath d='M3 16V3H18M3 10Q12 16 12 6Q12 2 17 7M237 16V3H222M237 10Q228 16 228 6Q228 2 223 7M3 54V67H18M3 60Q12 54 12 64Q12 68 17 63M237 54V67H222M237 60Q228 54 228 64Q228 68 223 63'/%3E%3C/g%3E%3C/svg%3E") center/100% 100% no-repeat}
 @media(max-width:700px){.calls button:after,.utility:after{opacity:.6;inset:4px}.calls button{padding-left:6px;padding-right:6px}}
+@media(max-width:350px) and (orientation:portrait){.brand strong{font-size:34px}.brand>span{font-size:19px}.rival{width:43%}.scores span{font-size:7px;white-space:nowrap}}
+@media(max-height:500px) and (orientation:landscape){.mine{top:55%}.hand-hint{top:79%}}
