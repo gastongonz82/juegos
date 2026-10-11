@@ -1,0 +1,38 @@
+name: Import HexGL test game
+on:
+  push:
+    paths:
+      - '.github/workflows/import-hexgl-test.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Import pinned upstream HexGL
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -e vladi-racing-3d/index.html ]; then
+            echo 'Test game already exists; refusing overwrite'
+            exit 0
+          fi
+          curl --fail --location --retry 3 --output /tmp/hexgl.zip 'https://github.com/BKcore/HexGL/archive/6addc95a2fce3bf05f4d751823cc054c61a16d68.zip'
+          mkdir -p /tmp/hexgl-import vladi-racing-3d
+          unzip -q /tmp/hexgl.zip -d /tmp/hexgl-import
+          cp -a /tmp/hexgl-import/HexGL-*/. vladi-racing-3d/
+          cat > vladi-racing-3d/ORIGIN.md <<'DOC'
+          # Vladi Racing 3D — test build
+          Source: BKcore/HexGL, commit 6addc95a2fce3bf05f4d751823cc054c61a16d68.
+          Original license and audio attributions are preserved in LICENSE and audio/LICENSE.
+          This is an unmodified evaluation copy, not yet listed in the Arcade.
+          DOC
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add vladi-racing-3d/
+          git commit -m 'feat: import HexGL as standalone Vladi Racing 3D test'
+          git push
