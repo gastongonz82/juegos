@@ -1,0 +1,30 @@
+/* Casino cabinet refinement — shared across seven machines */
+:root{color-scheme:dark}
+.shell{background:radial-gradient(ellipse at 50% -15%,var(--glow),transparent 52%),repeating-linear-gradient(120deg,transparent 0 120px,#ffffff03 121px 123px),#070810}
+.machine{position:relative;isolation:isolate;border:5px solid transparent;background:linear-gradient(#15101c,#15101c) padding-box,linear-gradient(135deg,#fff2a9,#916023 23%,#f6d98a 50%,#5b3818 76%,#ffe9a0) border-box;box-shadow:0 0 0 5px #0d0b10,0 0 0 7px #876332,0 24px 75px #000c,0 0 65px var(--glow),inset 0 0 50px #000;border-radius:29px}
+.machine:before{content:'';pointer-events:none;position:absolute;inset:9px;border-radius:18px;border:1px solid #eac37c44}
+.brand h1{font-weight:1000;line-height:1.12;background:linear-gradient(#fff9d6,#f4c96b 46%,#a96a23 52%,#ffe9a2);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 3px 2px #09040a);text-shadow:none}
+.brand small{font-weight:800;text-shadow:0 1px 5px #000}
+.stats{position:relative;z-index:1}
+.stat{background:linear-gradient(180deg,#060a17,#171426);border:1px solid #c59a4d;box-shadow:inset 0 2px 9px #000,0 2px 6px #0009}
+.stat strong{color:#fff4c6;text-shadow:0 0 12px #e5b85388}
+.stage{background:linear-gradient(135deg,#aa7834,#f9d78e 6%,#805420 9%,#15101f 12%,#080a18 85%,#ae803d 94%,#f5db98);border:2px solid #f4d493;box-shadow:inset 0 0 25px #000,0 0 18px var(--glow);overflow:hidden}
+.stage:before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%,#ffffff0c,transparent 70%);pointer-events:none}
+.reels{position:relative;z-index:1;gap:clamp(3px,.8vw,7px)}
+.cell{position:relative;border:2px solid #b89155;border-radius:7px;background:radial-gradient(ellipse at 40% 28%,#fffefa 0%,#e6d8bd 45%,#aa8b66 82%,#604328 100%);box-shadow:inset 0 5px 14px #fff8,inset 0 -9px 14px #43271277,0 2px 3px #000c;filter:drop-shadow(0 1px 1px #0005);transition:filter .15s}
+.cell:after{content:'';pointer-events:none;position:absolute;inset:0;background:linear-gradient(#ffffff7a,transparent 22%,transparent 72%,#00000021);border-radius:5px}
+.cell.win{z-index:2;animation:slotVictory .5s ease-in-out infinite alternate;box-shadow:0 0 22px #ffe582,inset 0 0 14px #fff}
+@keyframes slotVictory{to{filter:brightness(1.4) saturate(1.35);transform:scale(1.025)}}
+.banner{position:relative;z-index:1;text-shadow:0 0 12px #e6a64d99}
+.controls{position:relative;z-index:1;margin-top:13px}
+.controls button{background:linear-gradient(#393044,#131323);box-shadow:inset 0 1px 0 #ffffff36,0 3px 0 #090812,0 5px 8px #0009;transition:transform .1s,filter .1s}
+.controls button:active{transform:translateY(2px)}
+.controls .spinbtn{background:linear-gradient(#fff8cb 0%,#ffe181 25%,#c88820 70%,#8b4e14 100%);border:2px solid #fff4bd;box-shadow:inset 0 2px 4px #fff8,0 4px 0 #714113,0 0 25px #d99b3b66;color:#2d1905;letter-spacing:1px}
+.controls .spinbtn:not(:disabled):hover{filter:brightness(1.12)}
+.celebrate{animation:winCabinet .28s 4 alternate}
+@keyframes winCabinet{to{box-shadow:0 0 0 5px #0d0b10,0 0 0 7px #fce8a1,0 0 90px #ffd04f, inset 0 0 40px #ffd04f44}}
+#overlay{backdrop-filter:blur(9px)}
+.modal{background:linear-gradient(145deg,#38263c,#0d0b1a 60%,#261b2d);border:3px solid #f1ca80}
+@media(max-width:600px){.machine{border-width:3px;border-radius:20px}.brand h1{letter-spacing:.5px}.stage{border-width:2px}.controls{gap:6px}.controls button{font-size:12px}.controls .spinbtn{font-size:17px}}
+@media(max-height:680px) and (min-width:650px){.machine{max-width:800px}.controls{margin-top:5px}.cell{height:clamp(40px,10vh,65px)}}
+@media(prefers-reduced-motion:reduce){.cell.win,.celebrate{animation:none}}
