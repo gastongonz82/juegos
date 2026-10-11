@@ -38,3 +38,15 @@ test('envido victory ends match before truco can be answered or played',()=>{con
 test('winning two tricks settles immediately and repeated input cannot award twice',()=>{const g=fixture([E(1),E(3),E(4)],[B(1),C(2),O(4)]);g.play(0,0);g.play(1,0);g.play(0,0);g.play(1,0);assert.equal(g.state.phase,'handOver');assert.equal(g.state.scores[0],1);assert.equal(g.play(0,0),false);assert.equal(g.act(0,'Truco'),false);assert.equal(g.state.scores[0],1);});
 test('AI cannot inspect hidden opponent hand: same decisions after hidden replacements',()=>{for(const difficulty of ['easy','normal','hard']){const g=fixture(H,A,{mano:1,difficulty});const d=aiDecision(g,seeded(42));g.state.hands[0]=[E(4),C(5),B(6)];g.state.original[0]=[E(4),C(5),B(6)];assert.deepEqual(aiDecision(g,seeded(42)),d);}});
 test('AI chooses only legal moves and all three levels finish 300 full matches',()=>{let finished=0;for(const difficulty of ['easy','normal','hard'])for(let seed=1;seed<=100;seed++){const rng=seeded(seed*1337);const g=new TrucoGame({target:seed%2?15:30,flor:seed%3===0,difficulty,rng});let steps=0;while(g.state.phase!=='matchOver'&&steps++<5000){if(['idle','handOver'].includes(g.state.phase)){g.deal();continue;}const ai=aiDecision(g,rng);if(ai){assert.ok(ai.action?g.act(1,ai.action):g.play(1,ai.card));continue;}const actions=g.actions(0);assert.ok(actions.length);let action=actions[Math.floor(rng()*actions.length)];if(actions.includes('Jugar carta')&&rng()<.7)action='Jugar carta';assert.ok(action==='Jugar carta'?g.play(0,Math.floor(rng()*g.state.hands[0].length)):g.act(0,action));assert.equal(new Set([...g.state.original[0],...g.state.original[1]].map(key)).size,6);assert.ok(g.state.scores.every(x=>x>=0));}assert.equal(g.state.phase,'matchOver',`${difficulty} seed ${seed} stuck`);finished++;}assert.equal(finished,300);});
+
+test('accepted envido announces both values and identifies winner, points and tied mano',()=>{
+ for(const mano of [0,1]){
+  const g=fixture([E(7),E(5),O(1)],[B(7),B(5),C(1)],{mano});
+  assert.ok(g.act(mano,'Envido'));assert.ok(g.act(1-mano,'Quiero'));
+  const chants=g.state.log.filter(e=>/^\d+ tantos\./.test(e.text));
+  assert.deepEqual(chants.map(e=>e.speaker),[mano,1-mano]);
+  assert.deepEqual(chants.map(e=>e.text),['32 tantos.','32 tantos.']);
+  assert.ok(g.state.log.some(e=>e.text.includes('empate: gana mano')&&e.text.includes('suma 2 puntos')));
+  assert.equal(g.state.scores[mano],2);
+ }
+});
