@@ -1,0 +1,26 @@
+/* PHARAOH — bespoke Egyptian temple cabinet, isolated from all other games */
+body[data-game="pharaoh"] .shell{background:radial-gradient(ellipse at 50% 0%,#74532680,transparent 60%),repeating-linear-gradient(90deg,#090b0d 0 42px,#111013 43px 45px),#0b090b}
+body[data-game="pharaoh"] .machine{border:5px solid #d8a84d;background:radial-gradient(ellipse at 50% -10%,#765026,#25170f 43%,#0e0b10 100%);box-shadow:0 0 0 3px #241408,0 0 0 7px #a47931,0 15px 45px #000c,inset 0 0 45px #000}
+body[data-game="pharaoh"] .machine:before{inset:6px;border:2px solid #b48b4655}
+body[data-game="pharaoh"] .top{border:2px solid #e4bd69;border-radius:3px 3px 22px 22px;background:linear-gradient(90deg,#17100b,#583716 28%,#966523 50%,#583716 72%,#17100b);box-shadow:inset 0 -9px 18px #160e0b}
+body[data-game="pharaoh"] .brand:before{content:"☥   ✦   ☥";display:block;color:#ffe09c;font-size:clamp(11px,2.1vw,20px);letter-spacing:clamp(7px,2vw,24px);line-height:1.05;text-shadow:0 0 9px #f6c36d}
+body[data-game="pharaoh"] .brand h1{font-family:Georgia,serif;font-size:clamp(22px,4.3vw,46px);letter-spacing:clamp(1px,.45vw,6px);background:linear-gradient(#fff5c9 10%,#ffdc78 43%,#9e5b18 55%,#f5c75c 80%);-webkit-background-clip:text;background-clip:text;filter:drop-shadow(0 2px 2px #130a02)}
+body[data-game="pharaoh"] .brand small{color:#f6d9a0;letter-spacing:clamp(0px,.2vw,2px)}
+body[data-game="pharaoh"] .stats{border-top:2px solid #b48a47;border-bottom:2px solid #b48a47;padding:3px 0}
+body[data-game="pharaoh"] .stat{background:linear-gradient(#100e12,#332313);border:1px solid #c99842;border-radius:3px}
+body[data-game="pharaoh"] .stat strong{color:#ffe5a1}
+body[data-game="pharaoh"] .stage{border:5px ridge #e0b65e;outline:2px solid #7e501d;border-radius:4px;background:linear-gradient(115deg,#f4d28b,#9b692f 7%,#1b1110 15%,#171013 85%,#a47235 94%,#f2d087);box-shadow:inset 0 0 30px #000}
+body[data-game="pharaoh"] .stage:before{background:linear-gradient(#07080a66,transparent 12%,transparent 88%,#07080a77);z-index:2}
+body[data-game="pharaoh"] .reels{gap:clamp(2px,.4vw,5px);background:#170e0a}
+body[data-game="pharaoh"] .cell{background:radial-gradient(ellipse at 50% 45%,#483524,#201812 75%,#100c0e);border:1px solid #ab7838;border-radius:4px;box-shadow:inset 0 0 16px #000,0 0 0 1px #4e3017}
+body[data-game="pharaoh"] .cell:after{background:linear-gradient(#fff0bd1c,transparent 27%,transparent 70%,#0008)}
+body[data-game="pharaoh"] .slot-art{width:100%;height:100%;filter:drop-shadow(0 3px 3px #0008)}
+body[data-game="pharaoh"] .spin-column{background:linear-gradient(90deg,#2e2116,#3d2c1d 50%,#241911);border-left:1px solid #c59649}
+body[data-game="pharaoh"] .spin-symbol{background:radial-gradient(ellipse,#493526,#19100e);border-bottom:2px solid #9e713a}
+body[data-game="pharaoh"] .jackpot{color:#ffe1a0;text-shadow:0 0 14px #d6a04a}
+body[data-game="pharaoh"] .banner{border:1px solid #b58a43;background:linear-gradient(90deg,#21150f,#4e3318,#21150f);color:#ffebad;border-radius:2px}
+body[data-game="pharaoh"] .controls button{border:1px solid #c89b52;border-radius:3px;background:linear-gradient(#4e3420,#24180f);color:#f9dfab}
+body[data-game="pharaoh"] .controls .spinbtn{background:linear-gradient(#fff0ac,#f2c45a 35%,#b67620 85%);border:2px solid #ffe4a2;color:#351b09;box-shadow:inset 0 2px 6px #fff9,0 3px 0 #4d2b0a,0 0 20px #f4b64d66}
+body[data-game="pharaoh"] .bottom button{background:linear-gradient(#49331d,#24180f);border:1px solid #b58c49;border-radius:3px}
+@media(max-width:600px){body[data-game="pharaoh"] .machine{border-width:3px}body[data-game="pharaoh"] .brand:before{font-size:11px;letter-spacing:8px}body[data-game="pharaoh"] .stage{border-width:3px}body[data-game="pharaoh"] .brand h1{font-size:clamp(18px,5.1vw,28px)}}
+@media(max-height:580px){body[data-game="pharaoh"] .brand:before{display:none}body[data-game="pharaoh"] .stats{padding:1px 0}}
