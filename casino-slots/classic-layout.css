@@ -120,3 +120,17 @@ html,body{margin:0!important;width:100%;height:100%;min-height:0;overflow:hidden
   transform:translate(-50%,-50%)!important;
  }
 }
+
+/* Actual win paths on top of the reels, generated from evaluated combinations. */
+.reels .payline-overlay{
+ position:absolute;inset:0;width:100%;height:100%;z-index:12;
+ pointer-events:none;overflow:visible;filter:drop-shadow(0 0 4px #000c);
+}
+.reels .payline-path{
+ stroke-dasharray:700;stroke-dashoffset:700;
+ animation:casinoPaylineDraw .55s ease-out forwards,casinoPaylineGlow 1.15s ease-in-out .55s infinite alternate;
+ filter:drop-shadow(0 0 3px currentColor);
+}
+@keyframes casinoPaylineDraw{to{stroke-dashoffset:0}}
+@keyframes casinoPaylineGlow{to{stroke-width:6;opacity:.75}}
+@media(prefers-reduced-motion:reduce){.reels .payline-path{animation:none;stroke-dashoffset:0}}
