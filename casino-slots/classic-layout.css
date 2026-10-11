@@ -1,0 +1,29 @@
+/* Five-reel casino cabinet, based on the classic 777 proportions */
+html,body{min-height:100%;overflow-x:hidden}
+.shell{padding:clamp(3px,1.2vw,12px);justify-content:center}
+.machine{width:min(100%,850px);border-radius:38px 38px 22px 22px;padding:clamp(8px,1.8vw,19px);background:linear-gradient(100deg,#130e18,#482434 10%,#2d1828 45%,#542839 75%,#17101a);border-width:6px;box-shadow:0 0 0 3px #251a23,0 0 0 7px #70512f,0 24px 55px #000d,inset 0 0 0 3px #2a1723}
+.machine:before{inset:5px;border-color:#f3d48c88;border-radius:28px 28px 12px 12px}
+.top{position:relative;z-index:2;gap:5px;background:radial-gradient(ellipse,#4e2b34,#140e1e);border:2px solid #9c753f;border-radius:23px 23px 9px 9px;padding:8px 10px;box-shadow:inset 0 0 22px #0009}
+.top button{font-family:Georgia,serif;font-size:12px;white-space:nowrap;padding:8px}
+.brand h1{font-family:Georgia,serif;font-size:clamp(23px,4vw,45px);letter-spacing:1px}
+.brand small{font-size:clamp(7px,1.3vw,10px);letter-spacing:1px}
+.stats{margin:9px 0 12px}
+.stat{border-radius:6px}
+.stat strong{font-family:monospace}
+.stage{border:6px solid #1c1620;outline:3px solid #b48a4e;border-radius:13px;padding:6px;background:linear-gradient(#9b886d,#f9efdc 17%,#fff9eb 50%,#c5b297 84%,#73604e);box-shadow:inset 0 0 25px #0009,0 0 0 4px #321d27}
+.stage:before{background:linear-gradient(#251a2299,transparent 18%,transparent 82%,#251a2299);z-index:3}
+.reels{position:relative;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));grid-template-rows:repeat(3,minmax(0,1fr));height:clamp(220px,40dvh,370px);gap:0;overflow:hidden;background:#221b1e;border-radius:5px}
+.cell{height:auto;min-height:0;border-radius:0;border:0;border-left:2px solid #54402c;background:linear-gradient(90deg,#ad9a7e,#fff9e9 20%,#fffdf4 50%,#e8d9c2 80%,#a48c70);box-shadow:inset 0 2px 12px #53402b33;font-size:clamp(32px,6vw,65px);text-shadow:0 3px 5px #0003}
+.cell:after{border-radius:0;background:linear-gradient(#00000014,transparent 35%,transparent 65%,#00000012)}
+.reels.rolling .cell{visibility:hidden}
+.spin-column{position:absolute;top:0;height:100%;overflow:hidden;z-index:5;background:linear-gradient(90deg,#a9977d,#fff9e9 22%,#fffdf2 65%,#ac977d);border-left:2px solid #6c5437}
+.spin-track{position:absolute;left:0;top:0;width:100%;height:900%;will-change:transform}
+.spin-symbol{height:calc(100% / 27);display:grid;place-items:center;font-size:clamp(32px,6vw,65px);border-bottom:1px solid #c4af90}
+.banner{color:#ffe5aa;text-shadow:0 2px 5px #000;min-height:30px;margin:6px 0 1px;background:linear-gradient(90deg,transparent,#2d1c29,transparent);padding:4px}
+.controls{margin-top:15px}
+.controls button{font-family:Georgia,serif;border-radius:7px}
+.controls .spinbtn{background:linear-gradient(#ffe5a0,#c18b3d);box-shadow:inset 0 0 0 3px #9a6428,inset 0 0 0 4px #ffe7a7,0 4px 0 #4e2b17}
+.bottom{margin-top:10px}
+.bottom button{font-family:Georgia,serif;text-decoration:none;border:1px solid #a47b45;background:linear-gradient(#3a2c3b,#171421);padding:8px;border-radius:7px;font-size:11px}
+@media(max-width:600px){.shell{padding:2px 5px;justify-content:center}.machine{width:100%;border-width:4px;padding:8px 7px 9px;border-radius:25px 25px 15px 15px}.machine:before{inset:3px;border-radius:20px}.top{padding:8px 3px}.top button{padding:7px 5px;font-size:10px}.brand h1{font-size:clamp(19px,5.4vw,30px)}.brand small{font-size:7px;letter-spacing:.4px}.stats{gap:4px;margin:9px 0}.stat{padding:5px 1px}.stat label{font-size:8px}.stat strong{font-size:20px}.stage{padding:3px;border-width:4px;outline-width:2px}.reels{height:clamp(235px,41dvh,420px)}.cell,.spin-symbol{font-size:clamp(33px,9vw,55px)}.controls{gap:5px;margin-top:12px}.controls button{min-height:43px;font-size:11px;padding:8px 7px}.controls .spinbtn{font-size:18px;min-width:120px}.bottom{gap:5px}.bottom button{font-size:9px;padding:7px 5px}.footnote{font-size:9px}}
+@media(max-height:730px) and (min-width:601px){.reels{height:clamp(160px,37dvh,260px)}.controls{margin-top:7px}.stats{margin:6px 0}}
