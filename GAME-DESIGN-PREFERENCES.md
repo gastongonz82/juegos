@@ -20,3 +20,5 @@ Aplicar a nuevos juegos y cambios autorizados. No rediseñar juegos existentes q
 - Pinball: arte pintado integrado en toda la superficie, sin retratos pegados dentro de rombos u otros recortes. Tomar mesas físicas como referencia: rampas elevadas, guías metálicas, bumpers y luces con relieve, recorridos y colisiones que correspondan a las piezas visibles. Verificar que los tiros de flipper alcancen los objetivos.
 
 Actualizado: 2026-10-10. Sitio externo: vladyerik.com. Repositorio: gastongonz82/juegos.
+
+- Orden del Arcade: conservar el orden de incorporación, primeros juegos arriba y nuevos al final. No insertar nuevos juegos junto a su categoría ni delante de los existentes. Los filtros de categorías y favoritos conservan ese orden; Últimos jugados mantiene su orden por visita.
