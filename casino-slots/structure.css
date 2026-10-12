@@ -1,0 +1,76 @@
+/* Four genuine continuous reel windows: vertical bands rather than fifteen framed cards. */
+body[data-game="dragon"]{--reel-band:linear-gradient(90deg,#2a0a14,#863428 18%,#b6583a 49%,#7c2b25 82%,#220916);--reel-rail:#d89651}
+body[data-game="diamonds"]{--reel-band:linear-gradient(90deg,#221733,#706292 16%,#c0b6dc 49%,#76638f 83%,#251934);--reel-rail:#e0d1ff}
+body[data-game="west"]{--reel-band:linear-gradient(90deg,#594127,#bfa477 15%,#fff0c9 49%,#c4ab80 83%,#584027);--reel-rail:#9b6a36}
+body[data-game="fortune"]{--reel-band:linear-gradient(90deg,#29182f,#725869 16%,#ac8495 49%,#705365 83%,#29192f);--reel-rail:#e4bd71}
+body:is([data-game="dragon"],[data-game="diamonds"],[data-game="west"],[data-game="fortune"]) .reels{
+ isolation:isolate;gap:0;background:var(--reel-band);border:2px solid var(--reel-rail);border-radius:12px;
+ box-shadow:inset 0 0 24px #0007;
+}
+body:is([data-game="dragon"],[data-game="diamonds"],[data-game="west"],[data-game="fortune"]) .reels .cell,
+body:is([data-game="dragon"],[data-game="diamonds"],[data-game="west"],[data-game="fortune"]) .reels .spin-symbol{
+ border:0;border-radius:0;outline:0;box-shadow:none;background:var(--reel-band);padding:0;margin:0;
+}
+body:is([data-game="dragon"],[data-game="diamonds"],[data-game="west"],[data-game="fortune"]) .cell::after{display:none}
+body:is([data-game="dragon"],[data-game="diamonds"],[data-game="west"],[data-game="fortune"]) .spin-column{
+ border:0;background:var(--reel-band);z-index:6;
+}
+.continuous-reel-lens{
+ position:absolute;top:0;bottom:0;width:20%;z-index:8;pointer-events:none;
+ border-right:2px solid var(--reel-rail);
+ background:linear-gradient(180deg,#08040caf,transparent 24%,#fff6db12 49%,transparent 75%,#08040caf),linear-gradient(90deg,#0005,transparent 20%,#fff1 50%,transparent 80%,#0005);
+ box-shadow:inset 4px 0 8px #0004,inset -4px 0 8px #0004;
+}
+.continuous-reel-lens:last-of-type{border-right:0}
+body:is([data-game="dragon"],[data-game="diamonds"],[data-game="west"],[data-game="fortune"]) .reels .cell.win{
+ outline:0;box-shadow:none;animation:none;filter:none;
+}
+body:is([data-game="dragon"],[data-game="diamonds"],[data-game="west"],[data-game="fortune"]) .cell.win > img.slot-art{
+ filter:drop-shadow(0 0 7px var(--theme-light)) brightness(1.18)!important;
+}
+/* Distinct cabinet construction: imperial arches, crystal window, wood fascia and jackpot crown. */
+body[data-game="dragon"] .stage{border-radius:30px 30px 7px 7px;border-style:ridge;background:linear-gradient(115deg,#d39542,#40101a 9%,#220a13 90%,#d39542)}
+body[data-game="dragon"] .top{border-radius:35px 35px 10px 10px;border-bottom:4px double #dfa85b}
+body[data-game="diamonds"] .stage{border:3px double #d9c9ff;border-radius:6px;background:linear-gradient(130deg,#ac97d6,#20132f 12%,#281b40 87%,#c8b8ef)}
+body[data-game="diamonds"] .reels{border-radius:3px}
+body[data-game="diamonds"] .continuous-reel-lens{border-right:1px solid #fff8;box-shadow:inset 1px 0 #fff5,inset -1px 0 #fff5}
+body[data-game="west"] .stage{border:5px ridge #b5864c;border-radius:8px;background:repeating-linear-gradient(2deg,#523018 0 9px,#694522 10px 12px)}
+body[data-game="west"] .top{border:3px ridge #ba8d54;border-radius:18px 18px 3px 3px}
+body[data-game="fortune"] .stage{border:4px double #e8c477;border-radius:26px 26px 12px 12px}
+body[data-game="fortune"] .jackpot{border-bottom:1px solid #d8b16666;padding:2px 0 4px;margin-bottom:3px}
+/* Atlantis: open water field. Aztec: communal jade stone field. Neither is a reel strip. */
+body:is([data-game="atlantis"],[data-game="aztec"]) .reels{
+ isolation:isolate;gap:0;border:0;box-shadow:inset 0 0 35px #0005;overflow:hidden;
+}
+body[data-game="atlantis"] .stage{border:3px solid #83dce7;border-radius:38px 38px 20px 20px;background:linear-gradient(135deg,#3c9eae,#07354d 15%,#0b253e 87%,#3c9eae)}
+body[data-game="atlantis"] .reels{
+ border-radius:30px;background:radial-gradient(ellipse at 50% 0%,#56e5ec55,transparent 65%),linear-gradient(#093b5a,#082640);
+}
+body[data-game="aztec"] .stage{border:5px ridge #a9ab61;border-radius:2px;background:linear-gradient(135deg,#667345,#123228 12%,#173b2e 87%,#869255)}
+body[data-game="aztec"] .reels{
+ border-radius:2px;background:repeating-linear-gradient(60deg,transparent 0 75px,#83a4690b 76px 78px),radial-gradient(ellipse,#35583b,#102d22);
+}
+body:is([data-game="atlantis"],[data-game="aztec"]) .reels .cell{
+ position:relative;border:0;border-radius:0;background:none;box-shadow:none;outline:0;margin:0;padding:0;overflow:visible;
+}
+body:is([data-game="atlantis"],[data-game="aztec"]) .cell::after{display:none}
+body:is([data-game="atlantis"],[data-game="aztec"]) .cell::before{
+ content:"";position:absolute;width:55%;height:8%;bottom:9%;left:22.5%;border-radius:50%;background:#0004;filter:blur(4px);pointer-events:none;
+}
+body:is([data-game="atlantis"],[data-game="aztec"]) .reels.rolling .cell{visibility:visible}
+body[data-game="atlantis"] .reels.rolling .cell:not(.reel-stopped){animation:waterTumble .32s ease-in infinite}
+body[data-game="aztec"] .reels.rolling .cell:not(.reel-stopped){animation:jadeReveal .34s ease-in-out infinite}
+body:is([data-game="atlantis"],[data-game="aztec"]) .cell.win{
+ animation:none;box-shadow:none;outline:0;filter:none;
+}
+body:is([data-game="atlantis"],[data-game="aztec"]) .cell.win img.slot-art{filter:drop-shadow(0 0 9px var(--theme-light)) brightness(1.15)!important}
+@keyframes waterTumble{0%{transform:translateY(-14%);opacity:.6}85%{transform:translateY(5%);opacity:1}100%{transform:translateY(9%);opacity:.6}}
+@keyframes jadeReveal{0%,100%{opacity:.65;scale:.9}50%{opacity:1;scale:1}}
+@media(max-width:600px){
+ .continuous-reel-lens{border-right-width:1px;box-shadow:inset 2px 0 5px #0004,inset -2px 0 5px #0004}
+ body[data-game="west"] .stage,body[data-game="aztec"] .stage{border-width:3px}
+ body[data-game="fortune"] .stage{border-width:3px}
+}
+@media(prefers-reduced-motion:reduce){body:is([data-game="atlantis"],[data-game="aztec"]) .reels .cell{animation:none!important}}
+
+body:is([data-game="atlantis"],[data-game="aztec"]) .reels.rolling .cell:not(.reel-stopped){animation-delay:var(--symbol-delay,0ms)}
