@@ -1,0 +1,57 @@
+/* Pirate ship cabinet: common 777 geometry, bespoke wood, rope, brass and sea materials. */
+html,body{background:#071c23;color:#f6dfac}
+body{background:linear-gradient(#061820bb,#051119ef),url('cover.webp') center/cover fixed}
+.casino{position:relative}
+header>span{color:#e8cb8d;text-shadow:0 2px 3px #000;letter-spacing:3px}
+header>a,header button{color:#fff0bc}
+.machine{
+ background:repeating-linear-gradient(1deg,#382214 0 30px,#4d2e19 31px 34px,#2b1b13 35px 66px);
+ border:7px ridge #b99754;border-radius:45px 45px 13px 13px;
+ box-shadow:0 0 0 3px #201912,0 0 0 6px #866837,inset 0 0 24px #0009,0 18px 45px #000c;
+}
+.machine::before{border:2px dashed #c5a46566;border-radius:32px 32px 7px 7px;inset:7px}
+.marquee{
+ border:3px ridge #caab68;border-radius:30px 30px 5px 5px;
+ background:linear-gradient(90deg,#13231dd9,#172720ad,#13231dd9),url('cover.webp') center 35%/cover;
+ box-shadow:inset 0 0 25px #0009,0 2px 0 #140e0b;
+}
+.marquee::before{border:1px solid #d9c08b99;border-radius:22px 22px 3px 3px}
+.marquee h1{font-size:clamp(28px,5.5dvh,48px);letter-spacing:1px;color:#f7deb0;text-shadow:0 3px 2px #25190b,0 0 13px #e6bd6a55}
+.marquee h1 b{color:#f8ca67;text-shadow:0 3px 1px #583a13}
+.marquee>span,.marquee small{color:#f1ddad;letter-spacing:1.4px}
+.gold-strip{background:linear-gradient(#755022,#e4cb86,#8d682f)}
+.glass{border-color:#241a13;outline-color:#c9a363;background:#e7d3a4;border-radius:9px;box-shadow:0 0 0 5px #4b321c,inset 0 0 17px #0008}
+.reels{gap:3px;background:#6a502a;padding:0 3px}
+.reel{background:linear-gradient(90deg,#a78d61,#e7d4aa 18%,#fff1c9 49%,#dcc497 84%,#96805a);box-shadow:inset 3px 0 7px #33221066,inset -3px 0 7px #33221066}
+.glass-shade{background:linear-gradient(#16140daa,transparent 26%,#ffefc610 49%,transparent 75%,#16140daa)}
+.payline{background:#ba392766}.payline i{border-left-color:#8b291d}
+.message{color:#fff1c6;background:#10251ee8;border:1px solid #bca36d55;text-shadow:0 1px 3px #000}
+.meters>div{background:linear-gradient(#071a1a,#143732);border-color:#b59c64}
+.meters small{color:#e7d5a6}.meters strong{color:#fce1a0;text-shadow:0 0 7px #bf883d55}
+.win-meter strong{color:#a4ecd3;text-shadow:0 0 6px #2db59755}
+button{background:linear-gradient(#426352,#162d24);border-color:#c5a565;color:#f9e3ad;box-shadow:inset 0 0 0 2px #1a2118,inset 0 0 0 3px #8f7546,0 3px 0 #100f0a}
+.controls .spin{background:linear-gradient(#ffe4a3,#c59c4e 55%,#87632c);color:#292014;border-color:#ebd097;box-shadow:inset 0 0 0 2px #a07c3b,inset 0 0 0 3px #f4dfa8,0 4px 0 #4b351a}
+.knob{border-color:#71451d;background:radial-gradient(circle at 30% 25%,#ffe2a1,#b78436 35%,#55381a 85%);box-shadow:0 4px 7px #0008}
+.stem{background:linear-gradient(90deg,#5d4927,#e4c985 48%,#6e512a)}
+.pivot{background:linear-gradient(#d3b67a,#816536);border-color:#382517}
+.tray{background:linear-gradient(#101b15,#344431 35%,#0b130d);border-color:#9a7e4d}
+.tray>span,.lower span,.casino>footer{color:#e2ce9f}
+dialog{background:linear-gradient(#263b2e,#0c201b);border:3px ridge #bda36a;border-radius:12px}
+dialog::backdrop{background:#071813e8}
+dialog h2{color:#ffe2a1}
+@media(max-width:900px) and (orientation:portrait){
+ body{background-attachment:scroll}
+ .machine{border-width:5px;border-radius:30px 30px 12px 12px}
+ .marquee h1{font-size:clamp(25px,7.6vw,38px);letter-spacing:.5px}
+ .marquee>span{font-size:7px;letter-spacing:1px}.marquee small{font-size:6px;letter-spacing:1px}
+ .message{font-size:11px}
+}
+@media(orientation:landscape) and (max-height:600px){
+ .marquee h1{font-size:27px;line-height:1.05}.machine{border-radius:23px 23px 10px 10px;border-width:5px}
+}
+@media(orientation:landscape) and (max-height:400px){
+ .marquee h1{font-size:22px}.machine{border-width:4px}.marquee{border-width:2px}
+ .message{font-size:10px}
+}
+@media(prefers-reduced-motion:reduce){.machine.winner,.machine.jackpot .marquee{animation:none}}
+@media(max-width:900px) and (orientation:portrait){.lever{width:44px;right:-36px}}

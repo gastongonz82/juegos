@@ -1,0 +1,24 @@
+# Pirate symbols
+
+Seven individual transparent assets made with the built-in image generator. Converted to WebP 512 × 512, alpha preserved.
+
+## coin
+Use case: stylized-concept. Asset type: one premium casino slot reel symbol for pirate treasure game. Subject: one large antique gold pirate doubloon with embossed compass rose, slightly tilted. Beautiful sculpted 3D game asset, rich warm gold and brass, textured dark wood, jewel highlights, cinematic studio lighting upper left, sharp readable silhouette, polished premium finish matching high-end casino reel art. Single complete isolated object centered on square actual transparent alpha canvas at 82 percent size with safe margins. Readable at 80 pixels. No backdrop, no surrounding plaque, no frame, no watermark, no text or numbers.
+
+## compass
+Use case: stylized-concept. Asset type: one premium casino slot reel symbol for pirate treasure game. Subject: ornate brass pirate compass with cream face and red north pointer, no letters. Beautiful sculpted 3D game asset, rich warm gold and brass, textured dark wood, jewel highlights, cinematic studio lighting upper left, sharp readable silhouette, polished premium finish matching high-end casino reel art. Single complete isolated object centered on square actual transparent alpha canvas at 82 percent size with safe margins. Readable at 80 pixels. No backdrop, no surrounding plaque, no frame, no watermark, no text or numbers.
+
+## anchor
+Use case: stylized-concept. Asset type: one premium casino slot reel symbol for pirate treasure game. Subject: heavy weathered gold and iron ship anchor with a short coil of rope. Beautiful sculpted 3D game asset, rich warm gold and brass, textured dark wood, jewel highlights, cinematic studio lighting upper left, sharp readable silhouette, polished premium finish matching high-end casino reel art. Single complete isolated object centered on square actual transparent alpha canvas at 82 percent size with safe margins. Readable at 80 pixels. No backdrop, no surrounding plaque, no frame, no watermark, no text or numbers.
+
+## spyglass
+Use case: stylized-concept. Asset type: one premium casino slot reel symbol for pirate treasure game. Subject: polished brass pirate spyglass with brown leather wrapping, diagonal complete object. Beautiful sculpted 3D game asset, rich warm gold and brass, textured dark wood, jewel highlights, cinematic studio lighting upper left, sharp readable silhouette, polished premium finish matching high-end casino reel art. Single complete isolated object centered on square actual transparent alpha canvas at 82 percent size with safe margins. Readable at 80 pixels. No backdrop, no surrounding plaque, no frame, no watermark, no text or numbers.
+
+## skull
+Use case: stylized-concept. Asset type: one premium casino slot reel symbol for pirate treasure game. Subject: stylized ivory pirate skull wearing a red bandana, cheerful adventure aesthetic, no gore. Beautiful sculpted 3D game asset, rich warm gold and brass, textured dark wood, jewel highlights, cinematic studio lighting upper left, sharp readable silhouette, polished premium finish matching high-end casino reel art. Single complete isolated object centered on square actual transparent alpha canvas at 82 percent size with safe margins. Readable at 80 pixels. No backdrop, no surrounding plaque, no frame, no watermark, no text or numbers.
+
+## ship
+Use case: stylized-concept. Asset type: one premium casino slot reel symbol for pirate treasure game. Subject: miniature detailed wooden pirate galleon with burgundy sails and gold accents, complete ship. Beautiful sculpted 3D game asset, rich warm gold and brass, textured dark wood, jewel highlights, cinematic studio lighting upper left, sharp readable silhouette, polished premium finish matching high-end casino reel art. Single complete isolated object centered on square actual transparent alpha canvas at 82 percent size with safe margins. Readable at 80 pixels. No backdrop, no surrounding plaque, no frame, no watermark, no text or numbers.
+
+## chest
+Use case: stylized-concept. Asset type: one premium casino slot reel symbol for pirate treasure game. Subject: open wooden pirate treasure chest overflowing with gold coins, emeralds and rubies. Beautiful sculpted 3D game asset, rich warm gold and brass, textured dark wood, jewel highlights, cinematic studio lighting upper left, sharp readable silhouette, polished premium finish matching high-end casino reel art. Single complete isolated object centered on square actual transparent alpha canvas at 82 percent size with safe margins. Readable at 80 pixels. No backdrop, no surrounding plaque, no frame, no watermark, no text or numbers.
