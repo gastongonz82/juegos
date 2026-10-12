@@ -1,0 +1,48 @@
+/* Individual cabinets; existing responsive geometry and game rules remain authoritative. */
+body{--theme-light:#e6bf68;--theme-dark:#201509;--theme-edge:#9b7331;--theme-radius:12px;--theme-art:none}
+body[data-game="pharaoh"]{--theme-light:#ffd275;--theme-dark:#182b35;--theme-edge:#aa7832;--theme-radius:3px;--theme-art:url('../assets/premium-pharaoh-v2.webp')}
+body[data-game="dragon"]{--theme-light:#ffab76;--theme-dark:#360a1a;--theme-edge:#cf514b;--theme-radius:22px;--theme-art:url('../assets/premium-dragon-v2.webp')}
+body[data-game="atlantis"]{--theme-light:#82f1ff;--theme-dark:#05243c;--theme-edge:#28afc7;--theme-radius:32px;--theme-art:url('../assets/premium-atlantis-v2.webp')}
+body[data-game="aztec"]{--theme-light:#d5ff9d;--theme-dark:#123023;--theme-edge:#8bad45;--theme-radius:4px;--theme-art:url('../assets/premium-aztec-v2.webp')}
+body[data-game="diamonds"]{--theme-light:#e3d4ff;--theme-dark:#231336;--theme-edge:#ac8de4;--theme-radius:14px;--theme-art:url('../assets/premium-diamonds-v2.webp')}
+body[data-game="west"]{--theme-light:#ffdb9f;--theme-dark:#352116;--theme-edge:#ac7143;--theme-radius:6px;--theme-art:url('../assets/premium-west-v2.webp')}
+body[data-game="fortune"]{--theme-light:#ffe197;--theme-dark:#201225;--theme-edge:#d8b166;--theme-radius:18px;--theme-art:url('../assets/premium-fortune-v2.webp')}
+body[data-game] .shell{background:linear-gradient(#03060ba8,#03060bf0),var(--theme-art) center/cover fixed}
+body[data-game] .machine{border-color:var(--theme-edge);border-radius:var(--theme-radius);background:linear-gradient(115deg,#071015ed,var(--theme-dark) 55%,#071015f5);box-shadow:0 0 0 2px #08090e,0 0 0 4px var(--theme-edge),0 20px 65px #000b,inset 0 0 36px #0008}
+body[data-game] .top{background:linear-gradient(90deg,#03070ded,#03070d80,#03070ded),var(--theme-art) center 35%/cover;border-color:var(--theme-edge);border-radius:var(--theme-radius);box-shadow:inset 0 0 22px #0009}
+body[data-game] .brand h1{color:var(--theme-light);text-shadow:0 2px 2px #000,0 0 18px var(--theme-edge);letter-spacing:.055em}
+body[data-game] .brand small{color:var(--theme-light)}
+body[data-game] .stat{background:linear-gradient(#03080deb,var(--theme-dark));border-color:var(--theme-edge);box-shadow:inset 0 1px #fff2,0 3px 8px #0006}
+body[data-game] .stat strong{color:var(--theme-light)}
+body[data-game] .stage{border-color:var(--theme-edge);background:linear-gradient(135deg,var(--theme-dark),#050b12);box-shadow:inset 0 0 30px #0009,0 0 15px #0006;border-radius:var(--theme-radius)}
+body[data-game] .banner{background:#050b12e8;color:var(--theme-light);border-color:var(--theme-edge);text-shadow:0 1px 2px #000}
+body[data-game] .controls button,body[data-game] .bottom button{background:linear-gradient(var(--theme-dark),#050910);border-color:var(--theme-edge);color:var(--theme-light)}
+body[data-game] .controls .spinbtn{background:linear-gradient(#fff4c4,var(--theme-light) 35%,var(--theme-edge));color:#17100c;border-color:var(--theme-light);box-shadow:inset 0 2px 3px #fff8,0 3px 0 #0009,0 0 17px #0008}
+/* Theme-specific materials and silhouettes, without changing control placement. */
+body[data-game="dragon"] .machine{border-style:double;border-width:6px}
+body[data-game="dragon"] .stage{border-style:double;border-width:5px}
+body[data-game="dragon"] .reels{background:#250d19;box-shadow:inset 0 0 28px #000,0 0 15px #ef4d4533}
+body[data-game="dragon"] .cell{background:radial-gradient(ellipse,#752b30,#250b20 80%);border-color:#a8683c}
+body[data-game="dragon"] .spin-symbol{background:linear-gradient(90deg,#270b1b,#752b30,#270b1b)}
+body[data-game="atlantis"] .machine{border-style:solid;box-shadow:0 0 0 3px #082e48,0 0 25px #28d9ff55,inset 0 0 38px #061d31}
+body[data-game="atlantis"] .cell{background:radial-gradient(ellipse at 50% 20%,#297a94,#061f45);border-color:#3fbbce;border-radius:14px}
+body[data-game="atlantis"] .spin-symbol{background:linear-gradient(90deg,#062844,#297a94,#062844)}
+body[data-game="atlantis"] .stage{background:radial-gradient(ellipse at 50% 0%,#267996,#06172f 70%)}
+body[data-game="aztec"] .machine{border-style:ridge;border-width:6px}
+body[data-game="aztec"] .stage{border-style:ridge;border-width:6px}
+body[data-game="aztec"] .cell{background:linear-gradient(135deg,#23452a,#426b36 45%,#13291b);border-color:#abb864;border-radius:2px;box-shadow:inset 0 0 0 2px #172411,inset 0 0 14px #0006}
+body[data-game="aztec"] .spin-symbol{background:linear-gradient(90deg,#18321d,#426b36,#18321d)}
+body[data-game="diamonds"] .machine{border-style:double;border-width:5px}
+body[data-game="diamonds"] .stage{background:linear-gradient(135deg,#5a3d87,#171429 35%,#352454);border-style:double}
+body[data-game="diamonds"] .cell{background:linear-gradient(135deg,#38266b,#67559f 40%,#241843 75%);border-color:#baa9fa;box-shadow:inset 0 1px 0 #f0eaff77,inset 0 0 18px #0005}
+body[data-game="diamonds"] .spin-symbol{background:linear-gradient(90deg,#281d48,#67559f,#281d48)}
+body[data-game="west"] .machine{background:repeating-linear-gradient(0deg,#281b16 0 38px,#3c291d 39px 41px);border-style:ridge;border-width:6px}
+body[data-game="west"] .top{border-radius:22px 22px 4px 4px}
+body[data-game="west"] .cell{background:radial-gradient(ellipse,#b9915f,#61432b);border-color:#d7b781;border-radius:4px;box-shadow:inset 0 0 18px #342012aa}
+body[data-game="west"] .spin-symbol{background:linear-gradient(90deg,#61432b,#b9915f,#61432b)}
+body[data-game="fortune"] .cell{background:linear-gradient(90deg,#291632,#61465c 45%,#301b38);border-color:#d8b166}
+body[data-game="fortune"] .spin-symbol{background:linear-gradient(90deg,#291632,#61465c 45%,#301b38)}
+body[data-game] .cell.win{outline:2px solid var(--theme-light);outline-offset:-3px;filter:brightness(1.13);box-shadow:inset 0 0 18px var(--theme-edge)}
+body[data-game] .payline-overlay{pointer-events:none}
+@media(max-width:600px){body[data-game] .shell{background-attachment:scroll}body[data-game="dragon"] .machine,body[data-game="aztec"] .machine,body[data-game="west"] .machine{border-width:3px}body[data-game="dragon"] .stage,body[data-game="aztec"] .stage{border-width:3px}}
+@media(prefers-reduced-motion:reduce){body[data-game] .cell{animation:none!important}}
