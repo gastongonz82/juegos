@@ -1,0 +1,1 @@
+Seven individually generated transparent premium 3D classic casino reel symbols: red cherries, yellow lemon, orange, purple plum, gold bell, black enamel gold BAR, red enamel gold seven. Upper-left highlights, complete centered object, recognizable small-size silhouette, no backdrop. Built-in image generator; WebP 512 × 512 with preserved alpha.

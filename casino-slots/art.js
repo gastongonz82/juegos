@@ -1,33 +1,9 @@
-const palettes={pharaoh:['#e7ae3e','#5b2d10'],dragon:['#e85738','#5b1426'],atlantis:['#39cde1','#063f75'],aztec:['#7ee16c','#17532f'],diamonds:['#b3b8ff','#413b8d'],west:['#d9aa56','#61351b'],fortune:['#e8bd65','#6b2c58']};
-const motifs={
-pharaoh:['𓂀','𓆣','𓋹','𓃭','𓆓','☀','𓅃'],
-dragon:['龍','🔥','💎','⚔','🛡','👑','✦'],
-atlantis:['🔱','🐬','🐚','🪸','💎','🐙','⭐'],
-aztec:['🗿','☀','🐆','💚','🦜','💎','🌺'],
-diamonds:['💎','💍','👑','🔷','🔶','⭐','💜'],
-west:['🤠','🐎','⭐','💰','🔔','🌵','🎯'],
-fortune:['💰','7','🔔','🍀','👑','💎','⭐']};
-
-function pharaohArt(index){
-const figures=[
-'<path d="M32 104V55l21 18 27-40 27 40 21-18v49z" fill="url(#metal)" stroke="#60370d" stroke-width="5"/><circle cx="53" cy="75" r="6" fill="#b82040"/><circle cx="80" cy="52" r="8" fill="#1bbad2"/><circle cx="107" cy="75" r="6" fill="#b82040"/><path d="M28 108h104v14H28z" fill="url(#metal)" stroke="#60370d" stroke-width="4"/>',
-'<ellipse cx="80" cy="94" rx="36" ry="39" fill="#087e9c" stroke="url(#metal)" stroke-width="8"/><path d="M80 52v78M46 83h68M55 115l50-47M55 68l50 47" stroke="#f5cf68" stroke-width="5"/><circle cx="80" cy="43" r="14" fill="url(#metal)"/>',
-'<path d="M80 25v111M80 45c-56-41-56 44 0 34M80 45c56-41 56 44 0 34M80 88c-50 0-48 49 0 37M80 88c50 0 48 49 0 37" fill="none" stroke="url(#metal)" stroke-width="11" stroke-linecap="round"/>',
-'<path d="M80 22c-43 17-47 70-29 98 12 19 46 19 58 0 18-28 14-81-29-98z" fill="#e9bd5a" stroke="#744319" stroke-width="5"/><path d="M48 69h64M80 22v107" stroke="#71441e" stroke-width="5"/><path d="M58 87l13 7-13 7m44-14-13 7 13 7" fill="#151d29"/><path d="M70 115h20" stroke="#78441b" stroke-width="5"/>',
-'<path d="M50 114c-8-26-4-53 13-67 14-11 39-9 50 9 8 14 5 35-12 42-15 6-28-3-26-17 1-9 13-15 22-8" fill="none" stroke="#127f72" stroke-width="18" stroke-linecap="round"/><path d="M96 41l20-14 8 25-20 8" fill="#dfb14f"/><circle cx="111" cy="43" r="3" fill="#a82b22"/>',
-'<circle cx="80" cy="80" r="40" fill="url(#metal)" stroke="#9d621c" stroke-width="5"/><path d="M80 26v108M26 80h108M42 42l76 76M118 42l-76 76" stroke="#fff0b6" stroke-width="8"/><circle cx="80" cy="80" r="18" fill="#e36e20"/>',
-'<path d="M34 109c17-24 28-59 46-71 18 12 29 47 46 71-29-9-63-9-92 0z" fill="#e5c47d" stroke="#7c4b20" stroke-width="5"/><path d="M80 38v76M57 75h46" stroke="#1b7289" stroke-width="9"/><circle cx="80" cy="34" r="11" fill="#2bc5c7"/>'
-];
-const svg='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160"><defs><linearGradient id="metal" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff5c1"/><stop offset=".35" stop-color="#f3c75d"/><stop offset=".6" stop-color="#aa641f"/><stop offset=".85" stop-color="#ffdc7c"/><stop offset="1" stop-color="#81501c"/></linearGradient><radialGradient id="bg"><stop stop-color="#382a22"/><stop offset="1" stop-color="#130f17"/></radialGradient><filter id="drop"><feDropShadow dx="0" dy="6" stdDeviation="4" flood-opacity=".6"/></filter></defs><circle cx="80" cy="80" r="74" fill="url(#bg)" stroke="#d8a94e" stroke-width="3"/><circle cx="80" cy="80" r="65" fill="none" stroke="#c3a15c" stroke-width="1" stroke-dasharray="3 5"/><g filter="url(#drop)">'+figures[index%7]+'</g></svg>';
-return 'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg);
+const symbols={"dragon": ["dragon", "flame", "ruby", "swords", "shield", "crown", "star"], "atlantis": ["trident", "dolphin", "shell", "coral", "gem", "octopus", "starfish"], "aztec": ["mask", "sun", "jaguar", "jade", "parrot", "gem", "flower"], "diamonds": ["diamond", "ring", "crown", "sapphire", "topaz", "star", "heart"], "west": ["hat", "horse", "badge", "moneybag", "bell", "cactus", "target"], "pharaoh": ["crown", "diamond", "scarab", "cobra", "vase", "sun", "falcon"], "fortune": ["moneybag", "seven", "bell", "clover", "crown", "diamond", "star"]};
+export function art(game,index){const list=symbols[game]||symbols.pharaoh;const key=list[((index%7)+7)%7];return "../casino-slots/assets/"+(game==="fortune"?"mega-fortune":game+"-premium")+"/"+key+".webp"}
+const labels={dragon:["Dragón","Llama","Rubí","Espadas","Escudo","Corona","Estrella"],atlantis:["Tridente","Delfín","Concha","Coral","Aguamarina","Pulpo","Estrella de mar"],aztec:["Máscara","Sol","Jaguar","Jade","Guacamayo","Esmeralda","Flor"],diamonds:["Diamante","Anillo","Corona","Zafiro","Topacio","Estrella","Amatista"],west:["Sombrero","Caballo","Insignia","Bolsa de monedas","Campana","Cactus","Blanco"],pharaoh:["Corona","Gema","Escarabajo","Cobra","Vasija","Sol","Halcón"],fortune:["Bolsa de monedas","Siete","Campana","Trébol","Corona","Diamante","Estrella"]};
+export function symbolNode(game,index){const img=document.createElement("img");img.src=art(game,index);img.alt=(labels[game]||labels.pharaoh)[((index%7)+7)%7];img.draggable=false;img.className="slot-art";return img}
+// Warm only this cabinet's seven images; shared cached URLs serve both resting and spinning reels.
+if(typeof Image!=="undefined"&&typeof document!=="undefined"){
+ const game=document.body?.dataset.game;
+ if(symbols[game])symbols[game].forEach((_,i)=>{const img=new Image();img.decoding="async";img.src=art(game,i)});
 }
-const themeFrames={
- dragon:'M80 10C107 6 142 31 145 62L135 91 145 125 113 132 80 151 47 132 15 125 25 91 15 62C18 31 53 6 80 10Z',
- atlantis:'M80 13C114 13 143 41 143 76C143 100 128 110 119 128L80 147 41 128C32 110 17 100 17 76C17 41 46 13 80 13Z',
- aztec:'M48 9H112V22H135V45H149V115H135V138H112V151H48V138H25V115H11V45H25V22H48Z',
- diamonds:'M80 8 140 49 128 112 80 151 32 112 20 49Z',
- west:'M80 9 101 45 142 45 121 80 142 115 101 115 80 151 59 115 18 115 39 80 18 45 59 45Z'
-};
-const fortunePremiumSymbols=['moneybag','seven','bell','clover','crown','diamond','star'];
-export function art(game,index){if(game==='fortune')return '../casino-slots/assets/mega-fortune/'+fortunePremiumSymbols[((index%7)+7)%7]+'.webp';if(game==='pharaoh')return '../casino-slots/assets/pharaoh-premium/'+['crown','diamond','scarab','cobra','vase','sun','falcon'][((index%7)+7)%7]+'.webp';const frame=themeFrames[game]||themeFrames.diamonds;const p=palettes[game]||palettes.pharaoh;const icon=(motifs[game]||motifs.pharaoh)[index%7];const special=index===0||index===6;const color=special?'#fff3ba':p[0];const svg=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160"><defs><linearGradient id="gold" x2=".8" y2="1"><stop stop-color="#fff5cb"/><stop offset=".28" stop-color="${color}"/><stop offset=".55" stop-color="#fff6bf"/><stop offset=".83" stop-color="${p[0]}"/><stop offset="1" stop-color="${p[1]}"/></linearGradient><radialGradient id="gem"><stop stop-color="#ffffff"/><stop offset=".3" stop-color="${p[0]}"/><stop offset="1" stop-color="${p[1]}"/></radialGradient><filter id="shadow"><feDropShadow dx="0" dy="5" stdDeviation="4" flood-color="#1d0b08" flood-opacity=".6"/></filter></defs><g filter="url(#shadow)"><path d="${frame}" fill="url(#gem)" stroke="url(#gold)" stroke-width="6"/><path d="M80 19 119 38 139 80 118 120 80 140 40 120 22 80 40 38Z" fill="none" stroke="#fff6c4" stroke-opacity=".55" stroke-width="2"/><path d="M80 20 80 140M22 80H138M40 38 118 120M120 38 40 120" stroke="#fff" stroke-opacity=".11" stroke-width="2"/><circle cx="80" cy="80" r="48" fill="${p[1]}" stroke="url(#gold)" stroke-width="4"/><text x="80" y="108" text-anchor="middle" font-family="Apple Color Emoji,Segoe UI Emoji,Noto Color Emoji,Georgia,serif" font-size="${icon.length>1?73:86}" font-weight="bold" fill="url(#gold)" stroke="#321b15" stroke-width="1.2" paint-order="stroke">${icon}</text><path d="M39 48Q78 7 120 48" fill="none" stroke="#fff" stroke-opacity=".65" stroke-width="4"/></g></svg>`;return 'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg)}
-export function symbolNode(game,index){const img=document.createElement('img');img.src=art(game,index);img.alt='Símbolo '+(index+1);img.draggable=false;img.className='slot-art';return img}

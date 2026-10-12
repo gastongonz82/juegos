@@ -1,4 +1,4 @@
-import {spin,SYMBOLS,PAYS,BETS} from './engine.js';import {uri} from './symbols.js';
+import {spin,SYMBOLS,PAYS,BETS} from './engine.js';import {uri} from './symbols.js?v=premium-20261012';
 const $=id=>document.getElementById(id),fmt=n=>n.toLocaleString('es-AR'),KEY='vladi-classic-777-v1';let state={bank:2000,bet:20,best:0,spins:0,last:null,pending:null},busy=false,muted=localStorage.getItem(KEY+'-muted')==='1',audio=null,musicTimer=null;
 try{const s=JSON.parse(localStorage.getItem(KEY));if(s&&Number.isInteger(s.bank)&&s.bank>=0&&BETS.includes(s.bet)){state={...state,...s};if(state.pending){state.last=state.pending;state.bank=state.pending.bank;state.best=Math.max(state.best,state.pending.payout);state.pending=null;}}}catch{}
 const save=()=>localStorage.setItem(KEY,JSON.stringify(state));

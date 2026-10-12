@@ -64,3 +64,51 @@
   .tray{height:23px}
   .tray>span{padding:4px}
 }
+
+/* Premium Classic 777 cabinet: richer materials, clearer labels, complete raster symbols. */
+body{background:radial-gradient(ellipse at 50% 25%,#71403366,transparent 65%),linear-gradient(#120c17,#05060c)}
+.machine{background:linear-gradient(100deg,#180f19,#502331 8%,#241320 40%,#4d2634 80%,#130f18);box-shadow:0 0 0 3px #261b21,0 0 0 7px #896333,inset 0 0 28px #0009,0 18px 45px #000b}
+.marquee{background:linear-gradient(90deg,#160b18ed,#301722aa,#160b18ed),url('../assets/premium-classic-v2.webp') center 43%/cover}
+.marquee h1{color:#fff0bf;text-shadow:0 2px 3px #000,0 0 15px #d6a25066}
+.marquee h1 b{color:#ff7161;text-shadow:0 2px 2px #390b16,0 0 14px #fc393955}
+.symbol img{display:block;width:92%;height:92%;object-fit:contain;filter:drop-shadow(0 4px 4px #3e291966);user-select:none;pointer-events:none}
+.meters small{font-size:10px;letter-spacing:1px;color:#ead5a9}
+.message{background:#140d17b8;border-radius:5px;padding:2px 5px;line-height:1.25}
+.lower button{font-size:11px}
+.lower span{font-size:9px;line-height:1.35}
+#pays img{width:48px;height:48px;object-fit:contain}
+@media(min-width:901px) and (min-height:601px){
+ .machine{grid-template-rows:minmax(75px,.30fr) 8px minmax(120px,1fr) 30px 60px 44px 38px 30px}
+ .marquee h1{font-size:clamp(32px,5.5dvh,52px)}
+}
+@media(max-width:900px) and (orientation:portrait){
+ .meters small{font-size:9px;letter-spacing:.4px}
+ .lower button{font-size:10px;padding:5px 7px}
+ .lower span{font-size:8px}
+}
+@media(orientation:landscape) and (max-height:600px){
+ .meters small{font-size:8px}
+ .lower button{font-size:9px;padding:5px}
+ .lower span{font-size:7px}
+ .message{font-size:11px}
+}
+@media(orientation:landscape) and (max-height:400px){
+ html,body{height:100%;overflow:hidden}
+ .casino{height:100dvh;min-height:0;padding:5px 48px}
+ header{height:25px;min-height:25px;margin-bottom:5px}
+ header>a{font-size:21px}header button{height:25px;width:29px;font-size:17px}
+ .machine{flex:1;min-height:0;grid-template-rows:40px 20px 38px 30px 24px 18px;gap:3px 12px;padding:5px 12px 0;border-width:4px}
+ .marquee{padding:2px}.marquee h1{font-size:23px;margin:0}.marquee>span,.marquee small{font-size:6px}
+ .glass{height:100%;min-height:0;border-width:4px}
+ .message{height:20px;font-size:10px}.meters>div{padding:2px}.meters strong{font-size:17px;margin-top:1px}
+ .controls button{height:30px;padding:3px}.controls .spin{font-size:15px}
+ .lower{padding:0}.lower button{padding:3px;font-size:8px}.lower span{font-size:6px}
+ .tray{height:18px}.tray>span{padding:3px;font-size:6px}
+ .casino>footer{display:none}.lever{top:28%;height:95px}
+}
+@media(min-width:901px) and (min-height:601px){
+ .casino{max-width:1120px}
+ .machine{width:min(100%,860px);max-height:none}
+ header{max-width:920px}
+}
+@media(max-width:900px) and (orientation:portrait){.machine{max-height:none}}
