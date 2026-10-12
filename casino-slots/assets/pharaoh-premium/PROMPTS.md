@@ -1,0 +1,1 @@
+Generated with the built-in image generator. Seven individual transparent casino reel symbols: crown, turquoise gemstone in lotus setting, winged scarab, royal cobra, treasure vase, sun disk and Horus falcon. Unified sculpted 3D gold and lapis art, studio highlights, front three-quarter view, complete centered objects, no text or background. WebP 512 × 512 with preserved alpha.

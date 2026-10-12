@@ -100,3 +100,16 @@ body[data-game] .jackpot{flex:0 0 auto;font-size:clamp(10px,2.4vw,18px);letter-s
  body[data-game] .banner{font-size:10px;letter-spacing:0;padding:1px}
  body[data-game] .footnote{display:none}
 }
+
+/* Pharaoh raster symbols: preserve the complete cutout and match Fortune's readable scale. */
+body[data-game="pharaoh"] .reels .cell,
+body[data-game="pharaoh"] .reels .spin-symbol{position:relative}
+body[data-game="pharaoh"] .reels .cell > img.slot-art,
+body[data-game="pharaoh"] .reels .spin-symbol > img.slot-art{
+ position:absolute!important;top:50%!important;left:50%!important;
+ width:84%!important;height:84%!important;max-width:84%!important;max-height:84%!important;
+ margin:0!important;object-fit:contain!important;transform:translate(-50%,-50%)!important;
+ filter:drop-shadow(0 3px 4px #20100488);
+}
+
+body[data-game="pharaoh"] .paytable .slot-art{display:inline-block;width:48px;height:48px;vertical-align:middle}
