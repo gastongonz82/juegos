@@ -155,3 +155,72 @@ body[data-game="fortune"] .reels .spin-symbol > img.slot-art{
   max-width:83%!important;max-height:82%!important;
  }
 }
+
+/* Mega Fortune mobile cabinet: compact 5x3 reels; keep all controls on screen. */
+@media(max-width:600px){
+ body[data-game="fortune"] .machine{
+  justify-content:center;
+  gap:clamp(3px,.65dvh,7px);
+ }
+ body[data-game="fortune"] .stage{
+  flex:0 1 auto;
+  min-height:0;
+  overflow:hidden;
+ }
+ body[data-game="fortune"] .reels{
+  flex:0 1 auto;
+  height:min(calc((100vw - 42px) * .72), 39dvh);
+  min-height:0;
+  max-height:290px;
+  aspect-ratio:auto;
+  touch-action:pan-y;
+  cursor:pointer;
+ }
+ body[data-game="fortune"] .controls{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(0,1.25fr) minmax(0,1fr);
+  gap:5px;
+  width:100%;
+ }
+ body[data-game="fortune"] .controls button{
+  min-width:0;
+  min-height:42px;
+  padding:7px 3px;
+  font-size:clamp(10px,2.7vw,13px);
+  white-space:nowrap;
+ }
+ body[data-game="fortune"] .controls .spinbtn{
+  min-width:0;
+  font-size:clamp(17px,4.5vw,21px);
+ }
+ body[data-game="fortune"] .controls #auto{
+  grid-column:1/-1;
+  justify-self:center;
+  width:min(62%,240px);
+  min-height:34px;
+ }
+ body[data-game="fortune"] .bottom{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:4px;
+ }
+ body[data-game="fortune"] .bottom button{
+  min-height:29px;
+  padding:5px 7px;
+ }
+ body[data-game="fortune"] .footnote{font-size:8px}
+ body[data-game="fortune"] .reels .cell > img.slot-art,
+ body[data-game="fortune"] .reels .spin-symbol > img.slot-art{
+  width:84%!important;height:84%!important;
+  max-width:84%!important;max-height:84%!important;
+ }
+}
+@media(max-width:600px) and (max-height:690px){
+ body[data-game="fortune"] .top{padding:3px}
+ body[data-game="fortune"] .brand h1{font-size:clamp(17px,4.8vw,23px)}
+ body[data-game="fortune"] .stats{margin:0}
+ body[data-game="fortune"] .reels{height:min(calc((100vw - 42px) * .67),34dvh)}
+ body[data-game="fortune"] .controls button{min-height:35px}
+ body[data-game="fortune"] .controls #auto{min-height:30px}
+}
