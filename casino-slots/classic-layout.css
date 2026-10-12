@@ -224,3 +224,16 @@ body[data-game="fortune"] .reels .spin-symbol > img.slot-art{
  body[data-game="fortune"] .controls button{min-height:35px}
  body[data-game="fortune"] .controls #auto{min-height:30px}
 }
+
+/* Mobile Mega Fortune: use the available viewport rather than a small fixed reel cap. */
+@media(max-width:600px){
+ body[data-game="fortune"] .machine{justify-content:flex-start}
+ body[data-game="fortune"] .stage{flex:1 1 0;min-height:0}
+ body[data-game="fortune"] .reels{
+  flex:1 1 0;
+  height:auto;
+  min-height:0;
+  max-height:none;
+ }
+ body[data-game="fortune"] .controls{flex:0 0 auto}
+}
