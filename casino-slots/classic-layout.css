@@ -169,9 +169,9 @@ body[data-game="fortune"] .reels .spin-symbol > img.slot-art{
  }
  body[data-game="fortune"] .reels{
   flex:0 1 auto;
-  height:min(calc((100vw - 42px) * .72), 39dvh);
+  height:clamp(310px,47dvh,440px);
   min-height:0;
-  max-height:290px;
+  max-height:47dvh;
   aspect-ratio:auto;
   touch-action:pan-y;
   cursor:pointer;
@@ -220,7 +220,7 @@ body[data-game="fortune"] .reels .spin-symbol > img.slot-art{
  body[data-game="fortune"] .top{padding:3px}
  body[data-game="fortune"] .brand h1{font-size:clamp(17px,4.8vw,23px)}
  body[data-game="fortune"] .stats{margin:0}
- body[data-game="fortune"] .reels{height:min(calc((100vw - 42px) * .67),34dvh)}
+ body[data-game="fortune"] .reels{height:clamp(230px,42dvh,350px);max-height:42dvh}
  body[data-game="fortune"] .controls button{min-height:35px}
  body[data-game="fortune"] .controls #auto{min-height:30px}
 }
