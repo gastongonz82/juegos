@@ -23,23 +23,23 @@ else{cube(g,lamp,0,3.3,0,.18,6.6,.18);cube(g,lamp,-side*.8,6.6,0,1.7,.17,.2);bal
 g.position.set(side*(9.5+(i%3)*1.6),0,10-i*9);streetDetails.push(g)}
 const player=new T.Group();scene.add(player);player.position.z=3;const runner=new T.Group();player.add(runner);const runParts={arms:[],legs:[]};
 // Stylized arcade runner: shaped hoodie, face, cap, backpack and articulated limbs.
-const hoodie=mat(0x18c5a0),hoodDark=mat(0x087b75),hair=mat(0x49352f),trim=mat(0xfff6e8),sole=mat(0x303c55);
+const hoodie=mat(0x16b7c6),hoodDark=mat(0x087b75),hair=mat(0x49352f),trim=mat(0xfff6e8),sole=mat(0x303c55);
 ball(runner,M.pants,0,1.23,0,.46,.38,.33);
 const torso=ball(runner,hoodie,0,2.05,0,.59,.74,.39);torso.rotation.x=-.08;
 ball(runner,hoodDark,0,2.68,.12,.44,.29,.37);
-ball(runner,M.skin,0,3.09,-.06,.43,.5,.4);
+ball(runner,M.skin,0,3.09,-.06,.43,.5,.4);ball(runner,M.skin,0,3.01,-.41,.27,.25,.16);
 ball(runner,hair,0,3.45,.01,.43,.22,.39);
-ball(runner,M.red,0,3.52,-.08,.52,.18,.49);
+ball(runner,M.red,0,3.52,-.08,.52,.18,.49);ball(runner,M.red,0,3.55,.18,.47,.13,.36);
 const brim=cube(runner,M.red,0,3.46,-.44,.9,.09,.46);brim.rotation.x=-.12;
 for(const x of [-.17,.17]){ball(runner,trim,x,3.15,-.42,.105,.115,.035);ball(runner,M.glass,x,3.15,-.457,.047,.067,.025);ball(runner,M.skin,x*2.72,3.08,-.01,.1,.17,.13)}
 ball(runner,M.skin,0,2.96,-.455,.12,.13,.12);
 ball(runner,mat(0x9e5c4b),0,2.79,-.444,.19,.04,.025);
-ball(runner,M.blue,0,2.11,.44,.48,.59,.27);
+ball(runner,M.blue,0,2.11,.44,.48,.59,.27);cube(runner,trim,0,2.1,-.39,.34,.18,.07);
 cube(runner,M.yellow,0,2.35,.72,.39,.15,.08);
 for(const x of [-.35,.35]){const strap=cube(runner,hoodDark,x,2.2,-.35,.13,.75,.1);strap.rotation.z=x>0?-.12:.12}
 for(let side of [-1,1]){
  const a=new T.Group();a.position.set(side*.65,2.53,0);runner.add(a);
- ball(a,hoodie,0,-.23,0,.24,.37,.24);ball(a,M.skin,0,-.69,-.03,.18,.31,.19);ball(a,M.skin,0,-.99,-.05,.19,.18,.18);runParts.arms.push({joint:a,side});
+ ball(a,hoodie,0,-.23,0,.24,.37,.24);ball(a,M.skin,0,-.69,-.03,.18,.31,.19);ball(a,hoodDark,0,-.42,0,.24,.09,.24);ball(a,M.skin,0,-.99,-.05,.19,.18,.18);runParts.arms.push({joint:a,side});
  const leg=new T.Group();leg.position.set(side*.27,1.13,0);runner.add(leg);
  ball(leg,M.pants,0,-.29,0,.24,.44,.27);ball(leg,M.pants,0,-.62,-.1,.2,.28,.22);
  ball(leg,M.shoe,0,-.86,-.23,.29,.19,.48);cube(leg,sole,0,-.99,-.26,.58,.08,.9);
@@ -47,7 +47,18 @@ for(let side of [-1,1]){
 }
 const obstacles=[],coins3d=[];let lane=1,vy=0,jump=0,slide=0,roof=0,meters=0,score=0,speed=28,spawnT=0,coinT=0,playing=false,paused=false,dead=false,prev=performance.now(),grace=0;
 const el=id=>document.getElementById(id);el('best').textContent=localStorage.getItem('metroRushBest')||0;
-function train(l,z){const g=new T.Group();world.add(g);const body=cube(g,mat([0xf7b830,0x2b96d0,0xe85359][Math.floor(Math.random()*3)]),0,2.55,0,3.05,4.7,11);cube(g,M.glass,0,4.9,0,2.5,.12,10.5);cube(g,M.stone,0,.4,0,2.9,.32,10.7);ball(g,M.glass,0,3.65,5.55,1.12,1.03,.1);for(let x of [-1.1,1.1]){ball(g,M.yellow,x,1.05,5.56,.19,.2,.13);cube(g,M.glass,x,3.65,5.63,.25,1.8,.1)}for(let s of [-1,1])for(let k=-3;k<=3;k+=2.5)cube(g,M.glass,s*1.54,3.2,k,.07,1.4,1.45);g.position.set(laneX(l),0,z);obstacles.push({g,l,type:'train',hit:false})}
+const trainPaint=[mat(0x1f92c6),mat(0xe64f49),mat(0xf4b72e)],trainWhite=mat(0xf3f4e7),trainDark=mat(0x24394e),trainTrim=mat(0x8596a4,.3),trainLight=mat(0xfff1aa),trainRubber=mat(0x202d38);
+function train(l,z){const g=new T.Group();world.add(g);const paint=trainPaint[Math.floor(Math.random()*trainPaint.length)];
+cube(g,trainDark,0,.75,0,2.7,1,10.8);cube(g,paint,0,2.83,0,3.05,4.15,10.65);
+cube(g,trainWhite,0,4.25,0,3.075,1.1,10.7);cube(g,trainDark,0,4.93,0,2.84,.3,10.35);
+cube(g,trainTrim,0,5.12,0,2.58,.12,9.9);cube(g,trainTrim,0,.46,0,3.12,.22,10.8);
+for(let side of [-1,1]){for(let k=-3.75;k<=3.8;k+=2.55){cube(g,M.glass,side*1.548,3.42,k,.055,1.45,1.55);cube(g,trainTrim,side*1.585,4.24,k,.1,.13,1.8);cube(g,trainTrim,side*1.585,2.61,k,.1,.13,1.8)}
+for(let k of [-2.65,2.65]){cube(g,trainWhite,side*1.57,2.45,k,.08,3.55,1.25);cube(g,trainTrim,side*1.62,2.45,k,.085,3.4,.07)}
+for(let k of [-3.6,3.6]){const wheel=new T.Mesh(new T.CylinderGeometry(.46,.46,.18,12),trainRubber);wheel.rotation.z=Math.PI/2;wheel.position.set(side*1.25,.44,k);g.add(wheel)}}
+cube(g,trainDark,0,3.38,5.39,2.65,2.18,.12);cube(g,M.glass,0,3.58,5.47,2.35,1.53,.08);cube(g,trainTrim,0,2.45,5.49,2.3,.13,.12);
+for(const x of [-1.12,1.12]){ball(g,trainLight,x,1.65,5.51,.22,.25,.11);cube(g,trainTrim,x,4.59,5.47,.55,.12,.1)}
+cube(g,trainDark,0,1.1,5.47,1.25,.38,.16);
+g.position.set(laneX(l),0,z);obstacles.push({g,l,type:'train',hit:false})}
 function barrier(l,z){const g=new T.Group();world.add(g);cube(g,M.red,0,.82,0,2.75,1.55,.4);for(let x of [-.8,.8])cube(g,M.shoe,x,.83,-.24,.35,.18,.1);g.position.set(laneX(l),0,z);obstacles.push({g,l,type:'barrier',hit:false})}
 function coin(l,z,y=1.6){const g=new T.Group();world.add(g);const c=new T.Mesh(new T.TorusGeometry(.52,.19,8,16),M.coin);g.add(c);g.position.set(laneX(l),y,z);coins3d.push({g,l})}
 function announce(t){el('message').textContent=t;el('message').style.opacity=1;setTimeout(()=>el('message').style.opacity=0,550)}
