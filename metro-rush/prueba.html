@@ -59,7 +59,7 @@ fetch(modelUrl,{cache:'no-store'}).then(async response=>{
   const bounds=new T.Box3().setFromObject(model),size=new T.Vector3(),center=new T.Vector3();
   bounds.getSize(size);bounds.getCenter(center);
   if(!Number.isFinite(size.y)||size.y<.01)throw Error('Invalid character bounds');
-  const holder=new T.Group();holder.scale.setScalar(2.65/size.y);
+  const holder=new T.Group();holder.scale.setScalar(1.25/size.y);
   model.position.set(-center.x,-bounds.min.y,-center.z);holder.add(model);
   holder.rotation.y=Math.PI;
   model.traverse(o=>{if(o.isMesh){o.castShadow=true;o.frustumCulled=false}});
