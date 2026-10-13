@@ -267,3 +267,15 @@ body[data-game="fortune"] .reels .spin-symbol > img.slot-art{
  }
  .machine>.stage>.banner{flex:0 0 auto}
 }
+
+/* Installed mobile PWA only: reserve a little more room at the bottom.
+   Shrink the reel row by the same amount, leaving Chrome and desktop intact. */
+@media (display-mode:standalone) and (max-width:600px) and (orientation:portrait){
+ .machine{
+  grid-template-rows:auto auto minmax(0,1fr) auto auto auto!important;
+  padding-bottom:max(12px,env(safe-area-inset-bottom))!important;
+ }
+ .machine>.stage{min-height:0!important}
+ .machine>.controls{margin-top:0!important}
+ .machine>.bottom,.machine>.footnote{display:flex}
+}
