@@ -50,10 +50,16 @@ dialog{width:min(92vw,520px);max-height:85dvh;overflow:auto;background:linear-gr
 }
 
 
-/* Installed-app viewport safety: orbital three-reel cabinet only. */
+/* Installed-app layout only: size the cabinet from the space left after the
+   Android safe areas, and let the reel window occupy its assigned grid row. */
 @media (display-mode:standalone) and (max-width:900px) and (orientation:portrait){
- .casino{height:100dvh;max-height:100dvh;min-height:0;overflow:hidden;padding-bottom:max(5px,env(safe-area-inset-bottom))}
- .machine{height:100%;max-height:100%;min-height:0;overflow:hidden}
- .view,.glass{min-height:0;overflow:hidden}
- .console{min-height:0}
+ .casino{
+  height:100dvh;max-height:100dvh;min-height:0;overflow:hidden;justify-content:flex-start;
+  padding-top:max(8px,env(safe-area-inset-top));
+  padding-bottom:max(8px,env(safe-area-inset-bottom));
+ }
+ .machine{height:auto;max-height:100%;min-height:0;overflow:hidden}
+ .view{height:auto;min-height:0;max-height:100%;overflow:hidden}
+ .glass{height:auto;min-height:0;max-height:none;overflow:hidden}
+ .console{min-height:0;max-height:100%;overflow:hidden}
 }

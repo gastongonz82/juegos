@@ -238,46 +238,32 @@ body[data-game="fortune"] .reels .spin-symbol > img.slot-art{
  body[data-game="fortune"] .controls{flex:0 0 auto}
 }
 
-/* Installed Android PWA only: explicit six-row cabinet.
-   Reserve space for every control before assigning the remainder to reels.
-   Desktop and ordinary Chrome keep their existing flex layout. */
+/* Installed Android PWA only. Keep the fixed controls in the machine's
+   flex flow and give the safe-area-adjusted remainder to the reel window.
+   The normal Chrome and desktop rules above remain untouched. */
 @media (display-mode:standalone) and (max-width:600px) and (orientation:portrait){
  html,body{height:100%;min-height:0;overflow:hidden}
- .shell{height:100dvh;max-height:100dvh;min-height:0;overflow:hidden}
+ .shell{
+  height:100dvh;max-height:100dvh;min-height:0;overflow:hidden;
+  padding:max(3px,env(safe-area-inset-top)) max(3px,env(safe-area-inset-right))
+          max(3px,env(safe-area-inset-bottom)) max(3px,env(safe-area-inset-left));
+ }
  .machine{
-  display:grid!important;
-  grid-template-columns:minmax(0,1fr)!important;
-  grid-template-rows:auto auto minmax(0,1fr) auto auto auto!important;
-  align-content:stretch!important;
-  justify-content:stretch!important;
+  display:flex!important;flex-direction:column!important;
   height:100%!important;min-height:0!important;max-height:100%!important;
   overflow:hidden!important;
  }
  .machine>.top,.machine>.stats,.machine>.controls,.machine>.bottom,.machine>.footnote{
-  min-height:0;min-width:0;margin:0;
+  flex:0 0 auto;min-height:0;min-width:0;margin:0;
  }
- .machine>.stage,body[data-game="fortune"] .machine>.stage{
-  height:100%!important;min-height:0!important;max-height:100%!important;
-  display:flex!important;flex-direction:column!important;
-  overflow:hidden!important;
+ .machine>.stage{
+  flex:1 1 0!important;height:auto!important;min-height:0!important;max-height:none!important;
+  display:flex!important;flex-direction:column!important;overflow:hidden!important;
  }
- .machine>.stage>.reels,body[data-game="fortune"] .machine>.stage>.reels{
+ .machine>.stage>.reels{
   flex:1 1 0!important;height:auto!important;min-height:0!important;
-  max-height:100%!important;overflow:hidden!important;
+  max-height:none!important;overflow:hidden!important;
  }
  .machine>.stage>.banner{flex:0 0 auto}
-}
-
-/* Installed mobile PWA: reserve visible bottom controls by shortening the reel row.
-   Ordinary Chrome and desktop layouts are unchanged. */
-@media (display-mode:standalone) and (max-width:600px) and (orientation:portrait){
- .machine{
-  grid-template-rows:auto auto minmax(0,1fr) auto auto auto!important;
-  padding-bottom:max(12px,env(safe-area-inset-bottom))!important;
- }
- .machine>.stage{min-height:0!important}
- .machine>.controls{margin-top:0!important}
  .machine>.bottom,.machine>.footnote{display:flex}
- .machine>.bottom{min-height:34px}
- .machine>.footnote{min-height:15px}
 }

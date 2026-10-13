@@ -114,10 +114,15 @@ body{background:radial-gradient(ellipse at 50% 25%,#71403366,transparent 65%),li
 @media(max-width:900px) and (orientation:portrait){.machine{max-height:none}}
 
 
-/* Installed-app viewport safety: classic three-reel cabinet only. */
+/* Installed-app layout only: reserve Android safe areas before the cabinet's
+   grid assigns its remaining row to the reel window. */
 @media (display-mode:standalone) and (max-width:900px) and (orientation:portrait){
  html,body{height:100%;min-height:0;overflow:hidden}
- .casino{height:100dvh;min-height:0;max-height:100dvh;overflow:hidden;justify-content:flex-start;padding-bottom:max(5px,env(safe-area-inset-bottom))}
+ .casino{
+  height:100dvh;min-height:0;max-height:100dvh;overflow:hidden;justify-content:flex-start;
+  padding-top:max(8px,env(safe-area-inset-top));
+  padding-bottom:max(8px,env(safe-area-inset-bottom));
+ }
  .machine{flex:1 1 0;min-height:0;max-height:100%;overflow:hidden}
- .glass{min-height:0;max-height:100%;height:100%}
+ .glass{height:auto!important;min-height:0;max-height:none;align-self:stretch}
 }
