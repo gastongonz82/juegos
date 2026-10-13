@@ -45,20 +45,20 @@ for(let side of [-1,1]){
  ball(leg,M.shoe,0,-.86,-.23,.29,.19,.48);cube(leg,sole,0,-.99,-.26,.58,.08,.9);
  runParts.legs.push({joint:leg,side})
 }
-const obstacles=[],coins3d=[];let lane=1,vy=0,jump=0,slide=0,roof=0,meters=0,score=0,speed=21,spawnT=0,coinT=0,playing=false,paused=false,dead=false,prev=performance.now(),grace=0;
+const obstacles=[],coins3d=[];let lane=1,vy=0,jump=0,slide=0,roof=0,meters=0,score=0,speed=28,spawnT=0,coinT=0,playing=false,paused=false,dead=false,prev=performance.now(),grace=0;
 const el=id=>document.getElementById(id);el('best').textContent=localStorage.getItem('metroRushBest')||0;
 function train(l,z){const g=new T.Group();world.add(g);const body=cube(g,mat([0xf7b830,0x2b96d0,0xe85359][Math.floor(Math.random()*3)]),0,2.55,0,3.05,4.7,11);cube(g,M.glass,0,4.9,0,2.5,.12,10.5);cube(g,M.stone,0,.4,0,2.9,.32,10.7);ball(g,M.glass,0,3.65,5.55,1.12,1.03,.1);for(let x of [-1.1,1.1]){ball(g,M.yellow,x,1.05,5.56,.19,.2,.13);cube(g,M.glass,x,3.65,5.63,.25,1.8,.1)}for(let s of [-1,1])for(let k=-3;k<=3;k+=2.5)cube(g,M.glass,s*1.54,3.2,k,.07,1.4,1.45);g.position.set(laneX(l),0,z);obstacles.push({g,l,type:'train',hit:false})}
 function barrier(l,z){const g=new T.Group();world.add(g);cube(g,M.red,0,.82,0,2.75,1.55,.4);for(let x of [-.8,.8])cube(g,M.shoe,x,.83,-.24,.35,.18,.1);g.position.set(laneX(l),0,z);obstacles.push({g,l,type:'barrier',hit:false})}
 function coin(l,z,y=1.6){const g=new T.Group();world.add(g);const c=new T.Mesh(new T.TorusGeometry(.52,.19,8,16),M.coin);g.add(c);g.position.set(laneX(l),y,z);coins3d.push({g,l})}
 function announce(t){el('message').textContent=t;el('message').style.opacity=1;setTimeout(()=>el('message').style.opacity=0,550)}
 function move(dir){if(!playing||paused)return;if(dir==='left')lane=Math.max(0,lane-1);if(dir==='right')lane=Math.min(2,lane+1);if(dir==='up'&&jump<=.01&&slide<=0)vy=roof>0?13.5:17.5;if(dir==='down'&&jump<=.01)slide=.75}
-function reset(){for(const a of obstacles)world.remove(a.g);for(const a of coins3d)world.remove(a.g);obstacles.length=0;coins3d.length=0;lane=1;vy=jump=slide=roof=meters=score=spawnT=coinT=0;speed=21;grace=5;dead=false;paused=false;playing=true;el('overlay').style.display='none';el('pause').textContent='Ⅱ'}
+function reset(){for(const a of obstacles)world.remove(a.g);for(const a of coins3d)world.remove(a.g);obstacles.length=0;coins3d.length=0;lane=1;vy=jump=slide=roof=meters=score=spawnT=coinT=0;speed=28;grace=5;dead=false;paused=false;playing=true;el('overlay').style.display='none';el('pause').textContent='Ⅱ'}
 function finish(){playing=false;dead=true;const best=Math.max(Math.floor(meters),Number(localStorage.getItem('metroRushBest')||0));localStorage.setItem('metroRushBest',best);el('best').textContent=best;el('panel').querySelector('h1').innerHTML='FIN DE<br>CARRERA';el('panel').querySelector('p').textContent='Recorriste '+Math.floor(meters)+' m y juntaste '+score+' monedas.';el('start').textContent='REINTENTAR';el('overlay').style.display='flex'}
 el('start').onclick=reset;el('pause').onclick=()=>{if(!playing)return;paused=!paused;el('pause').textContent=paused?'▶':'Ⅱ';announce(paused?'PAUSA':'¡VAMOS!')};
 addEventListener('keydown',e=>{const k=e.key.toLowerCase();if(['arrowleft','a'].includes(k))move('left');if(['arrowright','d'].includes(k))move('right');if(['arrowup','w',' '].includes(k))move('up');if(['arrowdown','s'].includes(k))move('down');if(['arrowleft','arrowright','arrowup','arrowdown',' '].includes(k))e.preventDefault()});
 let touch=null;addEventListener('touchstart',e=>{touch={x:e.touches[0].clientX,y:e.touches[0].clientY}},{passive:true});addEventListener('touchend',e=>{if(!touch)return;const dx=e.changedTouches[0].clientX-touch.x,dy=e.changedTouches[0].clientY-touch.y;if(Math.max(Math.abs(dx),Math.abs(dy))>25)move(Math.abs(dx)>Math.abs(dy)?(dx>0?'right':'left'):(dy<0?'up':'down'));touch=null},{passive:true});
-function loop(now){requestAnimationFrame(loop);const dt=Math.min(.05,(now-prev)/1000);prev=now;if(playing&&!paused){const dz=speed*dt;meters+=dz*.65;speed=Math.min(42,21+meters*.012);spawnT-=dt;coinT-=dt;grace=Math.max(0,grace-dt);
-if(spawnT<=0){const l=Math.floor(Math.random()*3);(Math.random()<.30?train:barrier)(l,-145);spawnT=Math.max(1.2,2.0-meters*.00025)}
+function loop(now){requestAnimationFrame(loop);const dt=Math.min(.05,(now-prev)/1000);prev=now;if(playing&&!paused){const dz=speed*dt;meters+=dz*.65;speed=Math.min(56,28+meters*.018);spawnT-=dt;coinT-=dt;grace=Math.max(0,grace-dt);
+if(spawnT<=0){const l=Math.floor(Math.random()*3);(Math.random()<.30?train:barrier)(l,-145);spawnT=Math.max(1.05,1.75-meters*.00022)}
 if(coinT<=0){const l=Math.floor(Math.random()*3);for(let k=0;k<5;k++)coin(l,-110-k*2.4);coinT=1.9}
 for(const s of sleepers){s.position.z+=dz;if(s.position.z>12)s.position.z-=173.6}
 for(const s of scenery){s.position.z+=dz*.78;if(s.position.z>24)s.position.z-=288}for(const s of streetDetails){s.position.z+=dz*.78;if(s.position.z>24)s.position.z-=288}
