@@ -237,3 +237,20 @@ body[data-game="fortune"] .reels .spin-symbol > img.slot-art{
  }
  body[data-game="fortune"] .controls{flex:0 0 auto}
 }
+
+/* Installed Chrome PWA: use the actual visible viewport, not an expanded CSS
+   viewport. This applies only to slot cabinets, not other Arcade games. */
+@media(display-mode:standalone), (display-mode:fullscreen){
+ html,body{height:100%;max-height:100%;overflow:hidden!important}
+ .shell{
+  height:100vh;
+  height:100dvh;
+  max-height:100dvh;
+  min-height:0;
+  padding-bottom:max(3px,env(safe-area-inset-bottom));
+ }
+ .machine{height:100%;max-height:100%;min-height:0;overflow:hidden}
+ .stage{flex:1 1 0;min-height:0;overflow:hidden}
+ .reels{height:auto!important;min-height:0!important;max-height:none!important;flex:1 1 0}
+ .controls,.bottom{flex-shrink:0}
+}
