@@ -22,30 +22,49 @@ const tree=i%3!==0;if(tree){cube(g,trunk,0,2,0,.45,4,.45);ball(g,leaves,0,4.6,0,
 else{cube(g,lamp,0,3.3,0,.18,6.6,.18);cube(g,lamp,-side*.8,6.6,0,1.7,.17,.2);ball(g,M.yellow,-side*1.5,6.48,0,.3,.2,.3)}
 g.position.set(side*(9.5+(i%3)*1.6),0,10-i*9);streetDetails.push(g)}
 const player=new T.Group();scene.add(player);player.position.z=3;const runner=new T.Group();player.add(runner);const runParts={arms:[],legs:[]};
-ball(runner,M.pants,0,1.1,0,.5,.62,.38);ball(runner,M.yellow,0,2.12,0,.62,.72,.42);ball(runner,M.skin,0,3.05,0,.45,.49,.43);ball(runner,M.red,0,3.5,-.08,.5,.24,.5);cube(runner,M.red,0,3.42,-.48,.78,.13,.53);ball(runner,M.skin,0,2.91,-.42,.32,.18,.12);
-// Distinctive backpack, hoodie detail and expressive face.
-ball(runner,M.blue,0,2.14,.49,.5,.61,.24);ball(runner,mat(0x392b30),0,3.17,-.41,.34,.13,.07);for(const x of [-.18,.18])ball(runner,M.glass,x,3.14,-.415,.052,.075,.025);
-for(let side of [-1,1]){const a=new T.Group();a.position.set(side*.72,2.5,0);runner.add(a);ball(a,M.yellow,0,-.23,0,.24,.36,.25);ball(a,M.skin,0,-.73,-.05,.19,.38,.2);runParts.arms.push({joint:a,side});const leg=new T.Group();leg.position.set(side*.29,.98,0);runner.add(leg);ball(leg,M.pants,0,-.3,0,.25,.43,.28);ball(leg,M.shoe,0,-.79,-.18,.31,.2,.49);runParts.legs.push({joint:leg,side})}
-const obstacles=[],coins3d=[];let lane=1,vy=0,jump=0,slide=0,roof=0,meters=0,score=0,speed=13,spawnT=0,coinT=0,playing=false,paused=false,dead=false,prev=performance.now(),grace=0;
+// Stylized arcade runner: shaped hoodie, face, cap, backpack and articulated limbs.
+const hoodie=mat(0x18c5a0),hoodDark=mat(0x087b75),hair=mat(0x49352f),trim=mat(0xfff6e8),sole=mat(0x303c55);
+ball(runner,M.pants,0,1.23,0,.46,.38,.33);
+const torso=ball(runner,hoodie,0,2.05,0,.59,.74,.39);torso.rotation.x=-.08;
+ball(runner,hoodDark,0,2.68,.12,.44,.29,.37);
+ball(runner,M.skin,0,3.09,-.06,.43,.5,.4);
+ball(runner,hair,0,3.45,.01,.43,.22,.39);
+ball(runner,M.red,0,3.52,-.08,.52,.18,.49);
+const brim=cube(runner,M.red,0,3.46,-.44,.9,.09,.46);brim.rotation.x=-.12;
+for(const x of [-.17,.17]){ball(runner,trim,x,3.15,-.42,.105,.115,.035);ball(runner,M.glass,x,3.15,-.457,.047,.067,.025);ball(runner,M.skin,x*2.72,3.08,-.01,.1,.17,.13)}
+ball(runner,M.skin,0,2.96,-.455,.12,.13,.12);
+ball(runner,mat(0x9e5c4b),0,2.79,-.444,.19,.04,.025);
+ball(runner,M.blue,0,2.11,.44,.48,.59,.27);
+cube(runner,M.yellow,0,2.35,.72,.39,.15,.08);
+for(const x of [-.35,.35]){const strap=cube(runner,hoodDark,x,2.2,-.35,.13,.75,.1);strap.rotation.z=x>0?-.12:.12}
+for(let side of [-1,1]){
+ const a=new T.Group();a.position.set(side*.65,2.53,0);runner.add(a);
+ ball(a,hoodie,0,-.23,0,.24,.37,.24);ball(a,M.skin,0,-.69,-.03,.18,.31,.19);ball(a,M.skin,0,-.99,-.05,.19,.18,.18);runParts.arms.push({joint:a,side});
+ const leg=new T.Group();leg.position.set(side*.27,1.13,0);runner.add(leg);
+ ball(leg,M.pants,0,-.29,0,.24,.44,.27);ball(leg,M.pants,0,-.62,-.1,.2,.28,.22);
+ ball(leg,M.shoe,0,-.86,-.23,.29,.19,.48);cube(leg,sole,0,-.99,-.26,.58,.08,.9);
+ runParts.legs.push({joint:leg,side})
+}
+const obstacles=[],coins3d=[];let lane=1,vy=0,jump=0,slide=0,roof=0,meters=0,score=0,speed=21,spawnT=0,coinT=0,playing=false,paused=false,dead=false,prev=performance.now(),grace=0;
 const el=id=>document.getElementById(id);el('best').textContent=localStorage.getItem('metroRushBest')||0;
 function train(l,z){const g=new T.Group();world.add(g);const body=cube(g,mat([0xf7b830,0x2b96d0,0xe85359][Math.floor(Math.random()*3)]),0,2.55,0,3.05,4.7,11);cube(g,M.glass,0,4.9,0,2.5,.12,10.5);cube(g,M.stone,0,.4,0,2.9,.32,10.7);ball(g,M.glass,0,3.65,5.55,1.12,1.03,.1);for(let x of [-1.1,1.1]){ball(g,M.yellow,x,1.05,5.56,.19,.2,.13);cube(g,M.glass,x,3.65,5.63,.25,1.8,.1)}for(let s of [-1,1])for(let k=-3;k<=3;k+=2.5)cube(g,M.glass,s*1.54,3.2,k,.07,1.4,1.45);g.position.set(laneX(l),0,z);obstacles.push({g,l,type:'train',hit:false})}
 function barrier(l,z){const g=new T.Group();world.add(g);cube(g,M.red,0,.82,0,2.75,1.55,.4);for(let x of [-.8,.8])cube(g,M.shoe,x,.83,-.24,.35,.18,.1);g.position.set(laneX(l),0,z);obstacles.push({g,l,type:'barrier',hit:false})}
 function coin(l,z,y=1.6){const g=new T.Group();world.add(g);const c=new T.Mesh(new T.TorusGeometry(.52,.19,8,16),M.coin);g.add(c);g.position.set(laneX(l),y,z);coins3d.push({g,l})}
 function announce(t){el('message').textContent=t;el('message').style.opacity=1;setTimeout(()=>el('message').style.opacity=0,550)}
 function move(dir){if(!playing||paused)return;if(dir==='left')lane=Math.max(0,lane-1);if(dir==='right')lane=Math.min(2,lane+1);if(dir==='up'&&jump<=.01&&slide<=0)vy=roof>0?13.5:17.5;if(dir==='down'&&jump<=.01)slide=.75}
-function reset(){for(const a of obstacles)world.remove(a.g);for(const a of coins3d)world.remove(a.g);obstacles.length=0;coins3d.length=0;lane=1;vy=jump=slide=roof=meters=score=spawnT=coinT=0;speed=13;grace=4;dead=false;paused=false;playing=true;el('overlay').style.display='none';el('pause').textContent='Ⅱ'}
+function reset(){for(const a of obstacles)world.remove(a.g);for(const a of coins3d)world.remove(a.g);obstacles.length=0;coins3d.length=0;lane=1;vy=jump=slide=roof=meters=score=spawnT=coinT=0;speed=21;grace=5;dead=false;paused=false;playing=true;el('overlay').style.display='none';el('pause').textContent='Ⅱ'}
 function finish(){playing=false;dead=true;const best=Math.max(Math.floor(meters),Number(localStorage.getItem('metroRushBest')||0));localStorage.setItem('metroRushBest',best);el('best').textContent=best;el('panel').querySelector('h1').innerHTML='FIN DE<br>CARRERA';el('panel').querySelector('p').textContent='Recorriste '+Math.floor(meters)+' m y juntaste '+score+' monedas.';el('start').textContent='REINTENTAR';el('overlay').style.display='flex'}
 el('start').onclick=reset;el('pause').onclick=()=>{if(!playing)return;paused=!paused;el('pause').textContent=paused?'▶':'Ⅱ';announce(paused?'PAUSA':'¡VAMOS!')};
 addEventListener('keydown',e=>{const k=e.key.toLowerCase();if(['arrowleft','a'].includes(k))move('left');if(['arrowright','d'].includes(k))move('right');if(['arrowup','w',' '].includes(k))move('up');if(['arrowdown','s'].includes(k))move('down');if(['arrowleft','arrowright','arrowup','arrowdown',' '].includes(k))e.preventDefault()});
 let touch=null;addEventListener('touchstart',e=>{touch={x:e.touches[0].clientX,y:e.touches[0].clientY}},{passive:true});addEventListener('touchend',e=>{if(!touch)return;const dx=e.changedTouches[0].clientX-touch.x,dy=e.changedTouches[0].clientY-touch.y;if(Math.max(Math.abs(dx),Math.abs(dy))>25)move(Math.abs(dx)>Math.abs(dy)?(dx>0?'right':'left'):(dy<0?'up':'down'));touch=null},{passive:true});
-function loop(now){requestAnimationFrame(loop);const dt=Math.min(.05,(now-prev)/1000);prev=now;if(playing&&!paused){const dz=speed*dt;meters+=dz*.65;speed=Math.min(29,13+meters*.007);spawnT-=dt;coinT-=dt;grace=Math.max(0,grace-dt);
-if(spawnT<=0){const l=Math.floor(Math.random()*3);(Math.random()<.30?train:barrier)(l,-145);spawnT=Math.max(1.45,2.45-meters*.00035)}
+function loop(now){requestAnimationFrame(loop);const dt=Math.min(.05,(now-prev)/1000);prev=now;if(playing&&!paused){const dz=speed*dt;meters+=dz*.65;speed=Math.min(42,21+meters*.012);spawnT-=dt;coinT-=dt;grace=Math.max(0,grace-dt);
+if(spawnT<=0){const l=Math.floor(Math.random()*3);(Math.random()<.30?train:barrier)(l,-145);spawnT=Math.max(1.2,2.0-meters*.00025)}
 if(coinT<=0){const l=Math.floor(Math.random()*3);for(let k=0;k<5;k++)coin(l,-110-k*2.4);coinT=1.9}
 for(const s of sleepers){s.position.z+=dz;if(s.position.z>12)s.position.z-=173.6}
 for(const s of scenery){s.position.z+=dz*.78;if(s.position.z>24)s.position.z-=288}for(const s of streetDetails){s.position.z+=dz*.78;if(s.position.z>24)s.position.z-=288}
 for(let i=obstacles.length-1;i>=0;i--){const o=obstacles[i];o.g.position.z+=dz;if(o.g.position.z>18){world.remove(o.g);obstacles.splice(i,1);continue}if(!o.hit&&grace<=0&&Math.abs(o.g.position.z-3)<(o.type==='train'?5.1:.8)&&Math.abs(o.g.position.x-player.position.x)<1.35){if(o.type==='train'){if(jump>3.7||roof>4.15){roof=4.85;jump=Math.max(0,jump-4.85);vy=Math.max(0,vy);o.hit=true}else{o.hit=true;finish();break}}else if(jump+roof<1.0){o.hit=true;finish();break}}}
 for(let i=coins3d.length-1;i>=0;i--){const c=coins3d[i];c.g.position.z+=dz;c.g.rotation.y+=dt*4;if(c.g.position.z>16){world.remove(c.g);coins3d.splice(i,1);continue}if(Math.abs(c.g.position.z-3)<3.3&&Math.abs(c.g.position.x-player.position.x)<1.85&&Math.abs(jump+1.6-c.g.position.y)<2.1){score++;world.remove(c.g);coins3d.splice(i,1)}}
-vy-=27*dt;jump=Math.max(0,jump+vy*dt);if(jump===0)vy=0;if(roof>0){const support=obstacles.some(o=>o.type==='train'&&Math.abs(o.g.position.z-3)<5.4&&Math.abs(o.g.position.x-player.position.x)<1.35);if(!support){roof=0;vy=Math.min(vy,0)}}slide=Math.max(0,slide-dt);player.position.x+=(laneX(lane)-player.position.x)*Math.min(1,dt*14);player.position.y=jump+roof;runner.scale.y=slide>0?.58:1;runner.position.y=slide>0?-.05:0;runner.rotation.z=Math.sin(now*.012)*.045;for(const p of runParts.arms)p.joint.rotation.x=jump>0?-.35:Math.sin(now*.019)*.72*p.side;for(const p of runParts.legs)p.joint.rotation.x=jump>0?-.25:Math.sin(now*.019)*.72*-p.side;el('meters').textContent=Math.floor(meters);el('coins').textContent=score}
+vy-=27*dt;jump=Math.max(0,jump+vy*dt);if(jump===0)vy=0;if(roof>0){const support=obstacles.some(o=>o.type==='train'&&Math.abs(o.g.position.z-3)<5.4&&Math.abs(o.g.position.x-player.position.x)<1.35);if(!support){roof=0;vy=Math.min(vy,0)}}slide=Math.max(0,slide-dt);player.position.x+=(laneX(lane)-player.position.x)*Math.min(1,dt*14);player.position.y=jump+roof;runner.scale.y=slide>0?.58:1;runner.position.y=slide>0?-.05:0;runner.rotation.z=Math.sin(now*.018)*.04;runner.rotation.x=jump>0?-.09:Math.sin(now*.026)*.028;runner.position.y=(slide>0?-.05:0)+(jump>0?0:Math.abs(Math.sin(now*.023))*.075);for(const p of runParts.arms)p.joint.rotation.x=jump>0?-.35:Math.sin(now*.025)*.8*p.side;for(const p of runParts.legs)p.joint.rotation.x=jump>0?-.25:Math.sin(now*.019)*.72*-p.side;el('meters').textContent=Math.floor(meters);el('coins').textContent=score}
 camera.position.x+=(player.position.x*.4-camera.position.x)*Math.min(1,dt*3);camera.lookAt(player.position.x*.5,2,-24);renderer.render(scene,camera)}
 requestAnimationFrame(loop);addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.fov=innerWidth<innerHeight?75:65;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
 </script></body></html>
