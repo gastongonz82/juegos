@@ -4,6 +4,7 @@
 </style></head><body><div id="hud"><div>🏃 <span id="meters">0</span> m<br>🪙 <b id="coins">0</b></div><div>🏆 <span id="best">0</span></div><button id="pause" aria-label="Pausar">Ⅱ</button></div><div id="message"></div><div id="overlay"><div id="panel"><h1>METRO<br>RUSH</h1><p>¡Corré entre trenes, saltá barreras y juntá monedas!</p><p id="help">📱 Deslizá para moverte, saltar y agacharte.<br>⌨️ Flechas o WASD. Espacio para saltar.</p><button id="start">JUGAR</button></div></div>
 <script type="module">
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.module.js';
+import {GLTFLoader} from 'https://cdn.jsdelivr.net/npm/three@0.160.1/examples/jsm/loaders/GLTFLoader.js';
 const T=THREE,scene=new T.Scene();scene.background=new T.Color(0x86dcff);scene.fog=new T.Fog(0x86dcff,65,205);
 const camera=new T.PerspectiveCamera(65,innerWidth/innerHeight,.1,450);camera.position.set(0,6.6,12);
 const renderer=new T.WebGLRenderer({antialias:true,powerPreference:'high-performance'});renderer.setSize(innerWidth,innerHeight);renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));renderer.outputColorSpace=T.SRGBColorSpace;renderer.shadowMap.enabled=true;renderer.shadowMap.type=T.PCFSoftShadowMap;document.body.prepend(renderer.domElement);
@@ -45,6 +46,15 @@ for(let side of [-1,1]){
  ball(leg,M.shoe,0,-.86,-.23,.29,.19,.48);cube(leg,sole,0,-.99,-.26,.58,.08,.9);
  runParts.legs.push({joint:leg,side})
 }
+// Optional CC0 Quaternius humanoid, with local procedural fallback on network failure.
+let externalRunner=null;const avatarUrl='https://raw.githubusercontent.com/programasweights/avatar/main/public/assets/character.glb';
+new GLTFLoader().load(avatarUrl,gltf=>{
+ const model=gltf.scene;const bounds=new T.Box3().setFromObject(model),size=new T.Vector3(),center=new T.Vector3();bounds.getSize(size);bounds.getCenter(center);
+ if(!size.y||!Number.isFinite(size.y))return;
+ model.position.sub(center);model.position.y+=size.y*.5;model.scale.setScalar(3.7/size.y);
+ model.traverse(o=>{if(o.isMesh){o.castShadow=true;o.frustumCulled=false}});
+ runner.visible=false;player.add(model);externalRunner=model;
+},undefined,e=>console.warn('CC0 character unavailable; fallback runner retained',e));
 const obstacles=[],coins3d=[];let lane=1,vy=0,jump=0,slide=0,roof=0,meters=0,score=0,speed=28,spawnT=0,coinT=0,playing=false,paused=false,dead=false,prev=performance.now(),grace=0;
 const el=id=>document.getElementById(id);el('best').textContent=localStorage.getItem('metroRushBest')||0;
 const trainPaint=[mat(0x1f92c6),mat(0xe64f49),mat(0xf4b72e)],trainWhite=mat(0xf3f4e7),trainDark=mat(0x24394e),trainTrim=mat(0x8596a4,.3),trainLight=mat(0xfff1aa),trainRubber=mat(0x202d38);
@@ -75,7 +85,7 @@ for(const s of sleepers){s.position.z+=dz;if(s.position.z>12)s.position.z-=173.6
 for(const s of scenery){s.position.z+=dz*.78;if(s.position.z>24)s.position.z-=288}for(const s of streetDetails){s.position.z+=dz*.78;if(s.position.z>24)s.position.z-=288}
 for(let i=obstacles.length-1;i>=0;i--){const o=obstacles[i];o.g.position.z+=dz;if(o.g.position.z>18){world.remove(o.g);obstacles.splice(i,1);continue}if(!o.hit&&grace<=0&&Math.abs(o.g.position.z-3)<(o.type==='train'?5.1:.8)&&Math.abs(o.g.position.x-player.position.x)<1.35){if(o.type==='train'){if(jump>3.7||roof>4.15){roof=4.85;jump=Math.max(0,jump-4.85);vy=Math.max(0,vy);o.hit=true}else{o.hit=true;finish();break}}else if(jump+roof<1.0){o.hit=true;finish();break}}}
 for(let i=coins3d.length-1;i>=0;i--){const c=coins3d[i];c.g.position.z+=dz;c.g.rotation.y+=dt*4;if(c.g.position.z>16){world.remove(c.g);coins3d.splice(i,1);continue}if(Math.abs(c.g.position.z-3)<3.3&&Math.abs(c.g.position.x-player.position.x)<1.85&&Math.abs(jump+1.6-c.g.position.y)<2.1){score++;world.remove(c.g);coins3d.splice(i,1)}}
-vy-=27*dt;jump=Math.max(0,jump+vy*dt);if(jump===0)vy=0;if(roof>0){const support=obstacles.some(o=>o.type==='train'&&Math.abs(o.g.position.z-3)<5.4&&Math.abs(o.g.position.x-player.position.x)<1.35);if(!support){roof=0;vy=Math.min(vy,0)}}slide=Math.max(0,slide-dt);player.position.x+=(laneX(lane)-player.position.x)*Math.min(1,dt*14);player.position.y=jump+roof;runner.scale.y=slide>0?.58:1;runner.position.y=slide>0?-.05:0;runner.rotation.z=Math.sin(now*.018)*.04;runner.rotation.x=jump>0?-.09:Math.sin(now*.026)*.028;runner.position.y=(slide>0?-.05:0)+(jump>0?0:Math.abs(Math.sin(now*.023))*.075);for(const p of runParts.arms)p.joint.rotation.x=jump>0?-.35:Math.sin(now*.025)*.8*p.side;for(const p of runParts.legs)p.joint.rotation.x=jump>0?-.25:Math.sin(now*.019)*.72*-p.side;el('meters').textContent=Math.floor(meters);el('coins').textContent=score}
+vy-=27*dt;jump=Math.max(0,jump+vy*dt);if(jump===0)vy=0;if(roof>0){const support=obstacles.some(o=>o.type==='train'&&Math.abs(o.g.position.z-3)<5.4&&Math.abs(o.g.position.x-player.position.x)<1.35);if(!support){roof=0;vy=Math.min(vy,0)}}slide=Math.max(0,slide-dt);player.position.x+=(laneX(lane)-player.position.x)*Math.min(1,dt*14);player.position.y=jump+roof;runner.scale.y=slide>0?.58:1;runner.position.y=slide>0?-.05:0;if(externalRunner){externalRunner.rotation.z=Math.sin(now*.018)*.045;externalRunner.rotation.x=jump>0?-.13:Math.sin(now*.024)*.04;externalRunner.position.y=(jump>0?0:Math.abs(Math.sin(now*.026))*.11)}runner.rotation.z=Math.sin(now*.018)*.04;runner.rotation.x=jump>0?-.09:Math.sin(now*.026)*.028;runner.position.y=(slide>0?-.05:0)+(jump>0?0:Math.abs(Math.sin(now*.023))*.075);for(const p of runParts.arms)p.joint.rotation.x=jump>0?-.35:Math.sin(now*.025)*.8*p.side;for(const p of runParts.legs)p.joint.rotation.x=jump>0?-.25:Math.sin(now*.019)*.72*-p.side;el('meters').textContent=Math.floor(meters);el('coins').textContent=score}
 camera.position.x+=(player.position.x*.4-camera.position.x)*Math.min(1,dt*3);camera.lookAt(player.position.x*.5,2,-24);renderer.render(scene,camera)}
 requestAnimationFrame(loop);addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.fov=innerWidth<innerHeight?75:65;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
 </script></body></html>
