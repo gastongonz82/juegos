@@ -48,7 +48,12 @@ for(let side of [-1,1]){
 }
 // Locally hosted Quaternius Character_Male_1. Never block gameplay on asset errors.
 let character3d=null,characterMixer=null,characterActions={},currentCharacterAction=null;
-new GLTFLoader().load('./assets/Character_Male_1.gltf',gltf=>{
+const modelStatus=document.createElement('div');modelStatus.id='model-status';modelStatus.style.cssText='position:fixed;bottom:8px;left:8px;z-index:8;background:#123b5bdc;color:#fff;padding:5px 9px;border-radius:9px;font:600 12px system-ui;pointer-events:none';modelStatus.textContent='Personaje 3D: cargando…';document.body.append(modelStatus);
+const modelUrl=new URL('./assets/Character_Male_1.gltf',import.meta.url);
+fetch(modelUrl,{cache:'no-store'}).then(async response=>{
+ if(!response.ok)throw Error('HTTP '+response.status+' al descargar personaje');
+ return response.arrayBuffer();
+}).then(buffer=>new Promise((resolve,reject)=>new GLTFLoader().parse(buffer,modelUrl.href.slice(0,modelUrl.href.lastIndexOf('/')+1),resolve,reject))).then(gltf=>{
  try {
   const model=gltf.scene;
   const bounds=new T.Box3().setFromObject(model),size=new T.Vector3(),center=new T.Vector3();
@@ -61,10 +66,10 @@ new GLTFLoader().load('./assets/Character_Male_1.gltf',gltf=>{
   const mixer=new T.AnimationMixer(model);
   for(const clip of gltf.animations)characterActions[clip.name]=mixer.clipAction(clip);
   if(!characterActions.Run)throw Error('Run animation missing');
-  characterMixer=mixer;character3d=holder;player.add(holder);runner.visible=false;
+  characterMixer=mixer;character3d=holder;player.add(holder);runner.visible=false;modelStatus.textContent='Personaje 3D: masculino ✓';
   currentCharacterAction=characterActions.Run;currentCharacterAction.play();
- }catch(err){console.error('Character setup failed',err);runner.visible=true}
-},undefined,err=>{console.warn('Character file unavailable; original runner active',err);runner.visible=true});
+ }catch(err){console.error('Character setup failed',err);modelStatus.textContent='Error personaje: '+err.message;runner.visible=true}
+}).catch(err=>{console.warn('Character file unavailable; original runner active',err);modelStatus.textContent='Error personaje: '+err.message;runner.visible=true});
 function animateCharacter(dt){
  if(!character3d)return;
  const desired=slide>0&&characterActions.Duck?characterActions.Duck:jump>.1&&(characterActions.Jump_Idle||characterActions.Jump)?(characterActions.Jump_Idle||characterActions.Jump):playing&&!paused?characterActions.Run:characterActions.Idle||characterActions.Run;
