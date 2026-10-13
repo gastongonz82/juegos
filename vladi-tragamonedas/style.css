@@ -120,7 +120,7 @@ body{background:radial-gradient(ellipse at 50% 25%,#71403366,transparent 65%),li
  html,body{height:100%;min-height:0;overflow:hidden}
  .casino{
   height:100dvh;min-height:0;max-height:100dvh;overflow:hidden;justify-content:flex-start;
-  padding-top:max(8px,env(safe-area-inset-top));
+  padding-top:calc(max(8px,env(safe-area-inset-top)) + 56px);
   padding-bottom:max(8px,env(safe-area-inset-bottom));
  }
  .machine{flex:1 1 0;min-height:0;max-height:100%;overflow:hidden}

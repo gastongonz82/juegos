@@ -245,7 +245,7 @@ body[data-game="fortune"] .reels .spin-symbol > img.slot-art{
  html,body{height:100%;min-height:0;overflow:hidden}
  .shell{
   height:100dvh;max-height:100dvh;min-height:0;overflow:hidden;
-  padding:max(3px,env(safe-area-inset-top)) max(3px,env(safe-area-inset-right))
+  padding:calc(max(3px,env(safe-area-inset-top)) + 56px) max(3px,env(safe-area-inset-right))
           max(3px,env(safe-area-inset-bottom)) max(3px,env(safe-area-inset-left));
  }
  .machine{
