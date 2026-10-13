@@ -48,7 +48,7 @@ for(let side of [-1,1]){
 }
 // Locally hosted Quaternius Character_Male_1. Never block gameplay on asset errors.
 let character3d=null,characterMixer=null,characterActions={},currentCharacterAction=null;
-const modelStatus=document.createElement('div');modelStatus.id='model-status';modelStatus.style.cssText='position:fixed;bottom:8px;left:8px;z-index:8;background:#123b5bdc;color:#fff;padding:5px 9px;border-radius:9px;font:600 12px system-ui;pointer-events:none';modelStatus.textContent='Personaje 3D: cargando…';document.body.append(modelStatus);
+const modelStatus={set textContent(value){if(value.startsWith('Error'))console.warn(value)}};
 const modelUrl=new URL('./assets/Character_Male_1.gltf',import.meta.url);
 fetch(modelUrl,{cache:'no-store'}).then(async response=>{
  if(!response.ok)throw Error('HTTP '+response.status+' al descargar personaje');
