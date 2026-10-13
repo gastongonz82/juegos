@@ -238,40 +238,19 @@ body[data-game="fortune"] .reels .spin-symbol > img.slot-art{
  body[data-game="fortune"] .controls{flex:0 0 auto}
 }
 
-/* Installed Chrome PWA: use the actual visible viewport, not an expanded CSS
-   viewport. This applies only to slot cabinets, not other Arcade games. */
-@media(display-mode:standalone), (display-mode:fullscreen){
- html,body{height:100%;max-height:100%;overflow:hidden!important}
- .shell{
-  height:100vh;
-  height:100dvh;
-  max-height:100dvh;
-  min-height:0;
-  padding-bottom:max(3px,env(safe-area-inset-bottom));
- }
- .machine{height:100%;max-height:100%;min-height:0;overflow:hidden}
- .stage{flex:1 1 0;min-height:0;overflow:hidden}
- .reels{height:auto!important;min-height:0!important;max-height:none!important;flex:1 1 0}
- .controls,.bottom{flex-shrink:0}
-}
-
-
-/* Installed mobile app: size the entire reel stage to its content.
-   The stage must NOT flex-grow when the reels have a bounded height,
-   otherwise a large empty wooden panel appears below the reels. */
+/* Installed mobile PWA: same responsive flex layout as Chrome.
+   Remove the PWA-only reel caps and centering that caused empty panels. */
 @media (display-mode:standalone) and (max-width:600px) and (orientation:portrait){
- .machine{justify-content:center!important}
+ html,body{height:100%;min-height:0;overflow:hidden}
+ .shell{height:100dvh;max-height:100dvh;min-height:0;overflow:hidden}
+ .machine{height:100%;min-height:0;max-height:100%;justify-content:flex-start!important}
  .stage,body[data-game="fortune"] .stage{
-  flex:0 1 auto!important;
-  height:auto!important;
-  min-height:0!important;
-  max-height:min(48svh,420px)!important;
+  flex:1 1 0!important;height:auto!important;min-height:0!important;
+  max-height:none!important;overflow:hidden
  }
  .reels,body[data-game="fortune"] .reels{
-  flex:0 1 auto!important;
-  height:min(39svh,340px)!important;
-  max-height:39svh!important;
-  min-height:0!important;
+  flex:1 1 0!important;height:auto!important;min-height:0!important;
+  max-height:none!important
  }
- .controls,.bottom,.stats,.top{flex-shrink:0}
+ .top,.stats,.controls,.bottom,.footnote{flex:0 0 auto}
 }
