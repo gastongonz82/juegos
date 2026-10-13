@@ -254,18 +254,3 @@ body[data-game="fortune"] .reels .spin-symbol > img.slot-art{
  .reels{height:auto!important;min-height:0!important;max-height:none!important;flex:1 1 0}
  .controls,.bottom{flex-shrink:0}
 }
-
-/* PWA portrait: cap reel growth instead of stretching it to fill the cabinet.
-   Controls stay in normal flow and the browser layout remains unchanged. */
-@media (display-mode:standalone) and (max-width:600px) and (orientation:portrait){
- .machine{justify-content:center}
- .stage{flex:0 1 auto;min-height:0}
- .reels,body[data-game="fortune"] .reels{
-  flex:0 1 auto!important;
-  height:clamp(165px,33svh,310px)!important;
-  max-height:33svh!important;
-  min-height:0!important;
- }
- body[data-game="fortune"] .stage{flex:0 1 auto}
- .controls,.bottom,.top,.stats{flex-shrink:0}
-}
