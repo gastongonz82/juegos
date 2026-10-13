@@ -19,7 +19,7 @@
 (()=>{'use strict';
 const T=window.THREE;if(!T){document.querySelector('.brand').textContent='3D NO DISPONIBLE';return}
 const canvas=document.querySelector('#scene');let quality=innerWidth<700?.78:1,renderer=new T.WebGLRenderer({canvas,antialias:quality>0.8,powerPreference:'high-performance'});renderer.setPixelRatio(Math.min(devicePixelRatio*quality,1.6));renderer.setSize(innerWidth,innerHeight);renderer.shadowMap.enabled=quality>.8;renderer.shadowMap.type=T.PCFSoftShadowMap;renderer.outputColorSpace=T.SRGBColorSpace;renderer.toneMapping=T.ACESFilmicToneMapping;renderer.toneMappingExposure=1.1;
-const scene=new T.Scene();scene.background=new T.Color('#62d5f3');scene.fog=new T.Fog('#62d5f3',130,370);
+const scene=new T.Scene();scene.background=new T.Color('#55cffa');scene.fog=new T.Fog('#55cffa',160,410);
 const camera=new T.PerspectiveCamera(57,innerWidth/innerHeight,.1,520);camera.position.set(0,6.7,13);camera.lookAt(0,1,-24);
 scene.add(new T.HemisphereLight(0xc7f5ff,0x8b592c,2.15));const sun=new T.DirectionalLight(0xffefc5,3);sun.position.set(-45,72,26);sun.castShadow=quality>.8;sun.shadow.mapSize.set(quality>.8?1024:512,quality>.8?1024:512);sun.shadow.camera.left=-42;sun.shadow.camera.right=42;sun.shadow.camera.top=55;sun.shadow.camera.bottom=-55;sun.shadow.bias=-.0006;scene.add(sun);
 const mat=(c,rough=.8,metal=0)=>new T.MeshStandardMaterial({color:c,roughness:rough,metalness:metal});const M={sand:mat('#c7884a'),sand2:mat('#d5a063'),grass:mat('#38bd59'),grass2:mat('#54ce5c'),curbR:mat('#f45143'),white:mat('#fff1d0'),blue:mat('#13a9d0'),wood:mat('#784526'),wood2:mat('#b96c34'),leaf:mat('#20a850'),leaf2:mat('#50cd54'),leaf3:mat('#168d64'),gold:new T.MeshStandardMaterial({color:'#ffc522',metalness:.42,roughness:.24,emissive:'#763400',emissiveIntensity:.28}),glass:new T.MeshStandardMaterial({color:'#87eaff',roughness:.22,metalness:.12}),chrome:mat('#f5e7c8',.25,.55),black:mat('#202b30',.75),tire:mat('#202327',.92),orange:mat('#f47718',.38),yellow:mat('#ffd522',.36),red:mat('#ef4136',.42),whitePaint:mat('#fff8e2',.4),bluePaint:mat('#2789da',.38)};
@@ -28,10 +28,10 @@ const boxGeo=new T.BoxGeometry(1,1,1),sphereGeo=new T.SphereGeometry(1,20,14);fu
 // keeps detailed scenery while cutting the number of mobile draw calls sharply.
 function bakeGroup(g){g.updateMatrixWorld(true);const positions=[],colors=[],indices=[];for(const child of [...g.children]){if(!child.isMesh||child.material.map)continue;child.updateMatrix();const pa=child.geometry.attributes.position;if(!pa)continue;const tint=child.material.color||new T.Color('#ffffff'),base=positions.length/3;for(let i=0;i<pa.count;i++){const v=new T.Vector3(pa.getX(i),pa.getY(i),pa.getZ(i)).applyMatrix4(child.matrix);positions.push(v.x,v.y,v.z);colors.push(tint.r,tint.g,tint.b)}const source=child.geometry.index,ic=source?source.count:pa.count;for(let i=0;i<ic;i++)indices.push(base+(source?source.getX(i):i));child.geometry.dispose();g.remove(child)}if(!positions.length)return g;const geo=new T.BufferGeometry();geo.setAttribute('position',new T.Float32BufferAttribute(positions,3));geo.setAttribute('color',new T.Float32BufferAttribute(colors,3));geo.setIndex(indices);geo.computeVertexNormals();const baked=new T.Mesh(geo,new T.MeshStandardMaterial({vertexColors:true,roughness:.78}));baked.castShadow=false;baked.receiveShadow=true;g.add(baked);return g}
 // Canyon/tropical ambience
-const sky=new T.Mesh(new T.SphereGeometry(430,20,12),new T.MeshBasicMaterial({color:'#74dafa',side:T.BackSide}));scene.add(sky);
+const sky=new T.Mesh(new T.SphereGeometry(430,20,12),new T.MeshBasicMaterial({color:'#6dd9ff',side:T.BackSide}));scene.add(sky);
 // Soft sun disc and distant layered hills
 ball(scene,mat('#ffe69b',.7),-95,92,-310,23,23,2);
-for(let row=0;row<2;row++){const geo=new T.BufferGeometry(),v=[],idx=[];for(let i=0;i<=60;i++){let x=-310+i*10,z=-245-row*58,y=20+Math.sin(i*.38+row)*10+Math.sin(i*.13)*12;v.push(x,y,z,x,0,z);if(i<60){let a=i*2;idx.push(a,a+1,a+2,a+1,a+3,a+2)}}geo.setAttribute('position',new T.Float32BufferAttribute(v,3));geo.setIndex(idx);geo.computeVertexNormals();scene.add(mesh(geo,mat(row?'#4ec187':'#84d47c'),scene));}
+for(let row=0;row<2;row++){const geo=new T.BufferGeometry(),v=[],idx=[];for(let i=0;i<=60;i++){let x=-310+i*10,z=-245-row*58,y=20+Math.sin(i*.38+row)*10+Math.sin(i*.13)*12;v.push(x,y,z,x,0,z);if(i<60){let a=i*2;idx.push(a,a+1,a+2,a+1,a+3,a+2)}}geo.setAttribute('position',new T.Float32BufferAttribute(v,3));geo.setIndex(idx);geo.computeVertexNormals();scene.add(mesh(geo,mat(row?'#53bf87':'#8fdf88'),scene));}
 // Road segment geometry. Segments continuously recycle and curve with the route.
 const track=new T.Group();scene.add(track);const segments=[];const SEG=14,COUNT=38,ROAD=17.4;
 // Warm, subtly grained road surface inspired by the arcade's sandy/plank courses.
@@ -43,8 +43,8 @@ function makeRoadSegment(z){const g=new T.Group();g.position.z=z;track.add(g);
  // Road shoulder, ribbed red and white curbs
  for(let side of [-1,1]){cube(g,M.curbR,side*(ROAD/2+.48),.12,-SEG/2,.95,.24,SEG);for(let n=0;n<7;n++)cube(g,n%2?M.white:M.curbR,side*(ROAD/2+.48),.27,-1-n*2,.96,.13,1.85);
    // Painted fence with blue lower boards and timber posts
-   for(let n=0;n<4;n++)cube(g,M.blue,side*(ROAD/2+1.35),.63,-1.5-n*3.7,.16,.46,3.5);
-   for(let n=0;n<3;n++){cube(g,M.wood,side*(ROAD/2+1.35),.64,-.1-n*5.6,.25,1.22,.32);cube(g,M.wood2,side*(ROAD/2+1.35),1.02,-.1-n*5.6,.34,.16,.42)}
+   for(let n=0;n<4;n++){cube(g,M.blue,side*(ROAD/2+1.35),.63,-1.5-n*3.7,.16,.46,3.5);cube(g,M.white,side*(ROAD/2+1.35),.95,-1.5-n*3.7,.13,.1,3.5)}
+   for(let n=0;n<3;n++){cube(g,M.wood,side*(ROAD/2+1.35),.64,-.1-n*5.6,.25,1.22,.32);cube(g,M.white,side*(ROAD/2+1.35),1.12,-.1-n*5.6,.37,.22,.43)}
  }
  // Dashed center marks, broad like the arcade lane
  for(let n=0;n<3;n++)cube(g,M.white,0,.065,-2.5-n*4.2,.25,.045,2.35);
@@ -53,7 +53,7 @@ for(let i=0;i<COUNT;i++)makeRoadSegment(16-i*SEG);
 // Stylized trees, palm trees, houses, windmills: reused meshes in scenery groups.
 const scenery=[];
 function makePalm(g){cylinder(g,M.wood,0,3.1,0,.3,.57,6.2,11);for(let i=0;i<9;i++){const a=i*Math.PI*2/9;const length=2.9+(i%3)*.22;rod(g,i%2?M.leaf:M.leaf2,[0,6.1,0],[Math.cos(a)*length,5.15+Math.sin(i)*.16,Math.sin(a)*length],.34,.11);for(let k=1;k<=3;k++){const t=k/4;ball(g,k%2?M.leaf2:M.leaf3,Math.cos(a)*length*t,6.12-(.9*t),Math.sin(a)*length*t,.48,.16,.62)}}ball(g,M.leaf3,0,6.2,0,.72,.55,.72)}
-function makeTree(g){cylinder(g,M.wood,0,1.6,0,.42,.56,3.2,9);for(let i=0;i<3;i++){let o=ball(g,[M.leaf,M.leaf2,M.leaf3][i],(i-1)*.58,3.15+i*.58,(i%2-.5)*.32,1.55-i*.16,1.38-i*.12,1.4-i*.08);o.rotation.y=i*.8}}
+function makeTree(g){cylinder(g,M.wood,0,2,0,.42,.64,4,10);for(let i=0;i<7;i++){const a=i*Math.PI*2/7;const x=Math.cos(a)*1.05,z=Math.sin(a)*.8;ball(g,[M.leaf,M.leaf2,M.leaf3][i%3],x,4.2+(i%3)*.46,z,1.23,1.35,1.18)}ball(g,M.leaf2,0,5.15,0,1.45,1.25,1.35)}
 function makeHouse(g){const wall=mat(['#ffdf85','#f6b47b','#fef4ce','#f6d176'][Math.floor(Math.random()*4)]);cube(g,wall,0,2.5,0,6.2,5,5.1);const roofMat=mat(['#bb4a2b','#b65a31','#cc703b'][Math.floor(Math.random()*3)]);const roof=mesh(new T.ConeGeometry(5.1,3.2,4),roofMat,g,0,6.65,0);roof.rotation.y=Math.PI/4;cube(g,M.wood,0,5.13,0,6.9,.25,5.8);cube(g,M.wood,0,1.6,2.6,1.2,3,.18);for(let x of [-1.9,1.9]){cube(g,M.blue,x,3.3,2.62,1.2,1.15,.18);cube(g,M.white,x,3.3,2.73,1.33,.12,.12);cube(g,M.white,x,3.3,2.73,.12,1.27,.12)}cube(g,M.white,0,.22,0,7,.32,5.9);for(let x of [-2.7,2.7]){cube(g,M.wood2,x,2.55,2.7,.23,4.65,.23);cube(g,M.wood2,x,2.55,-2.7,.23,4.65,.23)}cube(g,M.wood2,0,4.9,2.72,6,.2,.25)}
 function makeWindmill(g){cube(g,M.white,0,4,0,1.5,8,1.5);cylinder(g,M.red,0,7.2,.9,.65,.65,.5,12,'z');for(let i=0;i<4;i++){let a=i*Math.PI/2+.5,blade=cube(g,M.white,Math.sin(a)*2,7.2+Math.cos(a)*2,1.1,.55,4.3,.23);blade.rotation.z=-a}ball(g,M.gold,0,7.2,1.45,.48,.48,.25)}
 function makeBush(g){for(let i=0;i<6;i++)ball(g,i%2?M.leaf:M.leaf2,(Math.random()-.5)*2.6,Math.random()*.6+.35,(Math.random()-.5)*1.3,.72,.7,.72)}
