@@ -238,19 +238,32 @@ body[data-game="fortune"] .reels .spin-symbol > img.slot-art{
  body[data-game="fortune"] .controls{flex:0 0 auto}
 }
 
-/* Installed mobile PWA: same responsive flex layout as Chrome.
-   Remove the PWA-only reel caps and centering that caused empty panels. */
+/* Installed Android PWA only: explicit six-row cabinet.
+   Reserve space for every control before assigning the remainder to reels.
+   Desktop and ordinary Chrome keep their existing flex layout. */
 @media (display-mode:standalone) and (max-width:600px) and (orientation:portrait){
  html,body{height:100%;min-height:0;overflow:hidden}
  .shell{height:100dvh;max-height:100dvh;min-height:0;overflow:hidden}
- .machine{height:100%;min-height:0;max-height:100%;justify-content:flex-start!important}
- .stage,body[data-game="fortune"] .stage{
-  flex:1 1 0!important;height:auto!important;min-height:0!important;
-  max-height:none!important;overflow:hidden
+ .machine{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr)!important;
+  grid-template-rows:auto auto minmax(0,1fr) auto auto auto!important;
+  align-content:stretch!important;
+  justify-content:stretch!important;
+  height:100%!important;min-height:0!important;max-height:100%!important;
+  overflow:hidden!important;
  }
- .reels,body[data-game="fortune"] .reels{
-  flex:1 1 0!important;height:auto!important;min-height:0!important;
-  max-height:none!important
+ .machine>.top,.machine>.stats,.machine>.controls,.machine>.bottom,.machine>.footnote{
+  min-height:0;min-width:0;margin:0;
  }
- .top,.stats,.controls,.bottom,.footnote{flex:0 0 auto}
+ .machine>.stage,body[data-game="fortune"] .machine>.stage{
+  height:100%!important;min-height:0!important;max-height:100%!important;
+  display:flex!important;flex-direction:column!important;
+  overflow:hidden!important;
+ }
+ .machine>.stage>.reels,body[data-game="fortune"] .machine>.stage>.reels{
+  flex:1 1 0!important;height:auto!important;min-height:0!important;
+  max-height:100%!important;overflow:hidden!important;
+ }
+ .machine>.stage>.banner{flex:0 0 auto}
 }
