@@ -48,3 +48,12 @@ dialog{width:min(92vw,520px);max-height:85dvh;overflow:auto;background:linear-gr
  .lower{flex-direction:row;justify-content:space-between;align-items:center;gap:5px}.lower>div{gap:4px}.lower button{min-height:22px;font-size:8px;padding:3px 8px}.lower>span{font-size:8px}
  .view-label{padding-bottom:3px}.message{flex-basis:21px;font-size:9px}
 }
+
+
+/* Installed-app viewport safety: orbital three-reel cabinet only. */
+@media (display-mode:standalone) and (max-width:900px) and (orientation:portrait){
+ .casino{height:100dvh;max-height:100dvh;min-height:0;overflow:hidden;padding-bottom:max(5px,env(safe-area-inset-bottom))}
+ .machine{height:100%;max-height:100%;min-height:0;overflow:hidden}
+ .view,.glass{min-height:0;overflow:hidden}
+ .console{min-height:0}
+}
