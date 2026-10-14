@@ -20,7 +20,8 @@ function buildNavalBoard(data,own,onShoot=shoot){
  for(let col=1;col<=10;col++){const mark=document.createElement('span');mark.textContent=String(col);top.append(mark)}
  for(let row=0;row<10;row++){const mark=document.createElement('span');mark.textContent=String.fromCharCode(65+row);side.append(mark)}
  const grid=document.createElement('div');grid.className='board';
- const sunkCells=new Set((data.targetShots||[]).flatMap(item=>item.sunkCells||[]));
+ const fleetSunkCells=own?(data.ownShips||[]).filter(cells=>cells.every(cell=>(data.ownShots||[]).includes(cell))).flat():[];
+ const sunkCells=new Set([...(data.targetShots||[]).flatMap(item=>item.sunkCells||[]),...fleetSunkCells]);
  const visibleShips=own?(data.ownShips||[]):[...new Map((data.targetShots||[]).filter(item=>item.sunkCells?.length).map(item=>[item.sunkCells.slice().sort((a,b)=>a-b).join(','),item.sunkCells])).values()];
  const fleet=document.createElement('div');fleet.className='fleet-layer';fleet.setAttribute('aria-hidden','true');
  for(const cells of visibleShips){
