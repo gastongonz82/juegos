@@ -8,6 +8,7 @@ client = (root / 'client.js').read_text()
 solo_engine = (root / 'solo-engine.js').read_text()
 damas_engine = (root / 'damas-engine.js').read_text().strip()
 ludo_engine = (root / 'ludo-engine.js').read_text().strip()
+party_engine = (root / 'party-engine.js').read_text().strip()
 manifest = root / '.openai' / 'hosting.json'
 if not manifest.is_file():
     raise SystemExit('Missing .openai/hosting.json; configure the Sites project before packaging.')
@@ -18,7 +19,8 @@ if '__HTML__' not in worker or '__CLIENT__' not in worker:
     raise SystemExit('Worker HTML/client placeholders are missing.')
 client = solo_engine + '\nglobalThis.VladyerikDamas = ' + damas_engine + ';\n' + client
 client += '\nglobalThis.VladyerikLudo = ' + ludo_engine + ';\n'
-output = worker.replace('__HTML__', json.dumps(html, ensure_ascii=False)).replace('__CLIENT__', json.dumps(client, ensure_ascii=False)).replace('__CHECKERS__', damas_engine).replace('__LUDO__', ludo_engine)
+client += '\nglobalThis.VladyerikParty = ' + party_engine + ';\n'
+output = worker.replace('__HTML__', json.dumps(html, ensure_ascii=False)).replace('__CLIENT__', json.dumps(client, ensure_ascii=False)).replace('__CHECKERS__', damas_engine).replace('__LUDO__', ludo_engine).replace('__PARTY__', party_engine)
 dist = root / 'dist'
 (dist / 'server').mkdir(parents=True, exist_ok=True)
 (dist / '.openai').mkdir(parents=True, exist_ok=True)
