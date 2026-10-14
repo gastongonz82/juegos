@@ -1,0 +1,17 @@
+# Entorno de prueba aislado. No publica ni modifica VLADYERIK Arcade.
+# Desplegar desde la rama feature/vladi-juegos-mesa, no desde main.
+services:
+  - type: web
+    name: vladyerik-online-test
+    runtime: node
+    plan: free
+    rootDir: online/server
+    buildCommand: npm install --omit=dev
+    startCommand: npm start
+    healthCheckPath: /health
+    autoDeployTrigger: "off"
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: ALLOWED_ORIGINS
+        value: https://vladyerik.com,https://www.vladyerik.com
