@@ -50,7 +50,7 @@ function shotFeedback(result,who='Tu disparo'){
 function renderMatch(data){
  const screen=$('gameScreen');$('lobbyView')?.classList.add('hidden');screen.classList.remove('hidden');
  if(lastOnlineSnapshot&&data.version!==lastOnlineSnapshot.version){
-  if(data.targetShots.length>lastOnlineSnapshot.targetCount){const result=data.targetShots.at(-1);playSound('fire');window.setTimeout(()=>playSound(result.hit?'hit':'miss'),110)}
+  if(data.targetShots.length>lastOnlineSnapshot.targetCount){const result=data.targetShots.at(-1);window.setTimeout(()=>playSound(result.hit?'hit':'miss'),110)}
   if(data.ownShots.length>lastOnlineSnapshot.ownCount){const cell=data.ownShots.at(-1),hit=data.ownShips.some(ship=>ship.includes(cell)),sunk=hit&&data.ownShips.some(ship=>ship.includes(cell)&&ship.every(position=>data.ownShots.includes(position)));playSound('fire');window.setTimeout(()=>playSound(sunk?'sunk':hit?'hit':'miss'),110)}
   if(data.state==='finished')window.setTimeout(()=>playSound(data.winner?'win':'loss'),420)
  }
@@ -86,14 +86,14 @@ function renderMatch(data){
 function chooseMenu(){$('modeMenu').classList.remove('hidden');$('soloSetup').classList.add('hidden');$('lobbyView').classList.add('hidden');$('gameScreen').classList.add('hidden');onlineMode=false}
 function startOnline(){
  $('modeMenu').classList.add('hidden');$('soloSetup').classList.add('hidden');$('lobbyView').classList.remove('hidden');onlineMode=true;
+ primeAudio();
  if(location.protocol!=='https:'&&location.hostname!=='localhost'){announce('Abrí esta sala desde una conexión segura.');return}
  heartbeat();
 }
 function playSound(kind){
  if(!soundEnabled)return;
  try{
-  const Ctx=window.AudioContext||window.webkitAudioContext;if(!Ctx)return;audioContext ||= new Ctx();
-  if(audioContext.state==='suspended')audioContext.resume().catch(()=>{});
+  primeAudio();if(!audioContext)return;
   const now=audioContext.currentTime;
   const tone=(frequency,end,volume=.12,wave='sine',delay=0)=>{const osc=audioContext.createOscillator(),gain=audioContext.createGain();osc.type=wave;osc.frequency.setValueAtTime(frequency,now+delay);osc.frequency.exponentialRampToValueAtTime(Math.max(35,end),now+delay+.22);gain.gain.setValueAtTime(.001,now+delay);gain.gain.exponentialRampToValueAtTime(volume,now+delay+.012);gain.gain.exponentialRampToValueAtTime(.001,now+delay+.28);osc.connect(gain).connect(audioContext.destination);osc.start(now+delay);osc.stop(now+delay+.3)};
   const noise=(duration,volume,frequency)=>{if(!noiseBuffer){noiseBuffer=audioContext.createBuffer(1,audioContext.sampleRate*.35,audioContext.sampleRate);const channel=noiseBuffer.getChannelData(0);for(let i=0;i<channel.length;i++)channel[i]=Math.random()*2-1}const source=audioContext.createBufferSource(),filter=audioContext.createBiquadFilter(),gain=audioContext.createGain();source.buffer=noiseBuffer;filter.type='lowpass';filter.frequency.setValueAtTime(frequency,now);gain.gain.setValueAtTime(volume,now);gain.gain.exponentialRampToValueAtTime(.001,now+duration);source.connect(filter).connect(gain).connect(audioContext.destination);source.start(now);source.stop(now+duration)};
@@ -105,6 +105,7 @@ function playSound(kind){
   else if(kind==='loss'){tone(330,220,.13,'triangle');tone(220,110,.16,'triangle',.18)}
  }catch{}
 }
+function primeAudio(){if(!soundEnabled)return;try{const Ctx=window.AudioContext||window.webkitAudioContext;if(!Ctx)return;audioContext ||= new Ctx();if(audioContext.state==='suspended')audioContext.resume().catch(()=>{})}catch{}}
 function beginSolo(){
  soloState={difficulty:soloDifficulty,playerShips:VladyerikSolo.makeFleet(),computerShips:VladyerikSolo.makeFleet(),playerShots:[],playerResults:[],computerShots:[],computerResults:[],ai:{shots:[],hits:[]},turn:'player',winner:null,lastShot:null,lastShotOwner:null,lastEvent:null};
  $('modeMenu').classList.add('hidden');$('soloSetup').classList.add('hidden');renderSolo();
@@ -148,7 +149,7 @@ async function createRoom(){if(busy||!selected||selected!=='batalla-naval')retur
 async function joinRoom(roomId,code){if(busy)return;busy=true;try{myRoom=await request('/rooms/'+roomId+'/join',{code});lastRoomVersion=-1;history.replaceState(null,'','/?room='+roomId+(code?'&code='+encodeURIComponent(code):''));updateRoom();await refresh();announce(myRoom.state==='playing'?'Partida iniciada.':'Entraste a la sala.')}catch(error){announce(error.message)}finally{busy=false}}
 async function sendInvite(playerId){if(busy)return;busy=true;try{const result=await request('/invitations',{to:playerId});myRoom=result.room;updateRoom();announce('Invitación enviada a '+result.nickname+'. Esperando respuesta.');await refresh()}catch(error){announce(error.message)}finally{busy=false}}
 async function respond(inviteId,accept){if(busy)return;busy=true;try{if(accept){myRoom=await request('/invitations/'+inviteId+'/respond',{accept:true});lastRoomVersion=-1;updateRoom();announce('Invitación aceptada. ¡A jugar!')}else{await request('/invitations/'+inviteId+'/respond',{accept:false});announce('Invitación rechazada.')}await refresh()}catch(error){announce(error.message)}finally{busy=false}}
-async function shoot(cell){if(!myRoom||busy)return;busy=true;try{myRoom=await request('/rooms/'+myRoom.room+'/action',{cell});lastRoomVersion=-1;updateRoom();announce(myRoom.state==='finished'?(myRoom.winner?'¡Ganaste la partida!':'Tu rival ganó la partida.'):'Disparo enviado.')}catch(error){announce(error.message);await refresh()}finally{busy=false}}
+async function shoot(cell){if(!myRoom||busy)return;busy=true;playSound('fire');try{myRoom=await request('/rooms/'+myRoom.room+'/action',{cell});lastRoomVersion=-1;updateRoom();announce(myRoom.state==='finished'?(myRoom.winner?'¡Ganaste la partida!':'Tu rival ganó la partida.'):'Disparo enviado.')}catch(error){announce(error.message);await refresh()}finally{busy=false}}
 async function leaveRoom(){if(!myRoom||busy)return;busy=true;try{await request('/rooms/'+myRoom.room+'/leave',{});myRoom=null;lastRoomVersion=-1;$('gameScreen').replaceChildren();$('gameScreen').classList.add('hidden');$('lobbyView').classList.remove('hidden');history.replaceState(null,'','/');updateRoom();await refresh();announce('Saliste de la sala.')}catch(error){announce(error.message)}finally{busy=false}}
 $('join').onclick=heartbeat;$('create').onclick=createRoom;$('leave').onclick=leaveRoom;$('refresh').onclick=refresh;
 if(params.has('room'))startOnline();
