@@ -186,6 +186,7 @@ function openGame(game){
  $('gameSelectMenu').classList.add('hidden');$('modeMenu').classList.remove('hidden');
  for(const id of ['soloSetup','checkersSetup','ludoSetup','wordSetup','estancieroSetup'])$(id).classList.add('hidden');
  $('modeSolo').classList.toggle('hidden',onlineOnly);
+ $('modeMenu').classList.toggle('online-only',onlineOnly);
  $('modeOnline').parentElement.style.gridTemplateColumns=onlineOnly?'1fr':'';
  $('modeTitle').textContent=onlineOnly?'Partida multijugador':'Elegí cómo jugar';
  $('modeGameName').textContent=gameName(game).toLocaleUpperCase('es-AR');
