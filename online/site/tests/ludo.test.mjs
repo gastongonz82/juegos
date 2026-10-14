@@ -10,7 +10,8 @@ test('Ludo admits two to four players with four tokens each',()=>{
 test('Ludo player view exposes the numeric solo turn as an enabled player turn',()=>{
   const game=Ludo.newGame(2);game.players=[{nickname:'Vos'},{nickname:'Computadora'}];
   const human=Ludo.playerView(game,0),computer=Ludo.playerView({...game,turn:1},0);
-  assert.equal(human.turn,true);assert.equal(human.turnSeat,0);assert.equal(computer.turn,false);assert.equal(computer.turnSeat,1);
+  assert.equal(human.turn,0);assert.equal(human.isUserTurn,true);assert.equal(human.turnSeat,0);assert.deepEqual(Ludo.legalTokens({...human,dice:6},human.turnSeat),[0,1,2,3]);
+  assert.equal(computer.turn,1);assert.equal(computer.isUserTurn,false);assert.equal(computer.turnSeat,1);
 });
 
 test('a token leaves its yard only on a six, and a six grants another turn',()=>{

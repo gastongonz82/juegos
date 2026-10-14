@@ -14,7 +14,7 @@
     return {players:Array(count).fill(null),tokens:Array.from({length:count},()=>Array(4).fill(-1)),turn:0,dice:null,consecutiveSixes:Array(count).fill(0),winner:null,lastAction:null,state:'playing'};
   }
   function playerView(state,seat=0){
-    return {...state,turn:state.turn===seat,turnSeat:state.turn,winnerSeat:state.winner,winner:state.winner===null?null:state.winner===seat};
+    return {...state,turnSeat:state.turn,isUserTurn:state.turn===seat,winnerSeat:state.winner};
   }
   const activePlayers=state=>state.players.map((p,i)=>p?i:i).filter(i=>i<state.tokens.length);
   function nextPlayer(state,from){
