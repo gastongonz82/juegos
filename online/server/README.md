@@ -1,21 +1,29 @@
-# VLADYERIK Online — servidor de pruebas
+# VLADYERIK Online — backend de prueba
 
-Backend Node.js + WebSocket para presencia, invitaciones y Batalla Naval entre dos personas. Las flotas y disparos se gestionan en el servidor: el cliente no recibe la ubicación de los barcos enemigos hasta que los acierta.
+Servidor Node.js + WebSocket para presencia, salas públicas, salas privadas por enlace o invitación, y partidas de Batalla Naval entre dos jugadores. El servidor genera y conserva las flotas, valida turnos y tiros, y sólo revela los barcos rivales cuando reciben un impacto.
 
-## Arranque local
+## Ejecutar en local
 
 ```sh
 npm install
 ALLOWED_ORIGINS=http://localhost:5500,http://localhost:8787 npm start
 ```
 
-Servir la carpeta raíz del repositorio en localhost:5500 y abrir `/online/`. Configurar la dirección WebSocket mediante `online/config.js`.
+Serví la raíz del repositorio en `http://localhost:5500`, abrí `/online/` y establecé `window.VLADI_ONLINE_WS = 'ws://localhost:8787'` en `online/config.js` para pruebas locales. No uses ese endpoint en una página HTTPS; la web publicada necesita `wss://`.
 
-## Antes de producción
+## Comprobaciones
 
-- Desplegar en un servidor Node con HTTPS y WebSocket seguro (`wss://`), configurar `ALLOWED_ORIGINS=https://vladyerik.com`.
-- Configurar `online/config.js` con el endpoint público.
-- Añadir autenticación, límites por IP, protección antiabuso, persistencia y recuperación de partidas antes de abrir a todo público.
-- La implementación actual pierde las partidas al reiniciar el proceso; las desconexiones terminan la partida.
-- Solo Batalla Naval tiene protocolo multijugador. Los otros cinco juegos siguen pendientes.
-- No publicar la sala ni enlazarla desde Arcade hasta completar pruebas entre dos dispositivos reales.
+```sh
+npm run check
+npm test
+```
+
+La prueba de integración crea clientes WebSocket separados en el mismo proceso de prueba y comprueba presencia, una sala pública, una sala privada con código, invitación, inicio de partida, secreto de flota, tiros y turnos. Es una prueba local de protocolo; no sustituye una partida desde dos celulares conectados por Internet.
+
+## Estado y requisitos antes de publicar
+
+- Sólo Batalla Naval implementa partidas online. Damas, Ludo Matic, Tutti Frutti, ¡Basta! y Estanciero se muestran como próximos y no permiten crear partidas.
+- El servidor mantiene jugadores, invitaciones y partidas en memoria. Se pierden al reiniciar; si un jugador se desconecta, la partida termina.
+- No incluye cuentas, moderación, persistencia, reanudación, protección contra abuso, límites por IP ni métricas.
+- `online/config.js` queda vacío hasta que el servidor se despliegue y se verifique con WSS.
+- No conectar desde la web publicada ni enlazar el Arcade hasta probar el endpoint WSS y una partida real desde dos dispositivos distintos.
