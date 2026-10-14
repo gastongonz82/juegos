@@ -48,13 +48,14 @@
     .board{position:relative;isolation:isolate;overflow:hidden;background-color:#0a3045;background-image:radial-gradient(ellipse at 50% 46%,#3983a51b,transparent 64%),repeating-linear-gradient(0deg,#b8e8f008 0 1px,transparent 1px 4px),linear-gradient(145deg,#0e3850,#09283b 58%,#0c3549)}
     .board:after{content:"";position:absolute;inset:-40%;z-index:3;pointer-events:none;opacity:.22;background:conic-gradient(from 0deg at 50% 50%,transparent 0 82%,#68c6d72b 90%,transparent 94%);animation:sonarSweep 16s linear infinite}
     @keyframes sonarSweep{to{transform:rotate(1turn)}}
-    .fleet-layer{position:absolute;inset:0;z-index:0;display:grid;grid-template-columns:repeat(10,minmax(0,1fr));grid-template-rows:repeat(10,minmax(0,1fr));pointer-events:none}
+    .fleet-layer{position:absolute;inset:0;z-index:4;display:grid;grid-template-columns:repeat(10,minmax(0,1fr));grid-template-rows:repeat(10,minmax(0,1fr));pointer-events:none}
     .warship{width:100%;height:100%;overflow:visible;opacity:.98;filter:drop-shadow(0 1px 3px #020b12e0)}.ship-shape{transform-box:fill-box;transform-origin:center}
     .warship .wake{fill:none;stroke:#83d9e8;stroke-opacity:.9;stroke-width:2.5;stroke-dasharray:4 4}.warship .hull{fill:#527e90;fill-opacity:.98;stroke:#f1f6ee;stroke-width:2.8}.warship .deck{fill:#c4a96d;fill-opacity:.98;stroke:#fff0bd;stroke-width:1.6}.warship .stripe{fill:none;stroke:#24394c;stroke-width:2;opacity:1}.warship .bridge{fill:#3c6175;stroke:#fff0bd;stroke-width:2}.warship .turret{fill:#b8c9c8;stroke:#273e4d;stroke-width:1.4}.warship .barrel{fill:none;stroke:#f5f7ed;stroke-width:3.5;stroke-linecap:round}.warship .radar-dot{fill:#ffe092;filter:drop-shadow(0 0 3px #ffd87e)}
     .warship-sunk{filter:grayscale(.72) brightness(.8) drop-shadow(0 0 5px #fa6b45)}.warship-sunk .wake{stroke:#ff906477}
     .board button{position:relative;z-index:2;background-color:#10364bdb;background-image:linear-gradient(145deg,#1b4b61a8,#0c2e43bd);border-color:#7198a8aa;transition:background-color .14s,box-shadow .14s,transform .14s}
     .board button.ship:not(.hit):not(.miss){background:transparent;border-color:#d9e4d355;box-shadow:none}
     .board button.hit{background:radial-gradient(circle,#ffc47a 0%,#c45742 58%,#6d302f 100%);box-shadow:inset 0 0 8px #ffe3a5aa,0 0 9px #ff744d66}
+    .board button.hit,.board button.miss{z-index:5}
     .board button.miss{background:radial-gradient(circle,#9de6f0 0%,#276e8d 52%,#10415e 100%);box-shadow:inset 0 0 9px #c7f8ff75}
     .board button.sunk{box-shadow:inset 0 0 0 2px #ffd28b,0 0 10px #f5b75a99}
     .board button.hit.shot-flash:after,.board button.miss.shot-flash:after{content:"";position:absolute;inset:12%;border:2px solid #fff4cf;border-radius:50%;animation:impactRing .58s ease-out both;pointer-events:none}
