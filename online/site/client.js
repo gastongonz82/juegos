@@ -1,7 +1,7 @@
 (()=>{'use strict';
 const catalogue=[['batalla-naval','⚓','Batalla Naval',2,true],['damas','♟','Damas',2,false],['ludo-matic','🎲','Ludo Matic',4,false],['tutti-frutti','✏️','Tutti Frutti',8,false],['basta','⏱','¡Basta!',8,false],['estanciero','🏠','Estanciero',6,false]];
 const $=id=>document.getElementById(id),games=$('games'),notice=$('notice'),params=new URLSearchParams(location.search);
-let selected='batalla-naval',players=[],rooms=[],invitations=[],myRoom=null,token=localStorage.getItem('vladi_online_token')||crypto.randomUUID().replaceAll('-','')+crypto.randomUUID().replaceAll('-',''),busy=false,connected=false,lastRoomVersion=-1,onlineMode=false,soloDifficulty='normal',soloState=null,soundEnabled=localStorage.getItem('vladi_naval_sound_v2')!=='off',audioContext=null,noiseBuffer=null;
+let selected='batalla-naval',players=[],rooms=[],invitations=[],myRoom=null,token=localStorage.getItem('vladi_online_token')||crypto.randomUUID().replaceAll('-','')+crypto.randomUUID().replaceAll('-',''),busy=false,connected=false,lastRoomVersion=-1,lastOnlineSnapshot=null,onlineMode=false,soloDifficulty='normal',soloState=null,soundEnabled=localStorage.getItem('vladi_naval_sound_v2')!=='off',audioContext=null,noiseBuffer=null;
 localStorage.setItem('vladi_online_token',token);
 for(const [id,icon,name,max,ready] of catalogue){const button=document.createElement('button');button.type='button';button.className='game'+(id===selected?' active':'');button.disabled=!ready;const glyph=document.createElement('span');glyph.textContent=icon;button.append(glyph,document.createTextNode(name));if(!ready){const small=document.createElement('small');small.textContent='En preparación';button.append(small)}button.onclick=()=>{selected=id;for(const item of games.children)item.classList.toggle('active',item===button);$('selection').textContent=name+' · hasta '+max+' jugadores';drawPlayers()};games.append(button)}
 $('nick').value=localStorage.getItem('vladi_online_nick')||'';$('nick').addEventListener('change',()=>localStorage.setItem('vladi_online_nick',$('nick').value.trim()));
@@ -49,6 +49,12 @@ function shotFeedback(result,who='Tu disparo'){
 }
 function renderMatch(data){
  const screen=$('gameScreen');$('lobbyView')?.classList.add('hidden');screen.classList.remove('hidden');
+ if(lastOnlineSnapshot&&data.version!==lastOnlineSnapshot.version){
+  if(data.targetShots.length>lastOnlineSnapshot.targetCount){const result=data.targetShots.at(-1);playSound('fire');window.setTimeout(()=>playSound(result.hit?'hit':'miss'),110)}
+  if(data.ownShots.length>lastOnlineSnapshot.ownCount){const cell=data.ownShots.at(-1),hit=data.ownShips.some(ship=>ship.includes(cell)),sunk=hit&&data.ownShips.some(ship=>ship.includes(cell)&&ship.every(position=>data.ownShots.includes(position)));playSound('fire');window.setTimeout(()=>playSound(sunk?'sunk':hit?'hit':'miss'),110)}
+  if(data.state==='finished')window.setTimeout(()=>playSound(data.winner?'win':'loss'),420)
+ }
+ lastOnlineSnapshot={version:data.version,targetCount:data.targetShots.length,ownCount:data.ownShots.length};
  if(lastRoomVersion===data.version&&$('matchArea'))return;
  lastRoomVersion=data.version;screen.replaceChildren();
  const shell=document.createElement('div');shell.className='game-shell';
@@ -74,6 +80,7 @@ function renderMatch(data){
  const legend=document.createElement('div');legend.className='legend';const hitLegend=document.createElement('span');hitLegend.innerHTML='<i class="legend-hit"></i> Impacto';const missLegend=document.createElement('span');missLegend.innerHTML='<i></i> Agua';legend.append(hitLegend,missLegend);card.append(legend);panel.append(card);
  const details=document.createElement('details');details.className='own-details';const summary=document.createElement('summary');summary.textContent='Mi flota · ver tablero propio';const ownWrap=document.createElement('div');ownWrap.className='own-board-wrap';ownWrap.append(buildNavalBoard(data,true));details.append(summary,ownWrap);panel.append(details);
  const leave=document.createElement('button');leave.className='secondary leave-match';leave.textContent=data.state==='playing'?'Salir de la partida':'Volver al lobby';leave.onclick=leaveRoom;panel.append(leave);
+ const sound=document.createElement('button');sound.type='button';sound.className='secondary sound-toggle online-sound-toggle';sound.setAttribute('aria-pressed',String(soundEnabled));sound.textContent=soundEnabled?'♫ Sonido activado':'🔇 Sonido desactivado';sound.onclick=()=>{soundEnabled=!soundEnabled;localStorage.setItem('vladi_naval_sound_v2',soundEnabled?'on':'off');playSound('fire');renderMatch(data)};panel.append(sound);
  shell.append(top,panel);screen.append(shell)
 }
 function chooseMenu(){$('modeMenu').classList.remove('hidden');$('soloSetup').classList.add('hidden');$('lobbyView').classList.add('hidden');$('gameScreen').classList.add('hidden');onlineMode=false}
