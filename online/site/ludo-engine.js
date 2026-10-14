@@ -66,7 +66,7 @@
     if(landing&&!SAFE.has((STARTS[player]+to)%52))for(let p=0;p<next.tokens.length;p++)if(p!==player)next.tokens[p].forEach((progress,i)=>{
       if(progress>=0&&progress<52&&JSON.stringify(boardCell(p,progress))===JSON.stringify(landing)){next.tokens[p][i]=-1;captured.push({player:p,token:i});}
     });
-    next.dice=null;next.lastAction={type:'move',player,token,from,to,captured};
+    next.dice=null;next.lastAction={type:'move',player,token,from,to,dice,captured};
     if(next.tokens[player].every(progress=>progress===57)){next.winner=player;next.state='finished';return next;}
     if(dice!==6){next.turn=nextPlayer(next,player);next.consecutiveSixes[player]=0;}
     return next;

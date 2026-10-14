@@ -18,7 +18,7 @@ test('a token leaves its yard only on a six, and a six grants another turn',()=>
   const game=Ludo.newGame(2);game.players=[{nickname:'A'},{nickname:'B'}];
   const noMove=Ludo.roll(game,0,5);assert.equal(noMove.turn,1);assert.equal(noMove.dice,null);
   const six=Ludo.roll(noMove,1,6);assert.deepEqual(Ludo.legalTokens(six),[0,1,2,3]);
-  const moved=Ludo.move(six,1,0);assert.equal(moved.tokens[1][0],0);assert.equal(moved.turn,1);assert.equal(moved.dice,null);
+  const moved=Ludo.move(six,1,0);assert.equal(moved.tokens[1][0],0);assert.equal(moved.turn,1);assert.equal(moved.dice,null);assert.equal(moved.lastAction.dice,6);
 });
 
 test('three consecutive sixes forfeit the turn',()=>{
