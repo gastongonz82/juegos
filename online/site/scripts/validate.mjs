@@ -1,0 +1,15 @@
+import assert from 'node:assert/strict';
+import { access, readFile } from 'node:fs/promises';
+import { spawnSync } from 'node:child_process';
+const root = new URL('../', import.meta.url);
+const worker = new URL('../dist/server/index.js', import.meta.url);
+const html = await readFile(worker, 'utf8');
+assert.match(html, /export default \{ async fetch/);
+assert.match(html, /VLADYERIK ARCADE/);
+assert.match(html, /\?room=/);
+assert.match(html, /online_rooms/);
+await access(new URL('../dist/.openai/hosting.json', import.meta.url));
+const syntax = spawnSync(process.execPath, ['--check', worker.pathname], { encoding: 'utf8' });
+assert.equal(syntax.status, 0, syntax.stderr);
+await import(worker.href);
+console.log('Worker ESM and packaged assets are valid.');

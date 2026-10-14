@@ -1,29 +1,7 @@
-# VLADYERIK Online — backend de prueba
+# VLADYERIK Online — prototipo local anterior
 
-Servidor Node.js + WebSocket para presencia, salas públicas, salas privadas por enlace o invitación, y partidas de Batalla Naval entre dos jugadores. El servidor genera y conserva las flotas, valida turnos y tiros, y sólo revela los barcos rivales cuando reciben un impacto.
+Este directorio conserva el primer prototipo Node.js/WebSocket y sus pruebas de protocolo. No es el servidor publicado ni lo usa ChatGPT Sites.
 
-## Ejecutar en local
+La integración de prueba para Sites está en `../site/`: un Worker HTTP de Sites con D1, presencia temporal, salas públicas y privadas, invitaciones y Batalla Naval. Sigue el patrón recuperado en los cinco juegos publicados. No desplegar este servidor Node por separado ni conectar `config.js` a un servicio externo.
 
-```sh
-npm install
-ALLOWED_ORIGINS=http://localhost:5500,http://localhost:8787 npm start
-```
-
-Serví la raíz del repositorio en `http://localhost:5500`, abrí `/online/` y establecé `window.VLADI_ONLINE_WS = 'ws://localhost:8787'` en `online/config.js` para pruebas locales. No uses ese endpoint en una página HTTPS; la web publicada necesita `wss://`.
-
-## Comprobaciones
-
-```sh
-npm run check
-npm test
-```
-
-La prueba de integración crea clientes WebSocket separados en el mismo proceso de prueba y comprueba presencia, una sala pública, una sala privada con código, invitación, inicio de partida, secreto de flota, tiros y turnos. Es una prueba local de protocolo; no sustituye una partida desde dos celulares conectados por Internet.
-
-## Estado y requisitos antes de publicar
-
-- Sólo Batalla Naval implementa partidas online. Damas, Ludo Matic, Tutti Frutti, ¡Basta! y Estanciero se muestran como próximos y no permiten crear partidas.
-- El servidor mantiene jugadores, invitaciones y partidas en memoria. Se pierden al reiniciar; si un jugador se desconecta, la partida termina.
-- No incluye cuentas, moderación, persistencia, reanudación, protección contra abuso, límites por IP ni métricas.
-- `online/config.js` queda vacío hasta que el servidor se despliegue y se verifique con WSS.
-- No conectar desde la web publicada ni enlazar el Arcade hasta probar el endpoint WSS y una partida real desde dos dispositivos distintos.
+Validá el proyecto de Sites desde su checkout con `npm run build`, `npm run validate` y `npm test`. Estas pruebas de lógica no sustituyen la partida solicitada entre dos celulares reales.
