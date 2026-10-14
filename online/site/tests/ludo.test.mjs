@@ -7,6 +7,12 @@ test('Ludo admits two to four players with four tokens each',()=>{
   assert.throws(()=>Ludo.newGame(1),RangeError);assert.throws(()=>Ludo.newGame(5),RangeError);
 });
 
+test('Ludo player view exposes the numeric solo turn as an enabled player turn',()=>{
+  const game=Ludo.newGame(2);game.players=[{nickname:'Vos'},{nickname:'Computadora'}];
+  const human=Ludo.playerView(game,0),computer=Ludo.playerView({...game,turn:1},0);
+  assert.equal(human.turn,true);assert.equal(human.turnSeat,0);assert.equal(computer.turn,false);assert.equal(computer.turnSeat,1);
+});
+
 test('a token leaves its yard only on a six, and a six grants another turn',()=>{
   const game=Ludo.newGame(2);game.players=[{nickname:'A'},{nickname:'B'}];
   const noMove=Ludo.roll(game,0,5);assert.equal(noMove.turn,1);assert.equal(noMove.dice,null);

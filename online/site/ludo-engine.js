@@ -13,6 +13,9 @@
     if(!Number.isInteger(count)||count<2||count>4)throw new RangeError('Ludo admite de 2 a 4 jugadores.');
     return {players:Array(count).fill(null),tokens:Array.from({length:count},()=>Array(4).fill(-1)),turn:0,dice:null,consecutiveSixes:Array(count).fill(0),winner:null,lastAction:null,state:'playing'};
   }
+  function playerView(state,seat=0){
+    return {...state,turn:state.turn===seat,turnSeat:state.turn,winnerSeat:state.winner,winner:state.winner===null?null:state.winner===seat};
+  }
   const activePlayers=state=>state.players.map((p,i)=>p?i:i).filter(i=>i<state.tokens.length);
   function nextPlayer(state,from){
     for(let step=1;step<=state.tokens.length;step++){
@@ -89,5 +92,5 @@
     };
     return legal.reduce((best,current)=>score(current)>score(best)?current:best,legal[0]);
   }
-  return {PATH,STARTS,HOME,SAFE,COLORS,newGame,boardCell,legalTokens,roll,move,aiToken,nextPlayer};
+  return {PATH,STARTS,HOME,SAFE,COLORS,newGame,playerView,boardCell,legalTokens,roll,move,aiToken,nextPlayer};
 })()
