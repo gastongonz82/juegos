@@ -4,17 +4,23 @@
     'tutti-frutti': { rounds: 5, seconds: 60, categories: ['Nombre', 'Animal', 'País o provincia', 'Comida', 'Color', 'Objeto'] },
     basta: { rounds: 5, seconds: 35, categories: ['Nombre', 'Animal', 'Lugar', 'Comida', 'Marca', 'Famoso'] }
   };
-  const COMPUTER_WORD_BANK = {
-    nombre:'Ana Bruno Carla Diego Elena Facundo Gabriela Hugo Ines Joaquin Karen Lucas Marta Nicolas Olivia Pedro Quimey Rocio Santiago Tomas Ursula Valeria Walter Ximena Yolanda Zoe'.split(' '),
-    animal:'aguila ballena caballo delfin elefante foca gato hipopotamo iguana jirafa koala leon mono nutria oso perro quetzal raton serpiente tortuga urraca vaca wombat xerus yak zorro'.split(' '),
-    lugar:'Argentina Bolivia Chile Formosa Guatemala Honduras India Japon Kenia Lima Mexico Neuquen Oman Paraguay Quito Rosario Salta Tucuman Uruguay Venezuela Washington Xalapa Yemen Zaragoza'.split(' '),
-    country:'Argentina Bolivia Chile Dinamarca Ecuador Francia Grecia Haiti Italia Japon Kenia Laos Mexico Noruega Oman Paraguay Qatar Rusia Suecia Turquia Uruguay Vietnam Yemen Zambia'.split(' '),
-    comida:'arroz batata canelones durazno empanada fideos guiso humita isla jamon kiwi lentejas milanesa osobuco pizza queso ravioles sopa tortilla uvas verduras wok yogurt zapallo'.split(' '),
-    color:'azul blanco celeste dorado escarlata fucsia gris habano indigo jade kaki lila marron negro ocre plateado rojo salmon turquesa uva verde whisky xantico yellow zafiro'.split(' '),
-    objeto:'anillo botella cuchara dado escoba frasco guitarra hacha iman jarra llave mochila navaja olla pelota quitasol reloj silla taza uniforme ventilador wok xilofono yoyo zapato'.split(' '),
-    marca:'Adidas Baggio Chevrolet Danone Epson Fiat Gillette Honda Isadora Jumbo Kodak Lego Motorola Nike Oreo Pepsi Quilmes Renault Samsung Toyota Uber Visa Whirlpool Xerox Yamaha Zara'.split(' '),
-    famoso:'Alberto Borges Charly Diego Einstein Frida Gardel Homero Isabel Messi Newton Oprah Picasso Quino Ricky Shakira Tita Ulises Violeta Walt Xuxa Yupanqui Zitarrosa'.split(' ')
+  const CATEGORY_WORDS = {
+    nombre:`Agustín|Alberto|Alejandro|Alicia|Ana|Andrés|Antonio|Ariel|Beatriz|Benjamín|Brenda|Bruno|Camila|Carla|Carlos|Carmen|Cecilia|Clara|Claudio|Daniel|Dario|David|Diego|Dolores|Eduardo|Elena|Emilia|Emilio|Esteban|Eva|Facundo|Federico|Felipe|Fernanda|Francisco|Gabriel|Gabriela|Gastón|Gerardo|Gonzalo|Guadalupe|Guillermo|Héctor|Hugo|Ignacio|Inés|Irene|Isabel|Iván|Jacinta|Javier|Jazmín|Jesús|Joaquín|Jorge|José|Juan|Julieta|Julio|Karen|Lautaro|Laura|Leandro|Leonardo|Lilian|Lorenzo|Lucía|Lucas|Luis|Manuel|Marcela|Marcos|María|Mariano|Marta|Martín|Mateo|Matías|Micaela|Miguel|Milagros|Nahuel|Nicolás|Noelia|Octavio|Olivia|Omar|Oscar|Pablo|Paula|Pedro|Priscila|Rafael|Ramiro|Raúl|Ricardo|Roberto|Rocío|Rodrigo|Rosa|Sabrina|Samuel|Sandra|Santiago|Sergio|Silvia|Sofía|Tadeo|Tamara|Tatiana|Teodoro|Tomás|Valentina|Valeria|Vanesa|Vicente|Victoria|Walter|Ximena|Yamila|Yesica|Yolanda|Zoe`.split('|'),
+    animal:`Abeja|Águila|Alce|Anaconda|Anchoa|Ardilla|Armadillo|Atún|Avestruz|Ballena|Bisonte|Búho|Burro|Caballo|Cabra|Caimán|Calamar|Camello|Canario|Cangrejo|Caracol|Castor|Cebra|Cerdo|Ciervo|Cisne|Cocodrilo|Colibrí|Cóndor|Conejo|Cordero|Cuervo|Delfín|Dragón de Komodo|Elefante|Erizo|Escarabajo|Escorpión|Faisán|Flamenco|Foca|Gallina|Gallo|Gato|Gacela|Gaviota|Gorila|Grillo|Guacamayo|Guanaco|Hámster|Hiena|Hipopótamo|Hormiga|Iguana|Jabalí|Jaguar|Jirafa|Koala|Lagarto|Langosta|León|Liebre|Llama|Lobo|Lombriz|Loro|Mamut|Mapache|Mariposa|Medusa|Merluza|Mono|Mosca|Murciélago|Nutria|Ñandú|Ocelote|Orca|Ornitorrinco|Oso|Oveja|Pato|Pavo|Pavo real|Pez|Pingüino|Polilla|Puma|Pulpo|Quetzal|Rana|Ratón|Rinoceronte|Salmón|Sapo|Sardina|Serpiente|Suricata|Tarántula|Tiburón|Tigre|Topo|Tortuga|Tucán|Urraca|Vaca|Venado|Víbora|Vizcacha|Wapití|Wombat|Xerus|Yak|Yacaré|Zorro`.split('|'),
+    country:`Afganistán|Albania|Alemania|Andorra|Angola|Arabia Saudita|Argelia|Argentina|Armenia|Australia|Austria|Bahamas|Bangladés|Barbados|Bélgica|Belice|Benín|Bielorrusia|Bolivia|Brasil|Bulgaria|Camerún|Canadá|Chile|China|Chipre|Colombia|Corea del Norte|Corea del Sur|Costa Rica|Croacia|Cuba|Dinamarca|Ecuador|Egipto|El Salvador|Emiratos Árabes Unidos|Eslovaquia|Eslovenia|España|Estados Unidos|Estonia|Etiopía|Filipinas|Finlandia|Francia|Grecia|Guatemala|Haití|Honduras|Hungría|India|Indonesia|Irak|Irán|Irlanda|Islandia|Israel|Italia|Jamaica|Japón|Jordania|Kenia|Letonia|Líbano|Lituania|Luxemburgo|Malasia|Marruecos|México|Mónaco|Mongolia|Nepal|Nicaragua|Nigeria|Noruega|Nueva Zelanda|Países Bajos|Pakistán|Panamá|Paraguay|Perú|Polonia|Portugal|Reino Unido|República Dominicana|Rumania|Rusia|Senegal|Serbia|Singapur|Siria|Sudáfrica|Suecia|Suiza|Tailandia|Taiwán|Tanzania|Túnez|Turquía|Ucrania|Uruguay|Venezuela|Vietnam|Zambia|Zimbabue|Buenos Aires|Catamarca|Chaco|Chubut|Córdoba|Corrientes|Entre Ríos|Formosa|Jujuy|La Pampa|La Rioja|Mendoza|Misiones|Neuquén|Río Negro|Salta|San Juan|San Luis|Santa Cruz|Santa Fe|Santiago del Estero|Tierra del Fuego|Tucumán`.split('|'),
+    place:`Argentina|Asunción|Bariloche|Berlín|Bogotá|Buenos Aires|Córdoba|Corrientes|Curitiba|Formosa|Goya|La Plata|Lima|Londres|Madrid|Mar del Plata|Mendoza|Montevideo|Neuquén|Nueva York|París|Posadas|Resistencia|Río de Janeiro|Rosario|Salta|San Pablo|Santa Fe|Santiago|Santiago del Estero|Tokio|Tucumán|Ushuaia|Valencia|Viena|Washington|Zaragoza|Catamarca|Chaco|Chubut|Entre Ríos|Jujuy|La Pampa|La Rioja|Misiones|Río Negro|San Juan|San Luis|Santa Cruz|Tierra del Fuego`.split('|'),
+    food:`Aceituna|Acelga|Achura|Alfajor|Ananá|Arroz|Asado|Atún|Baguette|Banana|Batata|Berenjena|Bizcochuelo|Budín|Canelones|Carne|Cebolla|Cereza|Choclo|Chorizo|Chocolate|Churro|Ciruela|Coco|Dulce de leche|Durazno|Empanada|Ensalada|Espinaca|Fideos|Flan|Frambuesa|Frutilla|Galleta|Garbanzos|Guiso|Hamburguesa|Harina|Helado|Higo|Huevo|Humita|Jamón|Jugo|Kiwi|Lasaña|Leche|Lentejas|Limón|Mandarina|Mango|Manzana|Manteca|Mayonesa|Medialuna|Melón|Merluza|Milanesa|Morcilla|Naranja|Nuez|Ñoquis|Omelette|Pan|Papa|Pascualina|Pastel|Pera|Pescado|Picada|Pizza|Polenta|Pollo|Poroto|Queso|Quinoa|Ravioles|Remolacha|Repollo|Riñón|Rúcula|Salame|Sándwich|Sandía|Sopa|Tallarines|Tarta|Tortilla|Torta|Uva|Vainilla|Verdura|Yogur|Zapallo|Zanahoria`.split('|'),
+    color:`Amarillo|Ámbar|Azul|Beige|Bermellón|Blanco|Bordó|Bronce|Burdeos|Caqui|Celeste|Cian|Cobre|Coral|Dorado|Escarlata|Esmeralda|Fucsia|Granate|Gris|Índigo|Jade|Lavanda|Lila|Magenta|Marrón|Naranja|Negro|Ocre|Oliva|Púrpura|Rojo|Rosa|Salmón|Turquesa|Violeta|Verde`.split('|'),
+    object:`Abanico|Abrelatas|Aguja|Álbum|Alfombra|Almohada|Anillo|Antena|Arco|Armario|Aspiradora|Azucarera|Balanza|Bandeja|Baraja|Bastón|Batería|Bicicleta|Bolígrafo|Bolso|Botella|Bufanda|Cacerola|Cajón|Calculadora|Cama|Cámara|Camisa|Candado|Carpeta|Carretilla|Carta|Cartuchera|Casco|Cenicero|Cepillo|Cerradura|Cesto|Chaleco|Cinturón|Clavo|Cocina|Colador|Colchón|Cometa|Computadora|Copa|Cuchara|Cuchillo|Cuaderno|Cuadro|Dado|Delantal|Destornillador|Disco|Escalera|Escoba|Espejo|Estante|Fanal|Faro|Frazada|Frasco|Fuelle|Gafas|Gargantilla|Goma|Gorra|Grapadora|Guante|Guitarra|Hacha|Heladera|Hilo|Horno|Imán|Impresora|Jabón|Jarra|Jarrón|Juguete|Lámpara|Lata|Lavadora|Lentes|Libro|Licuadora|Llave|Lona|Lupa|Madera|Maleta|Manguera|Manta|Martillo|Mate|Mazo|Mesa|Micrófono|Mochila|Moneda|Motor|Muñeca|Navaja|Nevera|Obra|Olla|Ómnibus|Organizador|Pala|Palangana|Pañuelo|Papel|Paraguas|Parlante|Pava|Peine|Pelota|Persiana|Piano|Pinza|Pincel|Plato|Pluma|Puerta|Pulsera|Radio|Rallador|Reloj|Remera|Repasador|Revista|Rifle|Ropero|Sábana|Sacacorchos|Sartén|Silla|Sillón|Sombrero|Soga|Sombrilla|Tacho|Taza|Teclado|Teléfono|Televisor|Tenedor|Termo|Tijera|Tornillo|Trapo|Trípode|Trompeta|Tubo|Vaso|Vela|Ventilador|Vestido|Vidrio|Violín|Yoyo|Zapatilla|Zapato`.split('|'),
+    brand:`Adidas|Acer|Apple|Arcor|Armani|Asus|Audi|Baggio|Bancor|Barbie|Bic|BMW|Brahma|Burger King|Canon|Carrefour|Chevrolet|Coca-Cola|Colgate|Converse|Danone|Dell|Dove|Dyson|Epson|Fanta|Ferrari|Fiat|Ford|Fujifilm|Gillette|Google|Gucci|H&M|Honda|HP|Hyundai|Ikea|Intel|Isadora|JBL|Jeep|John Deere|Kellogg's|Kodak|Lacoste|Lego|Lenovo|Levi's|L'Oréal|Mango|Mastercard|McDonald's|Mercedes-Benz|Microsoft|Mitsubishi|Motorola|Netflix|Nike|Nintendo|Nivea|Nokia|Oreo|Panasonic|Pepsi|Philips|Pirelli|Puma|Quilmes|Rexona|Renault|Rolex|Samsung|Sony|Sprite|Subway|Suzuki|Tefal|Toyota|Uber|Under Armour|Unilever|Vans|Visa|Volkswagen|Volvo|Whirlpool|Xiaomi|Xerox|Yamaha|Zara`.split('|'),
+    famous:`Ada Lovelace|Albert Einstein|Alberto Sordi|Alejandro Sanz|Atahualpa Yupanqui|Barack Obama|Carlos Gardel|Charles Darwin|Charly García|Cristiano Ronaldo|Diego Maradona|Duki|Edith Piaf|Elvis Presley|Emilia Mernes|Eva Perón|Frida Kahlo|Gabriel García Márquez|Gustavo Cerati|Harry Potter|Isaac Newton|Jorge Luis Borges|Lionel Messi|Luis Miguel|Madonna|Manu Ginóbili|Marie Curie|Marilyn Monroe|Mercedes Sosa|Michael Jackson|Mirtha Legrand|Napoleón|Nelson Mandela|Nikola Tesla|Pablo Picasso|Paulo Dybala|Pedro Almodóvar|Quino|Rafael Nadal|Ricardo Darín|Robert De Niro|Roger Federer|Shakira|Soda Stereo|Taylor Swift|Tini Stoessel|Vincent van Gogh|Violeta Parra|Walt Disney|Xuxa|Yoko Ono|Zinedine Zidane`.split('|')
   };
+  const GAME_CATEGORIES = {
+    'tutti-frutti':['nombre','animal','country','food','color','object'],
+    basta:['nombre','animal','place','food','brand','famous']
+  };
+  const norm = value => String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase('es').trim().replace(/\s+/g, ' ');
+  const CATEGORY_SETS = Object.fromEntries(Object.entries(CATEGORY_WORDS).map(([key,words])=>[key,new Set(words.map(norm))]));
   const BOARD = [
     { name: 'Salida', kind: 'start', color: '#d3b36c' },
     { name: 'Formosa', kind: 'property', group: 0, price: 120, rent: 20, color: '#7ca58a' },
@@ -47,11 +53,9 @@
   ];
   const clampCapacity = (capacity, min = 2, max = 8) => Number.isInteger(capacity) && capacity >= min && capacity <= max;
   const cleanAnswer = value => String(value || '').trim().replace(/[<>\u0000-\u001f]/g, '').slice(0, 60);
-  const norm = value => String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase('es').replace(/[^a-z0-9]/g, '');
   function computerAnswers(gameId, letter, pick = Math.random, missChance = .16) {
-    const keys = gameId === 'basta' ? ['nombre','animal','lugar','comida','marca','famoso'] : ['nombre','animal','country','comida','color','objeto'];
     if (!WORDS[gameId] || !Array.isArray(letter) && typeof letter !== 'string') return [];
-    return keys.map(key => { const matches=COMPUTER_WORD_BANK[key].filter(word => word[0].normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase()===letter); return !matches.length || pick()<missChance ? '' : matches[Math.floor(pick()*matches.length)]; });
+    return GAME_CATEGORIES[gameId].map(key => { const matches=CATEGORY_WORDS[key].filter(word => norm(word).startsWith(letter.toLocaleLowerCase('es'))); return !matches.length || pick()<missChance ? '' : matches[Math.floor(pick()*matches.length)]; });
   }
   function newWords(gameId, capacity, host) {
     const config = WORDS[gameId];
@@ -81,7 +85,9 @@
     const results = game.players.map((_, seat) => categories.map((_, index) => {
       const answer = cleanAnswer(game.answers[seat]?.[index]);
       const key = normalized[seat][index];
-      if (!key || !key.startsWith(game.letter.toLocaleLowerCase('es'))) return { answer, points: 0, reason: answer ? 'letra' : 'vacía' };
+      if (!key) return { answer, points: 0, reason: 'vacía' };
+      if (!key.startsWith(game.letter.toLocaleLowerCase('es'))) return { answer, points: 0, reason: 'letra' };
+      if (!CATEGORY_SETS[GAME_CATEGORIES[game.gameId][index]]?.has(key)) return { answer, points: 0, reason: 'categoría' };
       const same = normalized.reduce((count, row) => count + (row[index] === key ? 1 : 0), 0);
       return { answer, points: same > 1 ? 5 : 10, reason: same > 1 ? 'repetida' : 'única' };
     }));
@@ -210,5 +216,5 @@
     if (game.phase === 'end') return { type:'end' };
     return null;
   }
-  return { WORDS, ALPHABET, BOARD, clampCapacity, newWords, startWords, startWordRound, scoreWords, submitWords, nextWordsRound, computerAnswers, estancieroPlayer, newEstanciero, rollEstanciero, buyEstanciero, buildEstanciero, endEstanciero, computerEstancieroAction, norm };
+  return { WORDS, ALPHABET, BOARD, CATEGORY_WORDS, clampCapacity, newWords, startWords, startWordRound, scoreWords, submitWords, nextWordsRound, computerAnswers, estancieroPlayer, newEstanciero, rollEstanciero, buyEstanciero, buildEstanciero, endEstanciero, computerEstancieroAction, norm };
 })()

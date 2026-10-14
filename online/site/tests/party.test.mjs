@@ -13,7 +13,7 @@ test('Tutti Frutti and Basta start with private answer slots and a bounded room 
 
 test('word-game scores matching answers as five, unique answers as ten, and wrong letters as zero',()=>{
   const game=Party.newWords('tutti-frutti',2,{id:'a',nickname:'Ana'});game.players[1]={id:'b',nickname:'Beto'};
-  game.phase='answering';game.letter='A';game.answers=[['Ana','Armadillo','Argentina','Arroz','Azul','Anillo'],['ana','Abeja','Argentina','Asado','Azul','Árbol']];
+  game.phase='answering';game.letter='A';game.answers=[['Ana','Armadillo','Argentina','Arroz','Azul','Anillo'],['ana','Abeja','Argentina','Asado','Azul','Álbum']];
   Party.scoreWords(game);
   assert.equal(game.results[0][0].points,5);assert.equal(game.results[1][0].points,5);
   assert.equal(game.results[0][1].points,10);assert.equal(game.results[1][1].points,10);
@@ -27,12 +27,33 @@ test('solo word-game computer returns category answers beginning with the round 
     assert.equal(answers.length,Party.WORDS[gameId].categories.length);
     assert.ok(answers.every(answer=>!answer||Party.norm(answer).startsWith('a')));
     assert.ok(answers.filter(Boolean).length>=5);
+    const keys=gameId==='basta'?['nombre','animal','place','food','brand','famous']:['nombre','animal','country','food','color','object'];
+    answers.forEach((answer,index)=>{if(answer)assert.ok(Party.CATEGORY_WORDS[keys[index]].some(word=>Party.norm(word)===Party.norm(answer)))})
   }
+});
+
+test('word answers with the right letter but wrong category score zero',()=>{
+  const game=Party.newWords('tutti-frutti',2,{id:'a',nickname:'Ana'});game.players[1]={id:'b',nickname:'Beto'};
+  game.phase='answering';game.letter='A';game.answers=[['Ana','Armadillo','Armadillo','Arroz','Azul','Armadillo'],['Ana','Abeja','Argentina','Asado','Ámbar','Anillo']];
+  Party.scoreWords(game);
+  assert.equal(game.results[0][0].points,5);
+  assert.equal(game.results[0][1].points,10);
+  assert.equal(game.results[0][2].points,0);assert.equal(game.results[0][2].reason,'categoría');
+  assert.equal(game.results[0][5].points,0);assert.equal(game.results[0][5].reason,'categoría');
+  assert.equal(game.results[1][5].points,10);
+});
+
+test('word scoring does not accept made-up spellings or letter-separated text',()=>{
+  const game=Party.newWords('tutti-frutti',2,{id:'a',nickname:'Ana'});game.players[1]={id:'b',nickname:'Beto'};
+  game.phase='answering';game.letter='A';game.answers=[['A n a','Armadillo','Argentina','Arroz!','Azul','Anillo'],['','','','','','']];
+  Party.scoreWords(game);
+  assert.equal(game.results[0][0].points,0);assert.equal(game.results[0][0].reason,'categoría');
+  assert.equal(game.results[0][3].points,0);assert.equal(game.results[0][3].reason,'categoría');
 });
 
 test('Basta closes the round and reveals answers only after submission',()=>{
   const game=Party.newWords('basta',2,{id:'a',nickname:'Ana'});game.players[1]={id:'b',nickname:'Beto'};Party.startWords(game,1000,()=>0);game.letter='A';
-  const answers=['Ana','Antílope','Argentina','Arroz','Acme','Alonso'];
+  const answers=['Ana','Antílope','Argentina','Arroz','Adidas','Albert Einstein'];
   assert.equal(Party.submitWords(game,0,answers,1100,false),true);assert.equal(game.phase,'answering');
   const row={id:'r',code:'c',game:'basta',visibility:'public',host_id:'a',state:'playing',version:3,body:JSON.stringify(game)};
   const viewA=view(row,{id:'a'}),viewB=view(row,{id:'b'});
@@ -51,7 +72,7 @@ test('word rooms start only when every configured seat is filled and enforce one
   const game=newRoomGame('basta',3,{id:'a',nickname:'Ana'});
   assert.equal(addRoomPlayer('basta',game,{id:'b',nickname:'Beto'}),0);assert.equal(game.phase,'waiting');
   assert.equal(addRoomPlayer('basta',game,{id:'c',nickname:'Cami'}),1);assert.equal(game.phase,'answering');game.letter='A';
-  const answers=['Ana','Abeja','Argentina','Arroz','Acme','Alonso'];
+  const answers=['Ana','Abeja','Argentina','Arroz','Adidas','Albert Einstein'];
   assert.equal(Party.submitWords(game,0,answers,Date.now()),true);assert.equal(Party.submitWords(game,0,answers,Date.now()),false);assert.equal(game.phase,'answering');
   assert.equal(Party.submitWords(game,1,answers,Date.now()),true);assert.equal(Party.submitWords(game,2,answers,Date.now()),true);assert.equal(game.phase,'results');
   assert.deepEqual(game.scores,[30,30,30]);
