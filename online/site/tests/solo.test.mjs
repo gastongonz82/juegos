@@ -62,11 +62,15 @@ test('a complete local match resolves turns and victory against each difficulty'
         const playerCell = game.availableShots(playerShots)[0];
         const playerResult = game.resolveShot(computerFleet, playerShots, playerCell);
         assert.ok(playerResult);
+        assert.equal(playerResult.cell, playerCell);
+        assert.equal(playerResult.hit, computerFleet.some(ship => ship.includes(playerCell)));
         if (game.allSunk(computerFleet, playerShots)) { winner = 'player'; break; }
         const aiCell = game.chooseAiShot({ shots: [...ai.shots], hits: [...ai.hits] }, difficulty, rng);
         assert.ok(aiCell !== null && !computerShots.some(shot => shot.cell === aiCell));
         const aiResult = game.resolveShot(playerFleet, computerShots.map(shot => shot.cell), aiCell);
         assert.ok(aiResult);
+        assert.equal(aiResult.cell, aiCell);
+        assert.equal(aiResult.hit, playerFleet.some(ship => ship.includes(aiCell)), `${difficulty}, seed ${seed}: result at ${aiCell} disagrees with the player's fleet`);
         computerShots.push(aiResult);
         ai.shots.push(aiCell);
         if (aiResult.hit) ai.hits.push(aiCell);
