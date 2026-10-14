@@ -21,6 +21,15 @@ test('word-game scores matching answers as five, unique answers as ten, and wron
   assert.equal(game.results[1][5].points,10);assert.equal(game.phase,'results');
 });
 
+test('solo word-game computer returns category answers beginning with the round letter',()=>{
+  for(const gameId of ['tutti-frutti','basta']){
+    const answers=Party.computerAnswers(gameId,'A',()=>.5,0);
+    assert.equal(answers.length,Party.WORDS[gameId].categories.length);
+    assert.ok(answers.every(answer=>!answer||Party.norm(answer).startsWith('a')));
+    assert.ok(answers.filter(Boolean).length>=5);
+  }
+});
+
 test('Basta closes the round and reveals answers only after submission',()=>{
   const game=Party.newWords('basta',2,{id:'a',nickname:'Ana'});game.players[1]={id:'b',nickname:'Beto'};Party.startWords(game,1000,()=>0);game.letter='A';
   const answers=['Ana','Antílope','Argentina','Arroz','Acme','Alonso'];
@@ -66,6 +75,13 @@ test('Estanciero keeps the turn for a property decision, builds once, and sends 
   const game=Party.newEstanciero(2,{id:'a',nickname:'Ana'});game.players[0].properties=[5];game.players[1]={id:'b',nickname:'Beto',money:1500,position:0,properties:[],upgrades:[],bankrupt:false,jailed:false};game.phase='roll';game.turn=0;game.players[0].position=3;
   Party.rollEstanciero(game,0,[1,1]);assert.equal(game.phase,'own');assert.equal(Party.buildEstanciero(game,0),true);assert.equal(Party.buildEstanciero(game,0),false);assert.ok(game.players[0].upgrades.includes(5));
   game.phase='roll';game.players[0].position=25;Party.rollEstanciero(game,0,[1,1]);assert.equal(game.players[0].position,10);assert.equal(game.players[0].jailed,true);
+});
+
+test('Estanciero computer takes legal turns, buys fields, and advances to the human',()=>{
+  const game=Party.newEstanciero(2,{id:'human',nickname:'Vos'});game.players[1]=Party.estancieroPlayer({id:'cpu',nickname:'Computadora'});game.turn=1;game.phase='roll';
+  const roll=Party.computerEstancieroAction(game,1,()=>0);assert.equal(roll.type,'roll');assert.deepEqual(roll.dice,[1,1]);Party.rollEstanciero(game,1,roll.dice,roll.chance);assert.equal(game.phase,'end');
+  const end=Party.computerEstancieroAction(game,1,()=>0);assert.equal(end.type,'end');Party.endEstanciero(game,1);assert.equal(game.turn,0);
+  game.turn=1;game.phase='buy';game.pending={tile:1,creditor:-1,amount:120};assert.equal(Party.computerEstancieroAction(game,1,()=>.5).type,'buy');assert.equal(Party.buyEstanciero(game,1,true),true);assert.ok(game.players[1].properties.includes(1));
 });
 
 test('Estanciero player views expose public money and ownership, not server internals',()=>{

@@ -4,6 +4,17 @@
     'tutti-frutti': { rounds: 5, seconds: 60, categories: ['Nombre', 'Animal', 'País o provincia', 'Comida', 'Color', 'Objeto'] },
     basta: { rounds: 5, seconds: 35, categories: ['Nombre', 'Animal', 'Lugar', 'Comida', 'Marca', 'Famoso'] }
   };
+  const COMPUTER_WORD_BANK = {
+    nombre:'Ana Bruno Carla Diego Elena Facundo Gabriela Hugo Ines Joaquin Karen Lucas Marta Nicolas Olivia Pedro Quimey Rocio Santiago Tomas Ursula Valeria Walter Ximena Yolanda Zoe'.split(' '),
+    animal:'aguila ballena caballo delfin elefante foca gato hipopotamo iguana jirafa koala leon mono nutria oso perro quetzal raton serpiente tortuga urraca vaca wombat xerus yak zorro'.split(' '),
+    lugar:'Argentina Bolivia Chile Formosa Guatemala Honduras India Japon Kenia Lima Mexico Neuquen Oman Paraguay Quito Rosario Salta Tucuman Uruguay Venezuela Washington Xalapa Yemen Zaragoza'.split(' '),
+    country:'Argentina Bolivia Chile Dinamarca Ecuador Francia Grecia Haiti Italia Japon Kenia Laos Mexico Noruega Oman Paraguay Qatar Rusia Suecia Turquia Uruguay Vietnam Yemen Zambia'.split(' '),
+    comida:'arroz batata canelones durazno empanada fideos guiso humita isla jamon kiwi lentejas milanesa osobuco pizza queso ravioles sopa tortilla uvas verduras wok yogurt zapallo'.split(' '),
+    color:'azul blanco celeste dorado escarlata fucsia gris habano indigo jade kaki lila marron negro ocre plateado rojo salmon turquesa uva verde whisky xantico yellow zafiro'.split(' '),
+    objeto:'anillo botella cuchara dado escoba frasco guitarra hacha iman jarra llave mochila navaja olla pelota quitasol reloj silla taza uniforme ventilador wok xilofono yoyo zapato'.split(' '),
+    marca:'Adidas Baggio Chevrolet Danone Epson Fiat Gillette Honda Isadora Jumbo Kodak Lego Motorola Nike Oreo Pepsi Quilmes Renault Samsung Toyota Uber Visa Whirlpool Xerox Yamaha Zara'.split(' '),
+    famoso:'Alberto Borges Charly Diego Einstein Frida Gardel Homero Isabel Messi Newton Oprah Picasso Quino Ricky Shakira Tita Ulises Violeta Walt Xuxa Yupanqui Zitarrosa'.split(' ')
+  };
   const BOARD = [
     { name: 'Salida', kind: 'start', color: '#d3b36c' },
     { name: 'Formosa', kind: 'property', group: 0, price: 120, rent: 20, color: '#7ca58a' },
@@ -37,6 +48,11 @@
   const clampCapacity = (capacity, min = 2, max = 8) => Number.isInteger(capacity) && capacity >= min && capacity <= max;
   const cleanAnswer = value => String(value || '').trim().replace(/[<>\u0000-\u001f]/g, '').slice(0, 60);
   const norm = value => String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase('es').replace(/[^a-z0-9]/g, '');
+  function computerAnswers(gameId, letter, pick = Math.random, missChance = .16) {
+    const keys = gameId === 'basta' ? ['nombre','animal','lugar','comida','marca','famoso'] : ['nombre','animal','country','comida','color','objeto'];
+    if (!WORDS[gameId] || !Array.isArray(letter) && typeof letter !== 'string') return [];
+    return keys.map(key => { const matches=COMPUTER_WORD_BANK[key].filter(word => word[0].normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase()===letter); return !matches.length || pick()<missChance ? '' : matches[Math.floor(pick()*matches.length)]; });
+  }
   function newWords(gameId, capacity, host) {
     const config = WORDS[gameId];
     if (!config || !clampCapacity(capacity)) throw new RangeError('Cantidad de jugadores inválida.');
@@ -186,5 +202,13 @@
     game.phase='roll';game.lastEvent+=` Turno de ${game.players[game.turn].nickname}.`;
     return true;
   }
-  return { WORDS, ALPHABET, BOARD, clampCapacity, newWords, startWords, startWordRound, scoreWords, submitWords, nextWordsRound, estancieroPlayer, newEstanciero, rollEstanciero, buyEstanciero, buildEstanciero, endEstanciero, norm };
+  function computerEstancieroAction(game, seat, pick = Math.random) {
+    if (!game || game.turn !== seat || !active(game.players[seat]) || game.phase === 'finished') return null;
+    if (game.phase === 'roll') return { type:'roll', dice:[randomInt(pick,6)+1,randomInt(pick,6)+1], chance:pick() };
+    if (game.phase === 'buy') { const amount=game.pending?.amount||0; return { type:game.players[seat].money>amount+250?'buy':'skip' }; }
+    if (game.phase === 'own') { const tile=BOARD[game.pending?.tile]; return tile?.kind==='property'&&!game.players[seat].upgrades.includes(game.pending.tile)&&game.players[seat].money>480?{type:'build'}:{type:'end'}; }
+    if (game.phase === 'end') return { type:'end' };
+    return null;
+  }
+  return { WORDS, ALPHABET, BOARD, clampCapacity, newWords, startWords, startWordRound, scoreWords, submitWords, nextWordsRound, computerAnswers, estancieroPlayer, newEstanciero, rollEstanciero, buyEstanciero, buildEstanciero, endEstanciero, computerEstancieroAction, norm };
 })()
