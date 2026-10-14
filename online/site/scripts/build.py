@@ -6,6 +6,7 @@ worker = (root / 'worker' / 'index.js').read_text()
 html = (root / 'index.html').read_text()
 client = (root / 'client.js').read_text()
 solo_engine = (root / 'solo-engine.js').read_text()
+damas_engine = (root / 'damas-engine.js').read_text().strip()
 manifest = root / '.openai' / 'hosting.json'
 if not manifest.is_file():
     raise SystemExit('Missing .openai/hosting.json; configure the Sites project before packaging.')
@@ -14,8 +15,8 @@ if not config.get('project_id') or config.get('d1') != 'DB':
     raise SystemExit('hosting.json must declare this Sites project and its DB binding.')
 if '__HTML__' not in worker or '__CLIENT__' not in worker:
     raise SystemExit('Worker HTML/client placeholders are missing.')
-client = solo_engine + '\n' + client
-output = worker.replace('__HTML__', json.dumps(html, ensure_ascii=False)).replace('__CLIENT__', json.dumps(client, ensure_ascii=False))
+client = solo_engine + '\nglobalThis.VladyerikDamas = ' + damas_engine + ';\n' + client
+output = worker.replace('__HTML__', json.dumps(html, ensure_ascii=False)).replace('__CLIENT__', json.dumps(client, ensure_ascii=False)).replace('__CHECKERS__', damas_engine)
 dist = root / 'dist'
 (dist / 'server').mkdir(parents=True, exist_ok=True)
 (dist / '.openai').mkdir(parents=True, exist_ok=True)
