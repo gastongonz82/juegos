@@ -36,7 +36,7 @@ function buildNavalBoard(data,own,onShoot=shoot){
   if(own){ship=(data.ownShips||[]).some(cells=>cells.includes(n));shot=(data.ownShots||[]).includes(n)}
   else shot=data.targetShots.find(item=>item.cell===n)||null;
   if(ship||sunkCells.has(n)){cell.classList.add('ship');if(!shot){cell.style.background='transparent';cell.style.backgroundImage='none';cell.style.borderColor='#d9e4d355'}}
-  if(shot){const hit=own?ship:shot.hit;cell.textContent=hit?'✹':'•';cell.classList.add(hit?'hit':'miss');if(sunkCells.has(n))cell.classList.add('sunk');if(data.lastShot===n)cell.classList.add('shot-flash')}
+  if(shot){const hit=own?ship:shot.hit;cell.textContent=hit?'✹':'•';cell.classList.add(hit?'hit':'miss');if(own&&ship&&hit)cell.classList.add('own-hit');if(sunkCells.has(n))cell.classList.add('sunk');if(data.lastShot===n)cell.classList.add('shot-flash')}
   cell.disabled=own||!data.turn||data.state!=='playing'||!!shot;
   if(!own)cell.onclick=()=>onShoot(n);
   const coord=String.fromCharCode(65+Math.floor(n/10))+(n%10+1);
@@ -108,14 +108,19 @@ function playSound(kind){
 }
 function primeAudio(){if(!soundEnabled)return;try{const Ctx=window.AudioContext||window.webkitAudioContext;if(!Ctx)return;audioContext ||= new Ctx();if(audioContext.state==='suspended')audioContext.resume().catch(()=>{})}catch{}}
 function beginSolo(){
- soloState={difficulty:soloDifficulty,playerShips:VladyerikSolo.makeFleet(),computerShips:VladyerikSolo.makeFleet(),playerShots:[],playerResults:[],computerShots:[],computerResults:[],ai:{shots:[],hits:[]},turn:'player',winner:null,lastShot:null,lastShotOwner:null,lastEvent:null};
+ soloState={difficulty:soloDifficulty,playerShips:VladyerikSolo.makeFleet(),computerShips:VladyerikSolo.makeFleet(),playerShots:[],playerResults:[],computerShots:[],computerResults:[],ai:{shots:[],hits:[]},turn:'player',winner:null,lastShot:null,lastShotOwner:null,lastEvent:null,notice:null};
  $('modeMenu').classList.add('hidden');$('soloSetup').classList.add('hidden');renderSolo();
+}
+function showSoloNotice(state,text){
+ const until=Date.now()+4500;state.notice={text,until};
+ window.setTimeout(()=>{if(soloState===state&&state.notice?.until===until){state.notice=null;renderSolo()}},4500);
 }
 function firePlayer(cell){
  if(!soloState||soloState.turn!=='player'||soloState.winner)return;
  const shot=VladyerikSolo.resolveShot(soloState.computerShips,soloState.playerShots,cell);if(!shot)return;soloState.playerResults.push(shot);
  soloState.lastShot=cell;soloState.lastShotOwner='player';soloState.lastEvent=shot.sunk?'sunk':shot.hit?'hit':'miss';playSound('fire');window.setTimeout(()=>playSound(shot.sunk?'sunk':shot.hit?'hit':'miss'),110);
  if(VladyerikSolo.allSunk(soloState.computerShips,soloState.playerShots)){soloState.winner='player';soloState.lastEvent='win';window.setTimeout(()=>playSound('win'),420);renderSolo();return}
+ if(shot.sunk)showSoloNotice(soloState,'✦ ¡BARCO ENEMIGO HUNDIDO!');
  soloState.turn='computer';renderSolo();
  window.setTimeout(()=>{
   if(!soloState||soloState.turn!=='computer'||soloState.winner)return;
@@ -124,9 +129,10 @@ function firePlayer(cell){
   const result=VladyerikSolo.resolveShot(soloState.playerShips,soloState.computerShots,cell);if(!result)return;soloState.computerResults.push(result);
   soloState.ai.shots.push(cell);if(result.hit)soloState.ai.hits.push(cell);if(result.sunk)soloState.ai.hits=soloState.ai.hits.filter(hit=>!result.sunkCells.includes(hit));
   soloState.lastShot=cell;soloState.lastShotOwner='computer';soloState.lastEvent=result.sunk?'sunk':result.hit?'hit':'miss';playSound('fire');window.setTimeout(()=>playSound(result.sunk?'sunk':result.hit?'hit':'miss'),110);
+  if(result.sunk)showSoloNotice(soloState,'⚠ ¡LA COMPUTADORA HUNDIÓ UN BARCO!');
   if(VladyerikSolo.allSunk(soloState.playerShips,soloState.computerShots)){soloState.winner='computer';soloState.lastEvent='loss';window.setTimeout(()=>playSound('loss'),420)}else soloState.turn='player';
   renderSolo();
- },650);
+ },1450);
 }
 function renderSolo(){
  const data=soloState,screen=$('gameScreen');screen.classList.remove('hidden');$('lobbyView').classList.add('hidden');
@@ -135,11 +141,11 @@ function renderSolo(){
  const menu=document.createElement('button');menu.className='secondary';menu.textContent='← Menú';menu.onclick=chooseMenu;top.append(brand,menu);
  const panel=document.createElement('section');panel.className='game-card';const heading=document.createElement('div');heading.className='game-title';const titles=document.createElement('div');const kicker=document.createElement('div');kicker.className='game-kicker';kicker.textContent='BATALLA NAVAL · PARTIDA INDIVIDUAL';const title=document.createElement('h1');title.textContent='Campo de batalla';const desc=document.createElement('p');desc.textContent=data.winner?'La misión terminó. Podés iniciar otra partida cuando quieras.':data.turn==='player'?'Tu flota está lista. Elegí una coordenada enemiga para disparar.':'La computadora está calculando su próximo disparo…';titles.append(kicker,title,desc);const badge=document.createElement('span');badge.className='turn-badge'+(data.turn==='player'?'':' wait');badge.textContent=data.winner?(data.winner==='player'?'🏆 VICTORIA':'💥 DERROTA'):data.turn==='player'?'🎯 TU TURNO':'⏳ TURNO COMPUTADORA';heading.append(titles,badge);panel.append(heading);
  const stats=document.createElement('div');stats.className='opponent-strip';const avatar=document.createElement('span');avatar.className='opponent-mark';avatar.textContent='✦';const info=document.createElement('div');info.className='opponent-info';const label=document.createElement('div');label.className='opponent-label';label.textContent='RIVAL';const opponent=document.createElement('div');opponent.className='opponent-name';opponent.textContent='Computadora · '+({easy:'Fácil',normal:'Normal',hard:'Difícil'}[data.difficulty]);info.append(label,opponent);const score=document.createElement('div');score.className='opponent-stat';const scoreValue=document.createElement('strong');scoreValue.textContent=String(data.playerResults.filter(s=>s.hit).length);const scoreLabel=document.createElement('span');scoreLabel.textContent='impactos · '+data.playerShots.length+' tiros';score.append(scoreValue,scoreLabel);stats.append(avatar,info,score);panel.append(stats);
- if(data.winner){const result=document.createElement('div');result.className='game-result';result.textContent=data.winner==='player'?'✦ VICTORIA · FLOTILLA ENEMIGA DESTRUIDA':'FLOTA PERDIDA · LA COMPUTADORA GANÓ';panel.append(result)}else if(data.lastEvent==='sunk'){const effect=document.createElement('div');effect.className='game-result';effect.textContent=data.turn==='computer'?'✦ ¡BARCO ENEMIGO HUNDIDO!':'⚠ ¡LA COMPUTADORA HUNDIÓ UN BARCO!';panel.append(effect)}
+ if(data.winner){const result=document.createElement('div');result.className='game-result';result.textContent=data.winner==='player'?'✦ VICTORIA · FLOTILLA ENEMIGA DESTRUIDA':'FLOTA PERDIDA · LA COMPUTADORA GANÓ';panel.append(result)}else if(data.notice&&data.notice.until>Date.now()){const effect=document.createElement('div');effect.className='game-result';effect.textContent=data.notice.text;panel.append(effect)}
  const card=document.createElement('section');card.className='target-card';const caption=document.createElement('div');caption.className='board-caption';const boardTitle=document.createElement('h2');boardTitle.textContent='Zona de disparo';const coords=document.createElement('span');coords.className='small';coords.textContent='A–J · 1–10';caption.append(boardTitle,coords);card.append(caption);const help=document.createElement('p');help.className='board-hint';help.textContent=data.winner?'Los disparos y resultados de esta partida quedan en pantalla.':data.turn==='player'?'Tocá una casilla para lanzar tu disparo.':'Esperá un instante mientras responde la computadora.';card.append(help);
- const targetShots=data.playerResults;card.append(buildNavalBoard({ownShips:[],ownShots:[],targetShots,turn:data.turn==='player',state:data.winner?'finished':'playing',lastShot:data.lastShotOwner==='player'?data.lastShot:null},false,firePlayer));if(data.lastShotOwner==='player'&&targetShots.length)card.append(shotFeedback(targetShots.at(-1)));else if(data.lastShotOwner==='computer'&&data.computerResults.length)card.append(shotFeedback({...data.computerResults.at(-1),cell:data.lastShot},'La computadora'));
+ const targetShots=data.playerResults;card.append(buildNavalBoard({ownShips:[],ownShots:[],targetShots,turn:data.turn==='player',state:data.winner?'finished':'playing',lastShot:data.lastShotOwner==='player'?data.lastShot:null},false,firePlayer));if(targetShots.length)card.append(shotFeedback(targetShots.at(-1)));
  const legend=document.createElement('div');legend.className='legend';legend.innerHTML='<span><i class="legend-hit"></i> Impacto</span><span><i></i> Agua</span>';card.append(legend);panel.append(card);
- const details=document.createElement('details');details.className='own-details';const summary=document.createElement('summary');summary.textContent='Mi flota · ver tablero propio';const ownWrap=document.createElement('div');ownWrap.className='own-board-wrap';const ownShots=data.computerShots;const ownTargets=data.computerResults;ownWrap.append(buildNavalBoard({ownShips:data.playerShips,ownShots,targetShots:ownTargets,turn:false,state:'playing',lastShot:data.lastShotOwner==='computer'?data.lastShot:null},true));details.append(summary,ownWrap);panel.append(details);
+ const details=document.createElement('details');details.className='own-details';const summary=document.createElement('summary');const ownShots=data.computerShots;const ownTargets=data.computerResults;const incoming=ownTargets.at(-1),incomingCell=ownShots.at(-1);if(incoming){const coord=String.fromCharCode(65+Math.floor(incomingCell/10))+(incomingCell%10+1);summary.textContent='Mi flota · último disparo: '+(incoming.hit?'IMPACTO':'AGUA')+' en '+coord}else summary.textContent='Mi flota · ver tablero propio';const ownWrap=document.createElement('div');ownWrap.className='own-board-wrap';ownWrap.append(buildNavalBoard({ownShips:data.playerShips,ownShots,targetShots:ownTargets,turn:false,state:'playing',lastShot:data.lastShotOwner==='computer'?data.lastShot:null},true));if(incoming)ownWrap.append(shotFeedback({...incoming,cell:incomingCell},'La computadora'));details.append(summary,ownWrap);panel.append(details);
  const controls=document.createElement('div');controls.className='solo-toolbar';const again=document.createElement('button');again.textContent='↻ Nueva partida';again.onclick=beginSolo;const sound=document.createElement('button');sound.type='button';sound.className='secondary sound-toggle';sound.setAttribute('aria-pressed',String(soundEnabled));sound.textContent=soundEnabled?'♫ Sonido activado':'🔇 Sonido desactivado';sound.onclick=()=>{soundEnabled=!soundEnabled;localStorage.setItem('vladi_naval_sound_v2',soundEnabled?'on':'off');playSound('fire');renderSolo()};controls.append(again,sound);panel.append(controls);
  shell.append(top,panel);screen.replaceChildren(shell);
 }
