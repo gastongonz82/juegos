@@ -17,6 +17,8 @@ assert.match(sourceHtml, /data-difficulty=\"hard\"/);
 assert.match(html, /VladyerikSolo/);
 assert.match(html, /heartbeat/);
 assert.doesNotMatch(sourceClient, /else \{heartbeat\(\);/);
+assert.match(sourceClient, /playerResults\.push\(shot\)/);
+assert.match(sourceClient, /const ownShots=data\.computerShots;/);
 const clientSyntax = spawnSync(process.execPath, ['--check', client.pathname], { encoding: 'utf8' });
 assert.equal(clientSyntax.status, 0, clientSyntax.stderr);
 await access(new URL('../dist/.openai/hosting.json', import.meta.url));
