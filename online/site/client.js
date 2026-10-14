@@ -1,7 +1,7 @@
 (()=>{'use strict';
 const catalogue=[['batalla-naval','⚓','Batalla Naval',2,true],['damas','♟','Damas',2,false],['ludo-matic','🎲','Ludo Matic',4,false],['tutti-frutti','✏️','Tutti Frutti',8,false],['basta','⏱','¡Basta!',8,false],['estanciero','🏠','Estanciero',6,false]];
 const $=id=>document.getElementById(id),games=$('games'),notice=$('notice'),params=new URLSearchParams(location.search);
-let selected='batalla-naval',players=[],rooms=[],invitations=[],myRoom=null,token=localStorage.getItem('vladi_online_token')||crypto.randomUUID().replaceAll('-','')+crypto.randomUUID().replaceAll('-',''),busy=false,connected=false,lastRoomVersion=-1;
+let selected='batalla-naval',players=[],rooms=[],invitations=[],myRoom=null,token=localStorage.getItem('vladi_online_token')||crypto.randomUUID().replaceAll('-','')+crypto.randomUUID().replaceAll('-',''),busy=false,connected=false,lastRoomVersion=-1,onlineMode=false,soloDifficulty='normal',soloState=null,soundEnabled=localStorage.getItem('vladi_naval_sound')!=='off',audioContext=null;
 localStorage.setItem('vladi_online_token',token);
 for(const [id,icon,name,max,ready] of catalogue){const button=document.createElement('button');button.type='button';button.className='game'+(id===selected?' active':'');button.disabled=!ready;const glyph=document.createElement('span');glyph.textContent=icon;button.append(glyph,document.createTextNode(name));if(!ready){const small=document.createElement('small');small.textContent='En preparación';button.append(small)}button.onclick=()=>{selected=id;for(const item of games.children)item.classList.toggle('active',item===button);$('selection').textContent=name+' · hasta '+max+' jugadores';drawPlayers()};games.append(button)}
 $('nick').value=localStorage.getItem('vladi_online_nick')||'';$('nick').addEventListener('change',()=>localStorage.setItem('vladi_online_nick',$('nick').value.trim()));
@@ -12,7 +12,7 @@ function drawPlayers(){const root=$('players');root.replaceChildren();$('count')
 function drawRooms(){const root=$('rooms');root.replaceChildren();if(!rooms.length){root.innerHTML='<div class="empty">No hay salas públicas abiertas.</div>';return}for(const room of rooms){const row=document.createElement('div');row.className='room';const label=document.createElement('div');label.className='name';label.textContent=room.host+' · Batalla Naval';const count=document.createElement('span');count.className='small';count.textContent=room.players+'/'+room.capacity;const enter=document.createElement('button');enter.textContent='Entrar';enter.disabled=busy||!!myRoom;enter.onclick=()=>joinRoom(room.id,'');row.append(label,count,enter);root.append(row)}}
 function drawInvites(){const root=$('invites');root.replaceChildren();if(!invitations.length){root.className='empty';root.textContent='Todavía no hay invitaciones.';return}root.className='list';for(const invite of invitations){const card=document.createElement('div');card.className='room';const label=document.createElement('div');label.className='name';label.textContent=invite.nickname+' te invita a Batalla Naval';const accept=document.createElement('button');accept.textContent='Aceptar';accept.onclick=()=>respond(invite.id,true);const decline=document.createElement('button');decline.className='secondary';decline.textContent='Rechazar';decline.onclick=()=>respond(invite.id,false);card.append(label,accept,decline);root.append(card)}}
 async function refresh(){try{const data=await request('/presence',{nickname:$('nick').value.trim()});players=data.players||[];rooms=data.rooms||[];invitations=data.invitations||[];if(data.selfRoom){myRoom=data.selfRoom;updateRoom()}else if(myRoom){myRoom=null;lastRoomVersion=-1;$('gameScreen').replaceChildren();$('gameScreen').classList.add('hidden');$('lobbyView').classList.remove('hidden');updateRoom()}drawPlayers();drawRooms();drawInvites()}catch(error){if(error.status===401)announce('Tu sesión venció. Recargá para reconectarte.');else announce(error.message)}}
-function buildNavalBoard(data,own){
+function buildNavalBoard(data,own,onShoot=shoot){
  const shell=document.createElement('div');shell.className='board-shell';
  const corner=document.createElement('div');corner.className='axis-corner';
  const top=document.createElement('div');top.className='axis-top';
@@ -20,14 +20,15 @@ function buildNavalBoard(data,own){
  for(let col=1;col<=10;col++){const mark=document.createElement('span');mark.textContent=String(col);top.append(mark)}
  for(let row=0;row<10;row++){const mark=document.createElement('span');mark.textContent=String.fromCharCode(65+row);side.append(mark)}
  const grid=document.createElement('div');grid.className='board';
+ const sunkCells=new Set((data.targetShots||[]).flatMap(item=>item.sunkCells||[]));
  for(let n=0;n<100;n++){
   const cell=document.createElement('button');let shot=null,ship=false;
   if(own){ship=data.ownShips.some(cells=>cells.includes(n));shot=data.ownShots.includes(n)}
   else shot=data.targetShots.find(item=>item.cell===n)||null;
   if(ship)cell.classList.add('ship');
-  if(shot){const hit=own?ship:shot.hit;cell.textContent=hit?'✹':'•';cell.classList.add(hit?'hit':'miss')}
+  if(shot){const hit=own?ship:shot.hit;cell.textContent=hit?'✹':'•';cell.classList.add(hit?'hit':'miss');if(sunkCells.has(n))cell.classList.add('sunk');if(data.lastShot===n)cell.classList.add('shot-flash')}
   cell.disabled=own||!data.turn||data.state!=='playing'||!!shot;
-  if(!own)cell.onclick=()=>shoot(n);
+  if(!own)cell.onclick=()=>onShoot(n);
   const coord=String.fromCharCode(65+Math.floor(n/10))+(n%10+1);
   cell.setAttribute('aria-label',coord+(shot?(own?', disparo recibido':shot.hit?', impacto':', agua'):'')+(ship?', barco':''));
   grid.append(cell)
@@ -63,6 +64,54 @@ function renderMatch(data){
  const leave=document.createElement('button');leave.className='secondary leave-match';leave.textContent=data.state==='playing'?'Salir de la partida':'Volver al lobby';leave.onclick=leaveRoom;panel.append(leave);
  shell.append(top,panel);screen.append(shell)
 }
+function chooseMenu(){$('modeMenu').classList.remove('hidden');$('soloSetup').classList.add('hidden');$('lobbyView').classList.add('hidden');$('gameScreen').classList.add('hidden');onlineMode=false}
+function startOnline(){
+ $('modeMenu').classList.add('hidden');$('soloSetup').classList.add('hidden');$('lobbyView').classList.remove('hidden');onlineMode=true;
+ if(location.protocol!=='https:'&&location.hostname!=='localhost'){announce('Abrí esta sala desde una conexión segura.');return}
+ heartbeat();
+}
+function playSound(kind){
+ if(!soundEnabled)return;
+ try{const Ctx=window.AudioContext||window.webkitAudioContext;if(!Ctx)return;audioContext ||= new Ctx();if(audioContext.state==='suspended')audioContext.resume();const now=audioContext.currentTime;const osc=audioContext.createOscillator(),gain=audioContext.createGain();const hit=kind==='hit'||kind==='sunk'||kind==='win';osc.type=kind==='miss'?'sine':'triangle';osc.frequency.setValueAtTime(kind==='fire'?190:kind==='miss'?390:kind==='sunk'?720:hit?560:260,now);osc.frequency.exponentialRampToValueAtTime(kind==='miss'?180:kind==='sunk'?440:120,now+.16);gain.gain.setValueAtTime(.001,now);gain.gain.exponentialRampToValueAtTime(kind==='fire'?.11:.16,now+.015);gain.gain.exponentialRampToValueAtTime(.001,now+.22);osc.connect(gain).connect(audioContext.destination);osc.start(now);osc.stop(now+.23)}catch{}
+}
+function beginSolo(){
+ soloState={difficulty:soloDifficulty,playerShips:VladyerikSolo.makeFleet(),computerShips:VladyerikSolo.makeFleet(),playerShots:[],computerShots:[],ai:{shots:[],hits:[]},turn:'player',winner:null,lastShot:null,lastShotOwner:null,lastEvent:null};
+ $('modeMenu').classList.add('hidden');$('soloSetup').classList.add('hidden');renderSolo();
+}
+function firePlayer(cell){
+ if(!soloState||soloState.turn!=='player'||soloState.winner)return;
+ const shot=VladyerikSolo.resolveShot(soloState.computerShips,soloState.playerShots,cell);if(!shot)return;
+ soloState.lastShot=cell;soloState.lastShotOwner='player';soloState.lastEvent=shot.sunk?'sunk':shot.hit?'hit':'miss';playSound(soloState.lastEvent);
+ if(VladyerikSolo.allSunk(soloState.computerShips,soloState.playerShots)){soloState.winner='player';soloState.lastEvent='win';playSound('win');renderSolo();return}
+ soloState.turn='computer';renderSolo();
+ window.setTimeout(()=>{
+  if(!soloState||soloState.turn!=='computer'||soloState.winner)return;
+  // La función de elección recibe únicamente tiros e impactos ya descubiertos.
+  const cell=VladyerikSolo.chooseAiShot({shots:[...soloState.ai.shots],hits:[...soloState.ai.hits]},soloState.difficulty);
+  const result=VladyerikSolo.resolveShot(soloState.playerShips,soloState.computerShots,cell);if(!result)return;
+  soloState.ai.shots.push(cell);if(result.hit)soloState.ai.hits.push(cell);if(result.sunk)soloState.ai.hits=soloState.ai.hits.filter(hit=>!result.sunkCells.includes(hit));
+  soloState.lastShot=cell;soloState.lastShotOwner='computer';soloState.lastEvent=result.sunk?'sunk':result.hit?'hit':'miss';playSound(soloState.lastEvent);
+  if(VladyerikSolo.allSunk(soloState.playerShips,soloState.computerShots)){soloState.winner='computer';soloState.lastEvent='loss'}else soloState.turn='player';
+  renderSolo();
+ },650);
+}
+function renderSolo(){
+ const data=soloState,screen=$('gameScreen');screen.classList.remove('hidden');$('lobbyView').classList.add('hidden');
+ const shell=document.createElement('div');shell.className='game-shell';
+ const top=document.createElement('div');top.className='game-top';const brand=document.createElement('div');brand.className='game-brand';const mark=document.createElement('span');mark.className='brand-mark';mark.textContent='⚓';const name=document.createElement('span');name.textContent='VLADYERIK · FLOTA DE COMBATE';brand.append(mark,name);
+ const menu=document.createElement('button');menu.className='secondary';menu.textContent='← Menú';menu.onclick=chooseMenu;top.append(brand,menu);
+ const panel=document.createElement('section');panel.className='game-card';const heading=document.createElement('div');heading.className='game-title';const titles=document.createElement('div');const kicker=document.createElement('div');kicker.className='game-kicker';kicker.textContent='BATALLA NAVAL · PARTIDA INDIVIDUAL';const title=document.createElement('h1');title.textContent='Campo de batalla';const desc=document.createElement('p');desc.textContent=data.winner?'La misión terminó. Podés iniciar otra partida cuando quieras.':data.turn==='player'?'Tu flota está lista. Elegí una coordenada enemiga para disparar.':'La computadora está calculando su próximo disparo…';titles.append(kicker,title,desc);const badge=document.createElement('span');badge.className='turn-badge'+(data.turn==='player'?'':' wait');badge.textContent=data.winner?(data.winner==='player'?'🏆 VICTORIA':'💥 DERROTA'):data.turn==='player'?'🎯 TU TURNO':'⏳ TURNO COMPUTADORA';heading.append(titles,badge);panel.append(heading);
+ const stats=document.createElement('div');stats.className='opponent-strip';const avatar=document.createElement('span');avatar.className='opponent-mark';avatar.textContent='✦';const info=document.createElement('div');info.className='opponent-info';const label=document.createElement('div');label.className='opponent-label';label.textContent='RIVAL';const opponent=document.createElement('div');opponent.className='opponent-name';opponent.textContent='Computadora · '+({easy:'Fácil',normal:'Normal',hard:'Difícil'}[data.difficulty]);info.append(label,opponent);const score=document.createElement('div');score.className='opponent-stat';const scoreValue=document.createElement('strong');scoreValue.textContent=String(data.playerShots.filter(s=>s.hit).length);const scoreLabel=document.createElement('span');scoreLabel.textContent='impactos · '+data.playerShots.length+' tiros';score.append(scoreValue,scoreLabel);stats.append(avatar,info,score);panel.append(stats);
+ if(data.winner){const result=document.createElement('div');result.className='game-result';result.textContent=data.winner==='player'?'✦ VICTORIA · FLOTILLA ENEMIGA DESTRUIDA':'FLOTA PERDIDA · LA COMPUTADORA GANÓ';panel.append(result)}else if(data.lastEvent==='sunk'){const effect=document.createElement('div');effect.className='game-result';effect.textContent=data.turn==='computer'?'✦ ¡BARCO ENEMIGO HUNDIDO!':'⚠ ¡LA COMPUTADORA HUNDIÓ UN BARCO!';panel.append(effect)}
+ const card=document.createElement('section');card.className='target-card';const caption=document.createElement('div');caption.className='board-caption';const boardTitle=document.createElement('h2');boardTitle.textContent='Zona de disparo';const coords=document.createElement('span');coords.className='small';coords.textContent='A–J · 1–10';caption.append(boardTitle,coords);card.append(caption);const help=document.createElement('p');help.className='board-hint';help.textContent=data.winner?'Los disparos y resultados de esta partida quedan en pantalla.':data.turn==='player'?'Tocá una casilla para lanzar tu disparo.':'Esperá un instante mientras responde la computadora.';card.append(help);
+ const targetShots=data.playerShots.map(s=>({cell:s.cell,hit:s.hit,sunkCells:s.sunkCells}));card.append(buildNavalBoard({ownShips:[],ownShots:[],targetShots,turn:data.turn==='player',state:data.winner?'finished':'playing',lastShot:data.lastShotOwner==='player'?data.lastShot:null},false,firePlayer));
+ const legend=document.createElement('div');legend.className='legend';legend.innerHTML='<span><i class="legend-hit"></i> Impacto</span><span><i></i> Agua</span>';card.append(legend);panel.append(card);
+ const details=document.createElement('details');details.className='own-details';const summary=document.createElement('summary');summary.textContent='Mi flota · ver tablero propio';const ownWrap=document.createElement('div');ownWrap.className='own-board-wrap';const ownShots=data.computerShots.map(s=>s.cell);const ownTargets=data.computerShots.map(s=>({cell:s.cell,hit:s.hit,sunkCells:s.sunkCells}));ownWrap.append(buildNavalBoard({ownShips:data.playerShips,ownShots,targetShots:ownTargets,turn:false,state:'playing',lastShot:data.lastShotOwner==='computer'?data.lastShot:null},true));details.append(summary,ownWrap);panel.append(details);
+ const controls=document.createElement('div');controls.className='solo-toolbar';const again=document.createElement('button');again.textContent='↻ Nueva partida';again.onclick=beginSolo;const sound=document.createElement('button');sound.type='button';sound.className='secondary sound-toggle';sound.setAttribute('aria-pressed',String(soundEnabled));sound.textContent=soundEnabled?'♫ Sonido activado':'🔇 Sonido desactivado';sound.onclick=()=>{soundEnabled=!soundEnabled;localStorage.setItem('vladi_naval_sound',soundEnabled?'on':'off');playSound('fire');renderSolo()};controls.append(again,sound);panel.append(controls);
+ shell.append(top,panel);screen.replaceChildren(shell);
+}
+$('chooseSolo').onclick=()=>{$('soloSetup').classList.remove('hidden');$('soloSetup').scrollIntoView({behavior:'smooth',block:'center'})};$('chooseOnline').onclick=startOnline;$('onlineMenu').onclick=chooseMenu;$('startSolo').onclick=beginSolo;$('cancelSolo').onclick=()=>$('soloSetup').classList.add('hidden');
+for(const button of document.querySelectorAll('[data-difficulty]'))button.onclick=()=>{soloDifficulty=button.dataset.difficulty;for(const option of document.querySelectorAll('[data-difficulty]'))option.classList.toggle('active',option===button)};
 async function heartbeat(){const nickname=$('nick').value.trim();if(nickname.length<2){announce('Escribí un apodo de al menos dos caracteres para conectarte.');$('join').disabled=false;return}if(busy)return;busy=true;$('join').disabled=true;localStorage.setItem('vladi_online_nick',nickname);try{const data=await fetch('/api/presence',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({nickname,token}),cache:'no-store'}).then(async res=>{const x=await res.json();if(!res.ok)throw new Error(x.error||'No se pudo conectar.');return x});connected=true;players=data.players||[];rooms=data.rooms||[];invitations=data.invitations||[];myRoom=data.selfRoom||null;$('roomControls').classList.remove('hidden');$('join').textContent='Conectado';$('join').disabled=true;announce('Conectado al lobby. Elegí un rival o creá una sala.');drawPlayers();drawRooms();drawInvites();updateRoom();if(params.has('room')&&!myRoom)await joinRoom(params.get('room'),params.get('code')||'')}catch(error){announce(error.message);$('join').disabled=false}finally{busy=false}}
 async function createRoom(){if(busy||!selected||selected!=='batalla-naval')return;busy=true;try{myRoom=await request('/rooms',{game:selected,visibility:$('visibility').value});lastRoomVersion=-1;updateRoom();announce('Sala creada. Compartí el enlace o elegí un rival conectado.');await refresh()}catch(error){announce(error.message)}finally{busy=false}}
 async function joinRoom(roomId,code){if(busy)return;busy=true;try{myRoom=await request('/rooms/'+roomId+'/join',{code});lastRoomVersion=-1;history.replaceState(null,'','/?room='+roomId+(code?'&code='+encodeURIComponent(code):''));updateRoom();await refresh();announce(myRoom.state==='playing'?'Partida iniciada.':'Entraste a la sala.')}catch(error){announce(error.message)}finally{busy=false}}
@@ -71,5 +120,6 @@ async function respond(inviteId,accept){if(busy)return;busy=true;try{if(accept){
 async function shoot(cell){if(!myRoom||busy)return;busy=true;try{myRoom=await request('/rooms/'+myRoom.room+'/action',{cell});lastRoomVersion=-1;updateRoom();announce(myRoom.state==='finished'?(myRoom.winner?'¡Ganaste la partida!':'Tu rival ganó la partida.'):'Disparo enviado.')}catch(error){announce(error.message);await refresh()}finally{busy=false}}
 async function leaveRoom(){if(!myRoom||busy)return;busy=true;try{await request('/rooms/'+myRoom.room+'/leave',{});myRoom=null;lastRoomVersion=-1;$('gameScreen').replaceChildren();$('gameScreen').classList.add('hidden');$('lobbyView').classList.remove('hidden');history.replaceState(null,'','/');updateRoom();await refresh();announce('Saliste de la sala.')}catch(error){announce(error.message)}finally{busy=false}}
 $('join').onclick=heartbeat;$('create').onclick=createRoom;$('leave').onclick=leaveRoom;$('refresh').onclick=refresh;
-if(location.protocol!=='https:'&&location.hostname!=='localhost')announce('Abrí esta sala desde una conexión segura.');else {heartbeat();setInterval(()=>{if(document.visibilityState==='visible')refresh()},2200)}
+if(params.has('room'))startOnline();
+setInterval(()=>{if(onlineMode&&connected&&document.visibilityState==='visible')refresh()},2200);
 })();
