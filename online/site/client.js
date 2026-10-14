@@ -1,7 +1,7 @@
 (()=>{'use strict';
 const catalogue=[['batalla-naval','⚓','Batalla Naval',2,true],['damas','♟','Damas',2,false],['ludo-matic','🎲','Ludo Matic',4,false],['tutti-frutti','✏️','Tutti Frutti',8,false],['basta','⏱','¡Basta!',8,false],['estanciero','🏠','Estanciero',6,false]];
 const $=id=>document.getElementById(id),games=$('games'),notice=$('notice'),params=new URLSearchParams(location.search);
-let selected='batalla-naval',players=[],rooms=[],invitations=[],myRoom=null,token=localStorage.getItem('vladi_online_token')||crypto.randomUUID().replaceAll('-','')+crypto.randomUUID().replaceAll('-',''),busy=false,connected=false,lastRoomVersion=-1,onlineMode=false,soloDifficulty='normal',soloState=null,soundEnabled=localStorage.getItem('vladi_naval_sound')!=='off',audioContext=null;
+let selected='batalla-naval',players=[],rooms=[],invitations=[],myRoom=null,token=localStorage.getItem('vladi_online_token')||crypto.randomUUID().replaceAll('-','')+crypto.randomUUID().replaceAll('-',''),busy=false,connected=false,lastRoomVersion=-1,onlineMode=false,soloDifficulty='normal',soloState=null,soundEnabled=localStorage.getItem('vladi_naval_sound_v2')!=='off',audioContext=null,noiseBuffer=null;
 localStorage.setItem('vladi_online_token',token);
 for(const [id,icon,name,max,ready] of catalogue){const button=document.createElement('button');button.type='button';button.className='game'+(id===selected?' active':'');button.disabled=!ready;const glyph=document.createElement('span');glyph.textContent=icon;button.append(glyph,document.createTextNode(name));if(!ready){const small=document.createElement('small');small.textContent='En preparación';button.append(small)}button.onclick=()=>{selected=id;for(const item of games.children)item.classList.toggle('active',item===button);$('selection').textContent=name+' · hasta '+max+' jugadores';drawPlayers()};games.append(button)}
 $('nick').value=localStorage.getItem('vladi_online_nick')||'';$('nick').addEventListener('change',()=>localStorage.setItem('vladi_online_nick',$('nick').value.trim()));
@@ -21,11 +21,20 @@ function buildNavalBoard(data,own,onShoot=shoot){
  for(let row=0;row<10;row++){const mark=document.createElement('span');mark.textContent=String.fromCharCode(65+row);side.append(mark)}
  const grid=document.createElement('div');grid.className='board';
  const sunkCells=new Set((data.targetShots||[]).flatMap(item=>item.sunkCells||[]));
+ const visibleShips=own?(data.ownShips||[]):[...new Map((data.targetShots||[]).filter(item=>item.sunkCells?.length).map(item=>[item.sunkCells.slice().sort((a,b)=>a-b).join(','),item.sunkCells])).values()];
+ const fleet=document.createElement('div');fleet.className='fleet-layer';fleet.setAttribute('aria-hidden','true');
+ for(const cells of visibleShips){
+  const positions=[...cells].sort((a,b)=>a-b),first=positions[0],horizontal=Math.floor(first/10)===Math.floor(positions.at(-1)/10),startRow=Math.floor(first/10),startCol=first%10,length=positions.length;
+  const vessel=document.createElementNS('http://www.w3.org/2000/svg','svg');vessel.setAttribute('viewBox','0 0 100 100');vessel.setAttribute('preserveAspectRatio','none');vessel.classList.add('warship');if(sunkCells.size&&positions.every(cell=>sunkCells.has(cell)))vessel.classList.add('warship-sunk');vessel.style.gridRow=`${startRow+1} / span ${horizontal?1:length}`;vessel.style.gridColumn=`${startCol+1} / span ${horizontal?length:1}`;
+  vessel.innerHTML='<defs><linearGradient id="hull" x1="0" x2="0" y1="0" y2="1"><stop stop-color="#d8e6e8"/><stop offset=".42" stop-color="#718c99"/><stop offset="1" stop-color="#263f52"/></linearGradient><linearGradient id="deck" x1="0" x2="1"><stop stop-color="#d2b878"/><stop offset=".5" stop-color="#e8d9ae"/><stop offset="1" stop-color="#9d8451"/></linearGradient></defs><g class="ship-shape"><path class="wake" d="M8 34 Q1 50 8 66 M92 34 Q99 50 92 66"/><path class="hull" d="M8 31 Q10 25 20 25 L78 25 Q89 26 94 50 Q89 74 78 75 L20 75 Q10 75 8 69 Z"/><path class="deck" d="M17 32 L77 32 Q85 34 88 50 Q85 66 77 68 L17 68 Q22 50 17 32Z"/><path class="stripe" d="M20 50 H84"/><path class="bridge" d="M42 37 H62 L68 44 V56 L62 63 H42 L37 56 V44Z"/><path class="turret" d="M25 42 H36 V48 H25Z M64 42 H76 V48 H64Z M25 52 H36 V58 H25Z M64 52 H76 V58 H64Z"/><path class="barrel" d="M29 45 H20 M68 45 H78 M29 55 H20 M68 55 H78"/><circle class="radar-dot" cx="51" cy="50" r="2.5"/></g>';
+  if(!horizontal)vessel.querySelector('.ship-shape').setAttribute('transform','rotate(90 50 50)');fleet.append(vessel)
+ }
+ grid.append(fleet);
  for(let n=0;n<100;n++){
   const cell=document.createElement('button');let shot=null,ship=false;
-  if(own){ship=data.ownShips.some(cells=>cells.includes(n));shot=data.ownShots.includes(n)}
+  if(own){ship=(data.ownShips||[]).some(cells=>cells.includes(n));shot=(data.ownShots||[]).includes(n)}
   else shot=data.targetShots.find(item=>item.cell===n)||null;
-  if(ship)cell.classList.add('ship');
+  if(ship||sunkCells.has(n))cell.classList.add('ship');
   if(shot){const hit=own?ship:shot.hit;cell.textContent=hit?'✹':'•';cell.classList.add(hit?'hit':'miss');if(sunkCells.has(n))cell.classList.add('sunk');if(data.lastShot===n)cell.classList.add('shot-flash')}
   cell.disabled=own||!data.turn||data.state!=='playing'||!!shot;
   if(!own)cell.onclick=()=>onShoot(n);
@@ -34,6 +43,9 @@ function buildNavalBoard(data,own,onShoot=shoot){
   grid.append(cell)
  }
  shell.append(corner,top,side,grid);return shell
+}
+function shotFeedback(result,who='Tu disparo'){
+ if(!result)return null;const box=document.createElement('div');box.className='shot-feedback '+(result.sunk?'sunk':result.hit?'hit':'miss');const coord=String.fromCharCode(65+Math.floor(result.cell/10))+(result.cell%10+1);box.textContent=result.sunk?'✦ '+who+' · ¡BARCO HUNDIDO! · '+coord:result.hit?'✹ '+who+' · IMPACTO · '+coord:'◌ '+who+' · AGUA · '+coord;return box
 }
 function renderMatch(data){
  const screen=$('gameScreen');$('lobbyView')?.classList.add('hidden');screen.classList.remove('hidden');
@@ -58,7 +70,7 @@ function renderMatch(data){
  const stat=document.createElement('div');stat.className='opponent-stat';const hits=data.targetShots.filter(shot=>shot.hit).length;const attempts=data.targetShots.length;const statValue=document.createElement('strong');statValue.textContent=String(hits);const statLabel=document.createElement('span');statLabel.textContent='impactos · '+attempts+' tiros';stat.append(statValue,statLabel);opponent.append(avatar,info,stat);panel.append(opponent);
  if(data.state==='finished'){const result=document.createElement('div');result.className='game-result';result.textContent=data.winner?'✦ VICTORIA · FLOTILLA ENEMIGA DESTRUIDA':'PARTIDA FINALIZADA · GANÓ '+(data.opponent||'TU RIVAL').toUpperCase();panel.append(result)}
  const card=document.createElement('section');card.className='target-card';const caption=document.createElement('div');caption.className='board-caption';const label=document.createElement('h2');label.textContent='Zona de disparo';const hint=document.createElement('span');hint.className='small';hint.textContent='A–J · 1–10';caption.append(label,hint);card.append(caption);
- const help=document.createElement('p');help.className='board-hint';help.textContent=data.state==='playing'?(data.turn?'Tocá una casilla para lanzar el próximo disparo.':'El tablero se actualiza automáticamente cuando tu rival juega.'):'Los impactos quedan en rojo; el agua, en azul.';card.append(help,buildNavalBoard(data,false));
+ const help=document.createElement('p');help.className='board-hint';help.textContent=data.state==='playing'?(data.turn?'Tocá una casilla para lanzar el próximo disparo.':'El tablero se actualiza automáticamente cuando tu rival juega.'):'Los impactos quedan en rojo; el agua, en azul.';card.append(help);if(data.targetShots.length)card.append(shotFeedback({...data.targetShots.at(-1),cell:data.targetShots.at(-1).cell}));card.append(buildNavalBoard(data,false));
  const legend=document.createElement('div');legend.className='legend';const hitLegend=document.createElement('span');hitLegend.innerHTML='<i class="legend-hit"></i> Impacto';const missLegend=document.createElement('span');missLegend.innerHTML='<i></i> Agua';legend.append(hitLegend,missLegend);card.append(legend);panel.append(card);
  const details=document.createElement('details');details.className='own-details';const summary=document.createElement('summary');summary.textContent='Mi flota · ver tablero propio';const ownWrap=document.createElement('div');ownWrap.className='own-board-wrap';ownWrap.append(buildNavalBoard(data,true));details.append(summary,ownWrap);panel.append(details);
  const leave=document.createElement('button');leave.className='secondary leave-match';leave.textContent=data.state==='playing'?'Salir de la partida':'Volver al lobby';leave.onclick=leaveRoom;panel.append(leave);
@@ -72,7 +84,19 @@ function startOnline(){
 }
 function playSound(kind){
  if(!soundEnabled)return;
- try{const Ctx=window.AudioContext||window.webkitAudioContext;if(!Ctx)return;audioContext ||= new Ctx();if(audioContext.state==='suspended')audioContext.resume();const now=audioContext.currentTime;const osc=audioContext.createOscillator(),gain=audioContext.createGain();const hit=kind==='hit'||kind==='sunk'||kind==='win';osc.type=kind==='miss'?'sine':'triangle';osc.frequency.setValueAtTime(kind==='fire'?190:kind==='miss'?390:kind==='sunk'?720:hit?560:260,now);osc.frequency.exponentialRampToValueAtTime(kind==='miss'?180:kind==='sunk'?440:120,now+.16);gain.gain.setValueAtTime(.001,now);gain.gain.exponentialRampToValueAtTime(kind==='fire'?.11:.16,now+.015);gain.gain.exponentialRampToValueAtTime(.001,now+.22);osc.connect(gain).connect(audioContext.destination);osc.start(now);osc.stop(now+.23)}catch{}
+ try{
+  const Ctx=window.AudioContext||window.webkitAudioContext;if(!Ctx)return;audioContext ||= new Ctx();
+  if(audioContext.state==='suspended')audioContext.resume().catch(()=>{});
+  const now=audioContext.currentTime;
+  const tone=(frequency,end,volume=.12,wave='sine',delay=0)=>{const osc=audioContext.createOscillator(),gain=audioContext.createGain();osc.type=wave;osc.frequency.setValueAtTime(frequency,now+delay);osc.frequency.exponentialRampToValueAtTime(Math.max(35,end),now+delay+.22);gain.gain.setValueAtTime(.001,now+delay);gain.gain.exponentialRampToValueAtTime(volume,now+delay+.012);gain.gain.exponentialRampToValueAtTime(.001,now+delay+.28);osc.connect(gain).connect(audioContext.destination);osc.start(now+delay);osc.stop(now+delay+.3)};
+  const noise=(duration,volume,frequency)=>{if(!noiseBuffer){noiseBuffer=audioContext.createBuffer(1,audioContext.sampleRate*.35,audioContext.sampleRate);const channel=noiseBuffer.getChannelData(0);for(let i=0;i<channel.length;i++)channel[i]=Math.random()*2-1}const source=audioContext.createBufferSource(),filter=audioContext.createBiquadFilter(),gain=audioContext.createGain();source.buffer=noiseBuffer;filter.type='lowpass';filter.frequency.setValueAtTime(frequency,now);gain.gain.setValueAtTime(volume,now);gain.gain.exponentialRampToValueAtTime(.001,now+duration);source.connect(filter).connect(gain).connect(audioContext.destination);source.start(now);source.stop(now+duration)};
+  if(kind==='fire'){noise(.17,.2,740);tone(115,48,.18,'triangle')}
+  else if(kind==='hit'){noise(.12,.16,1500);tone(470,150,.2,'triangle')}
+  else if(kind==='miss'){noise(.26,.13,1050);tone(690,240,.07,'sine')}
+  else if(kind==='sunk'){noise(.3,.18,600);tone(270,68,.2,'sawtooth');tone(390,110,.12,'triangle',.11)}
+  else if(kind==='win'){tone(392,523,.12,'sine');tone(523,659,.12,'sine',.16);tone(659,784,.14,'sine',.32)}
+  else if(kind==='loss'){tone(330,220,.13,'triangle');tone(220,110,.16,'triangle',.18)}
+ }catch{}
 }
 function beginSolo(){
  soloState={difficulty:soloDifficulty,playerShips:VladyerikSolo.makeFleet(),computerShips:VladyerikSolo.makeFleet(),playerShots:[],playerResults:[],computerShots:[],computerResults:[],ai:{shots:[],hits:[]},turn:'player',winner:null,lastShot:null,lastShotOwner:null,lastEvent:null};
@@ -81,8 +105,8 @@ function beginSolo(){
 function firePlayer(cell){
  if(!soloState||soloState.turn!=='player'||soloState.winner)return;
  const shot=VladyerikSolo.resolveShot(soloState.computerShips,soloState.playerShots,cell);if(!shot)return;soloState.playerResults.push(shot);
- soloState.lastShot=cell;soloState.lastShotOwner='player';soloState.lastEvent=shot.sunk?'sunk':shot.hit?'hit':'miss';playSound(soloState.lastEvent);
- if(VladyerikSolo.allSunk(soloState.computerShips,soloState.playerShots)){soloState.winner='player';soloState.lastEvent='win';playSound('win');renderSolo();return}
+ soloState.lastShot=cell;soloState.lastShotOwner='player';soloState.lastEvent=shot.sunk?'sunk':shot.hit?'hit':'miss';playSound('fire');window.setTimeout(()=>playSound(shot.sunk?'sunk':shot.hit?'hit':'miss'),110);
+ if(VladyerikSolo.allSunk(soloState.computerShips,soloState.playerShots)){soloState.winner='player';soloState.lastEvent='win';window.setTimeout(()=>playSound('win'),420);renderSolo();return}
  soloState.turn='computer';renderSolo();
  window.setTimeout(()=>{
   if(!soloState||soloState.turn!=='computer'||soloState.winner)return;
@@ -90,8 +114,8 @@ function firePlayer(cell){
   const cell=VladyerikSolo.chooseAiShot({shots:[...soloState.ai.shots],hits:[...soloState.ai.hits]},soloState.difficulty);
   const result=VladyerikSolo.resolveShot(soloState.playerShips,soloState.computerShots,cell);if(!result)return;soloState.computerResults.push(result);
   soloState.ai.shots.push(cell);if(result.hit)soloState.ai.hits.push(cell);if(result.sunk)soloState.ai.hits=soloState.ai.hits.filter(hit=>!result.sunkCells.includes(hit));
-  soloState.lastShot=cell;soloState.lastShotOwner='computer';soloState.lastEvent=result.sunk?'sunk':result.hit?'hit':'miss';playSound(soloState.lastEvent);
-  if(VladyerikSolo.allSunk(soloState.playerShips,soloState.computerShots)){soloState.winner='computer';soloState.lastEvent='loss'}else soloState.turn='player';
+  soloState.lastShot=cell;soloState.lastShotOwner='computer';soloState.lastEvent=result.sunk?'sunk':result.hit?'hit':'miss';playSound('fire');window.setTimeout(()=>playSound(result.sunk?'sunk':result.hit?'hit':'miss'),110);
+  if(VladyerikSolo.allSunk(soloState.playerShips,soloState.computerShots)){soloState.winner='computer';soloState.lastEvent='loss';window.setTimeout(()=>playSound('loss'),420)}else soloState.turn='player';
   renderSolo();
  },650);
 }
@@ -104,10 +128,10 @@ function renderSolo(){
  const stats=document.createElement('div');stats.className='opponent-strip';const avatar=document.createElement('span');avatar.className='opponent-mark';avatar.textContent='✦';const info=document.createElement('div');info.className='opponent-info';const label=document.createElement('div');label.className='opponent-label';label.textContent='RIVAL';const opponent=document.createElement('div');opponent.className='opponent-name';opponent.textContent='Computadora · '+({easy:'Fácil',normal:'Normal',hard:'Difícil'}[data.difficulty]);info.append(label,opponent);const score=document.createElement('div');score.className='opponent-stat';const scoreValue=document.createElement('strong');scoreValue.textContent=String(data.playerResults.filter(s=>s.hit).length);const scoreLabel=document.createElement('span');scoreLabel.textContent='impactos · '+data.playerShots.length+' tiros';score.append(scoreValue,scoreLabel);stats.append(avatar,info,score);panel.append(stats);
  if(data.winner){const result=document.createElement('div');result.className='game-result';result.textContent=data.winner==='player'?'✦ VICTORIA · FLOTILLA ENEMIGA DESTRUIDA':'FLOTA PERDIDA · LA COMPUTADORA GANÓ';panel.append(result)}else if(data.lastEvent==='sunk'){const effect=document.createElement('div');effect.className='game-result';effect.textContent=data.turn==='computer'?'✦ ¡BARCO ENEMIGO HUNDIDO!':'⚠ ¡LA COMPUTADORA HUNDIÓ UN BARCO!';panel.append(effect)}
  const card=document.createElement('section');card.className='target-card';const caption=document.createElement('div');caption.className='board-caption';const boardTitle=document.createElement('h2');boardTitle.textContent='Zona de disparo';const coords=document.createElement('span');coords.className='small';coords.textContent='A–J · 1–10';caption.append(boardTitle,coords);card.append(caption);const help=document.createElement('p');help.className='board-hint';help.textContent=data.winner?'Los disparos y resultados de esta partida quedan en pantalla.':data.turn==='player'?'Tocá una casilla para lanzar tu disparo.':'Esperá un instante mientras responde la computadora.';card.append(help);
- const targetShots=data.playerResults;card.append(buildNavalBoard({ownShips:[],ownShots:[],targetShots,turn:data.turn==='player',state:data.winner?'finished':'playing',lastShot:data.lastShotOwner==='player'?data.lastShot:null},false,firePlayer));
+ const targetShots=data.playerResults;card.append(buildNavalBoard({ownShips:[],ownShots:[],targetShots,turn:data.turn==='player',state:data.winner?'finished':'playing',lastShot:data.lastShotOwner==='player'?data.lastShot:null},false,firePlayer));if(data.lastShotOwner==='player'&&targetShots.length)card.append(shotFeedback(targetShots.at(-1)));else if(data.lastShotOwner==='computer'&&data.computerResults.length)card.append(shotFeedback({...data.computerResults.at(-1),cell:data.lastShot},'La computadora'));
  const legend=document.createElement('div');legend.className='legend';legend.innerHTML='<span><i class="legend-hit"></i> Impacto</span><span><i></i> Agua</span>';card.append(legend);panel.append(card);
  const details=document.createElement('details');details.className='own-details';const summary=document.createElement('summary');summary.textContent='Mi flota · ver tablero propio';const ownWrap=document.createElement('div');ownWrap.className='own-board-wrap';const ownShots=data.computerShots;const ownTargets=data.computerResults;ownWrap.append(buildNavalBoard({ownShips:data.playerShips,ownShots,targetShots:ownTargets,turn:false,state:'playing',lastShot:data.lastShotOwner==='computer'?data.lastShot:null},true));details.append(summary,ownWrap);panel.append(details);
- const controls=document.createElement('div');controls.className='solo-toolbar';const again=document.createElement('button');again.textContent='↻ Nueva partida';again.onclick=beginSolo;const sound=document.createElement('button');sound.type='button';sound.className='secondary sound-toggle';sound.setAttribute('aria-pressed',String(soundEnabled));sound.textContent=soundEnabled?'♫ Sonido activado':'🔇 Sonido desactivado';sound.onclick=()=>{soundEnabled=!soundEnabled;localStorage.setItem('vladi_naval_sound',soundEnabled?'on':'off');playSound('fire');renderSolo()};controls.append(again,sound);panel.append(controls);
+ const controls=document.createElement('div');controls.className='solo-toolbar';const again=document.createElement('button');again.textContent='↻ Nueva partida';again.onclick=beginSolo;const sound=document.createElement('button');sound.type='button';sound.className='secondary sound-toggle';sound.setAttribute('aria-pressed',String(soundEnabled));sound.textContent=soundEnabled?'♫ Sonido activado':'🔇 Sonido desactivado';sound.onclick=()=>{soundEnabled=!soundEnabled;localStorage.setItem('vladi_naval_sound_v2',soundEnabled?'on':'off');playSound('fire');renderSolo()};controls.append(again,sound);panel.append(controls);
  shell.append(top,panel);screen.replaceChildren(shell);
 }
 $('chooseSolo').onclick=()=>{$('soloSetup').classList.remove('hidden');$('soloSetup').scrollIntoView({behavior:'smooth',block:'center'})};$('chooseOnline').onclick=startOnline;$('onlineMenu').onclick=chooseMenu;$('startSolo').onclick=beginSolo;$('cancelSolo').onclick=()=>$('soloSetup').classList.add('hidden');
