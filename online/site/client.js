@@ -182,7 +182,7 @@ async function ludoOnlineAction(action){if(!myRoom||busy)return;busy=true;try{my
 function chooseMenu(){$('gameSelectMenu').classList.remove('hidden');$('modeMenu').classList.add('hidden');for(const id of ['soloSetup','checkersSetup','ludoSetup','wordSetup','estancieroSetup'])$(id).classList.add('hidden');$('lobbyView').classList.add('hidden');$('gameScreen').classList.add('hidden');if(wordClockInterval){clearInterval(wordClockInterval);wordClockInterval=null}if(partySoloTimer){clearTimeout(partySoloTimer);partySoloTimer=null}partySoloSession++;estSoloSession++;onlineMode=false;soloState=null;damasSolo=null;damasSelected=null;ludoSession++;ludoSolo=null;ludoAiBusy=false;partySolo=null;estSolo=null;estAiBusy=false}
 function openGame(game){
  selected=game;
- const onlineOnly=game!=='batalla-naval';
+ const onlineOnly=false;
  $('gameSelectMenu').classList.add('hidden');$('modeMenu').classList.remove('hidden');
  for(const id of ['soloSetup','checkersSetup','ludoSetup','wordSetup','estancieroSetup'])$(id).classList.add('hidden');
  $('modeSolo').classList.toggle('hidden',onlineOnly);
@@ -194,7 +194,6 @@ function openGame(game){
 }
 
 function beginSelectedMode(){
- if(selected!=='batalla-naval')return;
  for(const id of ['soloSetup','checkersSetup','ludoSetup','wordSetup','estancieroSetup'])$(id).classList.add('hidden');
  if(selected==='batalla-naval')$('soloSetup').classList.remove('hidden');else if(selected==='damas')$('checkersSetup').classList.remove('hidden');else if(selected==='ludo-matic')$('ludoSetup').classList.remove('hidden');else if(selected==='tutti-frutti'||selected==='basta'){$('wordSetupTitle').textContent=gameName(selected)+' · contra la computadora';$('wordSetup').classList.remove('hidden')}else if(selected==='estanciero')$('estancieroSetup').classList.remove('hidden');
 }
