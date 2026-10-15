@@ -171,11 +171,18 @@
     }
     /* Aprovechar el viewport de escritorio sin limitar la sala a un ancho fijo. */
     @media(min-width:1050px){
-      #gameScreen{padding-left:clamp(18px,2vw,40px);padding-right:clamp(18px,2vw,40px)}
+      #gameScreen{padding:calc(6px + env(safe-area-inset-top)) clamp(12px,1.2vw,24px) calc(8px + env(safe-area-inset-bottom))}
       .game-shell{width:100%;max-width:none}
       .game-top{width:100%;max-width:none}
-      .naval-board-layout{grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(16px,1.6vw,32px)}
-      .naval-board-layout .board-shell{width:min(100%,44vw,50vh);max-width:none}
+      .game-top{margin-bottom:8px}
+      .game-card{padding:clamp(14px,1.4vw,22px)}
+      .game-title{margin-bottom:10px}
+      .game-title h1{font-size:clamp(22px,2.1vw,30px);margin-bottom:3px}
+      .naval-board-layout{grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(12px,1vw,20px);margin-top:8px}
+      .naval-board-layout .target-card,.naval-board-layout .own-details{padding:12px}
+      .naval-board-layout .board-shell{width:min(100%,44vw,40vh);max-width:none}
+      .naval-board-layout .board-caption{margin-bottom:8px}
+      .naval-board-layout .board-hint{margin-bottom:8px}
       .checkers-board{width:min(78vw,1240px)}
       .checkers-setup,.checkers-help,.checkers-stats{max-width:none}
       .ludo-board{width:min(78vw,1320px)}
