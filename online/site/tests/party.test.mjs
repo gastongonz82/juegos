@@ -2,13 +2,11 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { Party, view, newRoomGame, addRoomPlayer } from '../dist/server/index.js';
 
-test('Tutti Frutti and Basta start with private answer slots and a bounded room size',()=>{
-  for(const gameId of ['tutti-frutti','basta']){
-    const game=newRoomGame(gameId,2,{id:'a',nickname:'Ana'});
-    assert.equal(game.phase,'waiting');assert.equal(game.players.length,2);assert.deepEqual(game.answers,[null,null]);
-    assert.equal(addRoomPlayer(gameId,game,{id:'b',nickname:'Beto'}),1);assert.equal(game.phase,'answering');assert.ok(game.deadline>Date.now());assert.ok(Party.WORDS[gameId].categories.length>=5);
-    assert.throws(()=>Party.newWords(gameId,9,{id:'a',nickname:'Ana'}),RangeError);
-  }
+test('Tutti Frutti and Basta wait for the room to fill and enforce their supported capacity',()=>{
+  const tutti=newRoomGame('tutti-frutti',2,{id:'a',nickname:'Ana'});assert.equal(tutti.phase,'waiting');assert.deepEqual(tutti.answers,[null,null]);
+  assert.equal(addRoomPlayer('tutti-frutti',tutti,{id:'b',nickname:'Beto'}),1);assert.equal(tutti.phase,'answering');assert.ok(Party.WORDS['tutti-frutti'].categories.length>=5);
+  const basta=newRoomGame('basta',2,{id:'a',nickname:'Ana'});assert.equal(basta.phase,'waiting');assert.equal(addRoomPlayer('basta',basta,{id:'b',nickname:'Beto'}),1);assert.equal(basta.phase,'answering');assert.ok(basta.card.label);assert.equal(basta.availableLetters.length,Party.ALPHABET.length);assert.equal(basta.alive.filter(Boolean).length,2);
+  for(const gameId of ['tutti-frutti','basta'])assert.throws(()=>Party.newWords(gameId,9,{id:'a',nickname:'Ana'}),RangeError);
 });
 
 test('word-game scores matching answers as five, unique answers as ten, and wrong letters as zero',()=>{
@@ -21,8 +19,8 @@ test('word-game scores matching answers as five, unique answers as ten, and wron
   assert.equal(game.results[1][5].points,10);assert.equal(game.phase,'results');
 });
 
-test('solo word-game computer returns category answers beginning with the round letter',()=>{
-  for(const gameId of ['tutti-frutti','basta']){
+test('solo Tutti Frutti computer returns category answers beginning with the round letter',()=>{
+  for(const gameId of ['tutti-frutti']){
     const answers=Party.computerAnswers(gameId,'A',()=>.5,0);
     assert.equal(answers.length,Party.WORDS[gameId].categories.length);
     assert.ok(answers.every(answer=>!answer||Party.norm(answer).startsWith('a')));
@@ -51,14 +49,19 @@ test('word scoring does not accept made-up spellings or letter-separated text',(
   assert.equal(game.results[0][3].points,0);assert.equal(game.results[0][3].reason,'categoría');
 });
 
-test('Basta closes the round and reveals answers only after submission',()=>{
-  const game=Party.newWords('basta',2,{id:'a',nickname:'Ana'});game.players[1]={id:'b',nickname:'Beto'};Party.startWords(game,1000,()=>0);game.letter='A';
-  const answers=['Ana','Antílope','Argentina','Arroz','Adidas','Albert Einstein'];
-  assert.equal(Party.submitWords(game,0,answers,1100,false),true);assert.equal(game.phase,'answering');
-  const row={id:'r',code:'c',game:'basta',visibility:'public',host_id:'a',state:'playing',version:3,body:JSON.stringify(game)};
-  const viewA=view(row,{id:'a'}),viewB=view(row,{id:'b'});
-  assert.deepEqual(viewA.ownAnswers,answers);assert.equal(JSON.stringify(viewB).includes('Antílope'),false);assert.equal(viewB.answers,null);
-  assert.equal(Party.submitWords(game,1,['A','A','A','A','A','A'],1200,true),true);assert.equal(game.phase,'results');assert.deepEqual(game.answers[0],answers);assert.deepEqual(game.answers[1],['A','A','A','A','A','A']);
+test('Basta plays one card at a time, spends a matching letter, and eliminates invalid answers',()=>{
+  const game=Party.newWords('basta',2,{id:'a',nickname:'Ana'});game.players[1]={id:'b',nickname:'Beto'};Party.startWords(game,1000,()=>0);
+  assert.deepEqual(game.card,{label:'Nombre masculino',key:'masculineName'});assert.equal(game.turn,0);
+  assert.equal(Party.playBastaTurn(game,0,'Agustín','A',1100),true);assert.equal(game.turn,1);assert.equal(game.availableLetters.includes('A'),false);assert.equal(game.history[0].answer,'Agustín');
+  assert.equal(Party.playBastaTurn(game,1,'Bruno','B',1200),true);assert.equal(game.turn,0);
+  assert.equal(Party.playBastaTurn(game,0,'Zorro','Z',1300),true);assert.equal(game.phase,'results');assert.equal(game.roundWinner,1);assert.deepEqual(game.scores,[0,1]);assert.equal(game.alive[0],false);
+  assert.equal(Party.nextWordsRound(game,0,2000,()=>0),true);assert.equal(game.round,2);assert.equal(game.phase,'answering');assert.equal(game.history.length,0);assert.equal(game.availableLetters.length,Party.ALPHABET.length);
+});
+
+test('Basta turn timeout eliminates the active player and computer chooses a legal card answer',()=>{
+  const game=Party.newWords('basta',3,{id:'a',nickname:'Ana'});game.players[1]={id:'b',nickname:'Beto'};game.players[2]={id:'c',nickname:'Cami'};Party.startWords(game,1000,()=>0);
+  assert.equal(Party.expireBastaTurn(game,10999),false);assert.equal(Party.expireBastaTurn(game,11000),true);assert.equal(game.alive[0],false);assert.equal(game.turn,1);
+  const play=Party.computerBastaTurn(game,1,()=>0);assert.ok(play?.answer&&play.letter);assert.equal(Party.playBastaTurn(game,1,play.answer,play.letter,11100),true);assert.equal(game.phase,'answering');assert.equal(game.turn,2);
 });
 
 test('word deadline closes the round and next round is controlled by the host',()=>{
@@ -68,14 +71,22 @@ test('word deadline closes the round and next round is controlled by the host',(
   assert.equal(Party.nextWordsRound(game,0,7000,()=>0),true);assert.equal(game.round,2);assert.equal(game.phase,'answering');assert.deepEqual(game.scores,scored);assert.equal(game.results,null);
 });
 
-test('word rooms start only when every configured seat is filled and enforce one answer per player',()=>{
-  const game=newRoomGame('basta',3,{id:'a',nickname:'Ana'});
-  assert.equal(addRoomPlayer('basta',game,{id:'b',nickname:'Beto'}),0);assert.equal(game.phase,'waiting');
-  assert.equal(addRoomPlayer('basta',game,{id:'c',nickname:'Cami'}),1);assert.equal(game.phase,'answering');game.letter='A';
-  const answers=['Ana','Abeja','Argentina','Arroz','Adidas','Albert Einstein'];
+test('Tutti Frutti rooms start only when all seats fill and accept one answer per player',()=>{
+  const game=newRoomGame('tutti-frutti',3,{id:'a',nickname:'Ana'});
+  assert.equal(addRoomPlayer('tutti-frutti',game,{id:'b',nickname:'Beto'}),0);assert.equal(game.phase,'waiting');
+  assert.equal(addRoomPlayer('tutti-frutti',game,{id:'c',nickname:'Cami'}),1);assert.equal(game.phase,'answering');game.letter='A';
+  const answers=['Ana','Abeja','Argentina','Arroz','Azul','Anillo'];
   assert.equal(Party.submitWords(game,0,answers,Date.now()),true);assert.equal(Party.submitWords(game,0,answers,Date.now()),false);assert.equal(game.phase,'answering');
   assert.equal(Party.submitWords(game,1,answers,Date.now()),true);assert.equal(Party.submitWords(game,2,answers,Date.now()),true);assert.equal(game.phase,'results');
   assert.deepEqual(game.scores,[30,30,30]);
+});
+
+test('Basta online turns spend a letter and reveal each spoken answer to every player',()=>{
+  const game=newRoomGame('basta',3,{id:'a',nickname:'Ana'});addRoomPlayer('basta',game,{id:'b',nickname:'Beto'});addRoomPlayer('basta',game,{id:'c',nickname:'Cami'});Party.startWords(game,1000,()=>0);
+  const first=Party.computerBastaTurn(game,0,()=>0);assert.equal(Party.playBastaTurn(game,1,first.answer,first.letter,1100),false);
+  assert.equal(Party.playBastaTurn(game,0,first.answer,first.letter,1100),true);assert.equal(game.turn,1);assert.equal(game.availableLetters.includes(first.letter),false);
+  const row={id:'r',code:'c',game:'basta',visibility:'public',host_id:'a',state:'playing',version:3,body:JSON.stringify(game)};
+  const viewA=view(row,{id:'a'}),viewB=view(row,{id:'b'});assert.equal(viewA.card.label,game.card.label);assert.deepEqual(viewB.history,game.history);assert.equal(viewB.turn,true);
 });
 
 test('Estanciero waits for its seats, rolls only for the active player and buys an unowned field',()=>{

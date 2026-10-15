@@ -42,7 +42,11 @@ function view(row, player) {
   if (row.game === 'damas') return { room:row.id,code:row.code,game:row.game,visibility:row.visibility,state:row.state,version:row.version,
     host:row.host_id===player.id,seat:index,opponent:game.players[1-index]?.nickname||null,board:game.board,turn:game.turn===index,
     continuation:game.continuation,capturedThisTurn:game.capturedThisTurn||[],lastMove:game.lastMove,finished:row.state==='finished',winner:game.winner===null?null:game.winner===index };
-  if (row.game === 'tutti-frutti' || row.game === 'basta') return { room:row.id,code:row.code,game:row.game,visibility:row.visibility,state:row.state,version:row.version,
+  if (row.game === 'basta') return { room:row.id,code:row.code,game:row.game,visibility:row.visibility,state:row.state,version:row.version,
+    host:row.host_id===player.id,seat:index,capacity:game.capacity,players:game.players.map(p=>p?{nickname:p.nickname}:null),round:game.round,targetWins:Party.WORDS.basta.rounds,phase:game.phase,
+    card:game.card,availableLetters:game.availableLetters,alive:game.alive,turnSeat:game.turn,turn:game.turn===index,deadline:game.deadline,remainingMs:game.deadline?Math.max(0,game.deadline-Date.now()):0,
+    scores:game.scores,history:game.history||[],roundWinner:game.roundWinner,winner:game.winner,lastEvent:game.lastEvent,finished:game.phase==='finished' };
+  if (row.game === 'tutti-frutti') return { room:row.id,code:row.code,game:row.game,visibility:row.visibility,state:row.state,version:row.version,
     host:row.host_id===player.id,seat:index,capacity:game.capacity,players:game.players.map(p=>p?{nickname:p.nickname}:null),round:game.round,maxRounds:Party.WORDS[row.game].rounds,phase:game.phase,
     letter:game.letter,deadline:game.deadline,remainingMs:game.deadline?Math.max(0,game.deadline-Date.now()):0,categories:Party.WORDS[row.game].categories,scores:game.scores,submitted:game.submitted,
     ownAnswers:game.answers[index],answers:game.phase==='results'||game.phase==='finished'?game.answers:null,results:game.results,lastEvent:game.lastEvent,winner:game.winner,finished:game.phase==='finished' };
@@ -81,7 +85,7 @@ async function normalizeRoom(env, row) {
   if (!row || !['tutti-frutti','basta'].includes(row.game) || row.state !== 'playing') return row;
   const game=JSON.parse(row.body);
   if(game.phase!=='answering'||!game.deadline||Date.now()<game.deadline)return row;
-  Party.scoreWords(game);
+  if(row.game==='basta')Party.expireBastaTurn(game,Date.now());else Party.scoreWords(game);
   const state=game.phase==='finished'?'finished':'playing';
   await env.DB.prepare('UPDATE online_rooms SET state=?,body=?,version=version+1,updated_at=? WHERE id=? AND version=? AND state=\'playing\'').bind(state,JSON.stringify(game),Date.now(),row.id,row.version).run();
   return loadRoom(env,row.id);
@@ -192,13 +196,17 @@ async function api(request, env) {
   }
   if(op==='action'&&request.method==='POST'){
     if(room.state!=='playing'||game.winner!==null||game.phase==='finished')return json({error:'La partida terminó.'},409);
-    if((room.game==='tutti-frutti'||room.game==='basta')&&game.phase==='answering'&&Date.now()>=game.deadline)Party.scoreWords(game);
+    if((room.game==='tutti-frutti'||room.game==='basta')&&game.phase==='answering'&&Date.now()>=game.deadline){if(room.game==='basta')Party.expireBastaTurn(game,Date.now());else Party.scoreWords(game)}
     let legal;
     if(room.game==='damas'){
       const next=Damas.play(game,seat,Number(body.from),Number(body.to));legal=!!next;if(next)Object.assign(game,next);
     }else if(room.game==='ludo-matic'){
       const next=body.action==='roll'?Ludo.roll(game,seat,crypto.getRandomValues(new Uint8Array(1))[0]%6+1):body.action==='move'?Ludo.move(game,seat,Number(body.token)):null;legal=!!next;if(next)Object.assign(game,next);
-    }else if(room.game==='tutti-frutti'||room.game==='basta'){
+    }else if(room.game==='basta'){
+      if(body.action==='play')legal=Party.playBastaTurn(game,seat,body.answer,body.letter,Date.now());
+      else if(body.action==='next')legal=Party.nextWordsRound(game,seat,Date.now(),()=>crypto.getRandomValues(new Uint8Array(1))[0]/256);
+      else legal=false;
+    }else if(room.game==='tutti-frutti'){
       if(body.action==='submit')legal=Party.submitWords(game,seat,body.answers,Date.now(),!!body.stop,()=>crypto.getRandomValues(new Uint8Array(1))[0]/256);
       else if(body.action==='next')legal=Party.nextWordsRound(game,seat,Date.now(),()=>crypto.getRandomValues(new Uint8Array(1))[0]/256);
       else legal=false;
@@ -210,7 +218,7 @@ async function api(request, env) {
       else if(body.action==='end')legal=Party.endEstanciero(game,seat);
       else legal=false;
     }else legal=applyShot(game,seat,Number(body.cell));
-    if(!legal)return json({error:room.game==='damas'?'Ese movimiento no es válido. Obligá la captura si tenés una.':room.game==='ludo-matic'?'Esa tirada o movimiento no es válido ahora.':room.game==='estanciero'?'Esa acción no corresponde al turno o a la casilla.':room.game==='tutti-frutti'||room.game==='basta'?'La ronda ya cerró o tus respuestas ya se enviaron.':'Ese disparo no es válido ahora.'},409);
+    if(!legal)return json({error:room.game==='damas'?'Ese movimiento no es válido. Obligá la captura si tenés una.':room.game==='ludo-matic'?'Esa tirada o movimiento no es válido ahora.':room.game==='estanciero'?'Esa acción no corresponde al turno o a la casilla.':room.game==='basta'?'Esperá tu turno, usá una letra disponible y respondé según la tarjeta.':room.game==='tutti-frutti'?'La ronda ya cerró o tus respuestas ya se enviaron.':'Ese disparo no es válido ahora.'},409);
     const won=game.winner!==null||game.phase==='finished';
     const result=await env.DB.prepare('UPDATE online_rooms SET state=?,body=?,version=version+1,updated_at=? WHERE id=? AND version=?').bind(won?'finished':'playing',JSON.stringify(game),Date.now(),room.id,room.version).run();
     if(!result.meta?.changes)return json({error:'La mesa cambió. Actualizá para ver la jugada rival.'},409);
