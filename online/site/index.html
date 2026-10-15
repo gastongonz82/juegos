@@ -152,6 +152,23 @@
     @media(max-width:750px){.basta-machine{padding:13px;border-radius:17px}.basta-dial{width:min(100%,330px)}.basta-letter-key{width:clamp(25px,7vw,31px);height:clamp(25px,7vw,31px);font-size:13px}.basta-dial-center strong{font-size:38px}.basta-form{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.basta-form .word-field{min-height:94px;padding:8px}.basta-form .party-actions{grid-column:1/-1}}
     @media(max-width:390px){.basta-form{grid-template-columns:1fr}.basta-form .word-field{min-height:78px}.basta-letter-key{width:24px;height:24px;font-size:11px}.basta-dial-center strong{font-size:32px}}
     @media(prefers-reduced-motion:reduce){.basta-letter-key.current{animation:none}}
+
+    /* Los dos tableros navales quedan visibles; en PC se alinean en paralelo. */
+    .naval-board-layout .target-card,.naval-board-layout .own-details{padding:clamp(12px,2.4vw,20px);width:100%;max-width:none;min-width:0;margin:0}
+    .naval-board-layout .board-shell{width:100%;max-width:660px;margin-inline:auto}
+    .naval-board-layout .own-board-wrap{padding:0}
+    .naval-board-layout .own-board-wrap .board{width:100%;max-width:none;margin:0}
+    @media(min-width:1050px){
+      .naval-board-layout{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(0,.92fr);align-items:start;gap:clamp(14px,1.5vw,24px);width:100%;margin:14px 0 0}
+      .fleet-caption{padding:0 12px 8px;border-bottom:1px solid #a98e5b44}
+      .checkers-board{width:min(100%,840px)}
+      .ludo-board{width:min(100%,880px)}
+    }
+    @media(max-width:1049px){
+      .naval-board-layout{display:grid;grid-template-columns:minmax(0,1fr);gap:12px;margin-top:12px}
+      .naval-board-layout .own-details{display:block}
+      .fleet-caption{padding:0 4px 8px}
+    }
   </style>
 </head>
 <body>
