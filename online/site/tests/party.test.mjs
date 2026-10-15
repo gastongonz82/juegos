@@ -49,7 +49,7 @@ test('word scoring does not accept made-up spellings or letter-separated text',(
   assert.equal(game.results[0][3].points,0);assert.equal(game.results[0][3].reason,'categoría');
 });
 
-test('Basta plays one card at a time, spends a matching letter, and eliminates invalid answers',()=>{
+test('Basta plays one card at a time, spends a letter, and eliminates repeated letters',()=>{
   const game=Party.newWords('basta',2,{id:'a',nickname:'Ana'});game.players[1]={id:'b',nickname:'Beto'};Party.startWords(game,1000,()=>0);
   assert.deepEqual(game.card,{label:'Nombre masculino',key:'masculineName'});assert.equal(game.turn,0);
   assert.equal(Party.playBastaTurn(game,0,'A',1100),true);assert.equal(game.turn,1);assert.equal(game.availableLetters.includes('A'),false);assert.equal(game.history[0].answer,'');
