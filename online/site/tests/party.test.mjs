@@ -60,8 +60,8 @@ test('Basta plays one card at a time, spends a letter, and eliminates repeated l
 
 test('Basta turn timeout eliminates the active player and computer chooses a legal card answer',()=>{
   const game=Party.newWords('basta',3,{id:'a',nickname:'Ana'});game.players[1]={id:'b',nickname:'Beto'};game.players[2]={id:'c',nickname:'Cami'};Party.startWords(game,1000,()=>0);
-  assert.equal(Party.expireBastaTurn(game,10999),false);assert.equal(Party.expireBastaTurn(game,11000),true);assert.equal(game.alive[0],false);assert.equal(game.turn,1);
-  const play=Party.computerBastaTurn(game,1,()=>0);assert.ok(play?.answer&&play.letter);assert.equal(Party.playBastaTurn(game,1,play.letter,11100,play.answer),true);assert.equal(game.phase,'answering');assert.equal(game.turn,2);
+  assert.equal(Party.expireBastaTurn(game,15999),false);assert.equal(Party.expireBastaTurn(game,16000),true);assert.equal(game.alive[0],false);assert.equal(game.turn,1);
+  const play=Party.computerBastaTurn(game,1,()=>0);assert.ok(play?.answer&&play.letter);assert.equal(Party.playBastaTurn(game,1,play.letter,16100,play.answer),true);assert.equal(game.phase,'answering');assert.equal(game.turn,2);
 });
 
 test('word deadline closes the round and next round is controlled by the host',()=>{

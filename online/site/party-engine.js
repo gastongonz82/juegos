@@ -2,7 +2,7 @@
   const ALPHABET = 'ABCDEFGHIJKLMNOPRSTUVY';
   const WORDS = {
     'tutti-frutti': { rounds: 5, seconds: 60, categories: ['Nombre', 'Animal', 'País o provincia', 'Comida', 'Color', 'Objeto'] },
-    basta: { rounds: 3, seconds: 10, categories: ['Una palabra de la tarjeta'] }
+    basta: { rounds: 3, seconds: 15, categories: ['Una palabra de la tarjeta'] }
   };
   const CATEGORY_WORDS = {
     nombre:`Agustín|Alberto|Alejandro|Alicia|Ana|Andrés|Antonio|Ariel|Beatriz|Benjamín|Brenda|Bruno|Camila|Carla|Carlos|Carmen|Cecilia|Clara|Claudio|Daniel|Dario|David|Diego|Dolores|Eduardo|Elena|Emilia|Emilio|Esteban|Eva|Facundo|Federico|Felipe|Fernanda|Francisco|Gabriel|Gabriela|Gastón|Gerardo|Gonzalo|Guadalupe|Guillermo|Héctor|Hugo|Ignacio|Inés|Irene|Isabel|Iván|Jacinta|Javier|Jazmín|Jesús|Joaquín|Jorge|José|Juan|Julieta|Julio|Karen|Lautaro|Laura|Leandro|Leonardo|Lilian|Lorenzo|Lucía|Lucas|Luis|Manuel|Marcela|Marcos|María|Mariano|Marta|Martín|Mateo|Matías|Micaela|Miguel|Milagros|Nahuel|Nicolás|Noelia|Octavio|Olivia|Omar|Oscar|Pablo|Paula|Pedro|Priscila|Rafael|Ramiro|Raúl|Ricardo|Roberto|Rocío|Rodrigo|Rosa|Sabrina|Samuel|Sandra|Santiago|Sergio|Silvia|Sofía|Tadeo|Tamara|Tatiana|Teodoro|Tomás|Valentina|Valeria|Vanesa|Vicente|Victoria|Walter|Ximena|Yamila|Yesica|Yolanda|Zoe`.split('|'),
