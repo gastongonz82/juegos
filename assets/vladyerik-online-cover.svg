@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="640" viewBox="0 0 960 640" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="480" y1="0" x2="480" y2="640" gradientUnits="userSpaceOnUse"><stop stop-color="#061b33"/><stop offset="1" stop-color="#03101f"/></linearGradient>
+    <radialGradient id="glow" cx="0" cy="0" r="1" gradientTransform="matrix(420 330 -450 573 480 280)" gradientUnits="userSpaceOnUse"><stop stop-color="#1b6b88" stop-opacity=".58"/><stop offset="1" stop-color="#071827" stop-opacity="0"/></radialGradient>
+    <linearGradient id="gold" x1="120" y1="120" x2="820" y2="560" gradientUnits="userSpaceOnUse"><stop stop-color="#fff0bb"/><stop offset=".48" stop-color="#e7bd69"/><stop offset="1" stop-color="#a96c31"/></linearGradient>
+    <linearGradient id="sea" x1="260" y1="260" x2="690" y2="510" gradientUnits="userSpaceOnUse"><stop stop-color="#173f59"/><stop offset="1" stop-color="#0a2237"/></linearGradient>
+    <pattern id="grid" width="46" height="46" patternUnits="userSpaceOnUse"><path d="M46 0H0V46" stroke="#72b8ce" stroke-opacity=".23" stroke-width="2"/></pattern>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="12"/></filter>
+  </defs>
+  <rect width="960" height="640" rx="30" fill="url(#bg)"/>
+  <rect width="960" height="640" rx="30" fill="url(#glow)"/>
+  <path d="M0 465c133-44 218-11 340-31s213-57 330-27 198 53 290 18v215H0V465Z" fill="#071a2a" opacity=".72"/>
+  <path d="M0 492c160-42 237-7 364-22s205-51 320-29 191 44 276 17" stroke="#52bfd0" stroke-opacity=".22" stroke-width="3"/>
+  <rect x="34" y="34" width="892" height="572" rx="27" stroke="url(#gold)" stroke-opacity=".72" stroke-width="3"/>
+  <text x="68" y="91" fill="#91d8e3" font-family="Arial,sans-serif" font-size="19" font-weight="700" letter-spacing="5">SALA MULTIJUGADOR</text>
+  <text x="64" y="164" fill="#f4f0e6" font-family="Arial,sans-serif" font-size="54" font-weight="900" letter-spacing="2">VLADYERIK</text>
+  <text x="64" y="215" fill="url(#gold)" font-family="Arial,sans-serif" font-size="38" font-weight="800" letter-spacing="5">ARCADE ONLINE</text>
+  <g transform="translate(64 256)">
+    <rect width="382" height="258" rx="18" fill="url(#sea)" stroke="#8bc8d5" stroke-opacity=".8" stroke-width="3"/>
+    <rect x="19" y="19" width="344" height="220" rx="5" fill="url(#grid)" stroke="#b7d8dd" stroke-opacity=".55" stroke-width="2"/>
+    <path d="M41 42h18M41 64h18M41 86h18M41 108h18M41 130h18M41 152h18M41 174h18M41 196h18" stroke="#d6bd7e" stroke-opacity=".65" stroke-width="2"/>
+    <g fill="#dcb872" fill-opacity=".92" stroke="#fff0bc" stroke-width="2">
+      <rect x="92" y="62" width="94" height="22" rx="11"/><rect x="231" y="106" width="69" height="22" rx="11"/><rect x="116" y="172" width="47" height="22" rx="11"/>
+    </g>
+    <path d="m139 62 20 11-20 11M266 106l18 11-18 11M130 172l18 11-18 11" fill="#fff1c5" fill-opacity=".94"/>
+    <circle cx="276" cy="62" r="13" fill="#e87959" stroke="#ffd7ad" stroke-width="4"/>
+    <path d="M276 41v42M255 62h42" stroke="#ffd7ad" stroke-opacity=".92" stroke-width="3"/>
+    <circle cx="322" cy="174" r="8" fill="#7ed2df"/><circle cx="232" cy="196" r="6" fill="#7ed2df"/>
+  </g>
+  <g transform="translate(492 273)">
+    <text x="0" y="0" fill="#d7e7e9" font-family="Arial,sans-serif" font-size="19" font-weight="700" letter-spacing="2">ELEGÍ TU PARTIDA</text>
+    <g transform="translate(0 28)">
+      <rect width="352" height="54" rx="15" fill="#102c40" stroke="#54889a" stroke-opacity=".65"/>
+      <circle cx="29" cy="27" r="17" fill="#1e5168"/><path d="M29 14v26M18 27h22M20 18l18 18M38 18 20 36" stroke="#b7dce1" stroke-width="2.4" stroke-linecap="round"/>
+      <text x="62" y="34" fill="#edf4f2" font-family="Arial,sans-serif" font-size="19" font-weight="700">Batalla Naval</text>
+    </g>
+    <g transform="translate(0 94)">
+      <rect width="352" height="54" rx="15" fill="#102c40" stroke="#54889a" stroke-opacity=".65"/>
+      <circle cx="29" cy="27" r="17" fill="#1e5168"/><path d="M29 14v26M18 27h22" stroke="#f0cc80" stroke-width="3" stroke-linecap="round"/><circle cx="29" cy="27" r="5" fill="#f0cc80"/>
+      <text x="62" y="34" fill="#edf4f2" font-family="Arial,sans-serif" font-size="19" font-weight="700">Damas · Ludo Matic</text>
+    </g>
+    <g transform="translate(0 160)">
+      <rect width="352" height="54" rx="15" fill="#102c40" stroke="#54889a" stroke-opacity=".65"/>
+      <circle cx="29" cy="27" r="17" fill="#1e5168"/><rect x="18" y="16" width="22" height="22" rx="4" stroke="#e8c477" stroke-width="2"/><path d="M23 22h12M23 27h12M23 32h7" stroke="#e8c477" stroke-width="2" stroke-linecap="round"/>
+      <text x="62" y="34" fill="#edf4f2" font-family="Arial,sans-serif" font-size="15" font-weight="700">Tutti Frutti · ¡Basta! · Estanciero</text>
+    </g>
+  </g>
+  <rect x="64" y="548" width="832" height="35" rx="17.5" fill="#0c293d" stroke="#d5b06a" stroke-opacity=".55"/>
+  <circle cx="88" cy="565.5" r="5" fill="#80d4dd"/>
+  <text x="106" y="572" fill="#dfd7c6" font-family="Arial,sans-serif" font-size="15" font-weight="700" letter-spacing="2">DESDE EL CELULAR O LA COMPUTADORA</text>
+  <text x="858" y="572" fill="#f2cb7a" font-family="Arial,sans-serif" font-size="15" font-weight="800" text-anchor="end">VERSIÓN DE PRUEBA</text>
+</svg>
