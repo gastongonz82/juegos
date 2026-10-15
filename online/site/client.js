@@ -224,7 +224,7 @@ function openGame(game){
 
 function beginSelectedMode(){
  for(const id of ['soloSetup','checkersSetup','ludoSetup','wordSetup','estancieroSetup'])$(id).classList.add('hidden');
- if(selected==='batalla-naval')$('soloSetup').classList.remove('hidden');else if(selected==='damas')$('checkersSetup').classList.remove('hidden');else if(selected==='ludo-matic')$('ludoSetup').classList.remove('hidden');else if(selected==='tutti-frutti'||selected==='basta'){$('wordSetupTitle').textContent=gameName(selected)+' · contra la computadora';$('wordSetup').classList.remove('hidden')}else if(selected==='estanciero')$('estancieroSetup').classList.remove('hidden');
+ if(selected==='batalla-naval')$('soloSetup').classList.remove('hidden');else if(selected==='damas')$('checkersSetup').classList.remove('hidden');else if(selected==='ludo-matic')$('ludoSetup').classList.remove('hidden');else if(selected==='tutti-frutti'||selected==='basta'){$('wordSetupTitle').textContent=gameName(selected)+' · contra la computadora';$('wordSetupDescription').textContent=selected==='basta'?'Leé la tarjeta, decí una respuesta en voz alta, elegí su letra inicial y presioná ¡BASTA! La computadora responde por turnos.':'Jugás una partida individual con las mismas rondas y puntaje que en el modo online. La computadora completa sus respuestas y las revela al cerrar la ronda.';$('wordSetup').classList.remove('hidden')}else if(selected==='estanciero')$('estancieroSetup').classList.remove('hidden');
 }
 function computerWordAnswers(game,letter){return VladyerikParty.computerAnswers(game,letter)}
 function startWordSolo(){

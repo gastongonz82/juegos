@@ -151,7 +151,7 @@
   function startBastaRound(game, now, pick = Math.random) {
     const card=BASTA_CARDS[Math.floor(pick()*BASTA_CARDS.length)%BASTA_CARDS.length];
     game.round+=game.round===0?1:0;game.card={...card};game.availableLetters=ALPHABET.split('');game.alive=game.players.map(Boolean);game.turn=Math.floor(pick()*game.capacity)%game.capacity;while(!game.alive[game.turn])game.turn=(game.turn+1)%game.capacity;
-    game.turns=0;game.lastSuccessfulSeat=null;game.roundWinner=null;game.winner=null;game.phase='answering';game.deadline=now+WORDS.basta.seconds*1000;game.lastEvent=`Tarjeta: ${card.label}. Turno de ${game.players[game.turn].nickname}. Decí una respuesta y usá su letra inicial.`;game.answers=Array(game.capacity).fill(null);game.history=[];game.submitted=Array(game.capacity).fill(false);game.results=null;return game;
+    game.turns=0;game.lastSuccessfulSeat=null;game.roundWinner=null;game.winner=null;game.phase='answering';game.deadline=now+WORDS.basta.seconds*1000;game.lastEvent=`Tarjeta: ${card.label}. Turno de ${game.players[game.turn].nickname}. Decí una palabra, tocá su inicial y presioná ¡BASTA!.`;game.answers=Array(game.capacity).fill(null);game.history=[];game.submitted=Array(game.capacity).fill(false);game.results=null;return game;
   }
   function finishBastaRound(game,winner){
     game.roundWinner=winner;game.deadline=null;game.phase='results';if(winner>=0)game.scores[winner]++;if(winner>=0&&game.scores[winner]>=WORDS.basta.rounds){game.winner=winner;game.phase='finished';game.lastEvent=`${game.players[winner].nickname} ganó ${game.scores[winner]} rondas y es el campeón de ¡Basta!`}
