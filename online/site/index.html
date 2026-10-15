@@ -169,6 +169,23 @@
       .naval-board-layout .own-details{display:block}
       .fleet-caption{padding:0 4px 8px}
     }
+    /* Aprovechar el viewport de escritorio sin limitar la sala a un ancho fijo. */
+    @media(min-width:1050px){
+      #gameScreen{padding-left:clamp(18px,2vw,40px);padding-right:clamp(18px,2vw,40px)}
+      .game-shell{width:100%;max-width:none}
+      .game-top{width:100%;max-width:none}
+      .naval-board-layout{grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(16px,1.6vw,32px)}
+      .naval-board-layout .board-shell{max-width:none}
+      .checkers-board{width:min(78vw,1240px)}
+      .checkers-setup,.checkers-help,.checkers-stats{max-width:none}
+      .ludo-board{width:min(78vw,1320px)}
+      .ludo-players,.party-scoreboard,.word-results{max-width:none}
+      .est-board{width:min(86vw,1580px)}
+    }
+    @media(min-width:1600px){
+      .game-card{padding:clamp(30px,2.4vw,48px)}
+      .naval-board-layout{gap:clamp(28px,2vw,44px)}
+    }
   </style>
 </head>
 <body>
