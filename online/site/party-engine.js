@@ -166,14 +166,12 @@
   function eliminateBastaPlayer(game,seat,reason,now){
     game.alive[seat]=false;game.lastEvent=`${game.players[seat].nickname} queda fuera: ${reason}.`;return advanceBastaTurn(game,now);
   }
-  function playBastaTurn(game,seat,answer,letter,now){
+  function playBastaTurn(game,seat,letter,now,spokenWord=''){
     if(!game||game.gameId!=='basta'||game.phase!=='answering'||!Number.isInteger(seat)||seat!==game.turn||!game.players[seat]||!game.alive[seat])return false;
     if(now>=game.deadline){expireBastaTurn(game,now);return false;}
-    const value=cleanAnswer(answer),word=norm(value),selected=String(letter||'').toLocaleUpperCase('es');
-    if(!value)return !!eliminateBastaPlayer(game,seat,'se terminó el tiempo sin respuesta',now);
+    const value=cleanAnswer(spokenWord),selected=String(letter||'').toLocaleUpperCase('es');
     if(!game.availableLetters.includes(selected))return !!eliminateBastaPlayer(game,seat,'esa letra ya fue usada',now);
-    if(!word.startsWith(selected.toLocaleLowerCase('es'))||!CATEGORY_SETS[game.card?.key]?.has(word))return !!eliminateBastaPlayer(game,seat,'la respuesta no coincide con la tarjeta y la letra elegida',now);
-    game.availableLetters=game.availableLetters.filter(item=>item!==selected);game.turns++;game.lastSuccessfulSeat=seat;game.answers[seat]={answer:value,letter:selected,card:game.card.label};game.history.push({seat,answer:value,letter:selected});game.lastEvent=`${game.players[seat].nickname} dijo “${value}” y gastó la letra ${selected}.`;return !!advanceBastaTurn(game,now);
+    game.availableLetters=game.availableLetters.filter(item=>item!==selected);game.turns++;game.lastSuccessfulSeat=seat;game.answers[seat]={answer:value,letter:selected,card:game.card.label};game.history.push({seat,answer:value,letter:selected});game.lastEvent=`${game.players[seat].nickname} respondió y gastó la letra ${selected}.`;return !!advanceBastaTurn(game,now);
   }
   function expireBastaTurn(game,now){if(!game||game.gameId!=='basta'||game.phase!=='answering'||now<game.deadline)return false;eliminateBastaPlayer(game,game.turn,'no respondió a tiempo',now);return true;}
   function computerBastaTurn(game,seat,pick=Math.random){

@@ -52,16 +52,16 @@ test('word scoring does not accept made-up spellings or letter-separated text',(
 test('Basta plays one card at a time, spends a matching letter, and eliminates invalid answers',()=>{
   const game=Party.newWords('basta',2,{id:'a',nickname:'Ana'});game.players[1]={id:'b',nickname:'Beto'};Party.startWords(game,1000,()=>0);
   assert.deepEqual(game.card,{label:'Nombre masculino',key:'masculineName'});assert.equal(game.turn,0);
-  assert.equal(Party.playBastaTurn(game,0,'Agustín','A',1100),true);assert.equal(game.turn,1);assert.equal(game.availableLetters.includes('A'),false);assert.equal(game.history[0].answer,'Agustín');
-  assert.equal(Party.playBastaTurn(game,1,'Bruno','B',1200),true);assert.equal(game.turn,0);
-  assert.equal(Party.playBastaTurn(game,0,'Zorro','Z',1300),true);assert.equal(game.phase,'results');assert.equal(game.roundWinner,1);assert.deepEqual(game.scores,[0,1]);assert.equal(game.alive[0],false);
+  assert.equal(Party.playBastaTurn(game,0,'A',1100),true);assert.equal(game.turn,1);assert.equal(game.availableLetters.includes('A'),false);assert.equal(game.history[0].answer,'');
+  assert.equal(Party.playBastaTurn(game,1,'B',1200, 'Bruno'),true);assert.equal(game.turn,0);
+  assert.equal(Party.playBastaTurn(game,0,'A',1300),true);assert.equal(game.phase,'results');assert.equal(game.roundWinner,1);assert.deepEqual(game.scores,[0,1]);assert.equal(game.alive[0],false);
   assert.equal(Party.nextWordsRound(game,0,2000,()=>0),true);assert.equal(game.round,2);assert.equal(game.phase,'answering');assert.equal(game.history.length,0);assert.equal(game.availableLetters.length,Party.ALPHABET.length);
 });
 
 test('Basta turn timeout eliminates the active player and computer chooses a legal card answer',()=>{
   const game=Party.newWords('basta',3,{id:'a',nickname:'Ana'});game.players[1]={id:'b',nickname:'Beto'};game.players[2]={id:'c',nickname:'Cami'};Party.startWords(game,1000,()=>0);
   assert.equal(Party.expireBastaTurn(game,10999),false);assert.equal(Party.expireBastaTurn(game,11000),true);assert.equal(game.alive[0],false);assert.equal(game.turn,1);
-  const play=Party.computerBastaTurn(game,1,()=>0);assert.ok(play?.answer&&play.letter);assert.equal(Party.playBastaTurn(game,1,play.answer,play.letter,11100),true);assert.equal(game.phase,'answering');assert.equal(game.turn,2);
+  const play=Party.computerBastaTurn(game,1,()=>0);assert.ok(play?.answer&&play.letter);assert.equal(Party.playBastaTurn(game,1,play.letter,11100,play.answer),true);assert.equal(game.phase,'answering');assert.equal(game.turn,2);
 });
 
 test('word deadline closes the round and next round is controlled by the host',()=>{
@@ -83,8 +83,8 @@ test('Tutti Frutti rooms start only when all seats fill and accept one answer pe
 
 test('Basta online turns spend a letter and reveal each spoken answer to every player',()=>{
   const game=newRoomGame('basta',3,{id:'a',nickname:'Ana'});addRoomPlayer('basta',game,{id:'b',nickname:'Beto'});addRoomPlayer('basta',game,{id:'c',nickname:'Cami'});Party.startWords(game,1000,()=>0);
-  const first=Party.computerBastaTurn(game,0,()=>0);assert.equal(Party.playBastaTurn(game,1,first.answer,first.letter,1100),false);
-  assert.equal(Party.playBastaTurn(game,0,first.answer,first.letter,1100),true);assert.equal(game.turn,1);assert.equal(game.availableLetters.includes(first.letter),false);
+  const first=Party.computerBastaTurn(game,0,()=>0);assert.equal(Party.playBastaTurn(game,1,first.letter,1100),false);
+  assert.equal(Party.playBastaTurn(game,0,first.letter,1100,first.answer),true);assert.equal(game.turn,1);assert.equal(game.availableLetters.includes(first.letter),false);
   const row={id:'r',code:'c',game:'basta',visibility:'public',host_id:'a',state:'playing',version:3,body:JSON.stringify(game)};
   const viewA=view(row,{id:'a'}),viewB=view(row,{id:'b'});assert.equal(viewA.card.label,game.card.label);assert.deepEqual(viewB.history,game.history);assert.equal(viewB.turn,true);
 });

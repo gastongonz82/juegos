@@ -203,7 +203,7 @@ async function api(request, env) {
     }else if(room.game==='ludo-matic'){
       const next=body.action==='roll'?Ludo.roll(game,seat,crypto.getRandomValues(new Uint8Array(1))[0]%6+1):body.action==='move'?Ludo.move(game,seat,Number(body.token)):null;legal=!!next;if(next)Object.assign(game,next);
     }else if(room.game==='basta'){
-      if(body.action==='play')legal=Party.playBastaTurn(game,seat,body.answer,body.letter,Date.now());
+      if(body.action==='play')legal=Party.playBastaTurn(game,seat,body.letter,Date.now());
       else if(body.action==='next')legal=Party.nextWordsRound(game,seat,Date.now(),()=>crypto.getRandomValues(new Uint8Array(1))[0]/256);
       else legal=false;
     }else if(room.game==='tutti-frutti'){
