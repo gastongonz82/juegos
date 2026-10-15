@@ -206,9 +206,15 @@
       .game-card:has(.ludo-board)>.checkers-help{grid-row:4;margin:0 auto}
       .game-card:has(.ludo-board)>.ludo-event{grid-row:5;margin:0 auto}
       .game-card:has(.ludo-board)>.sound-toggle{grid-row:6;justify-self:center}
-      .game-card:has(.est-board)>.est-players{grid-template-columns:repeat(4,minmax(0,1fr));margin:8px 0}
-      .game-card:has(.est-board)>.est-board{width:min(86vw,93vh,1320px);margin:8px auto 10px}
-      .game-card:has(.est-board)>.est-dice{margin:4px auto}
+      .game-card:has(.est-board){display:grid;grid-template-columns:minmax(0,1.3fr) minmax(260px,.7fr);gap:8px 18px;align-items:start}
+      .game-card:has(.est-board)>.game-title,.game-card:has(.est-board)>.est-players{grid-column:1/-1}
+      .game-card:has(.est-board)>.est-players{grid-template-columns:repeat(4,minmax(0,1fr));margin:0}
+      .game-card:has(.est-board)>.est-board{grid-column:1;grid-row:3/7;width:min(100%,82vh,1000px);margin:0 auto}
+      .game-card:has(.est-board)>.est-dice,.game-card:has(.est-board)>.est-actions,.game-card:has(.est-board)>.party-hint,.game-card:has(.est-board)>.solo-toolbar{grid-column:2}
+      .game-card:has(.est-board)>.est-dice{grid-row:3;margin:0 auto}
+      .game-card:has(.est-board)>.est-actions{grid-row:4}
+      .game-card:has(.est-board)>.party-hint{grid-row:5;margin:0 auto}
+      .game-card:has(.est-board)>.solo-toolbar{grid-row:6;margin:0 auto}
       .basta-play-zone{grid-template-columns:minmax(300px,.65fr) minmax(0,1.7fr);gap:clamp(14px,1.5vw,22px);margin:10px 0 6px}
       .basta-machine{padding:12px}
       .basta-dial{width:min(100%,300px)}
@@ -217,7 +223,7 @@
     @media(min-width:1050px) and (max-height:850px){
       .checkers-board{width:min(100%,54vh,680px)}
       .game-card:has(.ludo-board)>.ludo-board{width:min(100%,56vh,600px)}
-      .game-card:has(.est-board)>.est-board{width:min(82vw,86vh,1120px)}
+      .game-card:has(.est-board)>.est-board{width:min(100%,76vh,900px)}
       .basta-dial{width:min(100%,270px)}
     }
   </style>
