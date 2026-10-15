@@ -166,6 +166,16 @@
   function eliminateBastaPlayer(game,seat,reason,now){
     game.alive[seat]=false;game.lastEvent=`${game.players[seat].nickname} queda fuera: ${reason}.`;return advanceBastaTurn(game,now);
   }
+  function validateBastaAnswer(cardKey,letter,spokenWord){
+    const answer=cleanAnswer(spokenWord).replace(/^[^\p{L}\p{N}]+|[^\p{L}\p{N}]+$/gu,'').trim();
+    const key=norm(answer),selected=String(letter||'').toLocaleUpperCase('es');
+    if(!key)return {valid:false,reason:'vacía',answer:''};
+    const initial=key[0].toLocaleUpperCase('es');
+    if(initial!==selected)return {valid:false,reason:'letra',answer};
+    const words=CATEGORY_WORDS[cardKey];
+    if(!words?.some(word=>norm(word)===key))return {valid:false,reason:'categoría',answer};
+    return {valid:true,reason:'correcta',answer:words.find(word=>norm(word)===key)};
+  }
   function playBastaTurn(game,seat,letter,now,spokenWord=''){
     if(!game||game.gameId!=='basta'||game.phase!=='answering'||!Number.isInteger(seat)||seat!==game.turn||!game.players[seat]||!game.alive[seat])return false;
     if(now>=game.deadline){expireBastaTurn(game,now);return false;}
@@ -271,5 +281,5 @@
     if (game.phase === 'end') return { type:'end' };
     return null;
   }
-  return { WORDS, ALPHABET, BOARD, CATEGORY_WORDS, BASTA_CARDS, clampCapacity, newWords, startWords, startWordRound, scoreWords, submitWords, nextWordsRound, computerAnswers, startBastaRound, playBastaTurn, expireBastaTurn, computerBastaTurn, estancieroPlayer, newEstanciero, rollEstanciero, buyEstanciero, buildEstanciero, endEstanciero, computerEstancieroAction, norm };
+  return { WORDS, ALPHABET, BOARD, CATEGORY_WORDS, BASTA_CARDS, clampCapacity, newWords, startWords, startWordRound, scoreWords, submitWords, nextWordsRound, computerAnswers, startBastaRound, validateBastaAnswer, playBastaTurn, expireBastaTurn, computerBastaTurn, estancieroPlayer, newEstanciero, rollEstanciero, buyEstanciero, buildEstanciero, endEstanciero, computerEstancieroAction, norm };
 })()

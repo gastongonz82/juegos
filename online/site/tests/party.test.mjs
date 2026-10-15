@@ -58,6 +58,13 @@ test('Basta plays one card at a time, spends a letter, and eliminates repeated l
   assert.equal(Party.nextWordsRound(game,0,2000,()=>0),true);assert.equal(game.round,2);assert.equal(game.phase,'answering');assert.equal(game.history.length,0);assert.equal(game.availableLetters.length,Party.ALPHABET.length);
 });
 
+test('Basta voice answer validation requires the selected initial and a word in that card category',()=>{
+  assert.deepEqual(Party.validateBastaAnswer('animal','T','Tigre.'),{valid:true,reason:'correcta',answer:'Tigre'});
+  assert.equal(Party.validateBastaAnswer('animal','A','Tigre').reason,'letra');
+  assert.equal(Party.validateBastaAnswer('animal','T','Tomate').reason,'categoría');
+  assert.equal(Party.validateBastaAnswer('animal','T','').reason,'vacía');
+});
+
 test('Basta turn timeout eliminates the active player and computer chooses a legal card answer',()=>{
   const game=Party.newWords('basta',3,{id:'a',nickname:'Ana'});game.players[1]={id:'b',nickname:'Beto'};game.players[2]={id:'c',nickname:'Cami'};Party.startWords(game,1000,()=>0);
   assert.equal(Party.expireBastaTurn(game,15999),false);assert.equal(Party.expireBastaTurn(game,16000),true);assert.equal(game.alive[0],false);assert.equal(game.turn,1);
