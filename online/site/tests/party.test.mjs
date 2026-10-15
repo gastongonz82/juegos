@@ -65,6 +65,14 @@ test('Basta voice answer validation requires the selected initial and a word in 
   assert.equal(Party.validateBastaAnswer('animal','T','').reason,'vacía');
 });
 
+test('Basta has broader curated vocabulary and accepts valid speech alternatives only',()=>{
+  const samples=[['masculineName','B','Bautista'],['feminineName','A','Agustina'],['thingFlies','P','Planeador'],['fruit','A','Arándano'],['clothingBrand','N','New Balance'],['city','T','Tandil'],['singer','F','Fito Páez'],['drink','S','Sidra'],['sport','T','Taekwondo'],['job','A','Albañil'],['breakfast','C','Chipá']];
+  for(const [category,letter,word] of samples)assert.equal(Party.validateBastaAnswer(category,letter,word).valid,true,`${word} should be accepted for ${category}`);
+  assert.deepEqual(Party.validateBastaAnswer('animal','T',['Tigre','Tomate']),{valid:true,reason:'correcta',answer:'Tigre'});
+  assert.equal(Party.validateBastaAnswer('animal','T',['Tortuga','Tomate']).answer,'Tortuga');
+  assert.equal(Party.validateBastaAnswer('animal','T',['Tomate']).reason,'categoría');
+});
+
 test('Basta turn timeout eliminates the active player and computer chooses a legal card answer',()=>{
   const game=Party.newWords('basta',3,{id:'a',nickname:'Ana'});game.players[1]={id:'b',nickname:'Beto'};game.players[2]={id:'c',nickname:'Cami'};Party.startWords(game,1000,()=>0);
   assert.equal(Party.expireBastaTurn(game,15999),false);assert.equal(Party.expireBastaTurn(game,16000),true);assert.equal(game.alive[0],false);assert.equal(game.turn,1);

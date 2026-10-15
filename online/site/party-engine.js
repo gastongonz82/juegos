@@ -41,6 +41,20 @@
   CATEGORY_WORDS.sport=`Atletismo|Básquet|Boxeo|Ciclismo|Fútbol|Gimnasia|Hockey|Natación|Pádel|Rugby|Tenis|Vóley`.split('|');
   CATEGORY_WORDS.job=`Abogado|Arquitecto|Carpintero|Cocinero|Docente|Electricista|Enfermero|Futbolista|Ingeniero|Jardinero|Mecánico|Médico|Panadero|Peluquero|Policía|Veterinario`.split('|');
   CATEGORY_WORDS.breakfast=`Avena|Bizcocho|Café|Cereal|Churro|Facturas|Galleta|Leche|Manteca|Medialuna|Mermelada|Pan|Tostada|Yogur`.split('|');
+  const BASTA_EXTRA_WORDS = {
+    masculineName:`Adrián|Agustín|Alfonso|Aníbal|Armando|Benito|Bernardo|Bautista|Camilo|César|Cristian|Damián|Darío|Emanuel|Enrique|Ezequiel|Fabián|Federico|Fernando|Franco|Francisco|Genaro|Germán|Gregorio|Horacio|Ismael|Iván|Jacobo|Jerónimo|Kevin|Leonel|Luca|Luciano|Marcelo|Mario|Máximo|Mauricio|Néstor|Patricio|Renzo|Rafael|Salvador|Simón|Thiago|Ulises|Valentín|Víctor|Yamil|Zacarías`,
+    feminineName:`Abril|Agustina|Ailén|Aitana|Amalia|Amparo|Ángeles|Antonella|Aurora|Bianca|Candela|Catalina|Chiara|Delfina|Elisa|Florencia|Guillermina|Isabella|Josefina|Juana|Lara|Lola|Malena|Manuela|Marina|Martina|Mora|Paloma|Renata|Salomé|Selena|Uma|Violeta|Zaira`,
+    thingFlies:`Aerolito|Ala delta|Avioneta|Benteveo|Cóndor|Cucaracha|Escarabajo|Estornino|Ganso|Gorrión|Grillo|Halcón|Libélula|Lechuza|Loro|Planeador|Pez volador|Petrel|Rana voladora|Tero|Tábano|Vencejo|Zorzal`,
+    fruit:`Acerola|Arándano|Caimito|Caqui|Carambola|Chirimoya|Dátil|Grosella|Guayaba|Lima|Mamón|Maracuyá|Mora|Nectarina|Níspero|Papaya|Pasa de uva|Pelón|Pitahaya|Plátano|Quinoto|Tamarindo|Tomate de árbol|Tuna`,
+    clothingBrand:`Abercrombie & Fitch|Asics|Bensimon|Brooks|Carhartt|Champion|Cheeky|Columbia|Decathlon|Desigual|Everlast|Gola|Hering|Hollister|Isadora|Jack & Jones|Kosiuko|Lee|Lotto|Mistral|Montagne|New Balance|Patagonia|Prüne|Rapsodia|Rider|Rip Curl|Salomon|Sarkany|Skechers|The North Face|Timberland|Tommy Hilfiger|Viamo`,
+    city:`A Coruña|Atenas|Avellaneda|Bahía Blanca|Belo Horizonte|Cali|Canberra|Cartagena|Caseros|Comodoro Rivadavia|Concepción|Dublín|El Calafate|Esquel|Florianópolis|General Roca|Guayaquil|La Rioja|Las Vegas|León|Lisboa|Manila|Mejillones|Miami|Nápoles|Oberá|Olavarría|Orán|Pekín|Pergamino|Puerto Iguazú|Puerto Madryn|Quito|Rafaela|Rawson|San Carlos de Bariloche|San Fernando del Valle de Catamarca|San Isidro|San Miguel de Tucumán|San Salvador de Jujuy|San Vicente|Tandil|Temuco|Trelew|Villa María|Villa Mercedes|Villa Gesell|Zapala`,
+    singer:`Adele|Amy Winehouse|Ariana Grande|Axel|Babasónicos|Beyoncé|Britney Spears|Cacho Castaña|Camilo|Cazzu|Celia Cruz|David Bisbal|David Bowie|Dua Lipa|Fito Páez|Frank Sinatra|Gloria Estefan|J Balvin|Joan Manuel Serrat|José Luis Perales|Juanes|Julieta Venegas|Katy Perry|La Joaqui|Luis Alberto Spinetta|Luis Fonsi|Miley Cyrus|Mon Laferte|Nathy Peluso|Ozuna|Pablo Alborán|Palito Ortega|Paul McCartney|Pedro Aznar|Prince|Rauw Alejandro|Roberto Carlos|Rosalía|Sandro|Sia|Soledad Pastorutti|Stevie Wonder|Vicentico|Wos|Yuri`,
+    drink:`Anís|Batido|Caipiriña|Cappuccino|Chicha| sidra|Espresso|Granizado|Horchata|Infusión|Leche chocolatada|Malta|Malteada|Naranjada|Ponche|Refresco|Sidra|Soda|Submarino|Tónica|Whisky`,
+    sport:`Ajedrez|Aikido|Automovilismo|Bádminton|Béisbol|Canotaje|Carrera|Críquet|Dardos|Esgrima|Escalada|Esquí|Handball|Judo|Karate|Lucha|Motociclismo|Patinaje|Polo|Remo|Taekwondo|Tiro con arco|Triatlón|Waterpolo|Windsurf`,
+    job:`Actor|Actriz|Albañil|Analista|Apicultor|Artesano|Astrónomo|Bombero|Cajero|Camarero|Cantante|Cerrajero|Chofer|Contador|Dentista|Diseñador|Economista|Farmacéutico|Fotógrafo|Herrero|Informático|Locutor|Maestro|Marinero|Masajista|Minero|Músico|Odontólogo|Periodista|Pintor|Plomero|Programador|Psicólogo|Químico|Recepcionista|Soldador|Taxista|Traductor|Vendedor`,
+    breakfast:`Arepa|Bagel|Bananita|Buñuelo|Chipa|Chipá|Dona|Dulce|Ensalada de frutas|Flauta|Granola|Huevos|Jalea|Mate cocido|Panqueque|Pancake|Pastelito|Requesón|Ricota|Scones|Té con leche|Tortita|Waffle`
+  };
+  for (const [key, words] of Object.entries(BASTA_EXTRA_WORDS)) CATEGORY_WORDS[key].push(...words.split('|').map(word=>word.trim()).filter(Boolean));
   const norm = value => String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase('es').trim().replace(/\s+/g, ' ');
   const CATEGORY_SETS = Object.fromEntries(Object.entries(CATEGORY_WORDS).map(([key,words])=>[key,new Set(words.map(norm))]));
   const BOARD = [
@@ -167,14 +181,17 @@
     game.alive[seat]=false;game.lastEvent=`${game.players[seat].nickname} queda fuera: ${reason}.`;return advanceBastaTurn(game,now);
   }
   function validateBastaAnswer(cardKey,letter,spokenWord){
-    const answer=cleanAnswer(spokenWord).replace(/^[^\p{L}\p{N}]+|[^\p{L}\p{N}]+$/gu,'').trim();
-    const key=norm(answer),selected=String(letter||'').toLocaleUpperCase('es');
-    if(!key)return {valid:false,reason:'vacía',answer:''};
-    const initial=key[0].toLocaleUpperCase('es');
-    if(initial!==selected)return {valid:false,reason:'letra',answer};
-    const words=CATEGORY_WORDS[cardKey];
-    if(!words?.some(word=>norm(word)===key))return {valid:false,reason:'categoría',answer};
-    return {valid:true,reason:'correcta',answer:words.find(word=>norm(word)===key)};
+    const candidates=(Array.isArray(spokenWord)?spokenWord:[spokenWord]).map(value=>cleanAnswer(value).replace(/^[^\p{L}\p{N}]+|[^\p{L}\p{N}]+$/gu,'').trim()).filter(Boolean);
+    const selected=String(letter||'').toLocaleUpperCase('es');
+    if(!candidates.length)return {valid:false,reason:'vacía',answer:''};
+    const words=CATEGORY_WORDS[cardKey]||[];
+    for(const answer of candidates){
+      const key=norm(answer);if(key[0]?.toLocaleUpperCase('es')!==selected)continue;
+      const canonical=words.find(word=>norm(word)===key);if(canonical)return {valid:true,reason:'correcta',answer:canonical};
+    }
+    const matchingInitial=candidates.find(answer=>norm(answer)[0]?.toLocaleUpperCase('es')===selected);
+    if(matchingInitial)return {valid:false,reason:'categoría',answer:matchingInitial};
+    return {valid:false,reason:'letra',answer:candidates[0]};
   }
   function playBastaTurn(game,seat,letter,now,spokenWord=''){
     if(!game||game.gameId!=='basta'||game.phase!=='answering'||!Number.isInteger(seat)||seat!==game.turn||!game.players[seat]||!game.alive[seat])return false;
