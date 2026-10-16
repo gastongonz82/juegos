@@ -4,7 +4,15 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#071450">
-<title>Arcade Retro de Vladi</title>
+<title>Arcade retro de Vladi: juegos clásicos online | VLADYERIK</title>
+<meta name="description" content="Jugá clásicos arcade con Vladi: Space Invaders, Arkanoid, Joust, Asteroids, Tetris y Catapulta Vladi. Gratis para PC y celular.">
+<link rel="canonical" href="https://vladyerik.com/vladi-retro/index.html?game=space">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="VLADYERIK">
+<meta property="og:title" content="Arcade retro de Vladi: juegos clásicos online | VLADYERIK">
+<meta property="og:description" content="Jugá clásicos arcade con Vladi: Space Invaders, Arkanoid, Joust, Asteroids y Tetris. Gratis y online en PC y celular.">
+<meta property="og:url" content="https://vladyerik.com/vladi-retro/index.html?game=space">
+<meta name="twitter:card" content="summary">
 <style>
 :root{color-scheme:dark;--cyan:#3ce4ff;--gold:#ffd15c;--navy:#061442;--ink:#09112d;--safe-b:env(safe-area-inset-bottom,0px);--safe-t:env(safe-area-inset-top,0px)}
 *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#03091c;color:#f7fbff;font-family:Inter,system-ui,Arial,sans-serif;overscroll-behavior:none;touch-action:none;user-select:none;-webkit-user-select:none}
@@ -64,8 +72,12 @@ const GAMES={
  catapult:{title:"Vladi Catapulta",desc:"Apuntá con Vladi, soltá la resortera y tirá las torres pieza por pieza en una aventura a todo color.",how:"PC: tirá de Vladi hacia atrás y abajo para apuntar hacia arriba; soltá<br>Celular: ajustá con ↗/↘ y tocá LANZAR",accent:"#ffb64d",music:[392,494,587,494,349,440,523,440]}
 };
 const params=new URLSearchParams(location.search),key=params.get("game")||"space",cfg=GAMES[key]||GAMES.space;
+const pageTitle=cfg.title+" — VLADYERIK",pageUrl=location.origin+location.pathname+"?game="+encodeURIComponent(key);
+document.title=pageTitle;
+let descriptionMeta=document.head.querySelector('meta[name="description"]');if(descriptionMeta)descriptionMeta.content=cfg.desc;
+let canonicalMeta=document.head.querySelector('link[rel="canonical"]');if(canonicalMeta)canonicalMeta.href=pageUrl;
+for(const [property,value] of [["og:title",pageTitle],["og:description",cfg.desc],["og:url",pageUrl]]){let el=document.head.querySelector('meta[property="'+property+'"]');if(el)el.content=value}
 document.body.classList.toggle("is-tetris",key==="tetris");
-document.title=cfg.title+" — VLADYERIK";
 document.querySelector("#title").textContent=cfg.title;
 document.querySelector("#description").textContent=cfg.desc;
 document.querySelector("#instructions").innerHTML=cfg.how;
