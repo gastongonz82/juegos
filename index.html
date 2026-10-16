@@ -188,8 +188,25 @@
 /* Tarjetas originales: conservar alturas y encuadre previos; ajustar solo las acciones. */
 .share-entry .game-actions{bottom:12px}
 @media(max-width:800px){.share-entry .premiumCard .gamecopy{height:95px!important;padding-top:8px!important}}
+</style><style>
+.nav-game-group{position:relative;min-width:0}
+.nav-game-group>summary{list-style:none;cursor:pointer;white-space:nowrap;padding:7px 0;transition:color .2s;font-weight:800}
+.nav-game-group>summary::-webkit-details-marker{display:none}
+.nav-game-group>summary:hover,.nav-game-group>summary:focus-visible{color:#57e4ff}
+.nav-game-menu{position:absolute;top:calc(100% + 12px);left:0;z-index:30;display:grid;min-width:230px;padding:8px;border:1px solid #35d9ff66;border-radius:14px;background:#071450;box-shadow:0 14px 30px #0008}
+.nav-game-menu a{display:block;padding:10px 12px!important;border-radius:8px;color:#eaf5ff;text-decoration:none;white-space:nowrap}
+.nav-game-menu a:hover,.nav-game-menu a:focus-visible{background:#153071;color:#73e9ff}
+.nav-game-menu .nav-game-all{margin-bottom:5px;border-bottom:1px solid #35d9ff44;border-radius:8px 8px 0 0;color:#ffda7d;font-weight:900}
+@media(max-width:800px){
+ .nav-game-group{width:100%;padding:0 10px}
+ .nav-game-group>summary{padding:12px 10px!important;border-radius:8px}
+ .nav-game-group[open]>summary,.nav-game-group>summary:hover,.nav-game-group>summary:focus-visible{background:#153071}
+ .nav-game-menu{position:static;min-width:0;margin:0 0 7px 10px;padding:5px;border:0;border-left:2px solid #35d9ff77;border-radius:0;background:rgba(4,15,55,.72);box-shadow:none;grid-template-columns:repeat(2,minmax(0,1fr));gap:2px}
+ .nav-game-menu a{padding:9px 10px!important;white-space:normal;font-size:13px}
+ .nav-game-menu .nav-game-all{grid-column:1/-1}
+}
 </style></head><body>
-<nav class="nav"><div class="wrap"><a class="brand" href="#"><span class="vlad">VLAD</span><span class="yerik">YERIK</span></a><button class="menu-toggle" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="mobile-navigation"><span></span><span></span><span></span></button><div class="links" id="mobile-navigation"><a href="#">🏠 INICIO</a><a href="arcade.html">🎮 MIS JUEGOS</a><a href="#videos">▶ MIS VIDEOS</a><a href="#sobre">👤 SOBRE MÍ</a><a href="#taekwondo">🏆 TAEKWONDO</a><a href="#cosplay">🎭 COSPLAY</a><a href="#redes">❤ SEGUIME</a></div></div></nav>
+<nav class="nav"><div class="wrap"><a class="brand" href="#"><span class="vlad">VLAD</span><span class="yerik">YERIK</span></a><button class="menu-toggle" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="mobile-navigation"><span></span><span></span><span></span></button><div class="links" id="mobile-navigation"><a href="#">🏠 INICIO</a><details class="nav-game-group"><summary>🎮 MIS JUEGOS</summary><div class="nav-game-menu"><a class="nav-game-all" href="arcade.html">Ver todos los juegos</a><a href="/juegos-de-accion.html">Acción</a><a href="/juegos-de-aventura.html">Aventura</a><a href="/juegos-de-carreras.html">Carreras</a><a href="/juegos-de-deportes.html">Deportes</a><a href="/juegos-de-ingenio.html">Ingenio</a><a href="/juegos-para-aprender.html">Educativos</a><a href="/juegos-retro.html">Retro</a></div></details><a href="#videos">▶ MIS VIDEOS</a><a href="#sobre">👤 SOBRE MÍ</a><a href="#taekwondo">🏆 TAEKWONDO</a><a href="#cosplay">🎭 COSPLAY</a><a href="#redes">❤ SEGUIME</a></div></div></nav>
 <header class="hero"><img class="heroBanner" src="assets/vladi-hero-1774w.webp" alt="VLADYERIK - Juegos, desafíos y aventuras" srcset="assets/vladi-hero-800w.webp 800w, assets/vladi-hero-1774w.webp 1774w" sizes="100vw" width="1774" height="887" fetchpriority="high" loading="eager" decoding="async"></header>
 <section class="section arcadeSection" id="juegos"><div class="wrap"><div class="arcadeHead"><div><div class="arcadeKicker">🎮 VLADYERIK ARCADE</div><h1>VLADI <span class="yerik">JUEGOS</span></h1><p class="arcade-search-intro">¿Buscás juegos online de Vladi o juegos Vladi para jugar gratis? En VLADYERIK encontrás aventuras, carreras, deportes y mucho más para PC y celular.</p></div><div class="count"><b>67 JUEGOS</b><span>PARA DIVERTIRSE</span></div></div><section class="featured-game" aria-labelledby="featured-heading"><h2 id="featured-heading">★ JUEGO DESTACADO</h2><div class="featured-panel"><a class="featured-cover" href="./vladi-run/" aria-label="Jugar Vladi Run"><img src="assets/vladi-run-960w.webp" alt="" loading="lazy" decoding="async" width="960" height="640"></a><div class="featured-copy"><p class="featured-kicker">HOY JUGAMOS A</p><h3>Vladi Run</h3><p class="featured-description">Corré por la isla, saltá obstáculos y juntá estrellas.</p><a class="featured-play" href="./vladi-run/">JUGAR AHORA</a></div></div></section><div class="games premiumGames">
 <a class="card premiumCard" href="./vladi-kart/"><div class="scene"><img class="sceneBg" src="assets/vladi-kart-960w.webp" alt="Vladi Kart" srcset="assets/vladi-kart-480w.webp 480w, assets/vladi-kart-960w.webp 960w" sizes="(max-width: 800px) calc((100vw - 56px) / 2), (max-width: 1180px) calc((100vw - 98px) / 4), 268px" width="960" height="640" loading="lazy" decoding="async"><i class="shine"></i></div><div class="gamecopy"><h3>VLADI <em>KART</em></h3><span>🎮 JUGAR</span></div></a>
@@ -239,7 +256,7 @@ document.addEventListener('click',function(e){
 </script>
 <script>
 (()=>{const nav=document.querySelector('.nav'),button=nav.querySelector('.menu-toggle'),links=nav.querySelector('#mobile-navigation');
-const close=()=>{nav.classList.remove('menu-open');button.setAttribute('aria-expanded','false');button.setAttribute('aria-label','Abrir menú')};
+const close=()=>{nav.classList.remove('menu-open');links.querySelectorAll('.nav-game-group').forEach(item=>item.open=false);button.setAttribute('aria-expanded','false');button.setAttribute('aria-label','Abrir menú')};
 button.addEventListener('click',()=>{const open=nav.classList.toggle('menu-open');button.setAttribute('aria-expanded',String(open));button.setAttribute('aria-label',open?'Cerrar menú':'Abrir menú')});
 links.addEventListener('click',event=>{if(event.target.closest('a'))close()});
 document.addEventListener('click',event=>{if(!nav.contains(event.target))close()});
