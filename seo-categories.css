@@ -88,3 +88,20 @@ body[data-category="retro"]{--category-accent:#aa8bff;--category-tint:rgba(131,8
 .hero .eyebrow::before{content:var(--category-icon,"🎮");display:grid;flex:0 0 34px;width:34px;height:34px;place-items:center;border:1px solid color-mix(in srgb,var(--category-accent,#ffd477) 55%,transparent);border-radius:11px;background:color-mix(in srgb,var(--category-accent,#ffd477) 15%,#071747);font-size:17px;letter-spacing:normal;box-shadow:0 0 18px var(--category-tint,rgba(53,217,255,.1))}
 .hero h1{text-shadow:0 0 28px var(--category-tint,transparent)}
 .hero h1::after{content:"";display:block;width:72px;height:4px;margin-top:15px;border-radius:99px;background:linear-gradient(90deg,var(--category-accent,#35d9ff),transparent);box-shadow:0 0 18px var(--category-tint,transparent)}
+
+
+/* Match the two-tone VLADYERIK wordmark from Home and Arcade. */
+.topbar .brand .brand-vlad{color:#35d9ff}
+.topbar .brand .brand-yerik{color:#ffb21a}
+/* A low-opacity category wash gives each landing page a calm, distinct backdrop. */
+body[data-category="accion"]{--category-page-wash:rgba(255,100,125,.1)}
+body[data-category="aventura"]{--category-page-wash:rgba(72,216,147,.1)}
+body[data-category="carreras"]{--category-page-wash:rgba(255,179,55,.1)}
+body[data-category="cartas"]{--category-page-wash:rgba(246,78,125,.1)}
+body[data-category="casino"]{--category-page-wash:rgba(166,91,255,.11)}
+body[data-category="deportes"]{--category-page-wash:rgba(81,213,126,.1)}
+body[data-category="ingenio"]{--category-page-wash:rgba(65,191,255,.1)}
+body[data-category="aprender"]{--category-page-wash:rgba(255,205,66,.1)}
+body[data-category="retro"]{--category-page-wash:rgba(131,87,255,.11)}
+body[data-category]{background-image:radial-gradient(ellipse at 100% 0%,var(--category-page-wash,transparent) 0,transparent 38rem),radial-gradient(circle at 50% -10%,#17448c 0,#06164c 42rem)}
+.hero{background:radial-gradient(ellipse at 91% 18%,var(--category-tint,rgba(53,217,255,.1)),transparent 46%),linear-gradient(115deg,rgba(255,255,255,.025),transparent 58%)}
