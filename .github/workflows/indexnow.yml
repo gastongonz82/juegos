@@ -8,6 +8,8 @@ on:
       - "*.html"
       - "**/*.html"
       - "sitemap.xml"
+      - "*.txt"
+      - ".github/workflows/indexnow.yml"
 
 permissions:
   contents: read
