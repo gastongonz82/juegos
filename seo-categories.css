@@ -105,3 +105,18 @@ body[data-category="aprender"]{--category-page-wash:rgba(255,205,66,.1)}
 body[data-category="retro"]{--category-page-wash:rgba(131,87,255,.11)}
 body[data-category]{background-image:radial-gradient(ellipse at 100% 0%,var(--category-page-wash,transparent) 0,transparent 38rem),radial-gradient(circle at 50% -10%,#17448c 0,#06164c 42rem)}
 .hero{background:radial-gradient(ellipse at 91% 18%,var(--category-tint,rgba(53,217,255,.1)),transparent 46%),linear-gradient(115deg,rgba(255,255,255,.025),transparent 58%)}
+
+
+/* Faint, category-specific full-page game artwork. Decorative only; the dark veil keeps text readable. */
+body[data-category="accion"]{--category-background:url("/assets/flappy-vladi-960w.webp")}
+body[data-category="aventura"]{--category-background:url("/assets/vladi-run-960w.webp")}
+body[data-category="carreras"]{--category-background:url("/assets/vladi-kart-960w.webp")}
+body[data-category="cartas"]{--category-background:url("/vladi-truco/assets/cover.webp?v=20261011")}
+body[data-category="casino"]{--category-background:url("/assets/premium-poker-v2.webp")}
+body[data-category="deportes"]{--category-background:url("/assets/vladi-futbol-960w.webp")}
+body[data-category="ingenio"]{--category-background:url("/assets/vladi-ahorcado.webp?v=20261009")}
+body[data-category="aprender"]{--category-background:url("/assets/vladi-palabras.webp?v=20261009")}
+body[data-category="retro"]{--category-background:url("/assets/retro-space-invaders.webp?v=20261009b")}
+body[data-category]{position:relative;isolation:isolate;background-color:#06164c;background-image:none}
+body[data-category]::before{content:"";position:fixed;z-index:-1;inset:-18px;pointer-events:none;background-image:radial-gradient(ellipse at 100% 0%,var(--category-page-wash,transparent) 0,transparent 38rem),linear-gradient(rgba(4,13,43,.78),rgba(4,13,43,.84)),var(--category-background);background-size:cover;background-position:center;filter:blur(8px);opacity:.58}
+@media(prefers-reduced-motion:reduce){body[data-category]::before{filter:blur(6px)}}
