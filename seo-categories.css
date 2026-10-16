@@ -30,3 +30,5 @@
 .game-actions{left:16px;right:16px;bottom:14px;height:42px;gap:10px}
 @media(max-width:760px){.game-card{height:280px}.game-card img{flex-basis:175px;height:175px}.game-copy{padding:7px 8px 50px}.game-copy h3{font-size:15.5px;line-height:1.08}.game-actions{left:10px;right:10px;bottom:10px;height:40px;gap:8px}}
 @media(max-width:480px){.game-copy{padding:7px 8px 50px}.game-copy h3{font-size:15.5px}}
+
+.game-copy h3 em{font-style:normal;color:#ffd22f;text-shadow:0 3px 0 #8b3c00}
