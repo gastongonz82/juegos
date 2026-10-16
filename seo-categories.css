@@ -32,3 +32,6 @@
 @media(max-width:480px){.game-copy{padding:7px 8px 50px}.game-copy h3{font-size:15.5px}}
 
 .game-copy h3 em{font-style:normal;color:#ffd22f;text-shadow:0 3px 0 #8b3c00}
+
+/* Reset the browser's default list indentation so category cards center correctly. */
+.games{list-style:none;margin:0;padding:0}
