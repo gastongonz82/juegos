@@ -3,7 +3,7 @@
 'use strict';
 const frame=document.getElementById('frame'),player=document.getElementById('player');
 if(!frame||!player)return;
-let previous=new Set(),lastPadIndex=-1;
+let previous=new Set(),lastPadIndex=-1,lastStart=false;
 const keyMap={left:'ArrowLeft',right:'ArrowRight',up:'ArrowUp',down:'ArrowDown',fire:' ',secondary:'z'};
 function send(key,type){
 try{
@@ -26,6 +26,10 @@ function tick(){
   if(b(12)||ay<-.5)now.add('up');
   if(b(13)||ay>.5)now.add('down');
   if(b(0)||b(2))now.add('fire');
+  // Los retro arrancan desde un panel HTML: el botón principal puede iniciar la partida.
+  const startPressed=b(9);
+  if(startPressed&&!lastStart){try{const doc=frame.contentDocument;const start=doc?.querySelector('#start');if(start&&start.getClientRects().length)start.click()}catch(_){}}
+  lastStart=startPressed;
   if(b(1)||b(3))now.add('secondary');
   // SELECT/BACK returns to menu, never delivered to the game.
   if(b(8)&&!lastPadIndex){document.getElementById('back')?.click();}
