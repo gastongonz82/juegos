@@ -3,13 +3,16 @@
 'use strict';
 const frame=document.getElementById('frame'),player=document.getElementById('player');
 if(!frame||!player)return;
-let previous=new Set(),lastPadIndex=-1,lastStart=false;
+let previous=new Set(),lastPadIndex=-1,lastStart=false,lastPause=false;
 const keyMap={left:'ArrowLeft',right:'ArrowRight',up:'ArrowUp',down:'ArrowDown',fire:' ',secondary:'z'};
 function send(key,type){
 try{
  const target=frame.contentWindow;
  if(!target||target.location.origin!==location.origin)return;
- target.dispatchEvent(new KeyboardEvent(type,{key,bubbles:true,cancelable:true}));
+ // Muchos juegos escuchan en window, otros en document o en el elemento activo.
+ const evt=()=>new KeyboardEvent(type,{key,code:key===' '?'Space':key,bubbles:true,cancelable:true});
+ target.dispatchEvent(evt());
+ target.document.dispatchEvent(evt());
 }catch(_){}
 }
 function release(){for(const action of previous)send(keyMap[action],'keyup');previous.clear();}
@@ -30,6 +33,9 @@ function tick(){
   const startPressed=b(9);
   if(startPressed&&!lastStart){try{const doc=frame.contentDocument;const start=doc?.querySelector('#start');if(start&&start.getClientRects().length)start.click()}catch(_){}}
   lastStart=startPressed;
+  const pausePressed=b(4);
+  if(pausePressed&&!lastPause)send('p','keydown');
+  lastPause=pausePressed;
   if(b(1)||b(3))now.add('secondary');
   // SELECT/BACK returns to menu, never delivered to the game.
   if(b(8)&&!lastPadIndex){document.getElementById('back')?.click();}
@@ -41,6 +47,7 @@ function tick(){
  requestAnimationFrame(tick);
 }
 frame.addEventListener('load',release);
+window.addEventListener('blur',release);
 document.addEventListener('visibilitychange',()=>{if(document.hidden)release()});
 requestAnimationFrame(tick);
 })();
