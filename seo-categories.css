@@ -132,3 +132,9 @@ body[data-category]::before{content:"";position:fixed;z-index:-1;inset:-18px;poi
 .retro-category-copy>span{font-size:12px;letter-spacing:.12em;font-weight:900;color:#75e7ff}.retro-category-copy h2{margin:8px 0 12px;font-size:clamp(28px,4vw,43px);line-height:1.1;color:#fff}.retro-category-copy h2 span{color:#ffd34d}.retro-category-copy p{margin:0 0 20px;line-height:1.6;color:#e2edff}
 .retro-category-actions{display:flex;gap:12px;flex-wrap:wrap}.retro-category-actions a{display:inline-flex;justify-content:center;align-items:center;padding:12px 17px;border-radius:11px;text-decoration:none;font-weight:900;font-size:13px}.retro-category-actions a:first-child{background:linear-gradient(#ffe886,#ffc53e);color:#10214a}.retro-category-actions a:last-child{border:1px solid #76a9ff;background:#122c65;color:#fff}
 @media(max-width:700px){.retro-category-promo{grid-template-columns:1fr;margin:24px 0}.retro-category-art{min-height:160px}.retro-category-actions a{flex:1 1 100%}}
+
+/* Imagen neon original de Arcade 3.0 en las tarjetas retro de categorías. */
+.retro-category-art{background:#080e29 url("https://arcade.vladyerik.com/assets/retro-arcade-neon.webp") center center/cover no-repeat!important;min-height:225px!important;isolation:isolate}
+.retro-category-art::before{display:none!important}
+.retro-category-art>*{display:none!important}
+@media(max-width:650px){.retro-category-art{min-height:205px!important;background-position:center center!important}}
