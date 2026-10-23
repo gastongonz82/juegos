@@ -120,3 +120,15 @@ body[data-category="retro"]{--category-background:url("/assets/retro-space-invad
 body[data-category]{position:relative;isolation:isolate;background-color:#06164c;background-image:none}
 body[data-category]::before{content:"";position:fixed;z-index:-1;inset:-18px;pointer-events:none;background-image:radial-gradient(ellipse at 100% 0%,var(--category-page-wash,transparent) 0,transparent 38rem),linear-gradient(rgba(4,13,43,.78),rgba(4,13,43,.84)),var(--category-background);background-size:cover;background-position:center;filter:blur(8px);opacity:.58}
 @media(prefers-reduced-motion:reduce){body[data-category]::before{filter:blur(6px)}}
+
+/* Tarjeta de emuladores compartida por las categorías; sin afectar los juegos. */
+.retro-category-promo{display:grid;grid-template-columns:minmax(180px,.7fr) minmax(0,1.3fr);align-items:center;gap:clamp(16px,3vw,32px);margin:32px 0;padding:clamp(20px,3vw,32px);border:2px solid #50b9f5;border-radius:22px;background:linear-gradient(120deg,#133d89,#141d55 60%,#331a58);color:#fff;box-shadow:0 16px 38px #020a2d88;overflow:hidden}
+.retro-category-art{position:relative;display:flex;align-items:center;justify-content:center;min-height:195px;border:2px solid #57cfff;border-radius:17px;background:radial-gradient(circle at 50% 30%,#4336a5,#0b1642 75%);overflow:hidden}
+.retro-category-art:before{content:'✦　✧　✦';position:absolute;top:14px;color:#8eeaff;letter-spacing:10px;font-size:18px}
+.retro-category-cabinet{position:relative;width:132px;padding:12px 10px 18px;background:linear-gradient(130deg,#248ae6,#182b91);border:5px solid #75e3ff;border-radius:16px 16px 10px 10px;transform:perspective(380px) rotateY(-8deg);box-shadow:10px 12px 0 #070b2d,0 0 30px #31d8ff77;text-align:center}
+.retro-category-screen{display:flex;min-height:91px;flex-direction:column;align-items:center;justify-content:center;border:5px solid #0b153d;border-radius:9px;background:radial-gradient(circle,#4432a3,#0b0c35);font-size:19px;line-height:1.15;font-weight:1000;letter-spacing:.06em;color:#ffda58;text-shadow:0 0 9px #ffcb4c}
+.retro-category-screen small{font-size:10px;color:#a4f7ff;letter-spacing:.1em}
+.retro-category-controls{display:flex;justify-content:space-around;padding-top:12px;color:#ffde68;font-size:22px}
+.retro-category-copy>span{font-size:12px;letter-spacing:.12em;font-weight:900;color:#75e7ff}.retro-category-copy h2{margin:8px 0 12px;font-size:clamp(28px,4vw,43px);line-height:1.1;color:#fff}.retro-category-copy h2 span{color:#ffd34d}.retro-category-copy p{margin:0 0 20px;line-height:1.6;color:#e2edff}
+.retro-category-actions{display:flex;gap:12px;flex-wrap:wrap}.retro-category-actions a{display:inline-flex;justify-content:center;align-items:center;padding:12px 17px;border-radius:11px;text-decoration:none;font-weight:900;font-size:13px}.retro-category-actions a:first-child{background:linear-gradient(#ffe886,#ffc53e);color:#10214a}.retro-category-actions a:last-child{border:1px solid #76a9ff;background:#122c65;color:#fff}
+@media(max-width:700px){.retro-category-promo{grid-template-columns:1fr;margin:24px 0}.retro-category-art{min-height:160px}.retro-category-actions a{flex:1 1 100%}}
