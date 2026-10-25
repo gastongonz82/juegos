@@ -138,3 +138,11 @@ body[data-category]::before{content:"";position:fixed;z-index:-1;inset:-18px;poi
 .retro-category-art::before{display:none!important}
 .retro-category-art>*{display:none!important}
 @media(max-width:650px){.retro-category-art{min-height:205px!important;background-position:center center!important}}
+
+/* Rockola: mismas dimensiones, proporciones y jerarquía que la tarjeta Retro Arcade */
+.rockola-category-promo{grid-template-columns:minmax(180px,.7fr) minmax(0,1.3fr)!important;gap:clamp(16px,3vw,32px)!important;margin:32px 0!important;padding:clamp(20px,3vw,32px)!important;border-width:2px!important;border-radius:22px!important;box-shadow:0 16px 38px #020a2d88!important;overflow:hidden}
+.rockola-category-art{min-height:225px!important;aspect-ratio:auto!important;border:2px solid #d6a85b!important;border-radius:17px!important}
+.rockola-category-copy h2{margin:8px 0 12px!important;font-size:clamp(28px,4vw,43px)!important;line-height:1.1!important}
+.rockola-category-copy p{margin:0 0 20px!important;line-height:1.6!important}
+.rockola-category-actions a{padding:12px 17px!important;font-size:13px!important}
+@media(max-width:700px){.rockola-category-promo{grid-template-columns:1fr!important;margin:24px 0!important}.rockola-category-art{min-height:205px!important}.rockola-category-actions a{width:100%;box-sizing:border-box}}
